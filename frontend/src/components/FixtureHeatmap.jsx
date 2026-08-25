@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
+import { GridNine } from '@phosphor-icons/react';
 
 export default function FixtureHeatmap({ fixtures, teams }) {
-  const [filterMode, setFilterMode] = useState('ALL');
   const [gwWindow, setGwWindow] = useState(6);
 
   // Build matrix: team_name -> [GW1, GW2, ... GW38]
@@ -17,7 +17,6 @@ export default function FixtureHeatmap({ fixtures, teams }) {
     const result = teamList.map(team => {
       const teamFixtures = [];
       for (let gw = 1; gw <= 38; gw++) {
-        // Find match for this team in this GW
         const match = fixtures.find(
           f => f.event === gw && (f.team_h === team.id || f.team_a === team.id)
         );
@@ -39,12 +38,11 @@ export default function FixtureHeatmap({ fixtures, teams }) {
             isHome: false,
             oppShort: 'BLANK',
             diff: 0,
-            label: 'BLANK'
+            label: 'Blank'
           });
         }
       }
 
-      // Compute average difficulty over next N gameweeks (GW2 to GW2 + window)
       const currentGw = 2;
       const nextN = teamFixtures.slice(currentGw - 1, currentGw - 1 + gwWindow);
       const avgDiff = nextN.reduce((acc, f) => acc + (f.diff || 3), 0) / (nextN.length || 1);
@@ -71,76 +69,68 @@ export default function FixtureHeatmap({ fixtures, teams }) {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h3 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            38-GAMEWEEK FIXTURE DIFFICULTY HEATMAP (FDR SCALE 1 TO 5)
+          <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <GridNine size={18} weight="bold" />
+            Fixture Schedule & Difficulty Ticker
           </h3>
           <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
-            Sorted by easiest fixture schedule over the next {gwWindow} Gameweeks (GW2–GW{1 + gwWindow})
+            Teams sorted from easiest to toughest fixture run over the next {gwWindow} gameweeks (GW2–GW{1 + gwWindow}).
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }} role="group" aria-label="Select lookahead fixture horizon">
-          <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>Lookahead Run:</span>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }} role="group" aria-label="Select fixture run lookahead">
+          <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Fixture Run:</span>
           {[3, 5, 8, 12].map(w => (
             <button
               key={w}
               onClick={() => setGwWindow(w)}
               aria-label={`Lookahead window: ${w} gameweeks`}
               aria-pressed={gwWindow === w}
-              style={{
-                background: gwWindow === w ? 'var(--accent-emerald)' : 'var(--bg-surface-2)',
-                color: gwWindow === w ? 'var(--text-inverse)' : 'var(--text-secondary)',
-                border: '1px solid var(--border-subtle)',
-                padding: '8px 14px',
-                fontSize: '11px',
-                fontFamily: 'var(--font-mono)',
-                fontWeight: 700,
-                borderRadius: 'var(--radius-xs)',
-                cursor: 'pointer',
-                minHeight: '36px'
-              }}
+              className={`pos-filter-btn ${gwWindow === w ? 'active' : ''}`}
             >
-              {w} GWs
+              {w} Gameweeks
             </button>
           ))}
         </div>
       </div>
 
-      <div className="data-table-container" style={{ overflowX: 'auto' }}>
-        <table className="data-table" style={{ whiteSpace: 'nowrap' }}>
-          <thead>
-            <tr>
-              <th style={{ position: 'sticky', left: 0, zIndex: 20, background: 'var(--bg-surface-2)' }}>Club</th>
-              <th style={{ textAlign: 'center' }}>Next {gwWindow} Avg FDR</th>
-              {Array.from({ length: 12 }, (_, i) => i + 1).map(gw => (
-                <th key={gw} style={{ textAlign: 'center', background: gw === 2 ? 'rgba(16, 185, 129, 0.15)' : undefined }}>
-                  GW{gw} {gw === 2 ? '⚡' : ''}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {matrix.map(team => (
-              <tr key={team.id}>
-                <td style={{ position: 'sticky', left: 0, zIndex: 10, background: 'var(--bg-surface-1)', fontWeight: 700, color: 'var(--text-primary)' }}>
-                  {team.name}
-                </td>
-                <td className="font-mono" style={{ textAlign: 'center', fontWeight: 700, color: team.avgDiff <= 2.5 ? 'var(--accent-emerald)' : (team.avgDiff >= 3.8 ? 'var(--accent-crimson)' : 'var(--text-secondary)') }}>
-                  {team.avgDiff.toFixed(2)}
-                </td>
-                {team.fixtures.slice(0, 12).map(f => (
-                  <td key={f.gw} style={{ padding: '4px', textAlign: 'center' }}>
-                    <div className={`fdr-cell ${fdrClass(f.diff)}`}>
-                      {f.label}
-                    </div>
-                  </td>
+      <div className="data-table-container">
+        <div className="table-scroll-wrapper">
+          <table className="data-table" style={{ whiteSpace: 'nowrap' }}>
+            <thead>
+              <tr>
+                <th style={{ position: 'sticky', left: 0, zIndex: 20 }}>Club</th>
+                <th style={{ textAlign: 'center' }}>Avg Difficulty</th>
+                {Array.from({ length: 12 }, (_, i) => i + 1).map(gw => (
+                  <th key={gw} style={{ textAlign: 'center', background: gw === 2 ? 'rgba(16, 185, 129, 0.15)' : undefined }}>
+                    GW{gw} {gw === 2 ? '⚡' : ''}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {matrix.map(team => (
+                <tr key={team.id}>
+                  <td style={{ position: 'sticky', left: 0, zIndex: 10, background: 'var(--bg-surface-1)', fontWeight: 700, color: 'var(--text-primary)' }}>
+                    {team.name}
+                  </td>
+                  <td className="font-mono" style={{ textAlign: 'center', fontWeight: 700, color: team.avgDiff <= 2.5 ? 'var(--accent-emerald)' : (team.avgDiff >= 3.8 ? 'var(--accent-crimson)' : 'var(--text-secondary)') }}>
+                    {team.avgDiff.toFixed(2)}
+                  </td>
+                  {team.fixtures.slice(0, 12).map(f => (
+                    <td key={f.gw} style={{ padding: '4px', textAlign: 'center' }}>
+                      <div className={`fdr-cell ${fdrClass(f.diff)}`}>
+                        {f.label}
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

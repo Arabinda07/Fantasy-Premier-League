@@ -1,10 +1,31 @@
 import React, { useState, useMemo } from 'react';
+import {
+  MagnifyingGlass,
+  ArrowsLeftRight,
+  Scales,
+  X,
+  TrendUp,
+  TrendDown
+} from '@phosphor-icons/react';
 
-export default function TransferWorkbench({ roadmap, allPlayers, onInspectPlayer }) {
+export default function TransferWorkbench({
+  roadmap,
+  allPlayers,
+  squadPlayers = [],
+  onInspectPlayer,
+  onCompareChange
+}) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPos, setSelectedPos] = useState('ALL');
   const [maxPrice, setMaxPrice] = useState(15.5);
   const [sortBy, setSortBy] = useState('xP');
+
+  // Comparison State
+  const [playerOut, setPlayerOut] = useState(null);
+  const [playerIn, setPlayerIn] = useState(null);
+
+  // Initialize playerOut with first squad player if available
+  const defaultSquadList = squadPlayers.length > 0 ? squadPlayers : (allPlayers ? allPlayers.slice(0, 15) : []);
 
   // Filter and sort marketplace players
   const filteredPlayers = useMemo(() => {
@@ -26,20 +47,55 @@ export default function TransferWorkbench({ roadmap, allPlayers, onInspectPlayer
       .slice(0, 50);
   }, [allPlayers, searchQuery, selectedPos, maxPrice, sortBy]);
 
+  // Handle selecting comparison players
+  const handleSelectCompareIn = (player) => {
+    setPlayerIn(player);
+    if (!playerOut && defaultSquadList.length > 0) {
+      // Auto-match position if possible
+      const samePos = defaultSquadList.find(p => p.position === player.position);
+      setPlayerOut(samePos || defaultSquadList[0]);
+    }
+    if (onCompareChange) {
+      onCompareChange(`${player.web_name} vs ${(playerOut || defaultSquadList[0])?.web_name || 'Squad'}`);
+    }
+  };
+
+  const handleClearCompare = () => {
+    setPlayerIn(null);
+    setPlayerOut(null);
+    if (onCompareChange) onCompareChange(null);
+  };
+
+  // Compute Comparison Deltas
+  const xpOut = Number(playerOut?.expected_points || 0);
+  const xpIn = Number(playerIn?.expected_points || 0);
+  const xpDelta = xpIn - xpOut;
+
+  const costOut = Number(playerOut?.now_cost || playerOut?.cost || 0);
+  const costIn = Number(playerIn?.now_cost || playerIn?.cost || 0);
+  const costDelta = costIn - costOut;
+
+  const xgOut = Number(playerOut?.expected_goals_per_90 || playerOut?.short_form_expected_goals_90 || 0);
+  const xgIn = Number(playerIn?.expected_goals_per_90 || playerIn?.short_form_expected_goals_90 || 0);
+
+  const xaOut = Number(playerOut?.expected_assists_per_90 || playerOut?.short_form_expected_assists_90 || 0);
+  const xaIn = Number(playerIn?.expected_assists_per_90 || playerIn?.short_form_expected_assists_90 || 0);
+
   return (
     <div>
       {/* 3-Gameweek Lookahead Roadmap */}
-      <h3 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '14px' }}>
-        MULTI-GAMEWEEK TRANSFER ROADMAP (3-GW LOOKAHEAD)
+      <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <ArrowsLeftRight size={18} weight="bold" />
+        Transfer Plan: Next 3 Gameweeks
       </h3>
 
       <div className="roadmap-grid">
         {(roadmap || []).map(step => (
           <div key={step.gw} className={`roadmap-card ${step.gw === 2 ? 'active' : ''}`}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <span className="roadmap-gw-badge">GAMEWEEK {step.gw}</span>
-              <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                Bank: £{Number(step.bank || 0).toFixed(1)}M
+              <span className="roadmap-gw-badge">Gameweek {step.gw}</span>
+              <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
+                Bank: £{Number(step.bank || 0).toFixed(1)}m
               </span>
             </div>
 
@@ -61,71 +117,169 @@ export default function TransferWorkbench({ roadmap, allPlayers, onInspectPlayer
                 </>
               ) : (
                 <div style={{ color: 'var(--text-muted)', fontSize: '13px', fontStyle: 'italic' }}>
-                  Roll Free Transfer (Accumulate 2 FTs)
+                  Roll transfer (save 2 free transfers for next week)
                 </div>
               )}
             </div>
 
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '10px', display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Projected xP</span>
+              <span style={{ color: 'var(--text-muted)' }}>Projected Score</span>
               <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--accent-emerald)' }}>
-                {Number(step.net_xp || 0).toFixed(2)} pts
+                {Number(step.net_xp || 0).toFixed(1)} pts
               </span>
             </div>
           </div>
         ))}
       </div>
 
+      {/* Side-by-Side Transfer Comparison Workbench (Contextual Seam) */}
+      {playerIn && (
+        <div className="compare-workbench-container" style={{ margin: '24px 0', background: 'var(--bg-surface-1)', border: '1px solid var(--border-active)', borderRadius: 'var(--radius-lg)', padding: 'clamp(14px, 2vw, 20px)', boxShadow: '0 8px 24px rgba(0,0,0,0.5)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ background: 'var(--accent-emerald)', color: '#090D16', padding: '3px 6px', borderRadius: 'var(--radius-xs)', display: 'flex', alignItems: 'center' }}>
+                <Scales size={15} weight="bold" />
+              </div>
+              <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)' }}>
+                Head-to-Head Transfer Comparison
+              </span>
+            </div>
+            <button
+              onClick={handleClearCompare}
+              className="pos-filter-btn"
+              style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 8px' }}
+            >
+              <X size={14} weight="bold" />
+              <span>Close Comparison</span>
+            </button>
+          </div>
+
+          <div className="compare-grid">
+            {/* Player OUT Card */}
+            <div className="compare-player-card out-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <span className="transfer-label out">TRANSFER OUT</span>
+                <select
+                  value={playerOut?.player_code || ''}
+                  onChange={(e) => {
+                    const found = defaultSquadList.find(p => String(p.player_code) === e.target.value);
+                    if (found) setPlayerOut(found);
+                  }}
+                  className="nav-select"
+                  style={{ fontSize: '11px', padding: '3px 6px' }}
+                  aria-label="Select squad player to transfer out"
+                >
+                  {defaultSquadList.map(p => (
+                    <option key={p.player_code} value={p.player_code}>
+                      {p.web_name} ({p.team} · £{Number(p.cost || p.now_cost || 0).toFixed(1)}m)
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                <span className={`player-position-pill ${playerOut?.position}`}>{playerOut?.position}</span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>
+                  {playerOut?.web_name}
+                </span>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>({playerOut?.team})</span>
+              </div>
+
+              <div className="font-mono" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-secondary)', marginBottom: '8px' }}>
+                {xpOut.toFixed(1)} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>projected pts</span>
+              </div>
+
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <div>Price: £{costOut.toFixed(1)}m</div>
+                <div>Expected Goals (xG90): {xgOut.toFixed(2)}</div>
+                <div>Expected Assists (xA90): {xaOut.toFixed(2)}</div>
+              </div>
+            </div>
+
+            {/* Delta Indicator (Center) */}
+            <div className="compare-delta-column">
+              <div className={`delta-badge ${xpDelta >= 0 ? 'positive' : 'negative'}`}>
+                {xpDelta >= 0 ? <TrendUp size={16} weight="bold" /> : <TrendDown size={16} weight="bold" />}
+                <span>{xpDelta >= 0 ? `+${xpDelta.toFixed(1)}` : xpDelta.toFixed(1)} pts</span>
+              </div>
+              <div style={{ fontSize: '11px', color: costDelta <= 0 ? 'var(--accent-emerald)' : 'var(--accent-amber)', fontFamily: 'var(--font-mono)', marginTop: '4px', fontWeight: 700 }}>
+                {costDelta <= 0 ? `Saves £${Math.abs(costDelta).toFixed(1)}m` : `Costs +£${costDelta.toFixed(1)}m`}
+              </div>
+            </div>
+
+            {/* Player IN Card */}
+            <div className="compare-player-card in-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <span className="transfer-label in">TRANSFER IN</span>
+                <span style={{ fontSize: '11px', color: 'var(--accent-emerald)', fontWeight: 700 }}>
+                  Target Acquisition
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                <span className={`player-position-pill ${playerIn?.position}`}>{playerIn?.position}</span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>
+                  {playerIn?.web_name}
+                </span>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>({playerIn?.team})</span>
+              </div>
+
+              <div className="font-mono" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--accent-emerald)', marginBottom: '8px' }}>
+                {xpIn.toFixed(1)} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>projected pts</span>
+              </div>
+
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <div>Price: £{costIn.toFixed(1)}m</div>
+                <div>Expected Goals (xG90): {xgIn.toFixed(2)}</div>
+                <div>Expected Assists (xA90): {xaIn.toFixed(2)}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Transfer Marketplace */}
-      <div className="data-table-container" style={{ marginTop: '32px' }}>
-        <div style={{ padding: '16px 20px', background: 'var(--bg-surface-2)', borderBottom: '1px solid var(--border-subtle)', display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="data-table-container" style={{ marginTop: '30px' }}>
+        <div style={{ padding: '14px 18px', background: 'var(--bg-surface-2)', borderBottom: '1px solid var(--border-subtle)', display: 'flex', flexWrap: 'wrap', gap: '14px', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)' }}>
-              PLAYER VALUATION & TRANSFER MARKETPLACE
+              Player Scout & Transfer Market
             </span>
-            <span style={{ marginLeft: '10px', fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-              Showing {filteredPlayers.length} assets
+            <span style={{ marginLeft: '10px', fontSize: '12px', color: 'var(--text-muted)' }}>
+              (Click row to view stats · Click Compare to test transfer)
             </span>
           </div>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
             {/* Search Input */}
-            <input
-              type="text"
-              placeholder="Search player or team..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              aria-label="Search players by name or club"
-              style={{
-                background: 'var(--bg-surface-1)',
-                border: '1px solid var(--border-medium)',
-                color: 'var(--text-primary)',
-                padding: '8px 12px',
-                borderRadius: 'var(--radius-sm)',
-                fontSize: '12px',
-                width: '190px'
-              }}
-            />
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <MagnifyingGlass size={14} style={{ position: 'absolute', left: '10px', color: 'var(--text-muted)' }} />
+              <input
+                type="text"
+                placeholder="Search player or team..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                aria-label="Search players by name or club"
+                style={{
+                  background: 'var(--bg-surface-1)',
+                  border: '1px solid var(--border-medium)',
+                  color: 'var(--text-primary)',
+                  padding: '6px 12px 6px 30px',
+                  borderRadius: 'var(--radius-sm)',
+                  fontSize: '12px',
+                  width: '190px'
+                }}
+              />
+            </div>
 
             {/* Position Filter */}
-            <div role="group" aria-label="Filter by player position" style={{ display: 'flex', gap: '3px' }}>
+            <div role="group" aria-label="Filter by player position" className="pos-btn-group">
               {['ALL', 'GK', 'DEF', 'MID', 'FWD'].map(pos => (
                 <button
                   key={pos}
                   onClick={() => setSelectedPos(pos)}
                   aria-pressed={selectedPos === pos}
-                  style={{
-                    background: selectedPos === pos ? 'var(--accent-emerald)' : 'var(--bg-surface-1)',
-                    color: selectedPos === pos ? 'var(--text-inverse)' : 'var(--text-secondary)',
-                    border: '1px solid var(--border-subtle)',
-                    padding: '8px 12px',
-                    fontSize: '11px',
-                    fontFamily: 'var(--font-mono)',
-                    fontWeight: 700,
-                    borderRadius: 'var(--radius-xs)',
-                    cursor: 'pointer',
-                    minHeight: '36px'
-                  }}
+                  className={`pos-filter-btn ${selectedPos === pos ? 'active' : ''}`}
                 >
                   {pos}
                 </button>
@@ -134,7 +288,7 @@ export default function TransferWorkbench({ roadmap, allPlayers, onInspectPlayer
 
             {/* Max Price Slider */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-              <span>Max: £{maxPrice}M</span>
+              <span>Max: £{maxPrice}m</span>
               <input
                 type="range"
                 min="4.0"
@@ -143,7 +297,7 @@ export default function TransferWorkbench({ roadmap, allPlayers, onInspectPlayer
                 value={maxPrice}
                 onChange={e => setMaxPrice(Number(e.target.value))}
                 aria-label={`Maximum player cost slider, currently £${maxPrice}M`}
-                style={{ width: '85px', cursor: 'pointer' }}
+                style={{ width: '80px', accentColor: 'var(--accent-emerald)', cursor: 'pointer' }}
               />
             </div>
 
@@ -157,73 +311,76 @@ export default function TransferWorkbench({ roadmap, allPlayers, onInspectPlayer
                 color: 'var(--text-primary)',
                 border: '1px solid var(--border-medium)',
                 borderRadius: 'var(--radius-sm)',
-                padding: '8px 12px',
+                padding: '6px 10px',
                 fontSize: '12px',
-                fontFamily: 'var(--font-mono)',
-                cursor: 'pointer',
-                minHeight: '36px'
+                fontFamily: 'var(--font-sans)',
+                cursor: 'pointer'
               }}
             >
-              <option value="xP">Sort by xP (High to Low)</option>
-              <option value="cost_desc">Cost (High to Low)</option>
-              <option value="cost_asc">Cost (Low to High)</option>
+              <option value="xP">Highest Projected Points</option>
+              <option value="cost_desc">Price (High to Low)</option>
+              <option value="cost_asc">Price (Low to High)</option>
             </select>
           </div>
         </div>
 
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Player</th>
-              <th>Pos</th>
-              <th>Club</th>
-              <th>Cost (£M)</th>
-              <th>Projected xP</th>
-              <th>xG90</th>
-              <th>xA90</th>
-              <th>P(Start)</th>
-              <th>P(Clean Sheet)</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredPlayers.map(p => (
-              <tr key={p.player_code || p.id}>
-                <td style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
-                  {p.web_name}
-                </td>
-                <td>
-                  <span className={`player-position-pill ${p.position}`}>{p.position}</span>
-                </td>
-                <td>{p.team}</td>
-                <td className="font-mono">£{Number(p.now_cost || p.cost || 0).toFixed(1)}</td>
-                <td className="font-mono" style={{ fontWeight: 700, color: 'var(--accent-emerald)' }}>
-                  {Number(p.expected_points || 0).toFixed(2)}
-                </td>
-                <td className="font-mono">{Number(p.expected_goals_per_90 || p.short_form_expected_goals_90 || 0).toFixed(2)}</td>
-                <td className="font-mono">{Number(p.expected_assists_per_90 || p.short_form_expected_assists_90 || 0).toFixed(2)}</td>
-                <td className="font-mono">{((p.p_start || 0.85) * 100).toFixed(0)}%</td>
-                <td className="font-mono">{((p.p_clean_sheet || 0.3) * 100).toFixed(0)}%</td>
-                <td>
-                  <button
-                    onClick={() => onInspectPlayer(p)}
-                    style={{
-                      background: 'var(--bg-surface-subtle)',
-                      border: '1px solid var(--border-medium)',
-                      color: 'var(--text-primary)',
-                      padding: '3px 8px',
-                      fontSize: '11px',
-                      borderRadius: 'var(--radius-xs)',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Inspect DNA
-                  </button>
-                </td>
+        <div className="table-scroll-wrapper">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th style={{ position: 'sticky', left: 0, zIndex: 20 }}>Player</th>
+                <th>Pos</th>
+                <th>Club</th>
+                <th>Price</th>
+                <th>Projected Points</th>
+                <th>Expected Goals (xG90)</th>
+                <th>Expected Assists (xA90)</th>
+                <th>Start Chance</th>
+                <th style={{ textAlign: 'center' }}>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredPlayers.map(p => (
+                <tr
+                  key={p.player_code || p.id}
+                  onClick={() => onInspectPlayer && onInspectPlayer(p)}
+                  style={{ cursor: 'pointer' }}
+                  title="Click to view detailed point projections"
+                >
+                  <td style={{ position: 'sticky', left: 0, zIndex: 10, fontWeight: 700, color: 'var(--text-primary)', background: 'var(--bg-surface-1)' }}>
+                    {p.web_name}
+                  </td>
+                  <td>
+                    <span className={`player-position-pill ${p.position}`}>{p.position}</span>
+                  </td>
+                  <td>{p.team}</td>
+                  <td className="font-mono">£{Number(p.now_cost || p.cost || 0).toFixed(1)}m</td>
+                  <td className="font-mono" style={{ fontWeight: 700, color: 'var(--accent-emerald)' }}>
+                    {Number(p.expected_points || 0).toFixed(1)} pts
+                  </td>
+                  <td className="font-mono">{Number(p.expected_goals_per_90 || p.short_form_expected_goals_90 || 0).toFixed(2)}</td>
+                  <td className="font-mono">{Number(p.expected_assists_per_90 || p.short_form_expected_assists_90 || 0).toFixed(2)}</td>
+                  <td className="font-mono">{((p.p_start || 0.85) * 100).toFixed(0)}%</td>
+                  <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+                    <button
+                      onClick={() => handleSelectCompareIn(p)}
+                      className="pos-filter-btn"
+                      style={{
+                        padding: '3px 8px',
+                        fontSize: '11px',
+                        background: playerIn?.web_name === p.web_name ? 'var(--accent-emerald)' : undefined,
+                        color: playerIn?.web_name === p.web_name ? '#090D16' : undefined
+                      }}
+                      title="Compare this player against your squad"
+                    >
+                      Compare
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

@@ -1,9 +1,12 @@
-import React, { useState, lazy, Suspense } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import Header from './components/Header';
+import Breadcrumbs from './components/Breadcrumbs';
 import TacticalPitch from './components/TacticalPitch';
 import TransferWorkbench from './components/TransferWorkbench';
 import FixtureHeatmap from './components/FixtureHeatmap';
 import MarketVelocityTicker from './components/MarketVelocityTicker';
+import ComponentStudio from './components/ComponentStudio';
+import Footer from './components/Footer';
 
 // Lazy-load Recharts heavy charting component on demand
 const PlayerDNAInspector = lazy(() => import('./components/PlayerDNAInspector'));
@@ -14,16 +17,100 @@ import allPlayersData from './data/players_full.json';
 import fixturesData from './data/fixtures_all.json';
 import teamsData from './data/teams_all.json';
 
+// Helper to map tab IDs to hash routes
+const TAB_TO_HASH = {
+  pitch: 'lineup',
+  transfers: 'transfers',
+  fixtures: 'fixtures',
+  market: 'market',
+  math: 'methodology'
+};
+
+const HASH_TO_TAB = {
+  lineup: 'pitch',
+  pitch: 'pitch',
+  transfers: 'transfers',
+  fixtures: 'fixtures',
+  market: 'market',
+  methodology: 'math',
+  math: 'math'
+};
+
 export default function App() {
   const [activeTab, setActiveTab] = useState('pitch');
   const [selectedStrategy, setSelectedStrategy] = useState('pure_xp');
   const [inspectedPlayer, setInspectedPlayer] = useState(null);
   const [activeChip, setActiveChip] = useState('none');
+  const [compareSubItem, setCompareSubItem] = useState(null);
 
   // Squad State (Allowing interactive starter / bench swaps)
   const [starters, setStarters] = useState(liveMatchdayData.starters || []);
   const [bench, setBench] = useState(liveMatchdayData.bench || []);
   const [selectedSwapPlayer, setSelectedSwapPlayer] = useState(null);
+
+  // Parse URL Hash on initial load and handle back/forward navigation
+  useEffect(() => {
+    const parseHash = () => {
+      const hashStr = window.location.hash.replace(/^#\/?/, '');
+      if (!hashStr) return;
+
+      const [routePart, queryPart] = hashStr.split('?');
+      const targetTab = HASH_TO_TAB[routePart];
+      if (targetTab) {
+        setActiveTab(targetTab);
+      }
+
+      if (queryPart) {
+        const params = new URLSearchParams(queryPart);
+        const chip = params.get('chip');
+        if (chip) setActiveChip(chip);
+
+        const playerName = params.get('player');
+        if (playerName && allPlayersData) {
+          const matched = allPlayersData.find(
+            p => (p.web_name || '').toLowerCase() === playerName.toLowerCase()
+          );
+          if (matched) setInspectedPlayer(matched);
+        }
+      }
+    };
+
+    parseHash();
+    window.addEventListener('hashchange', parseHash);
+    return () => window.removeEventListener('hashchange', parseHash);
+  }, []);
+
+  // Sync state changes to URL Hash
+  const handleTabChange = (newTab) => {
+    setActiveTab(newTab);
+    setCompareSubItem(null);
+    const hashRoute = TAB_TO_HASH[newTab] || 'lineup';
+    const chipQuery = activeChip !== 'none' ? `?chip=${activeChip}` : '';
+    window.location.hash = `${hashRoute}${chipQuery}`;
+  };
+
+  const handleChipChange = (newChip) => {
+    setActiveChip(newChip);
+    const hashRoute = TAB_TO_HASH[activeTab] || 'lineup';
+    const chipQuery = newChip !== 'none' ? `?chip=${newChip}` : '';
+    window.location.hash = `${hashRoute}${chipQuery}`;
+  };
+
+  const handleInspectPlayer = (player) => {
+    setInspectedPlayer(player);
+    if (player) {
+      const hashRoute = TAB_TO_HASH[activeTab] || 'lineup';
+      const chipQuery = activeChip !== 'none' ? `chip=${activeChip}&` : '';
+      window.location.hash = `${hashRoute}?${chipQuery}player=${encodeURIComponent(player.web_name)}`;
+    }
+  };
+
+  const handleCloseInspect = () => {
+    setInspectedPlayer(null);
+    const hashRoute = TAB_TO_HASH[activeTab] || 'lineup';
+    const chipQuery = activeChip !== 'none' ? `?chip=${activeChip}` : '';
+    window.location.hash = `${hashRoute}${chipQuery}`;
+  };
 
   // Handle interactive player selection and swap
   const handleSelectPlayer = (player) => {
@@ -67,20 +154,36 @@ export default function App() {
   const capt = starters.find(p => p.is_captain);
   const captBonus = capt ? capt.expected_points : 0;
 
+  // Active breadcrumb sub-item label
+  const breadcrumbSubItem = inspectedPlayer
+    ? `${inspectedPlayer.web_name} (${inspectedPlayer.team})`
+    : compareSubItem;
+
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       {/* Top Navigation */}
       <Header
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={handleTabChange}
         liveData={liveMatchdayData}
         selectedStrategy={selectedStrategy}
         setSelectedStrategy={setSelectedStrategy}
         activeChip={activeChip}
-        setActiveChip={setActiveChip}
+        setActiveChip={handleChipChange}
       />
 
-      <main className="app-container">
+      {/* 3-Level Breadcrumb Trail */}
+      <Breadcrumbs
+        activeTab={activeTab}
+        onNavigateTab={handleTabChange}
+        subItem={breadcrumbSubItem}
+        onClearSubItem={() => {
+          setInspectedPlayer(null);
+          setCompareSubItem(null);
+        }}
+      />
+
+      <main className="app-container" style={{ flex: '1 0 auto' }}>
         {/* View 1: Tactical Pitch & Lineup Visualizer */}
         {activeTab === 'pitch' && (
           <TacticalPitch
@@ -88,13 +191,13 @@ export default function App() {
             bench={bench}
             selectedPlayer={selectedSwapPlayer}
             onSelectPlayer={handleSelectPlayer}
-            onInspectPlayer={setInspectedPlayer}
+            onInspectPlayer={handleInspectPlayer}
             actionSummary={liveMatchdayData.action_summary}
             startingXp={startingXp + Number(captBonus)}
             totalXp={liveMatchdayData.total_xp}
             chipSimulations={liveMatchdayData.chip_simulations || {}}
             activeChip={activeChip}
-            onSelectChip={setActiveChip}
+            onSelectChip={handleChipChange}
           />
         )}
 
@@ -103,7 +206,9 @@ export default function App() {
           <TransferWorkbench
             roadmap={liveMatchdayData.multi_horizon_roadmap}
             allPlayers={allPlayersData}
-            onInspectPlayer={setInspectedPlayer}
+            squadPlayers={[...starters, ...bench]}
+            onInspectPlayer={handleInspectPlayer}
+            onCompareChange={setCompareSubItem}
           />
         )}
 
@@ -119,50 +224,16 @@ export default function App() {
         {activeTab === 'market' && (
           <MarketVelocityTicker
             allPlayers={allPlayersData}
-            onInspectPlayer={setInspectedPlayer}
+            onInspectPlayer={handleInspectPlayer}
           />
         )}
 
         {/* View 5: 11-Component Mathematical Studio */}
         {activeTab === 'math' && (
-          <div style={{ background: 'var(--bg-surface-1)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', padding: '24px' }}>
-            <h3 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>
-              11-COMPONENT EXPECTATION STUDIO & MATHEMATICAL SPECIFICATION
-            </h3>
-            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '24px', lineHeight: 1.5 }}>
-              Click any asset in the table below to deconstruct their discrete point expectation formula ($C_1 \dots C_{11}$) and inspect conjugate venue adjustments.
-            </p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '12px' }}>
-              {starters.concat(bench).map(p => (
-                <div
-                  key={p.player_code}
-                  onClick={() => setInspectedPlayer(p)}
-                  style={{
-                    background: 'var(--bg-surface-2)',
-                    border: '1px solid var(--border-subtle)',
-                    borderRadius: 'var(--radius-md)',
-                    padding: '12px 14px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                  }}
-                >
-                  <div>
-                    <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{p.web_name}</div>
-                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{p.team} · {p.position}</div>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div className="font-mono" style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>
-                      {Number(p.expected_points || 0).toFixed(2)}
-                    </div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>xP</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <ComponentStudio
+            players={allPlayersData}
+            onInspectPlayer={handleInspectPlayer}
+          />
         )}
       </main>
 
@@ -171,10 +242,16 @@ export default function App() {
         <Suspense fallback={<div className="modal-overlay"><div className="modal-content skeleton" style={{ height: '400px' }}></div></div>}>
           <PlayerDNAInspector
             player={inspectedPlayer}
-            onClose={() => setInspectedPlayer(null)}
+            onClose={handleCloseInspect}
           />
         </Suspense>
       )}
+
+      {/* Institutional Footer Navigation */}
+      <Footer
+        onNavigateTab={handleTabChange}
+        liveData={liveMatchdayData}
+      />
     </div>
   );
 }

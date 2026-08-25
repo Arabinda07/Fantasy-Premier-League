@@ -6,85 +6,83 @@ export default function PlayerCard({ player, isSelected, onClick, onInspect }) {
   const isCaptain = player.is_captain;
   const isVice = player.is_vice_captain;
 
-  // Derive specialty tags
+  // Set-piece duty tags
   const tags = [];
-  if (player.sp_pk_order === 1) tags.push('PK1');
-  if (player.sp_ck_order === 1) tags.push('CK1');
-  if (player.sp_fk_order === 1) tags.push('FK1');
+  if (player.sp_pk_order === 1) tags.push('Penalties');
+  if (player.sp_ck_order === 1) tags.push('Corners');
+  if (player.sp_fk_order === 1) tags.push('Free Kicks');
+
+  const handleClick = (e) => {
+    if (e.detail === 2 && onInspect) {
+      // Double click directly opens player breakdown
+      onInspect(player);
+    } else if (onClick) {
+      onClick();
+    }
+  };
 
   return (
     <div
       className={`player-card ${isCaptain ? 'is-captain' : ''} ${isVice ? 'is-vice' : ''} ${isSelected ? 'is-selected' : ''}`}
-      onClick={onClick}
+      onClick={handleClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          onClick();
+          if (onClick) onClick();
         }
       }}
       tabIndex={0}
       role="button"
-      aria-label={`Select ${player.web_name}, ${player.position}, cost £${Number(player.cost || 0).toFixed(1)}M, ${Number(player.expected_points || 0).toFixed(2)} expected points`}
-      title="Click to select/swap · Click [DNA] to inspect"
+      aria-label={`${player.web_name}, ${player.position}, £${Number(player.cost || 0).toFixed(1)}M, ${Number(player.expected_points || 0).toFixed(1)} expected points`}
+      title="Click to swap · Double-click for points breakdown"
     >
       {/* Role Badges */}
       {isCaptain && <span className="player-role-badge captain">C</span>}
       {isVice && !isCaptain && <span className="player-role-badge vice">V</span>}
 
-      {/* Position & Inspect Header */}
+      {/* Position Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
         <span className={`player-position-pill ${player.position}`}>
           {player.position}
         </span>
-        {onInspect && (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onInspect(player);
-            }}
-            aria-label={`Inspect ${player.web_name} DNA statistics`}
-            style={{
-              background: 'var(--bg-surface-subtle)',
-              border: '1px solid var(--border-subtle)',
-              color: 'var(--accent-emerald)',
-              fontSize: '9px',
-              fontFamily: 'var(--font-mono)',
-              fontWeight: 700,
-              padding: '1px 4px',
-              borderRadius: 'var(--radius-xs)',
-              cursor: 'pointer'
-            }}
-            title="Inspect 11-Component DNA"
-          >
-            DNA
-          </button>
-        )}
+        <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+          £{Number(player.cost || 0).toFixed(1)}m
+        </span>
       </div>
 
-      {/* Player Web Name */}
+      {/* Player Name */}
       <div className="player-name">
         {player.web_name}
       </div>
 
-      {/* Team & Cost */}
+      {/* Team */}
       <div className="player-team-cost">
         <span>{player.team}</span>
-        <span>·</span>
-        <span>£{Number(player.cost || 0).toFixed(1)}M</span>
+        {tags.length > 0 && <span>· {tags[0]}</span>}
       </div>
 
-      {/* Stats & xP Pill */}
+      {/* Projected Points Bar */}
       <div className="player-stats-bar">
         <span className="player-xp font-mono">
-          {Number(player.expected_points || 0).toFixed(2)} xP
+          {Number(player.expected_points || 0).toFixed(1)} pts
         </span>
-        {tags.length > 0 && (
-          <div className="player-tags">
-            {tags.map(t => (
-              <span key={t} className="tag-badge">{t}</span>
-            ))}
-          </div>
+        {onInspect && (
+          <span
+            onClick={(e) => {
+              e.stopPropagation();
+              onInspect(player);
+            }}
+            style={{
+              fontSize: '9px',
+              color: 'var(--text-muted)',
+              cursor: 'pointer',
+              textDecoration: 'underline',
+              padding: '1px 3px'
+            }}
+            title="View breakdown"
+          >
+            Stats
+          </span>
         )}
       </div>
     </div>

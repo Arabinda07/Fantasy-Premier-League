@@ -1,5 +1,13 @@
 import React from 'react';
 import PlayerCard from './PlayerCard';
+import {
+  ShieldCheck,
+  Cards,
+  Lightning,
+  RocketLaunch,
+  Crown,
+  CheckCircle
+} from '@phosphor-icons/react';
 
 export default function TacticalPitch({
   starters,
@@ -32,121 +40,128 @@ export default function TacticalPitch({
   const formation = isChipActive ? currentChipData.formation : `${defs.length}-${mids.length}-${fwds.length}`;
 
   const chipOptions = [
-    { id: 'none', label: 'Standard Matchday', icon: '🛡️' },
-    { id: 'wildcard', label: 'Wildcard (£100M)', icon: '🃏' },
-    { id: 'freehit', label: 'Free Hit', icon: '⚡' },
-    { id: 'bboost', label: 'Bench Boost', icon: '🚀' },
-    { id: '3xc', label: 'Triple Captain', icon: '👑' },
+    { id: 'none', label: 'Standard XI', icon: ShieldCheck },
+    { id: 'wildcard', label: 'Wildcard (£100m)', icon: Cards },
+    { id: 'freehit', label: 'Free Hit', icon: Lightning },
+    { id: 'bboost', label: 'Bench Boost', icon: RocketLaunch },
+    { id: '3xc', label: 'Triple Captain', icon: Crown },
   ];
 
   return (
     <div>
-      {/* Chip Strategy Simulator Bar */}
-      <div style={{ background: 'var(--bg-surface-1)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-sm)', padding: '10px 16px', marginBottom: '14px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            SIMULATE CHIP:
+      {/* Chip Simulation Toggle Bar */}
+      <div style={{ background: 'var(--bg-surface-1)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', padding: '10px 16px', marginBottom: '14px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>
+            Simulate Chip:
           </span>
-          <div role="group" aria-label="Select active FPL chip simulation" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-            {chipOptions.map(c => (
-              <button
-                key={c.id}
-                onClick={() => onSelectChip(c.id)}
-                aria-pressed={activeChip === c.id}
-                style={{
-                  background: activeChip === c.id ? (c.id === 'none' ? 'var(--bg-surface-subtle)' : 'var(--accent-emerald)') : 'var(--bg-surface-2)',
-                  color: activeChip === c.id ? (c.id === 'none' ? 'var(--text-primary)' : 'var(--text-inverse)') : 'var(--text-secondary)',
-                  border: activeChip === c.id ? '1px solid var(--border-active)' : '1px solid var(--border-subtle)',
-                  boxShadow: activeChip === c.id && c.id !== 'none' ? '0 4px 20px rgba(16, 185, 129, 0.25)' : 'none',
-                  padding: '7px 12px',
-                  borderRadius: 'var(--radius-xs)',
-                  fontSize: '11px',
-                  fontFamily: 'var(--font-mono)',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  transition: 'all 0.15s ease'
-                }}
-              >
-                <span>{c.icon}</span>
-                <span>{c.label}</span>
-              </button>
-            ))}
+          <div role="group" aria-label="Select active FPL chip" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            {chipOptions.map(c => {
+              const Icon = c.icon;
+              const isSelected = activeChip === c.id;
+              return (
+                <button
+                  key={c.id}
+                  onClick={() => onSelectChip(c.id)}
+                  aria-pressed={isSelected}
+                  style={{
+                    background: isSelected ? (c.id === 'none' ? 'var(--bg-surface-subtle)' : 'var(--accent-emerald)') : 'var(--bg-surface-2)',
+                    color: isSelected ? (c.id === 'none' ? 'var(--text-primary)' : 'var(--text-inverse)') : 'var(--text-secondary)',
+                    border: isSelected ? '1px solid var(--border-active)' : '1px solid var(--border-subtle)',
+                    boxShadow: isSelected && c.id !== 'none' ? '0 4px 20px rgba(16, 185, 129, 0.25)' : 'none',
+                    padding: '6px 11px',
+                    borderRadius: 'var(--radius-sm)',
+                    fontSize: '12px',
+                    fontFamily: 'var(--font-sans)',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  <Icon size={14} weight={isSelected ? "fill" : "bold"} />
+                  <span>{c.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {isChipActive && (
           <div style={{ fontSize: '12px', color: 'var(--accent-emerald)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
-            {currentChipData.chip_name.toUpperCase()} ACTIVE · {currentChipData.formation} · £{currentChipData.budget_used.toFixed(1)}M SPENT
+            {currentChipData.chip_name} · {currentChipData.formation} · £{currentChipData.budget_used.toFixed(1)}m squad cost
           </div>
         )}
       </div>
 
-      {/* Matchday Action Header / Chip Description */}
+      {/* Gameweek Strategic Recommendation Banner */}
       {isChipActive ? (
         <div className="action-banner" style={{ borderColor: 'var(--accent-emerald)', boxShadow: '0 4px 20px rgba(16, 185, 129, 0.10)' }}>
           <div className="action-text">
             <span className="action-pill" style={{ background: 'var(--accent-emerald)', color: 'var(--text-inverse)' }}>
-              {currentChipData.chip_name.toUpperCase()} SCENARIO
+              <Lightning size={12} weight="bold" />
+              {currentChipData.chip_name} Mode
             </span>
             <span style={{ fontWeight: 600 }}>{currentChipData.description}</span>
           </div>
-          <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-            Projected Total: <span style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>{currentChipData.total_xp.toFixed(2)} xP</span>
+          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
+            Projected: <span style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>{currentChipData.total_xp.toFixed(1)} pts</span>
           </div>
         </div>
       ) : actionSummary && (
         <div className="action-banner">
           <div className="action-text">
-            <span className="action-pill">OPTIMAL MATCHDAY MOVE</span>
+            <span className="action-pill">
+              <CheckCircle size={12} weight="bold" />
+              Manager Recommendation
+            </span>
             <span style={{ fontWeight: 600 }}>{actionSummary}</span>
           </div>
-          <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-            MILP Solver Status: <span style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>OPTIMAL</span>
+          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
+            Status: <span style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>Optimal Lineup</span>
           </div>
         </div>
       )}
 
-      {/* KPI Top Strip */}
+      {/* Key Numbers Strip */}
       <div className="kpi-strip">
         <div className="kpi-card">
-          <div className="kpi-label">Starting XI Projected xP</div>
+          <div className="kpi-label">Starting XI Projected Points</div>
           <div className="kpi-value" style={{ color: 'var(--accent-emerald)' }}>
-            {Number(displayStartingXp || 0).toFixed(2)}
+            {Number(displayStartingXp || 0).toFixed(1)}
             <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
           </div>
           <div className="kpi-subtext" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
-            <span>Active:</span>
+            <span>Formation:</span>
             <span style={{ background: 'var(--bg-surface-subtle)', color: 'var(--accent-emerald)', fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '11px', padding: '1px 6px', borderRadius: 'var(--radius-xs)', border: '1px solid var(--border-subtle)' }}>
-              FORMATION {formation}
+              {formation}
             </span>
           </div>
         </div>
 
         <div className="kpi-card">
-          <div className="kpi-label">Squad Total Projected xP</div>
+          <div className="kpi-label">Full Squad Total</div>
           <div className="kpi-value">
-            {Number(displayTotalXp || 0).toFixed(2)}
+            {Number(displayTotalXp || 0).toFixed(1)}
             <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
           </div>
           <div className="kpi-subtext">
-            {activeChip === 'bboost' ? 'All 15 Players Active (Bench Boost)' : 'Includes Vice-Captain & Auto-Sub'}
+            {activeChip === 'bboost' ? 'All 15 players scoring points' : 'Starters + auto-sub backup'}
           </div>
         </div>
 
         <div className="kpi-card">
-          <div className="kpi-label">Active Bank & Budget Utilization</div>
+          <div className="kpi-label">Money in the Bank</div>
           <div className="kpi-value">
-            £{isChipActive ? (100.0 - currentChipData.budget_used).toFixed(1) : '2.0'}
-            <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>M Bank</span>
+            £{isChipActive ? (100.0 - currentChipData.budget_used).toFixed(1) : '2.0'}m
           </div>
           {/* Prorated Mini-Gauge */}
           <div style={{ marginTop: '8px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginBottom: '3px' }}>
-              <span>£{Number(isChipActive ? currentChipData.budget_used : 98.0).toFixed(1)}M Spent</span>
-              <span>£100.0M Cap</span>
+              <span>£{Number(isChipActive ? currentChipData.budget_used : 98.0).toFixed(1)}m used</span>
+              <span>£100.0m budget</span>
             </div>
             <div style={{ width: '100%', height: '5px', background: 'var(--bg-surface-subtle)', borderRadius: '3px', overflow: 'hidden' }}>
               <div
@@ -161,30 +176,29 @@ export default function TacticalPitch({
             </div>
           </div>
           <div className="kpi-subtext" style={{ marginTop: '6px' }}>
-            {isChipActive ? 'Chip Budget Cap: £100.0M' : '1 Free Transfer Available'}
+            {isChipActive ? 'Unlimited free transfers' : '1 free transfer saved'}
           </div>
         </div>
 
         <div className="kpi-card">
-          <div className="kpi-label">Lookahead Horizon</div>
+          <div className="kpi-label">Planning Horizon</div>
           <div className="kpi-value">
-            3 <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>GWs</span>
+            3 <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Gameweeks</span>
           </div>
-          <div className="kpi-subtext">Temporal Discount: γ = 0.90</div>
+          <div className="kpi-subtext">Looking ahead through GW4</div>
         </div>
       </div>
 
       {/* Main Pitch Workspace */}
       <div className="pitch-workspace">
-        {/* The 2D Tactical Grass Pitch */}
+        {/* 2D Grass Pitch */}
         <div className="pitch-container">
-          {/* Pitch Field Markings */}
           <div className="pitch-marking-center-line"></div>
           <div className="pitch-marking-center-circle"></div>
           <div className="pitch-marking-penalty-top"></div>
           <div className="pitch-marking-penalty-bottom"></div>
 
-          {/* Goalkeepers Row */}
+          {/* Goalkeepers */}
           <div className="pitch-row">
             {gks.map(p => (
               <PlayerCard
@@ -197,7 +211,7 @@ export default function TacticalPitch({
             ))}
           </div>
 
-          {/* Defenders Row */}
+          {/* Defenders */}
           <div className="pitch-row">
             {defs.map(p => (
               <PlayerCard
@@ -210,7 +224,7 @@ export default function TacticalPitch({
             ))}
           </div>
 
-          {/* Midfielders Row */}
+          {/* Midfielders */}
           <div className="pitch-row">
             {mids.map(p => (
               <PlayerCard
@@ -223,7 +237,7 @@ export default function TacticalPitch({
             ))}
           </div>
 
-          {/* Forwards Row */}
+          {/* Forwards */}
           <div className="pitch-row">
             {fwds.map(p => (
               <PlayerCard
@@ -237,24 +251,25 @@ export default function TacticalPitch({
           </div>
         </div>
 
-        {/* Ordered Bench & Squad Tools Sidebar */}
+        {/* Substitutes Sidebar */}
         <div className="pitch-sidebar">
           <div className="sidebar-panel">
             <div className="panel-header">
-              <span>ORDERED BENCH HIERARCHY</span>
-              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>4 SLOTS</span>
+              <span>Substitutes</span>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>4 on bench</span>
             </div>
 
             <div className="bench-list">
               {displayBench.map(p => {
                 const isSelected = selectedPlayer?.player_code === p.player_code;
-                const slotLabel = p.bench_order === 1 ? 'Slot 1 (GK)' : `Slot ${p.bench_order || 2} (Sub ${(p.bench_order || 2) - 1})`;
+                const slotLabel = p.bench_order === 1 ? 'GK Sub' : `Sub ${(p.bench_order || 2) - 1}`;
                 return (
                   <div
                     key={p.player_code}
                     className={`bench-item ${isSelected ? 'is-selected' : ''}`}
                     style={activeChip === 'bboost' ? { borderColor: 'var(--accent-emerald)', background: 'rgba(16, 185, 129, 0.08)' } : {}}
                     onClick={() => onSelectPlayer(p)}
+                    onDoubleClick={() => onInspectPlayer && onInspectPlayer(p)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
@@ -263,61 +278,35 @@ export default function TacticalPitch({
                     }}
                     tabIndex={0}
                     role="button"
-                    aria-label={`Bench ${slotLabel}: ${p.web_name}, ${p.position}, cost £${Number(p.cost || 0).toFixed(1)}M, ${Number(p.expected_points || 0).toFixed(2)} expected points`}
-                    title="Click to swap with starter · Double-click to inspect"
+                    aria-label={`Bench ${slotLabel}: ${p.web_name}, ${p.position}, £${Number(p.cost || 0).toFixed(1)}M, ${Number(p.expected_points || 0).toFixed(1)} expected points`}
+                    title="Click to swap with starter · Double-click for stats"
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
                       <span className="bench-slot-tag" style={activeChip === 'bboost' ? { background: 'var(--accent-emerald)', color: 'var(--text-inverse)' } : {}}>
-                        {activeChip === 'bboost' ? 'ACTIVE' : slotLabel}
+                        {activeChip === 'bboost' ? 'Active' : slotLabel}
                       </span>
                       <span className={`player-position-pill ${p.position}`}>{p.position}</span>
-                      <div>
-                        <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                      <div style={{ minWidth: 0, overflow: 'hidden' }}>
+                        <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
                           {p.web_name}
                         </div>
-                        <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                          {p.team} · £{Number(p.cost || 0).toFixed(1)}M
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                          {p.team} · £{Number(p.cost || 0).toFixed(1)}m
                         </div>
                       </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: 'var(--accent-emerald)' }}>
-                          {Number(p.expected_points || 0).toFixed(2)}
-                        </div>
-                        <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>xP</div>
+                    <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: 'var(--accent-emerald)' }}>
+                        {Number(p.expected_points || 0).toFixed(1)} pts
                       </div>
-                      {onInspectPlayer && (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onInspectPlayer(p);
-                          }}
-                          aria-label={`Inspect ${p.web_name} DNA`}
-                          style={{
-                            background: 'var(--bg-surface-subtle)',
-                            border: '1px solid var(--border-subtle)',
-                            color: 'var(--accent-emerald)',
-                            fontSize: '9px',
-                            fontFamily: 'var(--font-mono)',
-                            fontWeight: 700,
-                            padding: '2px 5px',
-                            borderRadius: 'var(--radius-xs)',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          DNA
-                        </button>
-                      )}
                     </div>
                   </div>
                 );
               })}
             </div>
 
-            <div style={{ marginTop: '14px', fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
-              💡 <em>Click any starter and bench player to simulate tactical substitutions. Double-click any player for full 11-component mathematical DNA.</em>
+            <div style={{ marginTop: '14px', fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+              Click any starter and bench player to swap them. Double-click any player to see how their points are calculated.
             </div>
           </div>
         </div>

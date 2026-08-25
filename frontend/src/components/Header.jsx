@@ -1,4 +1,11 @@
 import React from 'react';
+import {
+  SoccerBall,
+  ArrowsLeftRight,
+  GridNine,
+  TrendUp,
+  Flask
+} from '@phosphor-icons/react';
 
 export default function Header({
   activeTab,
@@ -10,84 +17,75 @@ export default function Header({
   setActiveChip = () => {}
 }) {
   const tabs = [
-    { id: 'pitch', label: 'Tactical Pitch', icon: '⚽' },
-    { id: 'transfers', label: 'Transfer Hub (3-GW)', icon: '🔄' },
-    { id: 'fixtures', label: '38-GW Heatmap', icon: '🗺️' },
-    { id: 'market', label: 'Market Velocity', icon: '⚡' },
-    { id: 'math', label: '11-Component Studio', icon: '🔬' }
+    { id: 'pitch', label: 'Matchday XI', icon: SoccerBall },
+    { id: 'transfers', label: 'Transfer Planner', icon: ArrowsLeftRight },
+    { id: 'fixtures', label: 'Fixture Run', icon: GridNine },
+    { id: 'market', label: 'Price Alerts', icon: TrendUp },
+    { id: 'math', label: 'Points Breakdown', icon: Flask }
   ];
 
   return (
     <header className="top-nav">
       <div className="brand-section">
-        <span className="brand-badge">FPL QUANT</span>
-        <span className="brand-title">Intelligence Terminal</span>
-        <span style={{ color: 'var(--text-muted)', fontSize: '13px', fontFamily: 'var(--font-mono)' }}>
-          {liveData?.season || '2026-27'} · GW{liveData?.gameweek || 2}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ background: 'var(--accent-emerald)', color: '#090D16', padding: '4px 6px', borderRadius: 'var(--radius-xs)', display: 'flex', alignItems: 'center' }}>
+            <SoccerBall size={16} weight="fill" />
+          </div>
+          <span className="brand-title">FPL Matchday Hub</span>
+        </div>
+        <span className="brand-meta">
+          {liveData?.season || '2026-27'} · Gameweek {liveData?.gameweek || 2}
         </span>
       </div>
 
-      <nav className="nav-tabs" role="tablist" aria-label="Main Navigation Tabs">
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            id={`tab-${tab.id}`}
-            role="tab"
-            aria-selected={activeTab === tab.id}
-            aria-controls={`panel-${tab.id}`}
-            className={`nav-tab-btn ${activeTab === tab.id ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab.id)}
-          >
-            <span aria-hidden="true">{tab.icon}</span>
-            <span>{tab.label}</span>
-          </button>
-        ))}
-      </nav>
+      <div className="nav-tabs-wrapper">
+        <nav className="nav-tabs" role="tablist" aria-label="Main Navigation">
+          {tabs.map(tab => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                id={`tab-${tab.id}`}
+                role="tab"
+                aria-selected={isActive}
+                aria-controls={`panel-${tab.id}`}
+                className={`nav-tab-btn ${isActive ? 'active' : ''}`}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                <Icon size={16} weight={isActive ? "fill" : "bold"} />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+      </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+      <div className="nav-controls">
         {/* Chip Strategy Global Selector */}
         <select
           value={activeChip}
           onChange={e => setActiveChip(e.target.value)}
-          aria-label="Active Chip Simulation Selector"
-          style={{
-            background: activeChip !== 'none' ? 'rgba(16, 185, 129, 0.15)' : 'var(--bg-surface-2)',
-            color: activeChip !== 'none' ? 'var(--accent-emerald)' : 'var(--text-primary)',
-            border: activeChip !== 'none' ? '1px solid var(--accent-emerald)' : '1px solid var(--border-medium)',
-            borderRadius: 'var(--radius-sm)',
-            padding: '6px 10px',
-            fontSize: '12px',
-            fontFamily: 'var(--font-mono)',
-            fontWeight: 700,
-            cursor: 'pointer'
-          }}
+          aria-label="Select FPL Chip"
+          className={`nav-select ${activeChip !== 'none' ? 'active-chip' : ''}`}
         >
-          <option value="none">Chip: Standard Lineup</option>
-          <option value="wildcard">🃏 Chip: Wildcard (£100M)</option>
-          <option value="freehit">⚡ Chip: Free Hit</option>
-          <option value="bboost">🚀 Chip: Bench Boost</option>
-          <option value="3xc">👑 Chip: Triple Captain</option>
+          <option value="none">Standard Lineup</option>
+          <option value="wildcard">Wildcard Active</option>
+          <option value="freehit">Free Hit Active</option>
+          <option value="bboost">Bench Boost Active</option>
+          <option value="3xc">Triple Captain Active</option>
         </select>
 
         {/* Strategy Profile Selector */}
         <select
           value={selectedStrategy}
           onChange={e => setSelectedStrategy(e.target.value)}
-          aria-label="Select Optimization Strategy Mode"
-          style={{
-            background: 'var(--bg-surface-2)',
-            color: 'var(--text-primary)',
-            border: '1px solid var(--border-medium)',
-            borderRadius: 'var(--radius-sm)',
-            padding: '6px 10px',
-            fontSize: '12px',
-            fontFamily: 'var(--font-mono)',
-            cursor: 'pointer'
-          }}
+          aria-label="Select Optimizer Strategy"
+          className="nav-select"
         >
-          <option value="pure_xp">Strategy: Pure xP (Neutral)</option>
-          <option value="rank_protect">Strategy: Rank Protect (High EO)</option>
-          <option value="differential_chase">Strategy: Differential Chase</option>
+          <option value="pure_xp">Balanced Points</option>
+          <option value="rank_protect">Rank Protection (High Ownership)</option>
+          <option value="differential_chase">Differential Upside</option>
         </select>
       </div>
     </header>
