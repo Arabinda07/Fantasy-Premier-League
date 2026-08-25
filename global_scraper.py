@@ -1,9 +1,88 @@
-from parsers import *
-from cleaners import *
-from getters import *
-from collector import collect_gw, merge_gw
-from understat import parse_epl_data
 import csv
+import os
+
+from getters import get_data, get_fixtures_data, get_individual_player_data
+from parsers import (
+    parse_players,
+    parse_fixtures,
+    parse_team_data,
+    parse_player_history,
+    parse_player_gw_history,
+)
+from collector import collect_gw, merge_gw
+from positions import POSITION_NAMES
+
+
+def compute_value_per_m(cost_raw, pts_raw):
+    """Points per million spent (now_cost is in tenths of a million).
+
+    Returns '' if cost or points are missing, non-numeric, or cost is zero.
+    """
+    try:
+        cost_m = float(cost_raw) / 10.0 if cost_raw not in (None, '') else None
+        total_points = float(pts_raw) if pts_raw not in (None, '') else None
+    except (TypeError, ValueError):
+        return ''
+
+    if cost_m and cost_m > 0 and total_points is not None:
+        return round(total_points / cost_m, 1)
+    return ''
+
+
+def clean_players(filename, base_filename):
+    """ Creates a file with only important data columns for each player
+
+    Args:
+        filename (str): Name of the file that contains the full data for each player
+    """
+    headers = ['first_name', 'second_name', 'goals_scored', 'assists', 'total_points', 'minutes', 'goals_conceded', 'creativity', 'influence', 'threat', 'bonus', 'bps', 'ict_index', 'clean_sheets', 'red_cards', 'yellow_cards', 'selected_by_percent', 'now_cost', 'element_type', 'value_per_m']
+    fin = open(filename, 'r+', encoding='utf-8')
+    outname = base_filename + 'cleaned_players.csv'
+    os.makedirs(os.path.dirname(outname), exist_ok=True)
+    fout = open(outname, 'w+', encoding='utf-8', newline='')
+    reader = csv.DictReader(fin)
+    writer = csv.DictWriter(fout, headers, extrasaction='ignore')
+    writer.writeheader()
+    for line in reader:
+        if line['element_type'] in POSITION_NAMES:
+            line['element_type'] = POSITION_NAMES[line['element_type']]
+        else:
+            print("Unknown element type")
+        line['value_per_m'] = compute_value_per_m(line.get('now_cost', ''), line.get('total_points', ''))
+        writer.writerow(line)
+
+
+def id_players(players_filename, base_filename):
+    """ Creates a file that contains the name to id mappings for each player
+
+    Args:
+        players_filename (str): Name of the file that contains the full data for each player
+    """
+    headers = ['first_name', 'second_name', 'id']
+    fin = open(players_filename, 'r+', encoding='utf-8')
+    outname = base_filename + 'player_idlist.csv'
+    os.makedirs(os.path.dirname(outname), exist_ok=True)
+    fout = open(outname, 'w+', encoding='utf-8', newline='')
+    reader = csv.DictReader(fin)
+    writer = csv.DictWriter(fout, headers, extrasaction='ignore')
+    writer.writeheader()
+    for line in reader:
+        writer.writerow(line)
+
+
+def get_player_ids(base_filename):
+    """ Gets the list of all player ids and player names
+    """
+    filename = base_filename + 'player_idlist.csv'
+    fin = open(filename, 'r+', encoding='utf-8')
+    reader = csv.DictReader(fin)
+    player_ids = {}
+    for line in reader:
+        k = int(line['id'])
+        v = line['first_name'] + '_' + line['second_name']
+        player_ids[k] = v
+    return player_ids
+
 
 def parse_data():
     """ Parse and store all the data
@@ -50,11 +129,9 @@ def parse_data():
             for xp in xPoints:
                 w.writerow(xp)
         print("Collecting gw scores")
-        collect_gw(gw_num, player_base_filename, gw_base_filename, base_filename) 
+        collect_gw(gw_num, player_base_filename, gw_base_filename, base_filename)
         print("Merging gw scores")
         merge_gw(gw_num, gw_base_filename)
-    #understat_filename = base_filename + 'understat'
-    #parse_epl_data(understat_filename)
 
 def fixtures(base_filename):
     data = get_fixtures_data()

@@ -9,24 +9,25 @@ Two things living side by side:
 1. **The original public dataset/scraper** (`vaastav/Fantasy-Premier-League`): historical Fantasy Premier League data going back to 2016-17, refreshed a few times per season via the scripts described below. This is the well-known, widely-cited part of the repo — see `README.md` and `DATA_DICTIONARY.md`.
 2. **A new, actively-developed points-prediction model** under `model/`, rebuilding — in Python — a detailed FPL prediction model the repo owner previously built and ran in Excel. This is a from-scratch rebuild done in phases; each phase has a design spec under `docs/superpowers/specs/` before it's implemented. See "Planning workflow" below and check that directory for the current state.
 
-Don't confuse the two. `analysis/*.py` (brute-force per-position squad-combo search over a SQLite table) is an older, separate, much simpler experiment — not part of the `model/` rebuild and not something the rebuild depends on.
+Don't confuse the two. `analysis/*.py` (a parameterized position/preset combo search over a SQLite table) is an older, separate, much simpler experiment — not part of the `model/` rebuild and not something the rebuild depends on.
 
 ## Directory map
 
 - `collector.py` — merges per-gameweek CSVs into `gws/merged_gw.csv`, handling schema drift across gameweeks (new columns appearing mid-season, etc.).
-- `global_scraper.py` — top-level orchestration: pulls the FPL API (bootstrap-static, fixtures, per-player history) and drives `parsers.py`/`getters.py`/`cleaners.py` to populate a full `data/<season>/` tree for the current season.
-- `getters.py` — raw HTTP calls to the FPL API.
-- `parsers.py` — turns raw API JSON into the repo's CSV schemas.
-- `cleaners.py` — post-processing/cleanup of parsed data (e.g. name normalization).
+- `global_scraper.py` — top-level orchestration: pulls the FPL API (bootstrap-static, fixtures, per-player history) via `getters.py`/`parsers.py`, and owns cleaning/derivation of the season overview (`clean_players`, `value_per_m`, `id_players`) to populate a full `data/<season>/` tree for the current season.
+- `getters.py` — raw HTTP calls to the FPL API. Shared: also used directly by `teams_scraper.py` and `top_players.py`, not just `global_scraper.py` — don't fold it into another module, it has genuine independent callers.
+- `parsers.py` — turns raw API JSON into the repo's CSV schemas. Shared the same way `getters.py` is.
+- `positions.py` — the one shared source of truth for the FPL `element_type` → position-name mapping (`'1'→'GK'`, etc.), used by both `global_scraper.py` and `collector.py`. If you need this mapping anywhere else, import it from here rather than re-declaring it.
 - `mergers.py` — dataframe-level (pandas) merge/cleanup utilities, e.g. for `cleaned_merged_seasons.csv`.
-- `fbref.py` — scrapes FBref player match logs (currently being parameterized for the current season as part of the `model/` rebuild — see the Phase 1 spec).
-- `understat.py` — scrapes Understat team/player xG data, and matches Understat player IDs to FPL player IDs (`match_ids`).
+- `fbref.py` — scrapes FBref player match logs (currently being parameterized for the current season, and having its scrape interface deepened, as part of the `model/` rebuild — see the Phase 1 spec).
+- `understat.py` — scrapes Understat team/player xG data, and matches Understat player IDs to FPL player IDs (`match_ids`) — also being touched by the Phase 1 spec.
 - `teams_scraper.py` — downloads an individual FPL manager's team/league data by team ID.
 - `world_cup26_data.py`, `schedule.py`, `top_managers.py`, `top_players.py` — standalone one-off scripts, not part of the core pipeline.
 - `data/<season>/` — one folder per season (`2016-17` through the current season). Key files per season: `players_raw.csv` (season overview per player), `fixtures.csv`, `teams.csv`, `gws/merged_gw.csv` (every player, every gameweek, one file), `players/<name>/{gws.csv,history.csv}` (per-player detail). See `DATA_DICTIONARY.md` for column meanings.
-- `analysis/` — older, separate: SQLite-backed brute-force combinations search for cheap/high-scoring squads, one position at a time. Not connected to `model/`.
+- `analysis/` — older, separate: a SQLite-backed combinations search for cheap/high-scoring squads (`analyze.py`, parameterized by position), one position at a time. Not connected to `model/`.
 - `model/` — the new points-prediction rebuild. Organized by phase; consult `docs/superpowers/specs/` for what exists and why.
 - `docs/superpowers/specs/` — one design-spec markdown file per phase of the `model/` rebuild, named `YYYY-MM-DD-<topic>-design.md`. Read the most recent relevant one before changing anything under `model/`.
+- `JOURNEY.md` (repo root) — a running, dated log of what's been done on the `model/` rebuild and why, and of any repo-wide architecture cleanups alongside it. Read it for narrative context a spec or commit message won't give you; update it when you finish a meaningful chunk of work.
 
 ## Coding conventions — what's actually true of this codebase today
 

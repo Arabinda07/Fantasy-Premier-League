@@ -2,6 +2,8 @@ import os
 import sys
 import csv
 
+from positions import POSITION_NAMES
+
 def get_teams(directory):
     teams = {}
     fin = open(directory + "/teams.csv", 'r')
@@ -25,11 +27,10 @@ def get_fixtures(directory):
 def get_positions(directory):
     positions = {}
     names = {}
-    pos_dict = {'1': "GK", '2': "DEF", '3': "MID", '4': "FWD", '5': "AM"}
     fin = open(directory + "/players_raw.csv", 'r',encoding="utf-8")
     reader = csv.DictReader(fin)
     for row in reader:
-        positions[int(row['id'])] = pos_dict[row['element_type']] 
+        positions[int(row['id'])] = POSITION_NAMES[row['element_type']]
         names[int(row['id'])] = row['first_name'] + ' ' + row['second_name']
     return names, positions
 

@@ -1,0 +1,231 @@
+{
+  "season": "2026-27",
+  "gameweek": 1,
+  "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Brooks | [OUT] O'Riley",
+  "starting_xp": 61.1877,
+  "total_xp": 68.2885,
+  "captain": "Haaland",
+  "vice_captain": "Gabriel",
+  "starters": [
+    {
+      "player_code": 223340,
+      "web_name": "Saka",
+      "team": "Arsenal",
+      "position": "MID",
+      "cost": 9.5,
+      "expected_points": 5.8042,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": null
+    },
+    {
+      "player_code": 647850,
+      "web_name": "Kostoulas",
+      "team": "Brighton",
+      "position": "FWD",
+      "cost": 5.5,
+      "expected_points": 5.1729,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": null
+    },
+    {
+      "player_code": 465730,
+      "web_name": "De Cuyper",
+      "team": "Brighton",
+      "position": "DEF",
+      "cost": 4.5,
+      "expected_points": 4.9334,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": null
+    },
+    {
+      "player_code": 154561,
+      "web_name": "Raya",
+      "team": "Arsenal",
+      "position": "GK",
+      "cost": 6.0,
+      "expected_points": 5.1511,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": null
+    },
+    {
+      "player_code": 466052,
+      "web_name": "Cherki",
+      "team": "Man City",
+      "position": "MID",
+      "cost": 7.5,
+      "expected_points": 5.7368,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": null
+    },
+    {
+      "player_code": 226597,
+      "web_name": "Gabriel",
+      "team": "Arsenal",
+      "position": "DEF",
+      "cost": 8.0,
+      "expected_points": 6.0259,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": true,
+      "bench_order": null
+    },
+    {
+      "player_code": 222531,
+      "web_name": "Gibbs-White",
+      "team": "Nott'm Forest",
+      "position": "MID",
+      "cost": 8.0,
+      "expected_points": 5.2693,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": null
+    },
+    {
+      "player_code": 538207,
+      "web_name": "Osula",
+      "team": "Newcastle",
+      "position": "FWD",
+      "cost": 6.0,
+      "expected_points": 5.4785,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": null
+    },
+    {
+      "player_code": 472769,
+      "web_name": "O'Reilly",
+      "team": "Man City",
+      "position": "DEF",
+      "cost": 6.5,
+      "expected_points": 4.8747,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": null
+    },
+    {
+      "player_code": 153366,
+      "web_name": "Reed",
+      "team": "Fulham",
+      "position": "MID",
+      "cost": 4.5,
+      "expected_points": 5.6401,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": null
+    },
+    {
+      "player_code": 223094,
+      "web_name": "Haaland",
+      "team": "Man City",
+      "position": "FWD",
+      "cost": 15.5,
+      "expected_points": 7.1008,
+      "is_starter": true,
+      "is_captain": true,
+      "is_vice_captain": false,
+      "bench_order": null
+    }
+  ],
+  "bench": [
+    {
+      "player_code": 515046,
+      "web_name": "Ellborg",
+      "team": "Sunderland",
+      "position": "GK",
+      "cost": 4.5,
+      "expected_points": 4.3354,
+      "is_starter": false,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": 1
+    },
+    {
+      "player_code": 219924,
+      "web_name": "Diop",
+      "team": "Ipswich Town",
+      "position": "DEF",
+      "cost": 4.0,
+      "expected_points": 4.6863,
+      "is_starter": false,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": 2
+    },
+    {
+      "player_code": 184349,
+      "web_name": "Sessegnon",
+      "team": "Fulham",
+      "position": "DEF",
+      "cost": 4.5,
+      "expected_points": 4.4076,
+      "is_starter": false,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": 3
+    },
+    {
+      "player_code": 111317,
+      "web_name": "Brooks",
+      "team": "Bournemouth",
+      "position": "MID",
+      "cost": 5.0,
+      "expected_points": 2.2029,
+      "is_starter": false,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": 4
+    }
+  ],
+  "multi_horizon_roadmap": [
+    {
+      "gw": 1,
+      "transfers_in": [
+        "Brooks"
+      ],
+      "transfers_out": [
+        "O'Riley"
+      ],
+      "hits_taken": 0,
+      "net_xp": 68.2885,
+      "bank": 0.5
+    },
+    {
+      "gw": 2,
+      "transfers_in": [
+        "Kroupi.Jr"
+      ],
+      "transfers_out": [
+        "Gibbs-White"
+      ],
+      "hits_taken": 0,
+      "net_xp": 63.7317,
+      "bank": 1.0
+    },
+    {
+      "gw": 3,
+      "transfers_in": [
+        "O.Dango"
+      ],
+      "transfers_out": [
+        "Kroupi.Jr"
+      ],
+      "hits_taken": 0,
+      "net_xp": 67.3404,
+      "bank": 2.0
+    }
+  ]
+}

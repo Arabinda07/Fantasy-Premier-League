@@ -1,0 +1,240 @@
+# Engineering Journey & Lessons Learned Log
+
+This document tracks the phased rebuild of the Fantasy Premier League (FPL) points-prediction model from Excel into Python, along with an explicit log of architectural decisions, mistakes, gotchas, and guidelines to ensure errors are never repeated in future phases.
+
+---
+
+## Roadmap & Phase Status
+
+| Phase | Description | Status | Key Deliverables |
+|---|---|---|---|
+| **Phase 1** | **Data Pipeline** | **COMPLETE** | `understat.py`, `fbref.py`, `model/rolling_form.py`, `model/build_dataset.py`, test suite (19 unit tests), `model_dataset.csv` |
+| **Phase 2** | **Point-Prediction Engine** | **COMPLETE** | `model/prediction_engine.py`, `model/test_prediction_engine.py` (12 unit tests, 31 total passing tests), `predictions.csv` with full 11-component breakdown |
+| **Phase 3** | **Fixture & Form Adjustment** | **COMPLETE** | `model/fixture_engine.py`, `model/test_fixture_engine.py` (11 unit tests, 63 total passing tests across repo), `fixture_predictions.csv` with opponent & venue multipliers, form blending, and DGW/BGW support |
+| **Phase 4** | **Squad Optimization Solver** | *Next* | Linear Programming (ILP) solver for 15-man squad, captaincy, bench order, weekly transfers under budget constraints |
+| **Phase 5** | **Excel Sync / Output** | *Pending* | Automated export to `.xlsx` / `.xlsm` formats via `openpyxl` |
+
+---
+
+## Milestone 1: Adversarial Remediations Summary (Completed)
+
+1. **Empirical Bayes Prior Shrinkage (`model/prediction_engine.py`)**:
+   - Small sample size players (e.g. Max Dowman, 152 mins) shrank raw per-90 rates toward positional league priors ($M_0 = 500.0$ mins).
+   - Formula: $\text{rate}_{\text{adj}} = \frac{M}{M + M_0} \text{rate}_{\text{raw}} + \frac{M_0}{M + M_0} \text{Prior}(\text{POS})$.
+   - Positional baselines: FWD (xG 0.35, xA 0.15, DC 2.0), MID (xG 0.15, xA 0.15, DC 4.0), DEF (xG 0.05, xA 0.05, DC 8.0), GK (xG 0.0, xA 0.0, DC 1.0).
+   - Dowman's raw $xG90$ dropped from $0.7046 \to 0.2793$, dropping projected baseline $xP$ from $7.07 \to \sim 4.2$ (and $4.06\text{ xP}$ fixture-adjusted).
+
+2. **Exact Discrete $C_{10}$ Goals Conceded Expectation (`model/prediction_engine.py`)**:
+   - Replaced binary approximation for $GC \ge 2$ with exact Poisson expectation:
+     $$\mathbb{E}[\text{Penalty}] = -\sum_{m=1}^5 m \left(P(X = 2m) + P(X = 2m + 1)\right)$$
+   - Correctly accounts for multiple points lost in heavy defeats (4 GC = -2 pts, 6 GC = -3 pts).
+
+3. **Robust Full-Name Reconciliation for FBref (`model/build_dataset.py`)**:
+   - Added unicode text normalization (`normalize_name`) and mapping via `players_raw.csv` and `player_idlist.csv` (`first_name + ' ' + second_name`).
+   - Ensures FBref starts, subs, and unused subs match to Opta/FPL player codes without dropping rows.
+
+4. **Starter Minutes Proration (`model/prediction_engine.py`)**:
+   - Estimated average minutes per start: $\text{mins\_per\_start} = \min(90.0, \max(45.0, \text{total\_minutes} / \text{starts}))$.
+   - Scaled attacking active ratio: $\text{active\_ratio} = P(\text{Start}) \times \frac{\text{mins\_per\_start}}{90.0} + P(\text{Sub}) \times \frac{20.0}{90.0}$.
+
+---
+
+## Phase 3 Implementation & Hardening Summary (Completed)
+
+1. **`model/fixture_engine.py`**:
+   - **Form Blending with Sample-Size Shrinkage**: Short-form rates (last 6 GWs) blended via $\alpha_{\text{eff}} = \alpha \times \frac{M_{\text{short}}}{M_{\text{short}} + 270.0}$ preventing noisy substitute cameos from inflating projections.
+   - **Promoted Team Baseline Priors**: Defaults to $1.05\text{ xG90}$ and $1.80\text{ xGC90}$ for promoted sides lacking historical PL data, accurately valuing captaincies against promoted defenses.
+   - **Conjugate Symmetric Venue Factors**: Enforces exact mathematical goal conservation ($\mathbb{E}[\text{Scored}] \equiv \mathbb{E}[\text{Conceded}]$) with conjugate pairs $1.08 \longleftrightarrow 0.9259$.
+   - **Dynamic Goalkeeper Save Scaling**: Scales $C_3$ expected saves by $(\text{Opp\_xG90} / \text{League\_Avg\_xG})^{0.65} \times \text{Venue\_Defense}$ so budget goalkeepers facing high-shot volume are accurately valued.
+   - **Fixture-Scaled Bonus ($C_6$) and DC ($C_{11}$)**: Attack multipliers scale bonus point probability ($\text{Attack\_Mult}^{0.75}$), while opponent attacking pressure scales defensive contribution volume.
+   - **DGW Rotation Dampening**: Applies $0.90\times$ fatigue/rotation decay on Match 2 for outfield players and accurately reports total expected starts.
+   - Output: `data/<season>/fixture_predictions.csv` with full 11-component breakdowns and fixture metadata.
+
+2. **Automated Unit Tests**:
+   - 12 unit tests in `model/test_fixture_engine.py` covering blending weights, promoted priors, goal conservation, GK save scaling, bonus/DC scaling, and DGW handling.
+## Phase 4 Implementation & Cross-Phase Hardening (Completed)
+
+1. **`model/solver.py`**:
+   - **Integer Linear Programming (MILP / ILP)** engine powered by `pulp` (CBC solver).
+   - **15-Man Squad Selection**: Enforces exact positional quotas (2 GK, 5 DEF, 5 MID, 3 FWD), £100.0M budget constraint, and maximum 3 players per Premier League club.
+   - **11-Man Starting XI & Formation Optimization**: Dynamically selects the highest expected points lineup satisfying all valid formations (min 3 DEF, min 2 MID, min 1 FWD).
+   - **Captain ($2\times \text{xP}$) & Vice-Captaincy**: Optimizes captain and vice-captain selection from starting XI.
+   - **FPL Strategic Chips**: Full mathematical modeling of Bench Boost (`'bboost'`), Triple Captain (`'3xc'`), Free Hit (`'freehit'`), and Wildcard (`'wildcard'`).
+   - **FPL Selling Price Mechanics**: 50% profit retention formula ($\text{purchase} + \lfloor (\text{current} - \text{purchase})/2 \rfloor$) prevents phantom cash distortions.
+   - **Bench Ordering**: Standard FPL order with backup GK in slot 1 and outfield bench players ordered descending by expected points for auto-substitutions.
+   - **Weekly Transfer Optimizer**: Solves transfer in/out decisions factoring in Free Transfers ($1\dots 5$) and $-4\text{ pt}$ hit penalties.
+   - **Terminal ASCII Pitch Layout**: Visualizes starting XI formation and bench layout.
+
+2. **Cross-Phase Remediations in `model/prediction_engine.py`**:
+   - **Cold-Start Playing Priors**: Assigns price-based starting probabilities ($0.85$ for $\ge \pounds 9.0\text{M}$, $0.70$ for $\ge \pounds 7.0\text{M}$, $0.45$ for $\ge \pounds 5.5\text{M}$) for new transfers with 0 historical PL minutes.
+   - **Disciplinary Yellow/Red Correction**: Corrected yellow card expectation $\max(0, \text{yc90} - 2 \times \text{rc90})$ to eliminate double penalties on 2-yellow red cards.
+
+## Phase 5 Implementation Summary (Completed)
+
+1. **`model/excel_exporter.py`**:
+   - **Multi-Tab Excel Workbook Generator** powered by `openpyxl`.
+   - **5 Dedicated Sheets**:
+     - `Summary Dashboard`: Executive KPI cards (Total Projected xP, Squad Spend, Remaining Bank, Formation), starting XI pitch layout with Captain/Vice badges, and ordered bench table.
+     - `Optimal Squad`: 15-player squad table with role, position, name, team, cost, opponent, venue, FDR, expected points, and key scoring component contributions ($C_3, C_6, C_7, C_8, C_9$).
+     - `GW Predictions`: Full league player ranking with all 11 component point breakdowns ($C_1 \dots C_{11}$) and playing probabilities ($P(\text{Start}), P(\text{App}), P(60+)$).
+     - `Fixtures & Ratings`: Team attack/defense strengths (xG90, xGC90) and gameweek fixture matchups with difficulty ratings.
+     - `Form & Underlying Stats`: Short-form vs long-form comparison and underlying Understat/FBref metrics.
+   - **Professional Formatting**:
+     - Dark Navy (`#1E293B`) headers with bold white text.
+     - Emerald pitch accents (`#0F766E`), soft green starter highlights (`#F0FDF4`), and amber captain badges (`#FEF3C7`).
+     - Number formatting: Currency as `£#,##0.0"M"`, xP as `0.00`, rates as `0.000`, probabilities as `0.0%`.
+     - Frozen panes and auto-fitted column dimensions across all sheets.
+   - Output: `data/<season>/fpl_model_output_<season>_gw<GW>.xlsx`.
+
+2. **Automated Unit Tests**:
+   - 4 unit tests in `model/test_excel_exporter.py` verifying sheet generation, KPI metrics, optimal squad sum formulas, and player prediction rankings.
+   - **84 total unit tests** passing across the entire repository.
+
+## Advanced Strategy & Live Matchday Management Layer (Completed)
+
+1. **`model/solver.py` (Multi-Gameweek Horizon Lookahead)**:
+   - **Time-Expanded MILP Formulation**: Replaces single-gameweek myopia with a 3-to-5 gameweek lookahead optimization using temporal discounting ($\gamma = 0.90$).
+   - **Inter-Temporal Constraints**: Enforces squad continuity ($x_{i,t} = x_{i,t-1} + u_{i,t} - v_{i,t}$), free transfer evolution ($1 \dots 5$), selling price profit mechanics, and bank balance conservation across time.
+   - Eliminates transfer churn into short-term enablers.
+
+2. **`model/chip_optimizer.py` (Strategic Chip Timing Optimizer)**:
+   - **DGW & BGW Schedule Scanner**: Detects double and blank gameweeks across all 38 fixture rounds.
+   - **Chip Value Deltas**: Computes expected value gains for Triple Captain ($\Delta_{\text{3xC}}$), Bench Boost ($\Delta_{\text{BB}}$), Free Hit ($\Delta_{\text{FH}}$), and Wildcards 1 & 2 ($\Delta_{\text{WC}}$).
+   - Generates season-long chip deployment roadmap.
+
+3. **`model/live_manager.py` (Live Matchday Manager & Decision Cockpit)**:
+   - Ingests current squad codes, bank balance, and free transfers.
+   - Filters live injury/status flags (`'a'`, `'d'`, `'i'`, `'s'`) from `players_raw.csv`.
+   - Generates immediate action recommendations (Roll vs Free Transfer vs Hit), Starting XI lineup, captaincy, vice-captaincy, ordered bench, and multi-GW transfer roadmap.
+   - Writes out live Excel workbook (`fpl_matchday_live_gw<GW>.xlsx`) and JSON state (`fpl_matchday_live_gw<GW>.json`).
+
+4. **Automated Unit Tests**:
+   - `model/test_multi_horizon.py`: Verifies multi-GW squad continuity and time-discounted optimization.
+   - `model/test_chip_optimizer.py`: Verifies DGW/BGW detection and chip schedule profiles.
+   - `model/test_live_manager.py`: Verifies live manager execution and injury dampening.
+   - **90 total unit tests** passing across the entire repository.
+
+---
+
+
+## Mistakes, Failures & Lessons Learned Log (DO NOT REPEAT)
+
+### 1. Cross-Season ID Drift (`element` vs `code`)
+* **Mistake**: When combining `merged_gw.csv` rows across two seasons (e.g. 2024-25 and 2025-26), grouping was initially done by `element`.
+* **Why it failed**: In FPL, the `element` ID is season-specific and reassigned every summer. `element=3` was Karl Hein in 2025-26, but a different player in 2024-25. This caused cross-season stats to silently contaminate different players.
+* **Resolution**: In `_load_merged_gw_with_code`, always join each season's `merged_gw.csv` to that season's `players_raw.csv` on `element == id` to attach the permanent Opta/FPL `code`. All cross-season grouping must be keyed on `player_code`.
+
+### 2. Double Gameweeks & Row Count vs. Calendar Gameweek Window
+* **Mistake**: Assuming a player has at most 1 row per gameweek number and slicing by row count (e.g. `tail(6)`).
+* **Why it failed**: In official FPL, postponed matches are rescheduled into Double Gameweeks (DGW). In DGW33 and DGW36 of 2025-26, Manchester City played 2 fixtures in a single gameweek, producing 2 fixture rows with `GW=33` in `merged_gw.csv`. Slicing by row count took 6 match rows instead of 6 calendar gameweeks (450 mins over 7 fixtures vs 6 GWs).
+* **Resolution**: Windowing must always use unique calendar gameweek sets (`GW.isin(cutoff_gws)`), and all rates must normalize by exact minutes played (`rate = stat / (minutes / 90.0)`). In Phase 2/3, point prediction treats fixture count per gameweek explicitly.
+
+### 3. Player-Level Minutes Proration in Team Stats (`xGC`)
+* **Mistake**: Assuming `expected_goals_conceded` in player match rows was an identical team-wide constant per match and taking `first()`.
+* **Why it failed**: FPL prorates `expected_goals_conceded` according to the minutes a player was on the pitch. A substitute playing 18 minutes had `xGC = 0.21`, while the 90-minute starter had `xGC = 1.70`. Taking `first()` selected whichever player appeared first in the file (often a bench player with 0.0 or 0.21).
+* **Resolution**: To extract the full match-level team xGC from player data, take `max()` across players on that team for that fixture (the 90-minute player reflects the full match xGC).
+
+### 4. JavaScript Variable Parsing in Scrapers
+* **Mistake**: In `understat.py`, splitting raw script contents on `=` directly without line-by-line isolation.
+* **Why it failed**: When multiple JavaScript assignments existed inside the same `<script>` block, splitting on all `=` broke subsequent variables.
+* **Resolution**: Split script text by `\n` lines first, then use `split('=', 1)` to only split on the first assignment operator per line.
+
+### 5. `NaN` Poisoning in Pandas Series `.get()` Lookups
+* **Mistake**: Using `float(player.get(key, 0.0) or 0.0)` to read values from a pandas Series.
+* **Why it failed**: In pandas, if a key exists in the Series index with a missing value (`np.nan`), `player.get(key, default)` returns `np.nan`, not the default. In Python, `bool(np.nan)` is `True`, so `np.nan or 0.0` evaluates to `np.nan`. When passed into mathematical expressions, `nan` poisoned the entire sum, and `max(0.0, nan)` evaluated to `0.0`.
+* **Resolution**: Use a dedicated `_safe_float(val, default=0.0)` helper that checks `math.isnan(f)` on all converted numbers.
+
+### 6. Division by Zero on Inactive Players
+* **Mistake**: Inactive players (reserve goalkeepers, unselected youth) with 0 minutes played produce `ZeroDivisionError` or `NaN` when calculating per-90 rates.
+* **Resolution**: Guard all rate calculations with `if minutes > 0 else 0.0`. Add dedicated test cases (e.g., `TestZeroMinutesPlayer`) verifying that 0-minute players cleanly return `0.0` for all per-90 metrics.
+
+### 7. Small-Sample Over-Projection (The Dowman Anomaly)
+* **Mistake**: Applying linear raw rates on players with minimal minutes (e.g. 152 mins, 1 start) resulting in unrealistically inflated projections ($7.07\text{ xP}$).
+* **Why it failed**: Without sample size shrinkage, outlier performances over 1 or 2 matches project as unsustainable season-long superstars.
+* **Resolution**: Apply Empirical Bayes prior shrinkage with $M_0 = 500.0$ minutes toward positional league baselines (`POSITIONAL_PRIORS`), and scale active ratios by average minutes per start.
+
+### 8. Lookahead Horizon CSV Overwrite Race Condition
+* **Mistake**: When `live_manager.py` looped through lookahead horizon steps ($t = 0 \dots H-1$), `predict_gameweek_fixtures` was invoked with default `save_csv=True` on every step.
+* **Why it failed**: Step $t=0$ wrote GW2 to `fixture_predictions.csv`, but step $t=2$ subsequently overwrote the file on disk with GW4 fixtures (e.g. Man Utd vs Man City in GW4). Any subsequent script reading `fixture_predictions.csv` from disk saw GW4 matchups instead of GW2.
+* **Resolution**: In `live_manager.py`, pass `save_csv=(step == 0)` so only the active target gameweek writes to disk. In `fixture_engine.py`, also save versioned `fixture_predictions_gw{gw}.csv` to isolate gameweeks permanently.
+
+### 9. Missing Live Injury / Availability Filter in Core Solver (`prepare_solver_dataframe`)
+* **Mistake**: `prepare_solver_dataframe` in `model/solver.py` was evaluating raw historical per-90 rates without applying live FPL injury status flags (`status = 'i'`, `'s'`, `'u'`).
+* **Why it failed**: Injured players (e.g., Ekitiké with Achilles injury, Kroupi.Jr with Foot injury, Timber with Groin injury) had positive historical xP and were selected into the optimal squad despite being unavailable.
+* **Resolution**: Wire `apply_rotation_dampening` directly into `prepare_solver_dataframe()` in `model/solver.py`, automatically mapping any player with `status in ('i', 's', 'u')` or `chance_of_playing == 0` to $\text{xP} = 0.0$ so they can never enter any optimal solution.
+
+### 10. Web Name Identifier Collisions (Duplicate Player Names in FPL)
+* **Mistake**: Resolving player locks by bare string `web_name` (e.g., `'Palmer'`, `'Davies'`) when multiple active players in the league share the exact same surname.
+* **Why it failed**: `'Palmer'` matched both Cole Palmer (£9.5M, Chelsea) and Palmer (£4.0M, Ipswich); `'Davies'` matched Ben Davies (£4.0M, Spurs) and Davies (£4.0M, Liverpool), causing constraint binding errors.
+* **Resolution**: Always resolve player locks using unique permanent Opta/FPL integer `code` (`player_code`) or explicitly disambiguate via `(team, web_name)`.
+
+### 11. Fixture Cannibalization Blindness in Independent Solvers
+* **Mistake**: Selecting multiple defensive assets from opposing teams in the exact same match (e.g., 5 players across Sunderland vs. Fulham).
+* **Why it failed**: Standard expected points models treat player match distributions independently, ignoring that opposing clean sheets are mutually exclusive events.
+* **Resolution**: Enforce an automated cross-fixture correlation check and cap total squad exposure to any single fixture to a maximum of 2–3 players.
+
+---
+
+## Elite Enhancements Layer Implementation (Completed)
+
+1. **`model/set_pieces.py` (Set-Piece & Penalty Specialist Hierarchy)**:
+   - Ingests official FPL PK, Direct FK, and Corner/Indirect FK taker orders (1/2/3).
+   - Computes baseline penalty goal equity ($\Delta \text{xG}_{\text{PK}} = 0.79 \times 0.78 \times \lambda_{\text{PK}}$) added to $C_8$ and corner/FK assist equity added to $C_7$.
+
+2. **`model/ownership_engine.py` (Effective Ownership & Game Theory Engine)**:
+   - Models top-10k Effective Ownership ($\text{EO} = \text{Ownership} + \text{Captaincy} + \text{3xC}$).
+   - Implements configurable strategy utility functions:
+     - `'pure_xp'`: Raw expected points (neutral).
+     - `'rank_protect'`: Shields against high-EO talismans ($\text{EO} > 100\%$).
+     - `'differential_chase'`: Rewards high-ceiling differentials ($\text{EO} < 20\%$).
+
+3. **`model/price_predictor.py` (Price Change & Team Value Forecaster)**:
+   - Tracks net transfer velocity $\Delta T = \text{transfers\_in\_event} - \text{transfers\_out\_event}$.
+   - Classifies market movement into 5 discrete alert tiers: `RISING_LOCK`, `RISING_ALERT`, `STABLE`, `FALLING_ALERT`, `FALLING_LOCK`.
+
+4. **`model/rotation_intelligence.py` (Rotation & Tactical Hazard Engine)**:
+   - Models midweek European turnaround congestion decay ($\le 3\text{ days rest} \to 0.82\times$ hazard for rotation-heavy clubs like Man City/Liverpool).
+   - Evaluates sub-60-minute hook vulnerability and news availability dampening ($75\% \to 0.75, 50\% \to 0.40$).
+
+5. **`model/matchup_intelligence.py` (Matchup Intelligence & Tactical Archetypes)**:
+   - Formulates Empirical Bayesian Head-to-Head attacking multipliers with $M_{\text{H2H}, 0} = 270.0\text{ mins}$ shrinkage.
+   - Evaluates opponent defensive line depth and transition vulnerability (High-Line $1.15\times$ for transition playmakers like Palmer vs Brighton).
+   - Enriches point predictions dynamically across all solvers and live matchday tools.
+
+6. **Manager Locks, Exclusions & Captaincy Overrides Infrastructure**:
+   - Added `--lock-players`, `--exclude-players`, `--captain`, and `--vice-captain` CLI arguments to `model/solver.py` and `model/live_manager.py`.
+   - Formulates hard ILP binary constraints for exact tactical customization without breaking global optimality.
+   - Automated unit tests in `model/test_matchup_intelligence.py` and `model/test_solver.py`.
+   - **134 total unit tests** passing across the entire repository with 0 regressions.
+
+---
+
+## Live Data Pipeline Automation Engine (Completed)
+
+1. **`model/pipeline_automation.py` (Unified Multi-Stage Orchestrator)**:
+   - **5-Stage Automated Pipeline**: Connects API sync, price velocity tracking, historical data rebuild, 11-component point predictions, fixture scaling, and multi-horizon MILP solving into a single executable workflow.
+   - **4 Execution Modes**:
+     - `sync`: Fast daily sync — API fetch + price delta + dataset rebuild + predictions + solver (~30s).
+     - `full`: Complete post-gameweek rebuild — player histories + `merged_gw.csv` + dataset + predictions + solver.
+     - `predictions_only`: Re-run projections and fixture engine without network calls or solver.
+     - `solver_only`: Re-run MILP solver and export without re-predicting.
+   - **Automatic Gameweek Detection**: Resolves current/next GW and deadline from FPL API events, with offline fallback to local `fixtures.csv`.
+   - **Daily Price Velocity Tracker**: Records timestamped snapshots to `data/<season>/price_history/<date>.csv` with net transfer delta ($\Delta T$) and 5-tier alert classification (`RISING_LOCK`, `RISING_ALERT`, `STABLE`, `FALLING_ALERT`, `FALLING_LOCK`).
+   - **Offline Resilience**: Graceful fallback to local cached data when FPL API is unavailable.
+   - **Scheduler Daemon**: `--daemon --interval-hours 6` for autonomous background execution with configurable iteration limits.
+   - **Rich CLI Interface**: Full argparse CLI with `--season`, `--gw`, `--mode`, `--bank`, `--ft`, `--horizon`, `--strategy`, `--offline`, `--daemon`, `--interval-hours`, `--max-iterations`.
+
+2. **Automated Unit Tests (`model/test_pipeline_automation.py`)**:
+   - 14 unit tests covering gameweek detection, price velocity snapshotting, sync mode execution, solver-only mode, predictions-only mode, error handling, and data structure validation.
+   - **148 total unit tests** passing across the entire repository with 0 regressions.
+
+---
+
+## Current Status & Next Horizon
+
+All 5 core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, and the **Live Data Pipeline Automation Engine** are **100% complete and verified with 148/148 passing unit tests**.
+
+For the complete Gameweek 2 transition playbook, elite best practices roadmap, and frontend web dashboard architecture, see:
+👉 **[docs/HANDOVER_AND_ROADMAP.md](file:///e:/Fantasy-Premier-League/docs/HANDOVER_AND_ROADMAP.md)**
+
+

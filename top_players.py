@@ -1,5 +1,5 @@
-from getters import *
-from parsers import *
+from getters import get_data
+from parsers import parse_top_players
 
 def main():
     data = get_data()

@@ -1,5 +1,5 @@
-from getters import *
-from parsers import *
+from getters import get_entry_data, get_entry_personal_data, get_entry_gws_data, get_entry_transfers_data
+from parsers import parse_entry_history, parse_entry_leagues, parse_transfer_history, parse_gw_entry_history
 import sys
 import os
 
