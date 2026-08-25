@@ -302,6 +302,13 @@ def manage_gameweek(
         with open(out_json, 'w') as f:
             json.dump(payload, f, indent=2)
 
+        # Also sync to frontend/src/data if present
+        frontend_data_dir = os.path.join('frontend', 'src', 'data')
+        if os.path.exists(frontend_data_dir):
+            frontend_json = os.path.join(frontend_data_dir, f'live_matchday_gw{gw}.json')
+            with open(frontend_json, 'w') as f:
+                json.dump(payload, f, indent=2)
+
     return {
         'action_summary': action_summary,
         'squad_solution': active_sq,
