@@ -9,20 +9,93 @@ export default function TacticalPitch({
   onInspectPlayer,
   actionSummary,
   startingXp,
-  totalXp
+  totalXp,
+  chipSimulations = {},
+  activeChip = 'none',
+  onSelectChip = () => {}
 }) {
-  // Group starters by position
-  const gks = starters.filter(p => p.position === 'GK');
-  const defs = starters.filter(p => p.position === 'DEF');
-  const mids = starters.filter(p => p.position === 'MID');
-  const fwds = starters.filter(p => p.position === 'FWD');
+  // Determine if viewing a chip simulation
+  const isChipActive = activeChip !== 'none' && chipSimulations && chipSimulations[activeChip];
+  const currentChipData = isChipActive ? chipSimulations[activeChip] : null;
 
-  const formation = `${defs.length}-${mids.length}-${fwds.length}`;
+  const displayStarters = isChipActive ? currentChipData.starters : starters;
+  const displayBench = isChipActive ? currentChipData.bench : bench;
+  const displayStartingXp = isChipActive ? currentChipData.starting_xp : startingXp;
+  const displayTotalXp = isChipActive ? currentChipData.total_xp : totalXp;
+
+  // Group starters by position
+  const gks = displayStarters.filter(p => p.position === 'GK');
+  const defs = displayStarters.filter(p => p.position === 'DEF');
+  const mids = displayStarters.filter(p => p.position === 'MID');
+  const fwds = displayStarters.filter(p => p.position === 'FWD');
+
+  const formation = isChipActive ? currentChipData.formation : `${defs.length}-${mids.length}-${fwds.length}`;
+
+  const chipOptions = [
+    { id: 'none', label: 'Standard Matchday', icon: '🛡️' },
+    { id: 'wildcard', label: 'Wildcard (£100M)', icon: '🃏' },
+    { id: 'freehit', label: 'Free Hit', icon: '⚡' },
+    { id: 'bboost', label: 'Bench Boost', icon: '🚀' },
+    { id: '3xc', label: 'Triple Captain', icon: '👑' },
+  ];
 
   return (
     <div>
-      {/* Matchday Action Header */}
-      {actionSummary && (
+      {/* Chip Strategy Simulator Bar */}
+      <div style={{ background: 'var(--bg-surface-1)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-sm)', padding: '10px 16px', marginBottom: '14px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            SIMULATE CHIP:
+          </span>
+          <div role="group" aria-label="Select active FPL chip simulation" style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+            {chipOptions.map(c => (
+              <button
+                key={c.id}
+                onClick={() => onSelectChip(c.id)}
+                aria-pressed={activeChip === c.id}
+                style={{
+                  background: activeChip === c.id ? (c.id === 'none' ? 'var(--bg-surface-subtle)' : 'var(--accent-emerald)') : 'var(--bg-surface-2)',
+                  color: activeChip === c.id ? (c.id === 'none' ? 'var(--text-primary)' : 'var(--text-inverse)') : 'var(--text-secondary)',
+                  border: activeChip === c.id ? '1px solid var(--border-active)' : '1px solid var(--border-subtle)',
+                  padding: '6px 10px',
+                  borderRadius: 'var(--radius-xs)',
+                  fontSize: '11px',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+              >
+                <span>{c.icon}</span>
+                <span>{c.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {isChipActive && (
+          <div style={{ fontSize: '12px', color: 'var(--accent-emerald)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+            {currentChipData.chip_name.toUpperCase()} ACTIVE · {currentChipData.formation} · £{currentChipData.budget_used.toFixed(1)}M SPENT
+          </div>
+        )}
+      </div>
+
+      {/* Matchday Action Header / Chip Description */}
+      {isChipActive ? (
+        <div className="action-banner" style={{ borderColor: 'var(--accent-emerald)' }}>
+          <div className="action-text">
+            <span className="action-pill" style={{ background: 'var(--accent-emerald)', color: 'var(--text-inverse)' }}>
+              {currentChipData.chip_name.toUpperCase()} SCENARIO
+            </span>
+            <span style={{ fontWeight: 600 }}>{currentChipData.description}</span>
+          </div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+            Projected Total: <span style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>{currentChipData.total_xp.toFixed(2)} xP</span>
+          </div>
+        </div>
+      ) : actionSummary && (
         <div className="action-banner">
           <div className="action-text">
             <span className="action-pill">OPTIMAL MATCHDAY MOVE</span>
@@ -39,7 +112,7 @@ export default function TacticalPitch({
         <div className="kpi-card">
           <div className="kpi-label">Starting XI Projected xP</div>
           <div className="kpi-value" style={{ color: 'var(--accent-emerald)' }}>
-            {Number(startingXp || 0).toFixed(2)}
+            {Number(displayStartingXp || 0).toFixed(2)}
             <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
           </div>
           <div className="kpi-subtext" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
@@ -53,10 +126,12 @@ export default function TacticalPitch({
         <div className="kpi-card">
           <div className="kpi-label">Squad Total Projected xP</div>
           <div className="kpi-value">
-            {Number(totalXp || 0).toFixed(2)}
+            {Number(displayTotalXp || 0).toFixed(2)}
             <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
           </div>
-          <div className="kpi-subtext">Includes Vice-Captain & Bench Auto-Sub</div>
+          <div className="kpi-subtext">
+            {activeChip === 'bboost' ? 'All 15 Players Active (Bench Boost)' : 'Includes Vice-Captain & Auto-Sub'}
+          </div>
         </div>
 
         <div className="kpi-card">
@@ -148,13 +223,14 @@ export default function TacticalPitch({
             </div>
 
             <div className="bench-list">
-              {bench.map(p => {
+              {displayBench.map(p => {
                 const isSelected = selectedPlayer?.player_code === p.player_code;
-                const slotLabel = p.bench_order === 1 ? 'Slot 1 (GK)' : `Slot ${p.bench_order} (Sub ${p.bench_order - 1})`;
+                const slotLabel = p.bench_order === 1 ? 'Slot 1 (GK)' : `Slot ${p.bench_order || 2} (Sub ${(p.bench_order || 2) - 1})`;
                 return (
                   <div
                     key={p.player_code}
                     className={`bench-item ${isSelected ? 'is-selected' : ''}`}
+                    style={activeChip === 'bboost' ? { borderColor: 'var(--accent-emerald)', background: 'rgba(16, 185, 129, 0.08)' } : {}}
                     onClick={() => onSelectPlayer(p)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
@@ -168,7 +244,9 @@ export default function TacticalPitch({
                     title="Click to swap with starter · Double-click to inspect"
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <span className="bench-slot-tag">{slotLabel}</span>
+                      <span className="bench-slot-tag" style={activeChip === 'bboost' ? { background: 'var(--accent-emerald)', color: 'var(--text-inverse)' } : {}}>
+                        {activeChip === 'bboost' ? 'ACTIVE' : slotLabel}
+                      </span>
                       <span className={`player-position-pill ${p.position}`}>{p.position}</span>
                       <div>
                         <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>

@@ -17,54 +17,55 @@ import teamsData from './data/teams_all.json';
 export default function App() {
   const [activeTab, setActiveTab] = useState('pitch');
   const [selectedStrategy, setSelectedStrategy] = useState('pure_xp');
+  const [inspectedPlayer, setInspectedPlayer] = useState(null);
+  const [activeChip, setActiveChip] = useState('none');
 
   // Squad State (Allowing interactive starter / bench swaps)
   const [starters, setStarters] = useState(liveMatchdayData.starters || []);
   const [bench, setBench] = useState(liveMatchdayData.bench || []);
   const [selectedSwapPlayer, setSelectedSwapPlayer] = useState(null);
-  const [inspectedPlayer, setInspectedPlayer] = useState(null);
 
   // Handle interactive player selection and swap
   const handleSelectPlayer = (player) => {
     if (!selectedSwapPlayer) {
       setSelectedSwapPlayer(player);
-    } else if (selectedSwapPlayer.player_code === player.player_code) {
-      setSelectedSwapPlayer(null); // Deselect
+      return;
+    }
+
+    // If clicking same player, deselect
+    if (selectedSwapPlayer.player_code === player.player_code) {
+      setSelectedSwapPlayer(null);
+      return;
+    }
+
+    const isFirstStarter = starters.some(p => p.player_code === selectedSwapPlayer.player_code);
+    const isSecondStarter = starters.some(p => p.player_code === player.player_code);
+
+    // If swapping between Starter and Bench
+    if (isFirstStarter !== isSecondStarter) {
+      const newStarters = starters.map(p =>
+        p.player_code === (isFirstStarter ? selectedSwapPlayer.player_code : player.player_code)
+          ? { ...(isFirstStarter ? player : selectedSwapPlayer), is_starter: true }
+          : p
+      );
+      const newBench = bench.map(p =>
+        p.player_code === (isFirstStarter ? player.player_code : selectedSwapPlayer.player_code)
+          ? { ...(isFirstStarter ? selectedSwapPlayer : player), is_starter: false }
+          : p
+      );
+
+      setStarters(newStarters);
+      setBench(newBench);
+      setSelectedSwapPlayer(null);
     } else {
-      // Perform swap between starter and bench
-      const isSelectedStarter = starters.some(p => p.player_code === selectedSwapPlayer.player_code);
-      const isTargetStarter = starters.some(p => p.player_code === player.player_code);
-
-      if (isSelectedStarter !== isTargetStarter) {
-        // One is starter, one is bench -> Valid swap!
-        const starterObj = isSelectedStarter ? selectedSwapPlayer : player;
-        const benchObj = isSelectedStarter ? player : selectedSwapPlayer;
-
-        const newStarters = starters.map(p =>
-          p.player_code === starterObj.player_code
-            ? { ...benchObj, is_starter: true, is_captain: starterObj.is_captain, is_vice_captain: starterObj.is_vice_captain, bench_order: null }
-            : p
-        );
-
-        const newBench = bench.map(p =>
-          p.player_code === benchObj.player_code
-            ? { ...starterObj, is_starter: false, is_captain: false, is_vice_captain: false, bench_order: benchObj.bench_order }
-            : p
-        );
-
-        setStarters(newStarters);
-        setBench(newBench);
-        setSelectedSwapPlayer(null);
-      } else {
-        // Both starters or both bench -> change selection
-        setSelectedSwapPlayer(player);
-      }
+      setSelectedSwapPlayer(player);
     }
   };
 
   // Recalculate dynamic starting XI xP
   const startingXp = starters.reduce((acc, p) => acc + Number(p.expected_points || 0), 0);
-  const captBonus = starters.find(p => p.is_captain)?.expected_points || 0;
+  const capt = starters.find(p => p.is_captain);
+  const captBonus = capt ? capt.expected_points : 0;
 
   return (
     <div>
@@ -89,6 +90,9 @@ export default function App() {
             actionSummary={liveMatchdayData.action_summary}
             startingXp={startingXp + Number(captBonus)}
             totalXp={liveMatchdayData.total_xp}
+            chipSimulations={liveMatchdayData.chip_simulations || {}}
+            activeChip={activeChip}
+            onSelectChip={setActiveChip}
           />
         )}
 
