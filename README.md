@@ -95,13 +95,13 @@ $$\mathbb{E}[\text{Points}] = \sum_{k=1}^{11} C_k$$
 |:---:|---|---|
 | **$C_1$** | Appearance (1–59 mins) | $1.0 \times P(\text{App}) \times (1 - P(60+))$ |
 | **$C_2$** | Playing 60+ mins | $2.0 \times P(60+)$ |
-| **$C_3$** | Goalkeeper Saves | $\frac{1}{3} \times \text{Saves90} \times \left(\frac{\text{Opp\_xG90}}{\text{League\_Avg\_xG}}\right)^{0.65} \times \text{ActiveRatio}$ |
-| **$C_4$** | Yellow Cards | $-1.0 \times \max(0, \text{yc90} - 2 \cdot \text{rc90}) \times \text{ActiveRatio}$ |
-| **$C_5$** | Red Cards | $-3.0 \times \text{rc90} \times \text{ActiveRatio}$ |
-| **$C_6$** | Bonus Point System | $\mathbb{E}[\text{Bonus}] \times \text{Attack\_Mult}^{0.75} \times P(\text{Start})$ |
-| **$C_7$** | Expected Assists | $3.0 \times (\text{xA90} + \Delta\text{xA}_{\text{Corners}}) \times \text{ActiveRatio}$ |
-| **$C_8$** | Expected Goals | $\text{Pts}(\text{Pos}) \times (\text{xG90} + \Delta\text{xG}_{\text{PK}}) \times \text{ActiveRatio}$ |
-| **$C_9$** | Clean Sheet Probability | $\text{Pts}(\text{Pos}) \times e^{-\lambda_{\text{match}}} \times P(60+)$ |
+| **$C_3$** | Goalkeeper Saves | $\frac{1}{3} \times \text{Saves}_{90} \times \left(\frac{\text{Opp xG}_{90}}{\text{League Avg xG}}\right)^{0.65} \times \text{ActiveRatio}$ |
+| **$C_4$** | Yellow Cards | $-1.0 \times \max(0, \text{YC}_{90} - 2 \cdot \text{RC}_{90}) \times \text{ActiveRatio}$ |
+| **$C_5$** | Red Cards | $-3.0 \times \text{RC}_{90} \times \text{ActiveRatio}$ |
+| **$C_6$** | Bonus Point System | $\mathbb{E}[\text{Bonus}] \times (\text{Attack Mult})^{0.75} \times P(\text{Start})$ |
+| **$C_7$** | Expected Assists | $3.0 \times (\text{xA}_{90} + \Delta\text{xA}_{\mathrm{corner}}) \times \text{ActiveRatio}$ |
+| **$C_8$** | Expected Goals | $\text{Pts}(\text{Pos}) \times (\text{xG}_{90} + \Delta\text{xG}_{\mathrm{PK}}) \times \text{ActiveRatio}$ |
+| **$C_9$** | Clean Sheet Probability | $\text{Pts}(\text{Pos}) \times e^{-\lambda_{\mathrm{match}}} \times P(60+)$ |
 | **$C_{10}$** | Discrete Goals Conceded Deduction | $-\sum_{m=1}^5 m \cdot \left(P(X = 2m) + P(X = 2m+1)\right) \times P(60+)$ |
 | **$C_{11}$** | Defensive Action Contribution | Poisson probability of reaching $\ge 10$ or $\ge 15$ recovery/tackle milestones |
 
@@ -110,7 +110,7 @@ $$\mathbb{E}[\text{Points}] = \sum_{k=1}^{11} C_k$$
 ### 2. Empirical Bayes Prior Shrinkage
 Young players and bench substitutes with 120 minutes of pitch time often post unsustainably high per-90 rates. To prevent small-sample distortion, raw rates are regularized toward positional league baselines:
 
-$$\text{rate}_{\text{adj}} = \frac{M}{M + M_0} \cdot \text{rate}_{\text{raw}} + \frac{M_0}{M + M_0} \cdot \text{Prior}(\text{Position})$$
+$$\text{rate}_{\mathrm{adj}} = \frac{M}{M + M_0} \cdot \text{rate}_{\mathrm{raw}} + \frac{M_0}{M + M_0} \cdot \text{Prior}(\text{Position})$$
 
 Where $M_0 = 500.0\text{ minutes}$.
 
@@ -119,7 +119,7 @@ Where $M_0 = 500.0\text{ minutes}$.
 ### 3. Goal Conservation & Conjugate Venue Symmetry
 To ensure mathematical consistency across home and away fixtures:
 
-$$\mathbb{E}[\text{Home Goals Scored}] \equiv \mathbb{E}[\text{Away Goals Conceded}]$$
+$$\mathbb{E}[\text{Goals Scored}_{\mathrm{Home}}] \equiv \mathbb{E}[\text{Goals Conceded}_{\mathrm{Away}}]$$
 
 We enforce exact conjugate venue multipliers:
 - **Home Attack Multiplier**: $1.08 \longleftrightarrow$ **Away Defense Multiplier**: $0.9259$
@@ -130,7 +130,7 @@ We enforce exact conjugate venue multipliers:
 ### 4. Multi-Horizon MILP Squad Optimizer
 The optimization module models squad selection as an Integer Linear Program over a 3-to-5 gameweek horizon $H$:
 
-$$\max \sum_{t=1}^H \gamma^{t-1} \left( \sum_{i \in \text{Starters}} x_{i,t} \cdot \text{xP}_{i,t} + \text{xP}_{\text{Captain}, t} - 4.0 \cdot h_t \right)$$
+$$\max \sum_{t=1}^H \gamma^{t-1} \left( \sum_{i \in \text{Starters}} x_{i,t} \cdot \mathrm{xP}_{i,t} + \mathrm{xP}_{\mathrm{Captain}, t} - 4.0 \cdot h_t \right)$$
 
 **Key Rules Enforced:**
 - **Positional Quotas**: Exactly 2 GK, 5 DEF, 5 MID, 3 FWD.
