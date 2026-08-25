@@ -41,7 +41,7 @@ from model.build_dataset import load_teams_map, build_dataset
 # ---------------------------------------------------------------------------
 
 DEFAULT_ALPHA: float = 0.35  # Form blending weight for short-form (last 6 GWs)
-DEFAULT_SHORT_FORM_M0: float = 270.0  # 3 full matches for short-form sample confidence
+DEFAULT_SHORT_FORM_M0: float = 450.0  # 5 full matches for short-form sample confidence
 
 # Conjugate symmetric venue factors (1.08 / 0.9259) for exact goal conservation
 HOME_ATTACK_FACTOR: float = 1.08
@@ -369,6 +369,7 @@ def predict_gameweek_fixtures(
     m0: float = DEFAULT_MINS_FILTER,
     data_root: str = 'data',
     save_csv: bool = True,
+    dynamic_dataset: bool = False,
 ) -> pd.DataFrame:
     """Predict fixture-adjusted expected points for all players in a given gameweek.
 
@@ -382,6 +383,7 @@ def predict_gameweek_fixtures(
         m0: Empirical Bayes shrinkage minutes filter (default 500.0).
         data_root: root data directory.
         save_csv: if True, writes output to data/<season>/fixture_predictions.csv.
+        dynamic_dataset: if True, dynamically builds rolling dataset as of gameweek gw (strictly prior data).
 
     Returns:
         pd.DataFrame containing player metadata, fixture details, and predicted xP.
@@ -389,8 +391,7 @@ def predict_gameweek_fixtures(
     season_dir = os.path.join(data_root, season)
     dataset_path = os.path.join(season_dir, 'model_dataset.csv')
 
-    if not os.path.exists(dataset_path):
-        print(f"[{season}] model_dataset.csv not found, building dataset first...")
+    if dynamic_dataset or not os.path.exists(dataset_path):
         df = build_dataset(season=season, gw=gw, data_root=data_root)
     else:
         df = pd.read_csv(dataset_path)

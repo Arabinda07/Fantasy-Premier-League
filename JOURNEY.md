@@ -230,9 +230,74 @@ This document tracks the phased rebuild of the Fantasy Premier League (FPL) poin
 
 ---
 
+## Next-Gen Alpha Engine: Dixon-Coles Match Simulator & Phase B Live Sync (Completed)
+
+1. **`model/match_simulator.py` (Bivariate Dixon-Coles & Monte Carlo Match Engine)**:
+   - **Dixon-Coles Low-Scoring Dependency Formulation**:
+     $$\tau_{\lambda, \mu}(x, y) = \begin{cases}
+     1 - \lambda \mu \rho & x=0, y=0 \\
+     1 + \lambda \rho & x=0, y=1 \\
+     1 + \mu \rho & x=1, y=0 \\
+     1 - \rho & x=1, y=1 \\
+     1 & \text{otherwise}
+     \end{cases}$$
+     with $\rho = -0.05$, capturing joint scoreline dependencies and low-draw empirical distributions.
+   - **Exact Discrete $(11 \times 11)$ Matrix Analytics**: Generates normalized joint probability grids for Home Win, Draw, Away Win, Home Clean Sheet, Away Clean Sheet, Both Teams To Score (BTTS), Over/Under 2.5 goals, and ranked top scorelines.
+   - **Vectorized 10,000-Run Monte Carlo Simulation**: Attributes simulated goals and assists via multinomial softmax sampling over player $xG90$ and $xA90$ active ratios.
+   - **True BPS Allocation**: Simulates match event BPS scores (goals, assists, clean sheets, saves, DC, yellow/red cards) and allocates official 3, 2, 1 bonus points.
+   - **Player Probability Distributions**: Calculates Mean ($\mathbb{E}[\text{xP}]$), Standard Deviation ($\sigma$), Floor (p10), Median (p50), Ceiling (p90), and Haul Probability ($P(\text{Points} \ge 10)$).
+   - Automated unit tests: `model/test_match_simulator.py` (7 unit tests).
+
+2. **`model/live_sync.py` (Phase B Direct Ingestion & Live Sync)**:
+   - **1-Click FPL Entry ID & Mini-League Ingestion**: Ingests manager profile, overall rank, bank balance, team value, 15-player picks, captaincy, and active chip directly from FPL REST API.
+   - **Opta/FPL Permanent Code Reconciliation**: Automatically maps season-specific FPL `element` IDs to permanent `player_code` values using `data/<season>/players_raw.csv`.
+   - **Transfer History & Dynamic FT Calculation**: Tracks rolling free transfers ($1\dots 5$).
+   - **Mini-League Rival Threat Matrix**: Ingests mini-league standings and competitor squads for direct differential analysis.
+   - **Offline Resilience & Disk Caching**: Stores JSON snapshots in `data/<season>/cache/` with graceful fallback when offline.
+   - Automated unit tests: `model/test_live_sync.py` (7 unit tests).
+
+3. **`model/live_manager.py` Integration**:
+   - Added `--team-id` and `--league-id` parameters for automated 1-click live decision cockpit execution.
+   - Verified end-to-end live sync on Entry ID 12345 with automatic formation solve, multi-horizon transfer trajectory, and live briefing.
+   - **173 total unit tests** passing across the entire repository with 0 regressions.
+
+---
+
+## Next-Gen Alpha Engine: Milestone 2 & Milestone 3 (Completed)
+
+1. **`model/minutes_model.py` (Continuous Minutes Hazard & Survival Engine - Milestone 2)**:
+   - **Three-Regime Survival Decomposition**: Deconstructs playing time into Starter ($T_{\text{start}} \in [1, 95]$), Substitute ($T_{\text{sub}} \in [5, 35]$), and DNP ($T = 0$) regimes.
+   - **Continuous Probability Outputs**:
+     - $\mathbb{P}(\text{Mins} \ge 60)$: Clean Sheet & 2-appearance-point qualification probability.
+     - $\mathbb{P}(\text{Pre-60 Hook Hazard})$: Calibrated logistic hazard function for tactical substitutions prior to minute 60.
+     - $\mathbb{P}(\text{Mins} = 0)$: DNP probability driving auto-sub bench activation.
+     - $\mathbb{E}[\text{Mins}]$: Overall expected playing minutes.
+   - **Hazard Adjustment Features**: Recent 6-GW start rate, European congestion ($\le 3$ days rest $\to 0.82\times - 0.88\times$ starter multiplier), manager tactical hook propensities (Arteta, Pep, Slot), FPL status flags, and price-tier priors for new transfers.
+   - Automated unit tests: `model/test_minutes_model.py` (6 unit tests).
+
+2. **`model/solver.py` Enhancements (Risk-Adjusted CVaR & Auto-Sub Solver - Milestone 3)**:
+   - **CVaR Tail-Risk Objective Formulation**:
+     $$\max \quad \sum_{t=1}^H \gamma^{t-1} \left( \mathbb{E}[R_t] - \lambda_{\text{risk}} \cdot \text{TailRisk}_t + \lambda_{\text{FT}} \cdot \text{FT}_t - 4 \cdot \text{Hits}_t \right)$$
+     - $\lambda_{\text{risk}} > 0$ (`rank_protect`): Penalizes downside tail variance ($\text{xP} - \text{Floor}_{p10}$), targeting reliable, high-floor assets.
+     - $\lambda_{\text{risk}} < 0$ (`differential_chase`): Rewards upside potential ($\text{Ceiling}_{p90} - \text{xP}$), targeting explosive haul differentials.
+   - **Dynamic Bench Auto-Sub Valuation**: Weights bench slots ($w_{\text{bench}} \approx 0.10$, $1.0$ for Bench Boost) according to starter DNP probabilities.
+   - **Free Transfer Banking Shadow Price**: $\lambda_{\text{FT}} = 1.75\text{ pts}$ encourages rolling transfers over low-delta sideways moves.
+   - Automated unit tests: `model/test_solver_cvar.py` (3 unit tests).
+
+3. **Continuous Minutes Hazard Integration into Core Prediction Pipeline (`model/prediction_engine.py`)**:
+   - Wired `calculate_pre60_hook_probability` directly into `estimate_playing_probabilities` and `predict_player_points`.
+   - Replaced linear approximations with continuous logistic hazard functions, accurately calculating $P(\text{Mins} \ge 60)$, appearance points ($C_1, C_2$), clean sheet expectations ($C_9$), and disciplinary penalties ($C_{10}$).
+
+4. **`model/backtester.py` (Historical Backtest Engine with Automated Chip Strategy)**:
+   - **Autonomous 38-Gameweek Simulator**: Simulates full historical season playthroughs (e.g. 2024-25) with dynamic free transfers ($1\dots 5$), bank tracking, selling prices, and official auto-substitution rules.
+   - **Strategic Chip Automation**: Integrates `model/chip_optimizer.py` to trigger Wildcard 1, Wildcard 2, Free Hit (with post-FH squad restoration), Bench Boost (15-player scoring), and Triple Captain (3x multiplier).
+   - Automated unit tests: `model/test_backtester.py` (3 unit tests).
+
+---
+
 ## Current Status & Next Horizon
 
-All 5 core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, and the **Live Data Pipeline Automation Engine** are **100% complete and verified with 148/148 passing unit tests**.
+All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, **Phase B Direct Ingestion & Live Sync**, **Milestone 2 (Continuous Minutes Hazard Engine)**, **Milestone 3 (Risk-Adjusted CVaR & Auto-Sub Solver)**, and **Historical Backtest Validation with Chip Automation** are **100% complete and verified with 185/185 passing unit tests**.
 
 For the complete Gameweek 2 transition playbook, elite best practices roadmap, and frontend web dashboard architecture, see:
 👉 **[docs/HANDOVER_AND_ROADMAP.md](file:///e:/Fantasy-Premier-League/docs/HANDOVER_AND_ROADMAP.md)**

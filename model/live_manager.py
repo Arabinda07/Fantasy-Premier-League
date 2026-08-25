@@ -38,6 +38,7 @@ from model.ownership_engine import enrich_predictions_with_ownership
 from model.price_predictor import enrich_predictions_with_price_trends, RISING_LOCK, RISING_ALERT, FALLING_ALERT, FALLING_LOCK
 from model.rotation_intelligence import apply_rotation_dampening
 from model.matchup_intelligence import enrich_predictions_with_matchup_intelligence
+from model.live_sync import sync_manager_profile, LiveSyncProfile
 
 
 def apply_live_injury_dampening(
@@ -88,6 +89,8 @@ def apply_live_injury_dampening(
 def manage_gameweek(
     season: str = '2026-27',
     gw: int = 1,
+    team_id: Optional[int] = None,
+    league_id: Optional[int] = None,
     current_squad_codes: Optional[List[int]] = None,
     bank: float = 0.0,
     free_transfers: int = 1,
@@ -104,6 +107,28 @@ def manage_gameweek(
 ) -> Dict[str, Any]:
     """Execute complete live gameweek management decision workflow with Elite Enhancements."""
     season_dir = os.path.join(data_root, season)
+
+    # 0. If team_id is provided, sync live manager profile directly from FPL API
+    live_profile: Optional[LiveSyncProfile] = None
+    if team_id is not None:
+        try:
+            live_profile = sync_manager_profile(
+                entry_id=team_id,
+                gw=gw,
+                league_id=league_id,
+                season=season,
+                data_root=data_root,
+            )
+            if not current_squad_codes and len(live_profile.squad_codes) == 15:
+                current_squad_codes = live_profile.squad_codes
+            if bank == 0.0 and live_profile.bank > 0.0:
+                bank = live_profile.bank
+            if free_transfers == 1 and live_profile.free_transfers > 1:
+                free_transfers = live_profile.free_transfers
+            if chip is None and live_profile.active_chip:
+                chip = live_profile.active_chip
+        except Exception as e:
+            print(f"[!] Warning: Live sync for team ID {team_id} encountered an error ({e}). Continuing with local solve.")
 
     # 1. Load predictions for all gameweeks in lookahead horizon
     horizon_dfs: List[pd.DataFrame] = []
@@ -126,21 +151,49 @@ def manage_gameweek(
 
     gw1_df = horizon_dfs[0]
 
-    # 2. If no squad provided, solve initial optimal squad
+    # 2. If no squad provided, check for previous gameweek saved squad or solve initial optimal squad
     if not current_squad_codes or len(current_squad_codes) != 15:
-        initial_solution = solve_initial_squad(
-            df=gw1_df,
-            budget=100.0 - bank,
-            chip=chip,
-            season=season,
-            data_root=data_root,
-            strategy=strategy,
-            locked_player_codes=locked_player_codes,
-            excluded_player_codes=excluded_player_codes,
-            forced_captain_code=forced_captain_code,
-            forced_vice_captain_code=forced_vice_captain_code,
-        )
-        current_squad_codes = [p.player_code for p in initial_solution.squad]
+        # Check if previous gameweek squad is saved in cache or frontend
+        prev_squad_found = False
+        if gw > 1:
+            prev_paths = [
+                os.path.join(season_dir, 'cache', f'entry_{team_id}_gw{gw-1}.json') if team_id else None,
+                os.path.join('frontend', 'src', 'data', f'live_matchday_gw{gw-1}.json'),
+                os.path.join('frontend', 'src', 'data', 'live_matchday_gw1.json'),
+            ]
+            for p in prev_paths:
+                if p and os.path.exists(p):
+                    try:
+                        import json
+                        with open(p, 'r', encoding='utf-8') as f:
+                            saved_data = json.load(f)
+                            # Extract all 15 players (starters + bench)
+                            extracted = []
+                            for item in saved_data.get('starters', []) + saved_data.get('bench', []):
+                                if 'player_code' in item:
+                                    extracted.append(int(item['player_code']))
+                            if len(extracted) == 15:
+                                current_squad_codes = extracted
+                                prev_squad_found = True
+                                print(f"[*] Loaded existing 15-man squad from {p}")
+                                break
+                    except Exception:
+                        pass
+
+        if not prev_squad_found or not current_squad_codes:
+            initial_solution = solve_initial_squad(
+                df=gw1_df,
+                budget=100.0 - bank,
+                chip=chip,
+                season=season,
+                data_root=data_root,
+                strategy=strategy,
+                locked_player_codes=locked_player_codes,
+                excluded_player_codes=excluded_player_codes,
+                forced_captain_code=forced_captain_code,
+                forced_vice_captain_code=forced_vice_captain_code,
+            )
+            current_squad_codes = [p.player_code for p in initial_solution.squad]
 
     # 3. Solve multi-gameweek lookahead transfer trajectory
     multi_sol = solve_multi_horizon_transfers(
@@ -173,10 +226,12 @@ def manage_gameweek(
         trans_in_names = ", ".join([p.web_name for p in curr_plan.transfers_in])
         trans_out_names = ", ".join([p.web_name for p in curr_plan.transfers_out])
         action_summary = f"EXECUTE {curr_plan.transfers_count} FREE TRANSFER(S): [IN] {trans_in_names} | [OUT] {trans_out_names}"
-    else:
-        trans_in_names = ", ".join([p.web_name for p in curr_plan.transfers_in]) if curr_plan else ""
-        trans_out_names = ", ".join([p.web_name for p in curr_plan.transfers_out]) if curr_plan else ""
+    elif curr_plan:
+        trans_in_names = ", ".join([p.web_name for p in curr_plan.transfers_in])
+        trans_out_names = ", ".join([p.web_name for p in curr_plan.transfers_out])
         action_summary = f"EXECUTE TRANSFERS WITH HIT (-{curr_plan.hit_penalty:.0f} pts): [IN] {trans_in_names} | [OUT] {trans_out_names}"
+    else:
+        action_summary = "NO IMMEDIATE TRANSFERS REQUIRED"
 
     # Build lookup for player tags (set-pieces, EO, price trends)
     meta_lookup = {}
@@ -196,6 +251,8 @@ def manage_gameweek(
     print("\n" + "=" * 90)
     print(f"               FPL LIVE MATCHDAY COMMAND COCKPIT -- {season} GAMEWEEK {gw}")
     print("=" * 90)
+    if live_profile:
+        print(f"Manager: {live_profile.manager_name} | Team: {live_profile.team_name} (ID: {live_profile.entry_id}) | Overall Rank: {live_profile.overall_rank:,} ({live_profile.overall_points} pts)")
     print(f"Current Bank: £{bank:.1f}M | Free Transfers: {free_transfers} | Lookahead Horizon: {horizon} GWs | Strategy: {strategy.upper()}")
     if active_sq:
         capt_name = active_sq.captain.web_name if active_sq.captain else "None"
@@ -217,23 +274,34 @@ def manage_gameweek(
             if p_meta.get('fk') == 1.0: sp_tags.append("FK1")
             sp_str = f" [{' '.join(sp_tags)}]" if sp_tags else ""
             eo_str = f" (EO: {p_meta.get('eo', 0.0)*100:.0f}%)" if p_meta.get('eo', 0.0) > 0 else ""
-            print(f"  * {p.position:<3} | {p.web_name + c_tag:<20}{sp_str:<8} ({p.team:<14}) | {p.expected_points:>4.2f} xP | £{p.cost:>4.1f}M{eo_str}")
+            wname = str(p.web_name + c_tag).encode('ascii', 'replace').decode('ascii')
+            tname = str(p.team).encode('ascii', 'replace').decode('ascii')
+            print(f"  * {p.position:<3} | {wname:<20}{sp_str:<8} ({tname:<14}) | {p.expected_points:>4.2f} xP | £{p.cost:>4.1f}M{eo_str}")
 
         print("\nORDERED BENCH:")
         for p in active_sq.bench:
             slot_str = f"Slot {p.bench_order} (GK)" if p.bench_order == 1 else f"Slot {p.bench_order} (Sub {p.bench_order - 1})"
-            p_meta = meta_lookup.get(p.player_code, {})
-            print(f"  * {slot_str:<15} | {p.position:<3} | {p.web_name:<18} ({p.team:<14}) | {p.expected_points:>4.2f} xP | £{p.cost:>4.1f}M")
+            wname = str(p.web_name).encode('ascii', 'replace').decode('ascii')
+            tname = str(p.team).encode('ascii', 'replace').decode('ascii')
+            print(f"  * {slot_str:<15} | {p.position:<3} | {wname:<18} ({tname:<14}) | {p.expected_points:>4.2f} xP | £{p.cost:>4.1f}M")
 
     # Multi-Horizon Trajectory Summary
     print("\n" + "-" * 90)
     print("MULTI-GAMEWEEK TRANSFER ROADMAP:")
     print("-" * 90)
     for p in multi_sol.gw_plans:
-        t_in = ", ".join([x.web_name for x in p.transfers_in]) if p.transfers_in else "None (Roll)"
-        t_out = ", ".join([x.web_name for x in p.transfers_out]) if p.transfers_out else "None"
+        t_in = ", ".join([str(x.web_name).encode('ascii', 'replace').decode('ascii') for x in p.transfers_in]) if p.transfers_in else "None (Roll)"
+        t_out = ", ".join([str(x.web_name).encode('ascii', 'replace').decode('ascii') for x in p.transfers_out]) if p.transfers_out else "None"
         hit_str = f" (-{p.hit_penalty:.0f} hit)" if p.hits_taken > 0 else ""
         print(f"  * GW{p.gw}: IN: {t_in:<25} | OUT: {t_out:<20} | Projected xP: {p.net_xp:.2f}{hit_str} | Bank: £{p.bank:.1f}M")
+
+    # Mini-League Rival Standings
+    if live_profile and live_profile.rivals:
+        print("\n" + "-" * 90)
+        print("MINI-LEAGUE RIVAL THREAT MATRIX:")
+        print("-" * 90)
+        for r in live_profile.rivals:
+            print(f"  #{r['rank']:<2} | {r['manager_name']:<20} ({r['team_name']:<20}) | Total: {r['total_points']} pts | GW: {r['event_points']} pts")
 
     # Price Momentum & Market Alerts
     if not gw1_df.empty and 'price_trend' in gw1_df.columns:
@@ -245,9 +313,13 @@ def manage_gameweek(
             print("MARKET & PRICE CHANGE MOMENTUM ALERTS:")
             print("-" * 90)
             for _, r in rising.iterrows():
-                print(f"  ▲ [PRICE RISE] {r.get('web_name')} ({r.get('team')}) | Trend: {r.get('price_trend')} (+{int(r.get('price_net_velocity', 0)):,} net transfers)")
+                wname = str(r.get('web_name')).encode('ascii', 'replace').decode('ascii')
+                tname = str(r.get('team')).encode('ascii', 'replace').decode('ascii')
+                print(f"  [^] [PRICE RISE] {wname} ({tname}) | Trend: {r.get('price_trend')} (+{int(r.get('price_net_velocity', 0)):,} net transfers)")
             for _, r in falling.iterrows():
-                print(f"  ▼ [PRICE FALL] {r.get('web_name')} ({r.get('team')}) | Trend: {r.get('price_trend')} ({int(r.get('price_net_velocity', 0)):,} net transfers)")
+                wname = str(r.get('web_name')).encode('ascii', 'replace').decode('ascii')
+                tname = str(r.get('team')).encode('ascii', 'replace').decode('ascii')
+                print(f"  [v] [PRICE FALL] {wname} ({tname}) | Trend: {r.get('price_trend')} ({int(r.get('price_net_velocity', 0)):,} net transfers)")
 
     # Chip Advice
     print("\n" + "-" * 90)
@@ -280,6 +352,7 @@ def manage_gameweek(
             'season': season,
             'gameweek': gw,
             'strategy': strategy,
+            'manager_profile': asdict(live_profile) if live_profile else None,
             'action_summary': action_summary,
             'starting_xp': active_sq.starting_xp,
             'total_xp': active_sq.total_xp,
@@ -311,6 +384,7 @@ def manage_gameweek(
 
     return {
         'action_summary': action_summary,
+        'live_profile': live_profile,
         'squad_solution': active_sq,
         'multi_horizon_solution': multi_sol,
         'chip_plan': chip_plan,
@@ -321,6 +395,8 @@ def main():
     parser = argparse.ArgumentParser(description="Live FPL Gameweek Matchday Manager & Decision Cockpit")
     parser.add_argument('--season', default='2026-27', help="Season string (e.g. 2026-27)")
     parser.add_argument('--gw', type=int, default=1, help="Current gameweek number (1-38)")
+    parser.add_argument('--team-id', type=int, default=None, help="Official FPL Entry / Team ID for 1-click live squad sync")
+    parser.add_argument('--league-id', type=int, default=None, help="Mini-league ID for rival threat analysis")
     parser.add_argument('--bank', type=float, default=0.0, help="Bank balance in £M")
     parser.add_argument('--ft', type=int, default=1, help="Available free transfers (1-5)")
     parser.add_argument('--horizon', type=int, default=3, help="Lookahead horizon in gameweeks (1-5)")
@@ -336,6 +412,8 @@ def main():
     manage_gameweek(
         season=args.season,
         gw=args.gw,
+        team_id=args.team_id,
+        league_id=args.league_id,
         bank=args.bank,
         free_transfers=args.ft,
         horizon=args.horizon,

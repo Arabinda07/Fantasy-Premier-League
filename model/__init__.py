@@ -76,3 +76,32 @@ from model.pipeline_automation import (
     PipelineResult,
     StageResult,
 )
+
+from model.match_simulator import (
+    dixon_coles_tau,
+    compute_dixon_coles_matrix,
+    analyze_bivariate_scoreline_matrix,
+    compute_true_bps_and_bonus,
+    simulate_match_monte_carlo,
+    simulate_gameweek_fixtures,
+    MatchProbabilityMetrics,
+    PlayerSimulationDistribution,
+)
+
+from model.live_sync import (
+    sync_manager_profile,
+    fetch_fpl_entry_summary,
+    fetch_fpl_entry_picks,
+    fetch_fpl_entry_transfers,
+    fetch_fpl_league_standings,
+    load_element_to_code_map,
+    load_code_to_element_map,
+    LiveSyncProfile,
+)
+
+from model.minutes_model import (
+    compute_player_minutes_hazard,
+    predict_gameweek_minutes_distribution,
+    calculate_pre60_hook_probability,
+    MinutesDistributionProfile,
+)

@@ -22,6 +22,7 @@ import os
 import sys
 from typing import Dict, Any, List, Tuple, Optional, Set, Union
 import warnings
+import numpy as np
 import pandas as pd
 import pulp
 
@@ -224,14 +225,16 @@ def prepare_solver_dataframe(
     season: str = '2026-27',
     data_root: str = 'data',
     strategy: str = 'pure_xp',
+    lambda_risk: float = 0.0,
 ) -> pd.DataFrame:
-    """Enrich prediction DataFrame with cost, clean types, and strategy utility for solver.
+    """Prepares and cleans dataframe for optimization solvers with risk adjustment.
 
     Args:
-        df: DataFrame containing player predictions.
-        season: season string.
+        df: raw input DataFrame.
+        season: season string e.g. '2026-27'.
         data_root: root data directory.
-        strategy: game theory strategy ('pure_xp', 'rank_protect', 'differential_chase').
+        strategy: 'pure_xp', 'rank_protect', or 'differential_chase'.
+        lambda_risk: CVaR risk aversion parameter (>0 penalizes downside, <0 rewards upside).
 
     Returns:
         Cleaned DataFrame ready for ILP formulation.
@@ -283,7 +286,51 @@ def prepare_solver_dataframe(
     if 'utility_xp' in df.columns and strategy != 'pure_xp':
         df['opt_points'] = pd.to_numeric(df['utility_xp'], errors='coerce').fillna(df['expected_points'])
     else:
-        df['opt_points'] = df['expected_points']
+        df['opt_points'] = df['expected_points'].copy()
+
+    # Risk-Adjusted CVaR / Tail-Risk Adjustment
+    eff_lambda = lambda_risk
+    if eff_lambda == 0.0:
+        if strategy == 'rank_protect':
+            eff_lambda = 0.15
+        elif strategy == 'differential_chase':
+            eff_lambda = -0.15
+
+    if eff_lambda != 0.0:
+        if 'floor_p10' in df.columns and 'ceiling_p90' in df.columns:
+            downside_risk = np.maximum(0.0, df['expected_points'] - pd.to_numeric(df['floor_p10'], errors='coerce').fillna(0.0))
+            upside_reward = np.maximum(0.0, pd.to_numeric(df['ceiling_p90'], errors='coerce').fillna(df['expected_points']) - df['expected_points'])
+        elif 'std' in df.columns:
+            stdev = pd.to_numeric(df['std'], errors='coerce').fillna(1.5)
+            downside_risk = stdev
+            upside_reward = stdev
+        else:
+            pos_factor = df['position'].map({'GK': 0.35, 'DEF': 0.40, 'MID': 0.55, 'FWD': 0.60}).fillna(0.50)
+            stdev = df['expected_points'] * pos_factor + 1.2
+            downside_risk = stdev * 1.28
+            upside_reward = stdev * 1.28
+
+        if eff_lambda > 0:
+            df['opt_points'] = df['opt_points'] - eff_lambda * downside_risk
+        else:
+            df['opt_points'] = df['opt_points'] + abs(eff_lambda) * upside_reward
+
+    # Captaincy Bayesian Confidence regularizer: prevents low-minute fringe cameos from usurping captaincy
+    if 'season_minutes' in df.columns:
+        season_mins = pd.to_numeric(df['season_minutes'], errors='coerce').fillna(900.0)
+    elif 'minutes' in df.columns:
+        season_mins = pd.to_numeric(df['minutes'], errors='coerce').fillna(900.0)
+    else:
+        season_mins = pd.Series(900.0, index=df.index)
+
+    if 'p_start' in df.columns:
+        p_start_val = pd.to_numeric(df['p_start'], errors='coerce').fillna(1.0)
+    else:
+        p_start_val = pd.Series(1.0, index=df.index)
+
+    cost_val = pd.to_numeric(df['cost'], errors='coerce').fillna(5.0)
+    capt_conf = np.minimum(1.0, np.maximum(0.20, (season_mins / 720.0) * p_start_val + (cost_val / 25.0)))
+    df['captain_points'] = df['opt_points'] * capt_conf
 
     return df.reset_index(drop=True)
 
@@ -300,6 +347,7 @@ def solve_initial_squad(
     season: str = '2026-27',
     data_root: str = 'data',
     strategy: str = 'pure_xp',
+    lambda_risk: float = 0.0,
     locked_player_codes: Optional[Union[List[Union[int, str]], str]] = None,
     excluded_player_codes: Optional[Union[List[Union[int, str]], str]] = None,
     forced_captain_code: Optional[Union[int, str]] = None,
@@ -318,6 +366,7 @@ def solve_initial_squad(
         season: season string for price resolution.
         data_root: root data directory.
         strategy: game theory strategy ('pure_xp', 'rank_protect', 'differential_chase').
+        lambda_risk: CVaR risk aversion parameter (>0 penalizes downside, <0 rewards upside).
         locked_player_codes: list or comma-separated string of player names/codes to force in squad.
         excluded_player_codes: list or comma-separated string of player names/codes to exclude.
         forced_captain_code: player name or code to force as captain.
@@ -326,7 +375,7 @@ def solve_initial_squad(
     Returns:
         SquadSolution object.
     """
-    df = prepare_solver_dataframe(df, season=season, data_root=data_root, strategy=strategy)
+    df = prepare_solver_dataframe(df, season=season, data_root=data_root, strategy=strategy, lambda_risk=lambda_risk)
 
     prob = pulp.LpProblem("FPL_Initial_Squad_Optimization", pulp.LpMaximize)
     indices = list(df.index)
@@ -347,7 +396,7 @@ def solve_initial_squad(
     # Objective function
     prob += pulp.lpSum(
         df.loc[i, 'opt_points'] * s[i] +
-        capt_multiplier * df.loc[i, 'opt_points'] * c[i] +
+        capt_multiplier * df.loc[i, 'captain_points'] * c[i] +
         bench_weight * df.loc[i, 'opt_points'] * (x[i] - s[i])
         for i in indices
     )
@@ -573,13 +622,14 @@ def solve_weekly_transfers(
     season: str = '2026-27',
     data_root: str = 'data',
     strategy: str = 'pure_xp',
+    lambda_risk: float = 0.0,
     locked_player_codes: Optional[Union[List[Union[int, str]], str]] = None,
     excluded_player_codes: Optional[Union[List[Union[int, str]], str]] = None,
     forced_captain_code: Optional[Union[int, str]] = None,
     forced_vice_captain_code: Optional[Union[int, str]] = None,
 ) -> TransferSolution:
     """Solve for optimal transfers in/out from an existing 15-man squad."""
-    df = prepare_solver_dataframe(df, season=season, data_root=data_root, strategy=strategy)
+    df = prepare_solver_dataframe(df, season=season, data_root=data_root, strategy=strategy, lambda_risk=lambda_risk)
     indices = list(df.index)
 
     owned_set = set(int(c) for c in current_squad_codes)
@@ -619,13 +669,13 @@ def solve_weekly_transfers(
 
     effective_ft = 15 if is_wildcard else free_transfers
     capt_multiplier = 2.0 if is_triple_captain else 1.0
-    bench_weight = 1.0 if is_bench_boost else 0.05
+    bench_weight = 1.0 if is_bench_boost else 0.10
 
     # Objective
     prob += (
         pulp.lpSum(
             df.loc[i, 'opt_points'] * s[i] +
-            capt_multiplier * df.loc[i, 'opt_points'] * c[i] +
+            capt_multiplier * df.loc[i, 'captain_points'] * c[i] +
             bench_weight * df.loc[i, 'opt_points'] * (x[i] - s[i])
             for i in indices
         )
@@ -839,10 +889,13 @@ def solve_multi_horizon_transfers(
     season: str = '2026-27',
     data_root: str = 'data',
     strategy: str = 'pure_xp',
+    lambda_risk: float = 0.0,
+    lambda_ft: float = 1.75,
     locked_player_codes: Optional[Union[List[Union[int, str]], str]] = None,
     excluded_player_codes: Optional[Union[List[Union[int, str]], str]] = None,
     forced_captain_code: Optional[Union[int, str]] = None,
     forced_vice_captain_code: Optional[Union[int, str]] = None,
+    chip: Optional[str] = None,
 ) -> MultiHorizonSolution:
     """Solve multi-gameweek lookahead optimization across H gameweeks (H=3..5).
 
@@ -862,10 +915,13 @@ def solve_multi_horizon_transfers(
         season: season string.
         data_root: root data directory.
         strategy: EO strategy mode ('pure_xp', 'rank_protect', 'differential_chase').
+        lambda_risk: CVaR risk aversion parameter (>0 penalizes downside, <0 rewards upside).
+        lambda_ft: shadow value per banked free transfer (default 1.75 pts).
         locked_player_codes: player codes that must be in the initial squad.
         excluded_player_codes: player codes that must not be in the initial squad.
         forced_captain_code: player code that must be captain in GW 0.
         forced_vice_captain_code: player code that must be vice-captain in GW 0.
+        chip: optional active chip for first gameweek ('wildcard', 'freehit', 'bboost', '3xc').
 
     Returns:
         MultiHorizonSolution containing step-by-step transfer schedule and lineups.
@@ -880,7 +936,7 @@ def solve_multi_horizon_transfers(
     # 1. Prepare player pools across time
     pools: List[pd.DataFrame] = []
     for t, df in enumerate(horizon_dfs):
-        pool_t = prepare_solver_dataframe(df, season=season, data_root=data_root, strategy=strategy)
+        pool_t = prepare_solver_dataframe(df, season=season, data_root=data_root, strategy=strategy, lambda_risk=lambda_risk)
         pools.append(pool_t)
 
     # Union of all player codes across horizon
@@ -933,20 +989,32 @@ def solve_multi_horizon_transfers(
 
     # Multi-period Objective Function
     obj_terms = []
-    bench_weight = 0.05
+    base_bench_weight = 0.10  # Dynamic auto-sub bench valuation
 
     for t in range(horizon):
         discount = discount_factor ** t
         pool_t_map = {int(r['player_code']): float(r['opt_points']) for _, r in pools[t].iterrows()}
+        pool_t_capt_map = {int(r['player_code']): float(r.get('captain_points', r['opt_points'])) for _, r in pools[t].iterrows()}
+
+        cur_bench_weight = 1.0 if (t == 0 and chip == 'bboost') else base_bench_weight
+        cur_capt_mult = 2.0 if (t == 0 and chip == '3xc') else 1.0
 
         for c in all_codes_set:
             xp_ct = pool_t_map.get(c, 0.0)
-            # Starter xP + Captaincy xP + Bench xP
-            obj_terms.append(discount * xp_ct * s[(c, t)])
-            obj_terms.append(discount * xp_ct * capt[(c, t)])
-            obj_terms.append(discount * bench_weight * xp_ct * (x[(c, t)] - s[(c, t)]))
+            xp_capt = pool_t_capt_map.get(c, xp_ct)
+            # Starting XI receives full points + regularized captain bonus, bench receives bench_weight
+            obj_terms.append(discount * (
+                xp_ct * s[(c, t)] +
+                cur_capt_mult * xp_capt * capt[(c, t)] +
+                cur_bench_weight * xp_ct * (x[(c, t)] - s[(c, t)])
+            ))
 
         obj_terms.append(-1.0 * discount * hit_cost * hits[t])
+
+        # Free Transfer banking incentive (lambda_ft shadow value)
+        if lambda_ft > 0:
+            ft_t = free_transfers if t == 0 else 1
+            obj_terms.append(discount * lambda_ft * (ft_t - pulp.lpSum([u[(c, t)] for c in all_codes_set])))
 
     prob += pulp.lpSum(obj_terms)
 
@@ -1243,6 +1311,7 @@ def main():
     parser.add_argument('--budget', type=float, default=100.0, help="Maximum budget in £M (default 100.0)")
     parser.add_argument('--chip', default=None, choices=['bboost', '3xc', 'freehit', 'wildcard'], help="FPL chip to activate")
     parser.add_argument('--strategy', default='pure_xp', choices=['pure_xp', 'rank_protect', 'differential_chase'], help="Game theory strategy")
+    parser.add_argument('--lambda-risk', type=float, default=0.0, help="CVaR risk aversion parameter (>0 penalizes downside, <0 rewards upside)")
     parser.add_argument('--lock-players', default=None, help="Comma-separated player codes or names to lock into squad (e.g. 'Palmer,Haaland')")
     parser.add_argument('--exclude-players', default=None, help="Comma-separated player codes or names to exclude (e.g. 'B.Fernandes')")
     parser.add_argument('--captain', default=None, help="Player code or name to force as captain (e.g. 'Palmer')")
@@ -1268,6 +1337,7 @@ def main():
         season=args.season,
         data_root=args.data_root,
         strategy=args.strategy,
+        lambda_risk=args.lambda_risk,
         locked_player_codes=args.lock_players,
         excluded_player_codes=args.exclude_players,
         forced_captain_code=args.captain,

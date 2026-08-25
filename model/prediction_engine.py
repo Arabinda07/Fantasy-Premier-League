@@ -253,10 +253,19 @@ def estimate_playing_probabilities(
 
     mins_per_start = min(90.0, max(45.0, total_minutes / starts)) if starts > 0 else (90.0 if position == 'GK' else 60.0)
 
-    if position == 'GK':
-        p_60_given_start = 0.99 if p_start > 0 else 0.0
-    else:
-        p_60_given_start = min(1.0, max(0.0, (mins_per_start - 30.0) / 45.0))
+    try:
+        from model.minutes_model import calculate_pre60_hook_probability
+        p_hook = calculate_pre60_hook_probability(
+            avg_starter_mins=mins_per_start,
+            is_goalkeeper=(position == 'GK'),
+            is_defender=(position == 'DEF'),
+        )
+        p_60_given_start = 1.0 - p_hook
+    except Exception:
+        if position == 'GK':
+            p_60_given_start = 0.99 if p_start > 0 else 0.0
+        else:
+            p_60_given_start = min(1.0, max(0.0, (mins_per_start - 30.0) / 45.0))
 
     p_60_plus = p_start * p_60_given_start
     mins_per_sub = 20.0

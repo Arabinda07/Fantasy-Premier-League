@@ -77,7 +77,7 @@ class TestPlayingProbabilities:
         )
         assert probs['p_start'] == 1.0
         assert probs['p_app'] == 1.0
-        assert probs['p_60_plus'] == 1.0
+        assert probs['p_60_plus'] >= 0.95
 
     def test_rotation_player(self):
         probs = estimate_playing_probabilities(
