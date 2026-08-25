@@ -2,7 +2,11 @@ import React, { useState, useMemo } from 'react';
 import {
   Flask,
   SlidersHorizontal,
-  Lightning
+  Lightning,
+  CaretLeft,
+  CaretRight,
+  CaretDoubleLeft,
+  CaretDoubleRight
 } from '@phosphor-icons/react';
 
 // Positional baseline rates (league averages per 90)
@@ -18,6 +22,20 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
   const [homeAdvantage, setHomeAdvantage] = useState(1.10); // Home multiplier
   const [selectedPos, setSelectedPos] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
+
+  // Handle position filter change
+  const handlePosChange = (pos) => {
+    setSelectedPos(pos);
+    setCurrentPage(1);
+  };
+
+  // Handle search query change
+  const handleSearchChange = (query) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+  };
 
   // Re-estimate player points based on parameters
   const computedPlayers = useMemo(() => {
@@ -68,6 +86,35 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
       })
       .sort((a, b) => b.dynamicXp - a.dynamicXp);
   }, [players, priorMinutes, homeAdvantage, selectedPos, searchQuery]);
+
+  // Pagination metrics
+  const totalItems = computedPlayers.length;
+  const isAll = pageSize >= 9999;
+  const totalPages = isAll ? 1 : Math.max(1, Math.ceil(totalItems / pageSize));
+  const safePage = Math.min(Math.max(1, currentPage), totalPages);
+
+  const paginatedPlayers = useMemo(() => {
+    if (isAll) return computedPlayers;
+    const start = (safePage - 1) * pageSize;
+    return computedPlayers.slice(start, start + pageSize);
+  }, [computedPlayers, isAll, safePage, pageSize]);
+
+  const startItem = totalItems === 0 ? 0 : isAll ? 1 : (safePage - 1) * pageSize + 1;
+  const endItem = isAll ? totalItems : Math.min(safePage * pageSize, totalItems);
+
+  // Generate compact page numbers list
+  const getPageNumbers = () => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    if (safePage <= 4) {
+      return [1, 2, 3, 4, 5, '...', totalPages];
+    }
+    if (safePage >= totalPages - 3) {
+      return [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    }
+    return [1, '...', safePage - 1, safePage, safePage + 1, '...', totalPages];
+  };
 
   return (
     <div className="studio-container">
@@ -167,7 +214,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
         <div className="studio-table-controls">
           <div className="controls-left">
             <span className="controls-title">Adjusted Player Point Projections</span>
-            <span className="controls-count">({computedPlayers.length} players)</span>
+            <span className="controls-count">({totalItems} players)</span>
           </div>
 
           <div className="controls-right">
@@ -175,7 +222,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
               type="text"
               placeholder="Search player or team..."
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
+              onChange={e => handleSearchChange(e.target.value)}
               className="studio-search-input"
               aria-label="Search players"
             />
@@ -184,7 +231,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
               {['ALL', 'GK', 'DEF', 'MID', 'FWD'].map(pos => (
                 <button
                   key={pos}
-                  onClick={() => setSelectedPos(pos)}
+                  onClick={() => handlePosChange(pos)}
                   aria-pressed={selectedPos === pos}
                   className={`pos-filter-btn ${selectedPos === pos ? 'active' : ''}`}
                 >
@@ -195,22 +242,22 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
           </div>
         </div>
 
-        <div className="table-scroll-wrapper">
+        <div className="table-scroll-wrapper" style={{ maxHeight: '600px', overflowY: 'auto' }}>
           <table className="data-table">
             <thead>
               <tr>
-                <th style={{ position: 'sticky', left: 0, zIndex: 20 }}>Player</th>
-                <th>Pos</th>
-                <th>Club</th>
-                <th>Price</th>
-                <th>Expected Goals (xG90)</th>
-                <th>Expected Assists (xA90)</th>
-                <th>Form vs History Balance</th>
-                <th>Projected Score</th>
+                <th style={{ position: 'sticky', left: 0, top: 0, zIndex: 20 }}>Player</th>
+                <th style={{ position: 'sticky', top: 0, zIndex: 15 }}>Pos</th>
+                <th style={{ position: 'sticky', top: 0, zIndex: 15 }}>Club</th>
+                <th style={{ position: 'sticky', top: 0, zIndex: 15 }}>Price</th>
+                <th style={{ position: 'sticky', top: 0, zIndex: 15 }}>Expected Goals (xG90)</th>
+                <th style={{ position: 'sticky', top: 0, zIndex: 15 }}>Expected Assists (xA90)</th>
+                <th style={{ position: 'sticky', top: 0, zIndex: 15 }}>Form vs History Balance</th>
+                <th style={{ position: 'sticky', top: 0, zIndex: 15 }}>Projected Score</th>
               </tr>
             </thead>
             <tbody>
-              {computedPlayers.slice(0, 30).map(p => (
+              {paginatedPlayers.map(p => (
                 <tr
                   key={p.player_code || p.id}
                   onClick={() => onInspectPlayer && onInspectPlayer(p)}
@@ -235,8 +282,97 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                   </td>
                 </tr>
               ))}
+              {paginatedPlayers.length === 0 && (
+                <tr>
+                  <td colSpan={8} style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)' }}>
+                    No players matching your search criteria.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
+        </div>
+
+        {/* Pagination Footer */}
+        <div className="table-pagination-bar">
+          <div className="pagination-info">
+            Showing <span className="font-mono" style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{startItem}–{endItem}</span> of <span className="font-mono" style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{totalItems}</span> players
+          </div>
+
+          <div className="pagination-nav">
+            <button
+              onClick={() => setCurrentPage(1)}
+              disabled={safePage === 1}
+              className="page-btn"
+              title="First Page"
+              aria-label="Go to first page"
+            >
+              <CaretDoubleLeft size={14} />
+            </button>
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={safePage === 1}
+              className="page-btn"
+              title="Previous Page"
+              aria-label="Go to previous page"
+            >
+              <CaretLeft size={14} />
+            </button>
+
+            <div className="page-numbers">
+              {getPageNumbers().map((item, idx) => (
+                item === '...' ? (
+                  <span key={`ellipsis-${idx}`} className="page-ellipsis">…</span>
+                ) : (
+                  <button
+                    key={`page-${item}`}
+                    onClick={() => setCurrentPage(item)}
+                    className={`page-num-btn ${safePage === item ? 'active' : ''}`}
+                    aria-current={safePage === item ? 'page' : undefined}
+                  >
+                    {item}
+                  </button>
+                )
+              ))}
+            </div>
+
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={safePage === totalPages}
+              className="page-btn"
+              title="Next Page"
+              aria-label="Go to next page"
+            >
+              <CaretRight size={14} />
+            </button>
+            <button
+              onClick={() => setCurrentPage(totalPages)}
+              disabled={safePage === totalPages}
+              className="page-btn"
+              title="Last Page"
+              aria-label="Go to last page"
+            >
+              <CaretDoubleRight size={14} />
+            </button>
+          </div>
+
+          <div className="pagination-size">
+            <span>Per page:</span>
+            <select
+              value={pageSize}
+              onChange={e => {
+                setPageSize(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+              className="page-size-select"
+              aria-label="Select players per page"
+            >
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+              <option value={9999}>All ({totalItems})</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>

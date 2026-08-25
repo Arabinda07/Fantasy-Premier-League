@@ -6,7 +6,10 @@ import {
   Lightning,
   RocketLaunch,
   Crown,
-  CheckCircle
+  ArrowsLeftRight,
+  ArrowUpRight,
+  ArrowDownRight,
+  CaretRight
 } from '@phosphor-icons/react';
 
 export default function TacticalPitch({
@@ -44,8 +47,43 @@ export default function TacticalPitch({
     { id: 'wildcard', label: 'Wildcard (£100m)', icon: Cards },
     { id: 'freehit', label: 'Free Hit', icon: Lightning },
     { id: 'bboost', label: 'Bench Boost', icon: RocketLaunch },
-    { id: '3xc', label: 'Triple Captain', icon: Crown },
+    { id: '3xc', label: 'Triple Captain', icon: Crown }
   ];
+
+  // Helper to parse transfer actions into clean icon-driven pills
+  const renderTransferPills = (summary) => {
+    if (!summary) return null;
+
+    const inMatch = summary.match(/\[IN\]\s*([A-Za-z0-9_.\-\s]+?)(?=\s*\||\s*\[OUT\]|$)/i);
+    const outMatch = summary.match(/\[OUT\]\s*([A-Za-z0-9_.\-\s]+?)(?=\s*\||$)/i);
+
+    if (inMatch && outMatch) {
+      const inName = inMatch[1].trim();
+      const outName = outMatch[1].trim();
+
+      return (
+        <div className="rec-transfer-group">
+          <div className="rec-transfer-pill in">
+            <ArrowUpRight size={13} weight="bold" />
+            <span className="rec-tag">IN</span>
+            <span className="rec-player-name">{inName}</span>
+          </div>
+          <CaretRight size={13} className="rec-arrow" />
+          <div className="rec-transfer-pill out">
+            <ArrowDownRight size={13} weight="bold" />
+            <span className="rec-tag">OUT</span>
+            <span className="rec-player-name">{outName}</span>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="rec-generic-text">
+        <span>{summary.replace(/EXECUTE\s*\d*\s*FREE\s*TRANSFER\(S\):\s*/i, '')}</span>
+      </div>
+    );
+  };
 
   return (
     <div>
@@ -98,29 +136,33 @@ export default function TacticalPitch({
 
       {/* Gameweek Strategic Recommendation Banner */}
       {isChipActive ? (
-        <div className="action-banner" style={{ borderColor: 'var(--accent-emerald)', boxShadow: '0 4px 20px rgba(16, 185, 129, 0.10)' }}>
-          <div className="action-text">
-            <span className="action-pill" style={{ background: 'var(--accent-emerald)', color: 'var(--text-inverse)' }}>
-              <Lightning size={12} weight="bold" />
-              {currentChipData.chip_name} Mode
+        <div className="action-banner chip-active-banner">
+          <div className="action-left">
+            <span className="action-pill chip-pill">
+              <Lightning size={13} weight="fill" />
+              <span>{currentChipData.chip_name}</span>
             </span>
-            <span style={{ fontWeight: 600 }}>{currentChipData.description}</span>
+            <span className="action-desc">{currentChipData.description}</span>
           </div>
-          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
-            Projected: <span style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>{currentChipData.total_xp.toFixed(1)} pts</span>
+          <div className="action-right">
+            <span className="rec-xp-label">Projected:</span>
+            <span className="rec-xp-val">{currentChipData.total_xp.toFixed(1)} pts</span>
           </div>
         </div>
       ) : actionSummary && (
         <div className="action-banner">
-          <div className="action-text">
-            <span className="action-pill">
-              <CheckCircle size={12} weight="bold" />
-              Manager Recommendation
+          <div className="action-left">
+            <span className="action-pill transfer-pill">
+              <ArrowsLeftRight size={13} weight="bold" />
+              <span>1 Free Transfer</span>
             </span>
-            <span style={{ fontWeight: 600 }}>{actionSummary}</span>
+            {renderTransferPills(actionSummary)}
           </div>
-          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
-            Status: <span style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>Optimal Lineup</span>
+          <div className="action-right">
+            <div className="status-indicator">
+              <span className="status-dot"></span>
+              <span className="status-label">Optimal Lineup</span>
+            </div>
           </div>
         </div>
       )}

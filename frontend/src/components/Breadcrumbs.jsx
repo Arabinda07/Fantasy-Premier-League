@@ -10,6 +10,10 @@ export default function Breadcrumbs({ activeTab, onNavigateTab, subItem, onClear
     math: 'Points Breakdown'
   };
 
+  if (!subItem) {
+    return null;
+  }
+
   const currentTabLabel = tabLabels[activeTab] || 'Matchday XI';
 
   return (

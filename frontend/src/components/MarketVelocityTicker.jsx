@@ -40,57 +40,39 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
         expected_points: 5.2
       });
     }
-  };
-
-  return (
+  };  return (
     <div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px', marginBottom: '32px' }}>
+      <div className="market-panels-grid">
         {/* Rising Assets Radar */}
         <div className="sidebar-panel">
           <div className="panel-header">
-            <span style={{ color: 'var(--accent-emerald)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span className="market-section-title rising">
               <TrendUp size={16} weight="bold" />
               Players Set to Rise in Price (+£0.1m)
             </span>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div className="market-asset-list">
             {risingAssets.map(p => (
               <div
                 key={p.web_name}
                 onClick={() => handleInspect(p)}
-                style={{
-                  background: 'var(--bg-surface-2)',
-                  padding: '10px 14px',
-                  borderRadius: 'var(--radius-sm)',
-                  border: '1px solid var(--border-subtle)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease'
-                }}
-                className="bench-item"
+                className="market-asset-row"
                 title="Click to view player stats"
               >
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div className="market-asset-identity">
                     <span className={`player-position-pill ${p.pos}`}>{p.pos}</span>
                     <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{p.web_name}</span>
                     <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>({p.team})</span>
                   </div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+                  <div className="market-asset-meta">
                     £{p.cost.toFixed(1)}m · +{p.net_vel.toLocaleString()} net transfers
                   </div>
                 </div>
-
-                <div style={{ textAlign: 'right' }}>
-                  <span style={{ background: 'rgba(16, 185, 129, 0.2)', color: 'var(--accent-emerald)', fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: 'var(--radius-xs)' }}>
-                    {p.trend}
-                  </span>
-                  <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: '3px' }}>
-                    {p.ratio}
-                  </div>
+                <div className="market-asset-trend">
+                  <span className="market-trend-badge rising">{p.trend}</span>
+                  <div className="market-trend-ratio">{p.ratio}</div>
                 </div>
               </div>
             ))}
@@ -100,49 +82,33 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
         {/* Falling Assets Radar */}
         <div className="sidebar-panel">
           <div className="panel-header">
-            <span style={{ color: 'var(--accent-crimson)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span className="market-section-title falling">
               <TrendDown size={16} weight="bold" />
               Players Set to Drop in Price (-£0.1m)
             </span>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div className="market-asset-list">
             {fallingAssets.map(p => (
               <div
                 key={p.web_name}
                 onClick={() => handleInspect(p)}
-                style={{
-                  background: 'var(--bg-surface-2)',
-                  padding: '10px 14px',
-                  borderRadius: 'var(--radius-sm)',
-                  border: '1px solid var(--border-subtle)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease'
-                }}
-                className="bench-item"
+                className="market-asset-row"
                 title="Click to view player stats"
               >
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div className="market-asset-identity">
                     <span className={`player-position-pill ${p.pos}`}>{p.pos}</span>
                     <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{p.web_name}</span>
                     <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>({p.team})</span>
                   </div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+                  <div className="market-asset-meta">
                     £{p.cost.toFixed(1)}m · {p.net_vel.toLocaleString()} net transfers
                   </div>
                 </div>
-
-                <div style={{ textAlign: 'right' }}>
-                  <span style={{ background: 'rgba(239, 68, 68, 0.2)', color: 'var(--accent-crimson)', fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: 'var(--radius-xs)' }}>
-                    {p.trend}
-                  </span>
-                  <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: '3px' }}>
-                    {p.ratio}
-                  </div>
+                <div className="market-asset-trend">
+                  <span className="market-trend-badge falling">{p.trend}</span>
+                  <div className="market-trend-ratio">{p.ratio}</div>
                 </div>
               </div>
             ))}
@@ -151,27 +117,26 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
       </div>
 
       {/* Strategic Chip Guide */}
-      <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <h3 className="market-section-title" style={{ marginBottom: '12px' }}>
         <CalendarCheck size={18} weight="bold" />
-        Chip Strategy Guide & Target Windows
+        Chip Strategy Guide &amp; Target Windows
       </h3>
 
-      <div className="roadmap-grid">
+      <div className="chip-guide-grid">
         {chips.map(c => (
-          <div key={c.name} className="roadmap-card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>{c.name}</span>
-              <span style={{ fontSize: '12px', color: 'var(--accent-amber)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>{c.value}</span>
+          <div key={c.name} className="chip-guide-card">
+            <div className="chip-guide-header">
+              <span className="chip-guide-name">{c.name}</span>
+              <span className="chip-guide-value">{c.value}</span>
             </div>
-            <div style={{ fontSize: '13px', color: 'var(--accent-emerald)', fontWeight: 700, marginBottom: '6px' }}>
+            <div className="chip-guide-target">
               Recommended Target: {c.target_gw}
             </div>
-            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-              {c.reason}
-            </div>
+            <div className="chip-guide-reason">{c.reason}</div>
           </div>
         ))}
       </div>
     </div>
   );
 }
+

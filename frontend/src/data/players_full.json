@@ -60,7 +60,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 6.0
   },
   {
     "player_code": 109745,
@@ -123,7 +124,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 437495,
@@ -186,7 +188,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 226597,
@@ -249,7 +252,8 @@
     "c11_defensive_contributions": 0.346,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 8.0
   },
   {
     "player_code": 445122,
@@ -312,7 +316,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.5
   },
   {
     "player_code": 462424,
@@ -375,7 +380,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 499169,
@@ -438,7 +444,8 @@
     "c11_defensive_contributions": 0.0021,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 466075,
@@ -501,7 +508,8 @@
     "c11_defensive_contributions": 0.0267,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 448104,
@@ -564,7 +572,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0032,
     "p_app": 0.0032,
-    "p_60_plus": 0.0021
+    "p_60_plus": 0.0021,
+    "now_cost": 5.5
   },
   {
     "player_code": 198869,
@@ -627,7 +636,8 @@
     "c11_defensive_contributions": 0.1471,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 500040,
@@ -690,7 +700,8 @@
     "c11_defensive_contributions": 0.2863,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 223340,
@@ -753,7 +764,8 @@
     "c11_defensive_contributions": 0.028,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.8222
+    "p_60_plus": 0.8222,
+    "now_cost": 9.5
   },
   {
     "player_code": 204480,
@@ -816,7 +828,8 @@
     "c11_defensive_contributions": 0.1725,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.8222
+    "p_60_plus": 0.8222,
+    "now_cost": 7.5
   },
   {
     "player_code": 232413,
@@ -879,11 +892,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0049,
     "p_app": 0.0049,
-    "p_60_plus": 0.0033
+    "p_60_plus": 0.0033,
+    "now_cost": 6.5
   },
   {
     "player_code": 184029,
-    "web_name": "\u00d8degaard",
+    "web_name": "Ødegaard",
     "team": "Arsenal",
     "position": "MID",
     "season_minutes": 75,
@@ -942,7 +956,8 @@
     "c11_defensive_contributions": 0.0217,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.5
   },
   {
     "player_code": 248857,
@@ -1005,7 +1020,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0077,
     "p_app": 0.0077,
-    "p_60_plus": 0.0051
+    "p_60_plus": 0.0051,
+    "now_cost": 6.5
   },
   {
     "player_code": 195384,
@@ -1068,7 +1084,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0049,
     "p_app": 0.0049,
-    "p_60_plus": 0.0033
+    "p_60_plus": 0.0033,
+    "now_cost": 6.0
   },
   {
     "player_code": 444145,
@@ -1131,7 +1148,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.5
   },
   {
     "player_code": 481655,
@@ -1194,7 +1212,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0077,
     "p_app": 0.0077,
-    "p_60_plus": 0.0051
+    "p_60_plus": 0.0051,
+    "now_cost": 5.5
   },
   {
     "player_code": 616077,
@@ -1257,7 +1276,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 499175,
@@ -1320,11 +1340,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 438098,
-    "web_name": "F\u00e1bio Vieira",
+    "web_name": "Fábio Vieira",
     "team": "Arsenal",
     "position": "MID",
     "season_minutes": 0,
@@ -1383,7 +1404,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 200641,
@@ -1446,11 +1468,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 224117,
-    "web_name": "Gy\u00f6keres",
+    "web_name": "Gyökeres",
     "team": "Arsenal",
     "position": "FWD",
     "season_minutes": 0,
@@ -1509,7 +1532,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 7.5
   },
   {
     "player_code": 219847,
@@ -1572,7 +1596,8 @@
     "c11_defensive_contributions": 0.002,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 7.5
   },
   {
     "player_code": 205651,
@@ -1635,7 +1660,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 199798,
@@ -1698,7 +1724,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 208706,
@@ -1761,7 +1788,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 7.0
   },
   {
     "player_code": 439509,
@@ -1824,7 +1852,8 @@
     "c11_defensive_contributions": 0.0006,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.5
   },
   {
     "player_code": 98980,
@@ -1887,7 +1916,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 72147,
@@ -1950,7 +1980,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 4.5
   },
   {
     "player_code": 101188,
@@ -2013,7 +2044,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 199796,
@@ -2076,7 +2108,8 @@
     "c11_defensive_contributions": 0.1162,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 149484,
@@ -2139,7 +2172,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0056,
     "p_app": 0.0056,
-    "p_60_plus": 0.0037
+    "p_60_plus": 0.0037,
+    "now_cost": 4.5
   },
   {
     "player_code": 244954,
@@ -2202,7 +2236,8 @@
     "c11_defensive_contributions": 0.0622,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.9556
+    "p_60_plus": 0.9556,
+    "now_cost": 4.5
   },
   {
     "player_code": 515597,
@@ -2265,7 +2300,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0056,
     "p_app": 0.0056,
-    "p_60_plus": 0.0037
+    "p_60_plus": 0.0037,
+    "now_cost": 5.0
   },
   {
     "player_code": 441302,
@@ -2328,11 +2364,12 @@
     "c11_defensive_contributions": 0.208,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 184667,
-    "web_name": "Lindel\u00f6f",
+    "web_name": "Lindelöf",
     "team": "Aston Villa",
     "position": "DEF",
     "season_minutes": 90,
@@ -2391,11 +2428,12 @@
     "c11_defensive_contributions": 0.1492,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 606798,
-    "web_name": "A.Garc\u00eda",
+    "web_name": "A.García",
     "team": "Aston Villa",
     "position": "DEF",
     "season_minutes": 0,
@@ -2454,7 +2492,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 578545,
@@ -2517,11 +2556,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 195546,
-    "web_name": "Buend\u00eda",
+    "web_name": "Buendía",
     "team": "Aston Villa",
     "position": "MID",
     "season_minutes": 85,
@@ -2580,7 +2620,8 @@
     "c11_defensive_contributions": 0.45,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 215711,
@@ -2643,7 +2684,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 122806,
@@ -2706,7 +2748,8 @@
     "c11_defensive_contributions": 0.0484,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 88894,
@@ -2769,7 +2812,8 @@
     "c11_defensive_contributions": 0.0435,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.9556
+    "p_60_plus": 0.9556,
+    "now_cost": 5.0
   },
   {
     "player_code": 226944,
@@ -2832,7 +2876,8 @@
     "c11_defensive_contributions": 0.4121,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 449871,
@@ -2895,7 +2940,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 469247,
@@ -2958,7 +3004,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 645618,
@@ -3021,7 +3068,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 577285,
@@ -3084,7 +3132,8 @@
     "c11_defensive_contributions": 0.0132,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 653481,
@@ -3147,7 +3196,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0028,
     "p_app": 0.0028,
-    "p_60_plus": 0.0019
+    "p_60_plus": 0.0019,
+    "now_cost": 5.0
   },
   {
     "player_code": 614071,
@@ -3210,7 +3260,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 448089,
@@ -3273,7 +3324,8 @@
     "c11_defensive_contributions": 0.0733,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.3333
+    "p_60_plus": 0.3333,
+    "now_cost": 5.5
   },
   {
     "player_code": 178301,
@@ -3336,7 +3388,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 8.0
   },
   {
     "player_code": 173879,
@@ -3399,7 +3452,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 493105,
@@ -3462,7 +3516,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0014,
     "p_app": 0.0014,
-    "p_60_plus": 0.0009
+    "p_60_plus": 0.0009,
+    "now_cost": 6.0
   },
   {
     "player_code": 690838,
@@ -3525,7 +3580,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 487992,
@@ -3588,7 +3644,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0028,
     "p_app": 0.0028,
-    "p_60_plus": 0.0019
+    "p_60_plus": 0.0019,
+    "now_cost": 4.5
   },
   {
     "player_code": 433969,
@@ -3651,7 +3708,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 569577,
@@ -3714,7 +3772,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 571380,
@@ -3777,11 +3836,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 457569,
-    "web_name": "Petrovi\u0107",
+    "web_name": "Petrović",
     "team": "Bournemouth",
     "position": "GK",
     "season_minutes": 90,
@@ -3840,7 +3900,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 4.5
   },
   {
     "player_code": 40383,
@@ -3903,7 +3964,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 444172,
@@ -3966,7 +4028,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 463981,
@@ -4029,7 +4092,8 @@
     "c11_defensive_contributions": 0.5498,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 494521,
@@ -4092,11 +4156,12 @@
     "c11_defensive_contributions": 0.1996,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 242882,
-    "web_name": "Diakit\u00e9",
+    "web_name": "Diakité",
     "team": "Bournemouth",
     "position": "DEF",
     "season_minutes": 0,
@@ -4155,11 +4220,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 620487,
-    "web_name": "Milosavljevi\u0107",
+    "web_name": "Milosavljević",
     "team": "Bournemouth",
     "position": "DEF",
     "season_minutes": 0,
@@ -4218,7 +4284,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 54469,
@@ -4281,7 +4348,8 @@
     "c11_defensive_contributions": 0.0938,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 436893,
@@ -4344,7 +4412,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 575901,
@@ -4407,7 +4476,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 499604,
@@ -4470,7 +4540,8 @@
     "c11_defensive_contributions": 0.0507,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.5
   },
   {
     "player_code": 201658,
@@ -4533,7 +4604,8 @@
     "c11_defensive_contributions": 0.1569,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 503139,
@@ -4596,7 +4668,8 @@
     "c11_defensive_contributions": 0.643,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 222683,
@@ -4659,7 +4732,8 @@
     "c11_defensive_contributions": 0.0107,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.9778
+    "p_60_plus": 0.9778,
+    "now_cost": 6.0
   },
   {
     "player_code": 155408,
@@ -4722,7 +4796,8 @@
     "c11_defensive_contributions": 0.3518,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 496208,
@@ -4785,7 +4860,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0004,
     "p_app": 0.0004,
-    "p_60_plus": 0.0002
+    "p_60_plus": 0.0002,
+    "now_cost": 5.0
   },
   {
     "player_code": 200785,
@@ -4848,7 +4924,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0053,
     "p_app": 0.0053,
-    "p_60_plus": 0.0035
+    "p_60_plus": 0.0035,
+    "now_cost": 5.0
   },
   {
     "player_code": 111317,
@@ -4911,7 +4988,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 158499,
@@ -4974,11 +5052,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 614574,
-    "web_name": "T\u00f3th.A",
+    "web_name": "Tóth.A",
     "team": "Bournemouth",
     "position": "MID",
     "season_minutes": 15,
@@ -5037,7 +5116,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0053,
     "p_app": 0.0053,
-    "p_60_plus": 0.0035
+    "p_60_plus": 0.0035,
+    "now_cost": 5.0
   },
   {
     "player_code": 489888,
@@ -5100,7 +5180,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 560262,
@@ -5163,7 +5244,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 7.5
   },
   {
     "player_code": 444102,
@@ -5226,11 +5308,12 @@
     "c11_defensive_contributions": 0.0019,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.9778
+    "p_60_plus": 0.9778,
+    "now_cost": 6.0
   },
   {
     "player_code": 168636,
-    "web_name": "Enes \u00dcnal",
+    "web_name": "Enes Ünal",
     "team": "Bournemouth",
     "position": "FWD",
     "season_minutes": 0,
@@ -5289,11 +5372,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 561245,
-    "web_name": "Rodr\u00edguez",
+    "web_name": "Rodríguez",
     "team": "Bournemouth",
     "position": "FWD",
     "season_minutes": 0,
@@ -5352,7 +5436,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 483067,
@@ -5415,7 +5500,8 @@
     "c11_defensive_contributions": 0.1072,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 494928,
@@ -5478,7 +5564,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 523700,
@@ -5541,7 +5628,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0053,
     "p_app": 0.0053,
-    "p_60_plus": 0.0035
+    "p_60_plus": 0.0035,
+    "now_cost": 5.0
   },
   {
     "player_code": 200720,
@@ -5604,7 +5692,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 5.0
   },
   {
     "player_code": 507433,
@@ -5667,7 +5756,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 432830,
@@ -5730,7 +5820,8 @@
     "c11_defensive_contributions": 0.4856,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 444765,
@@ -5793,7 +5884,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 249231,
@@ -5856,7 +5948,8 @@
     "c11_defensive_contributions": 0.0035,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 191866,
@@ -5919,7 +6012,8 @@
     "c11_defensive_contributions": 0.5243,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 607464,
@@ -5982,7 +6076,8 @@
     "c11_defensive_contributions": 0.0294,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 194010,
@@ -6045,7 +6140,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 472713,
@@ -6108,7 +6204,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0049,
     "p_app": 0.0049,
-    "p_60_plus": 0.0033
+    "p_60_plus": 0.0033,
+    "now_cost": 4.5
   },
   {
     "player_code": 231065,
@@ -6171,7 +6268,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 570241,
@@ -6234,7 +6332,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 513086,
@@ -6297,7 +6396,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 513418,
@@ -6360,7 +6460,8 @@
     "c11_defensive_contributions": 0.0575,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 533463,
@@ -6423,7 +6524,8 @@
     "c11_defensive_contributions": 0.0176,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.8
+    "p_60_plus": 0.8,
+    "now_cost": 6.5
   },
   {
     "player_code": 440089,
@@ -6486,7 +6588,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0049,
     "p_app": 0.0049,
-    "p_60_plus": 0.0033
+    "p_60_plus": 0.0033,
+    "now_cost": 5.5
   },
   {
     "player_code": 207283,
@@ -6549,7 +6652,8 @@
     "c11_defensive_contributions": 0.0743,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.8
+    "p_60_plus": 0.8,
+    "now_cost": 5.5
   },
   {
     "player_code": 204580,
@@ -6612,7 +6716,8 @@
     "c11_defensive_contributions": 0.4748,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 543295,
@@ -6675,7 +6780,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 244858,
@@ -6738,7 +6844,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 508395,
@@ -6801,7 +6908,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0081,
     "p_app": 0.0081,
-    "p_60_plus": 0.0054
+    "p_60_plus": 0.0054,
+    "now_cost": 5.0
   },
   {
     "player_code": 183656,
@@ -6864,7 +6972,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 444180,
@@ -6927,7 +7036,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0081,
     "p_app": 0.0081,
-    "p_60_plus": 0.0054
+    "p_60_plus": 0.0054,
+    "now_cost": 6.0
   },
   {
     "player_code": 502500,
@@ -6990,7 +7100,8 @@
     "c11_defensive_contributions": 0.0242,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 8.0
   },
   {
     "player_code": 593174,
@@ -7053,7 +7164,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 75115,
@@ -7116,11 +7228,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0025,
     "p_app": 0.0025,
-    "p_60_plus": 0.0016
+    "p_60_plus": 0.0016,
+    "now_cost": 5.5
   },
   {
     "player_code": 513545,
-    "web_name": "M.Sangar\u00e9",
+    "web_name": "M.Sangaré",
     "team": "Brentford",
     "position": "MID",
     "season_minutes": 75,
@@ -7179,7 +7292,8 @@
     "c11_defensive_contributions": 0.0008,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 489639,
@@ -7242,7 +7356,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 4.5
   },
   {
     "player_code": 49262,
@@ -7305,11 +7420,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 231416,
-    "web_name": "F.Kad\u0131o\u011flu",
+    "web_name": "F.Kadıoğlu",
     "team": "Brighton",
     "position": "DEF",
     "season_minutes": 0,
@@ -7368,7 +7484,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 204120,
@@ -7431,7 +7548,8 @@
     "c11_defensive_contributions": 0.4454,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 465730,
@@ -7494,7 +7612,8 @@
     "c11_defensive_contributions": 0.0291,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 83299,
@@ -7557,7 +7676,8 @@
     "c11_defensive_contributions": 0.2538,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 550090,
@@ -7620,7 +7740,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 223434,
@@ -7683,7 +7804,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 451490,
@@ -7746,7 +7868,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0091,
     "p_app": 0.0091,
-    "p_60_plus": 0.0061
+    "p_60_plus": 0.0061,
+    "now_cost": 4.5
   },
   {
     "player_code": 454490,
@@ -7809,7 +7932,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 451340,
@@ -7872,7 +7996,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 592031,
@@ -7935,7 +8060,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 532529,
@@ -7998,11 +8124,12 @@
     "c11_defensive_contributions": 0.0052,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.7333
+    "p_60_plus": 0.7333,
+    "now_cost": 6.0
   },
   {
     "player_code": 60307,
-    "web_name": "Gro\u00df",
+    "web_name": "Groß",
     "team": "Brighton",
     "position": "MID",
     "season_minutes": 90,
@@ -8061,7 +8188,8 @@
     "c11_defensive_contributions": 0.2018,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 463067,
@@ -8124,7 +8252,8 @@
     "c11_defensive_contributions": 0.0804,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 219249,
@@ -8187,7 +8316,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 514254,
@@ -8250,7 +8380,8 @@
     "c11_defensive_contributions": 0.4845,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 536916,
@@ -8313,7 +8444,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 509416,
@@ -8376,7 +8508,8 @@
     "c11_defensive_contributions": 0.1307,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.7333
+    "p_60_plus": 0.7333,
+    "now_cost": 5.5
   },
   {
     "player_code": 467779,
@@ -8439,7 +8572,8 @@
     "c11_defensive_contributions": 0.6093,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 535301,
@@ -8502,7 +8636,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 597320,
@@ -8565,7 +8700,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 549074,
@@ -8628,7 +8764,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 556637,
@@ -8691,7 +8828,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 700308,
@@ -8754,7 +8892,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0042,
     "p_app": 0.0042,
-    "p_60_plus": 0.0028
+    "p_60_plus": 0.0028,
+    "now_cost": 5.0
   },
   {
     "player_code": 608181,
@@ -8817,7 +8956,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 647850,
@@ -8880,7 +9020,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0091,
     "p_app": 0.0091,
-    "p_60_plus": 0.0061
+    "p_60_plus": 0.0061,
+    "now_cost": 5.5
   },
   {
     "player_code": 487117,
@@ -8943,7 +9084,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 222694,
@@ -9006,7 +9148,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 610799,
@@ -9069,7 +9212,8 @@
     "c11_defensive_contributions": 0.2164,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 538007,
@@ -9132,7 +9276,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 612855,
@@ -9195,11 +9340,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0042,
     "p_app": 0.0042,
-    "p_60_plus": 0.0028
+    "p_60_plus": 0.0028,
+    "now_cost": 5.0
   },
   {
     "player_code": 611695,
-    "web_name": "Yalcouy\u00e9",
+    "web_name": "Yalcouyé",
     "team": "Brighton",
     "position": "MID",
     "season_minutes": 4,
@@ -9258,7 +9404,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0014,
     "p_app": 0.0014,
-    "p_60_plus": 0.0009
+    "p_60_plus": 0.0009,
+    "now_cost": 4.5
   },
   {
     "player_code": 244850,
@@ -9321,7 +9468,8 @@
     "c11_defensive_contributions": 0.0522,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 7.5
   },
   {
     "player_code": 56979,
@@ -9384,7 +9532,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 50175,
@@ -9447,11 +9596,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 215059,
-    "web_name": "S\u00e1nchez",
+    "web_name": "Sánchez",
     "team": "Chelsea",
     "position": "GK",
     "season_minutes": 90,
@@ -9510,11 +9660,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 5.0
   },
   {
     "player_code": 508479,
-    "web_name": "J\u00f6rgensen",
+    "web_name": "Jörgensen",
     "team": "Chelsea",
     "position": "GK",
     "season_minutes": 0,
@@ -9573,7 +9724,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 225796,
@@ -9636,7 +9788,8 @@
     "c11_defensive_contributions": 0.1229,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 180736,
@@ -9699,7 +9852,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 482609,
@@ -9762,7 +9916,8 @@
     "c11_defensive_contributions": 0.0249,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 444463,
@@ -9825,7 +9980,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 242880,
@@ -9888,7 +10044,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 109646,
@@ -9951,7 +10108,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 551210,
@@ -10014,7 +10172,8 @@
     "c11_defensive_contributions": 0.0669,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.7556
+    "p_60_plus": 0.7556,
+    "now_cost": 4.5
   },
   {
     "player_code": 460028,
@@ -10077,7 +10236,8 @@
     "c11_defensive_contributions": 0.4253,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 574458,
@@ -10140,7 +10300,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 577016,
@@ -10203,7 +10364,8 @@
     "c11_defensive_contributions": 0.1685,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 620109,
@@ -10266,7 +10428,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 220362,
@@ -10329,7 +10492,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 244851,
@@ -10392,7 +10556,8 @@
     "c11_defensive_contributions": 0.0298,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 9.5
   },
   {
     "player_code": 448047,
@@ -10455,7 +10620,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0088,
     "p_app": 0.0088,
-    "p_60_plus": 0.0058
+    "p_60_plus": 0.0058,
+    "now_cost": 7.0
   },
   {
     "player_code": 247632,
@@ -10518,11 +10684,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0049,
     "p_app": 0.0049,
-    "p_60_plus": 0.0033
+    "p_60_plus": 0.0033,
+    "now_cost": 6.5
   },
   {
     "player_code": 624773,
-    "web_name": "Est\u00eav\u00e3o",
+    "web_name": "Estêvão",
     "team": "Chelsea",
     "position": "MID",
     "season_minutes": 7,
@@ -10581,7 +10748,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0025,
     "p_app": 0.0025,
-    "p_60_plus": 0.0016
+    "p_60_plus": 0.0016,
+    "now_cost": 6.5
   },
   {
     "player_code": 463936,
@@ -10644,7 +10812,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 486672,
@@ -10707,7 +10876,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 514356,
@@ -10770,7 +10940,8 @@
     "c11_defensive_contributions": 0.0126,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.7556
+    "p_60_plus": 0.7556,
+    "now_cost": 5.0
   },
   {
     "player_code": 491007,
@@ -10833,7 +11004,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 593117,
@@ -10896,11 +11068,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0028,
     "p_app": 0.0028,
-    "p_60_plus": 0.0019
+    "p_60_plus": 0.0019,
+    "now_cost": 5.5
   },
   {
     "player_code": 475168,
-    "web_name": "Jo\u00e3o Pedro",
+    "web_name": "João Pedro",
     "team": "Chelsea",
     "position": "FWD",
     "season_minutes": 90,
@@ -10959,7 +11132,8 @@
     "c11_defensive_contributions": 0.0101,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 7.5
   },
   {
     "player_code": 517052,
@@ -11022,7 +11196,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.5
   },
   {
     "player_code": 463034,
@@ -11085,7 +11260,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 499309,
@@ -11148,7 +11324,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 567119,
@@ -11211,7 +11388,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 503037,
@@ -11274,7 +11452,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 437499,
@@ -11337,7 +11516,8 @@
     "c11_defensive_contributions": 0.7204,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 549939,
@@ -11400,7 +11580,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 622758,
@@ -11463,7 +11644,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 543158,
@@ -11526,7 +11708,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 465920,
@@ -11589,7 +11772,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 498444,
@@ -11652,7 +11836,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0088,
     "p_app": 0.0088,
-    "p_60_plus": 0.0058
+    "p_60_plus": 0.0058,
+    "now_cost": 5.0
   },
   {
     "player_code": 428580,
@@ -11715,7 +11900,8 @@
     "c11_defensive_contributions": 0.024,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 472739,
@@ -11778,7 +11964,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 4.5
   },
   {
     "player_code": 484389,
@@ -11841,7 +12028,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 110690,
@@ -11904,7 +12092,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 461102,
@@ -11967,7 +12156,8 @@
     "c11_defensive_contributions": 0.1293,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 436761,
@@ -12030,7 +12220,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 451284,
@@ -12093,7 +12284,8 @@
     "c11_defensive_contributions": 0.1293,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 173878,
@@ -12156,7 +12348,8 @@
     "c11_defensive_contributions": 0.1293,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 465390,
@@ -12219,7 +12412,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 80178,
@@ -12282,7 +12476,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 204813,
@@ -12345,7 +12540,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 220583,
@@ -12408,7 +12604,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 577411,
@@ -12471,7 +12668,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 539142,
@@ -12534,7 +12732,8 @@
     "c11_defensive_contributions": 0.1293,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 480457,
@@ -12597,7 +12796,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.007,
     "p_app": 0.007,
-    "p_60_plus": 0.0047
+    "p_60_plus": 0.0047,
+    "now_cost": 5.0
   },
   {
     "player_code": 168144,
@@ -12660,7 +12860,8 @@
     "c11_defensive_contributions": 0.0021,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 501459,
@@ -12723,7 +12924,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 241293,
@@ -12786,7 +12988,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 439668,
@@ -12849,7 +13052,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 226965,
@@ -12912,7 +13116,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0098,
     "p_app": 0.0098,
-    "p_60_plus": 0.0065
+    "p_60_plus": 0.0065,
+    "now_cost": 5.5
   },
   {
     "player_code": 684268,
@@ -12975,7 +13180,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 469272,
@@ -13038,7 +13244,8 @@
     "c11_defensive_contributions": 0.0079,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 492498,
@@ -13101,7 +13308,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 629397,
@@ -13164,7 +13372,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 176412,
@@ -13227,7 +13436,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 230730,
@@ -13290,7 +13500,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.8667
+    "p_60_plus": 0.8667,
+    "now_cost": 5.0
   },
   {
     "player_code": 218997,
@@ -13353,7 +13564,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.8667
+    "p_60_plus": 0.8667,
+    "now_cost": 5.0
   },
   {
     "player_code": 551262,
@@ -13416,7 +13628,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 549653,
@@ -13479,7 +13692,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 210156,
@@ -13542,7 +13756,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.007,
     "p_app": 0.007,
-    "p_60_plus": 0.0047
+    "p_60_plus": 0.0047,
+    "now_cost": 5.5
   },
   {
     "player_code": 661888,
@@ -13605,7 +13820,8 @@
     "c11_defensive_contributions": 0.0002,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.6889
+    "p_60_plus": 0.6889,
+    "now_cost": 5.0
   },
   {
     "player_code": 196100,
@@ -13668,7 +13884,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0028,
     "p_app": 0.0028,
-    "p_60_plus": 0.0019
+    "p_60_plus": 0.0019,
+    "now_cost": 5.5
   },
   {
     "player_code": 627221,
@@ -13731,7 +13948,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 485337,
@@ -13794,7 +14012,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0095,
     "p_app": 0.0095,
-    "p_60_plus": 0.0063
+    "p_60_plus": 0.0063,
+    "now_cost": 5.5
   },
   {
     "player_code": 172649,
@@ -13857,7 +14076,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 5.0
   },
   {
     "player_code": 121709,
@@ -13920,11 +14140,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 247348,
-    "web_name": "Mu\u00f1oz",
+    "web_name": "Muñoz",
     "team": "Crystal Palace",
     "position": "DEF",
     "season_minutes": 54,
@@ -13983,7 +14204,8 @@
     "c11_defensive_contributions": 0.0333,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.5333
+    "p_60_plus": 0.5333,
+    "now_cost": 5.5
   },
   {
     "player_code": 427623,
@@ -14046,7 +14268,8 @@
     "c11_defensive_contributions": 0.7103,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 651426,
@@ -14109,7 +14332,8 @@
     "c11_defensive_contributions": 0.8932,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 244723,
@@ -14172,7 +14396,8 @@
     "c11_defensive_contributions": 0.3077,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 218364,
@@ -14235,7 +14460,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 515621,
@@ -14298,7 +14524,8 @@
     "c11_defensive_contributions": 0.191,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.9333
+    "p_60_plus": 0.9333,
+    "now_cost": 4.5
   },
   {
     "player_code": 242313,
@@ -14361,7 +14588,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 232185,
@@ -14424,7 +14652,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.5
   },
   {
     "player_code": 496221,
@@ -14487,7 +14716,8 @@
     "c11_defensive_contributions": 0.7772,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 488024,
@@ -14550,7 +14780,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0123,
     "p_app": 0.0123,
-    "p_60_plus": 0.0082
+    "p_60_plus": 0.0082,
+    "now_cost": 5.5
   },
   {
     "player_code": 108413,
@@ -14613,7 +14844,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 152551,
@@ -14676,7 +14908,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 209400,
@@ -14739,7 +14972,8 @@
     "c11_defensive_contributions": 0.5616,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 489706,
@@ -14802,7 +15036,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 606921,
@@ -14865,11 +15100,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 536694,
-    "web_name": "M.Fran\u00e7a",
+    "web_name": "M.França",
     "team": "Crystal Palace",
     "position": "MID",
     "season_minutes": 0,
@@ -14928,11 +15164,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 438464,
-    "web_name": "Doucour\u00e9",
+    "web_name": "Doucouré",
     "team": "Crystal Palace",
     "position": "MID",
     "season_minutes": 0,
@@ -14991,7 +15228,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 450542,
@@ -15054,7 +15292,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 590014,
@@ -15117,7 +15356,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 672492,
@@ -15180,7 +15420,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 247412,
@@ -15243,7 +15484,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0095,
     "p_app": 0.0095,
-    "p_60_plus": 0.0063
+    "p_60_plus": 0.0063,
+    "now_cost": 6.0
   },
   {
     "player_code": 231747,
@@ -15306,7 +15548,8 @@
     "c11_defensive_contributions": 0.002,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.7111
+    "p_60_plus": 0.7111,
+    "now_cost": 6.5
   },
   {
     "player_code": 205533,
@@ -15369,7 +15612,8 @@
     "c11_defensive_contributions": 0.0024,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.5556
+    "p_60_plus": 0.5556,
+    "now_cost": 5.5
   },
   {
     "player_code": 660392,
@@ -15432,7 +15676,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 433154,
@@ -15495,7 +15740,8 @@
     "c11_defensive_contributions": 0.0625,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.7111
+    "p_60_plus": 0.7111,
+    "now_cost": 5.5
   },
   {
     "player_code": 169593,
@@ -15558,7 +15804,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 223723,
@@ -15621,7 +15868,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0063,
     "p_app": 0.0063,
-    "p_60_plus": 0.0042
+    "p_60_plus": 0.0042,
+    "now_cost": 4.5
   },
   {
     "player_code": 570794,
@@ -15684,7 +15932,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0123,
     "p_app": 0.0123,
-    "p_60_plus": 0.0082
+    "p_60_plus": 0.0082,
+    "now_cost": 5.0
   },
   {
     "player_code": 559152,
@@ -15747,11 +15996,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 128295,
-    "web_name": "N\u00f8rgaard",
+    "web_name": "Nørgaard",
     "team": "Everton",
     "position": "MID",
     "season_minutes": 0,
@@ -15810,7 +16060,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 242898,
@@ -15873,7 +16124,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0021,
     "p_app": 0.0021,
-    "p_60_plus": 0.0014
+    "p_60_plus": 0.0014,
+    "now_cost": 6.0
   },
   {
     "player_code": 111234,
@@ -15936,7 +16188,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 5.5
   },
   {
     "player_code": 229600,
@@ -15999,7 +16252,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 138001,
@@ -16062,7 +16316,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 17761,
@@ -16125,7 +16380,8 @@
     "c11_defensive_contributions": 0.6452,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 480455,
@@ -16188,7 +16444,8 @@
     "c11_defensive_contributions": 0.4785,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 106611,
@@ -16251,7 +16508,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 512462,
@@ -16314,7 +16572,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 224967,
@@ -16377,7 +16636,8 @@
     "c11_defensive_contributions": 0.2459,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 243571,
@@ -16440,7 +16700,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 499300,
@@ -16503,7 +16764,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 215413,
@@ -16566,7 +16828,8 @@
     "c11_defensive_contributions": 0.2496,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.5
   },
   {
     "player_code": 440993,
@@ -16629,7 +16892,8 @@
     "c11_defensive_contributions": 0.3275,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 232928,
@@ -16692,7 +16956,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0039,
     "p_app": 0.0039,
-    "p_60_plus": 0.0026
+    "p_60_plus": 0.0026,
+    "now_cost": 6.0
   },
   {
     "player_code": 490094,
@@ -16755,7 +17020,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 550615,
@@ -16818,7 +17084,8 @@
     "c11_defensive_contributions": 0.0239,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 502697,
@@ -16881,7 +17148,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0004,
     "p_app": 0.0004,
-    "p_60_plus": 0.0002
+    "p_60_plus": 0.0002,
+    "now_cost": 5.0
   },
   {
     "player_code": 609873,
@@ -16944,7 +17212,8 @@
     "c11_defensive_contributions": 0.1292,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 496661,
@@ -17007,11 +17276,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 513466,
-    "web_name": "R\u00f6hl",
+    "web_name": "Röhl",
     "team": "Everton",
     "position": "MID",
     "season_minutes": 90,
@@ -17070,7 +17340,8 @@
     "c11_defensive_contributions": 0.1564,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 244860,
@@ -17133,7 +17404,8 @@
     "c11_defensive_contributions": 0.0017,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 486385,
@@ -17196,7 +17468,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0039,
     "p_app": 0.0039,
-    "p_60_plus": 0.0026
+    "p_60_plus": 0.0026,
+    "now_cost": 5.5
   },
   {
     "player_code": 586309,
@@ -17259,7 +17532,8 @@
     "c11_defensive_contributions": 0.0016,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 80201,
@@ -17322,7 +17596,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 4.5
   },
   {
     "player_code": 86873,
@@ -17385,7 +17660,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 505079,
@@ -17448,7 +17724,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 174874,
@@ -17511,7 +17788,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 169528,
@@ -17574,7 +17852,8 @@
     "c11_defensive_contributions": 0.1065,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 246301,
@@ -17637,7 +17916,8 @@
     "c11_defensive_contributions": 0.4321,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 167074,
@@ -17700,7 +17980,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 232892,
@@ -17763,7 +18044,8 @@
     "c11_defensive_contributions": 0.0885,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 166477,
@@ -17826,7 +18108,8 @@
     "c11_defensive_contributions": 0.0883,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 153133,
@@ -17889,7 +18172,8 @@
     "c11_defensive_contributions": 0.0676,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 209289,
@@ -17952,7 +18236,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 560552,
@@ -18015,7 +18300,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.006,
     "p_app": 0.006,
-    "p_60_plus": 0.004
+    "p_60_plus": 0.004,
+    "now_cost": 5.5
   },
   {
     "player_code": 477555,
@@ -18078,7 +18364,8 @@
     "c11_defensive_contributions": 0.0043,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.8
+    "p_60_plus": 0.8,
+    "now_cost": 5.5
   },
   {
     "player_code": 207189,
@@ -18141,7 +18428,8 @@
     "c11_defensive_contributions": 0.0426,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.9333
+    "p_60_plus": 0.9333,
+    "now_cost": 5.0
   },
   {
     "player_code": 76357,
@@ -18204,7 +18492,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 577725,
@@ -18267,7 +18556,8 @@
     "c11_defensive_contributions": 0.059,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 184349,
@@ -18330,7 +18620,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.006,
     "p_app": 0.006,
-    "p_60_plus": 0.004
+    "p_60_plus": 0.004,
+    "now_cost": 4.5
   },
   {
     "player_code": 153366,
@@ -18393,7 +18684,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 244042,
@@ -18456,7 +18748,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0028,
     "p_app": 0.0028,
-    "p_60_plus": 0.0019
+    "p_60_plus": 0.0019,
+    "now_cost": 5.5
   },
   {
     "player_code": 631786,
@@ -18519,7 +18812,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 551466,
@@ -18582,7 +18876,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 571779,
@@ -18645,7 +18940,8 @@
     "c11_defensive_contributions": 0.0002,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.9333
+    "p_60_plus": 0.9333,
+    "now_cost": 5.5
   },
   {
     "player_code": 463210,
@@ -18708,7 +19004,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0081,
     "p_app": 0.0081,
-    "p_60_plus": 0.0054
+    "p_60_plus": 0.0054,
+    "now_cost": 5.0
   },
   {
     "player_code": 547686,
@@ -18771,7 +19068,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 167825,
@@ -18834,7 +19132,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 105666,
@@ -18897,7 +19196,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 494950,
@@ -18960,7 +19260,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 444307,
@@ -19023,7 +19324,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 108416,
@@ -19086,7 +19388,8 @@
     "c11_defensive_contributions": 0.1293,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 501902,
@@ -19149,7 +19452,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 146426,
@@ -19212,7 +19516,8 @@
     "c11_defensive_contributions": 0.0252,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.7333
+    "p_60_plus": 0.7333,
+    "now_cost": 4.0
   },
   {
     "player_code": 193278,
@@ -19275,7 +19580,8 @@
     "c11_defensive_contributions": 0.04,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.8667
+    "p_60_plus": 0.8667,
+    "now_cost": 4.0
   },
   {
     "player_code": 433590,
@@ -19338,7 +19644,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.007,
     "p_app": 0.007,
-    "p_60_plus": 0.0047
+    "p_60_plus": 0.0047,
+    "now_cost": 4.0
   },
   {
     "player_code": 232351,
@@ -19401,7 +19708,8 @@
     "c11_defensive_contributions": 0.0977,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 449428,
@@ -19464,7 +19772,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 661800,
@@ -19527,7 +19836,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 160817,
@@ -19590,7 +19900,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0091,
     "p_app": 0.0091,
-    "p_60_plus": 0.0061
+    "p_60_plus": 0.0061,
+    "now_cost": 4.0
   },
   {
     "player_code": 540324,
@@ -19653,7 +19964,8 @@
     "c11_defensive_contributions": 0.0021,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 232905,
@@ -19716,7 +20028,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0067,
     "p_app": 0.0067,
-    "p_60_plus": 0.0044
+    "p_60_plus": 0.0044,
+    "now_cost": 5.0
   },
   {
     "player_code": 171270,
@@ -19779,7 +20092,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 101282,
@@ -19842,7 +20156,8 @@
     "c11_defensive_contributions": 0.0021,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 243413,
@@ -19905,7 +20220,8 @@
     "c11_defensive_contributions": 0.0021,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 465525,
@@ -19968,11 +20284,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 208481,
-    "web_name": "\u00d6m\u00fcr",
+    "web_name": "Ömür",
     "team": "Hull City",
     "position": "MID",
     "season_minutes": 0,
@@ -20031,7 +20348,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 490161,
@@ -20094,7 +20412,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 553783,
@@ -20157,7 +20476,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 169432,
@@ -20220,7 +20540,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 213292,
@@ -20283,7 +20604,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 470294,
@@ -20346,7 +20668,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 500957,
@@ -20409,7 +20732,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 534392,
@@ -20472,7 +20796,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 462635,
@@ -20535,7 +20860,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 169359,
@@ -20598,7 +20924,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0018,
     "p_app": 0.0018,
-    "p_60_plus": 0.0012
+    "p_60_plus": 0.0012,
+    "now_cost": 4.0
   },
   {
     "player_code": 445028,
@@ -20661,7 +20988,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 473284,
@@ -20724,11 +21052,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 4.5
   },
   {
     "player_code": 552946,
-    "web_name": "Hjert\u00f8-Dahl",
+    "web_name": "Hjertø-Dahl",
     "team": "Hull City",
     "position": "MID",
     "season_minutes": 0,
@@ -20787,7 +21116,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 608227,
@@ -20850,7 +21180,8 @@
     "c11_defensive_contributions": 0.0004,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.8889
+    "p_60_plus": 0.8889,
+    "now_cost": 5.0
   },
   {
     "player_code": 597462,
@@ -20913,7 +21244,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0091,
     "p_app": 0.0091,
-    "p_60_plus": 0.0061
+    "p_60_plus": 0.0061,
+    "now_cost": 4.0
   },
   {
     "player_code": 606930,
@@ -20976,7 +21308,8 @@
     "c11_defensive_contributions": 0.0252,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.7333
+    "p_60_plus": 0.7333,
+    "now_cost": 4.0
   },
   {
     "player_code": 469266,
@@ -21039,7 +21372,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 219924,
@@ -21102,11 +21436,12 @@
     "c11_defensive_contributions": 0.2423,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 212314,
-    "web_name": "Luki\u0107",
+    "web_name": "Lukić",
     "team": "Ipswich Town",
     "position": "MID",
     "season_minutes": 90,
@@ -21165,7 +21500,8 @@
     "c11_defensive_contributions": 0.3805,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 108813,
@@ -21228,7 +21564,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 112520,
@@ -21291,7 +21628,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 50093,
@@ -21354,11 +21692,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 183015,
-    "web_name": "Kipr\u00e9",
+    "web_name": "Kipré",
     "team": "Ipswich Town",
     "position": "DEF",
     "season_minutes": 0,
@@ -21417,7 +21756,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 216616,
@@ -21480,7 +21820,8 @@
     "c11_defensive_contributions": 0.1964,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 455084,
@@ -21543,7 +21884,8 @@
     "c11_defensive_contributions": 0.1964,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 449429,
@@ -21606,7 +21948,8 @@
     "c11_defensive_contributions": 0.1964,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 222018,
@@ -21669,7 +22012,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 176420,
@@ -21732,11 +22076,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 501390,
-    "web_name": "N\u00fa\u00f1ez",
+    "web_name": "Núñez",
     "team": "Ipswich Town",
     "position": "MID",
     "season_minutes": 79,
@@ -21795,7 +22140,8 @@
     "c11_defensive_contributions": 0.0018,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 241117,
@@ -21858,7 +22204,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 149929,
@@ -21921,7 +22268,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 231899,
@@ -21984,7 +22332,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 443261,
@@ -22047,7 +22396,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0067,
     "p_app": 0.0067,
-    "p_60_plus": 0.0044
+    "p_60_plus": 0.0044,
+    "now_cost": 5.5
   },
   {
     "player_code": 229164,
@@ -22110,7 +22460,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 531442,
@@ -22173,7 +22524,8 @@
     "c11_defensive_contributions": 0.0005,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.7778
+    "p_60_plus": 0.7778,
+    "now_cost": 5.5
   },
   {
     "player_code": 543968,
@@ -22236,7 +22588,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.7778
+    "p_60_plus": 0.7778,
+    "now_cost": 5.5
   },
   {
     "player_code": 222625,
@@ -22299,7 +22652,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 481624,
@@ -22362,7 +22716,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 172453,
@@ -22425,7 +22780,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 147675,
@@ -22488,7 +22844,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0084,
     "p_app": 0.0084,
-    "p_60_plus": 0.0056
+    "p_60_plus": 0.0056,
+    "now_cost": 5.0
   },
   {
     "player_code": 557012,
@@ -22551,7 +22908,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0035,
     "p_app": 0.0035,
-    "p_60_plus": 0.0023
+    "p_60_plus": 0.0023,
+    "now_cost": 4.5
   },
   {
     "player_code": 462387,
@@ -22614,7 +22972,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 461587,
@@ -22677,7 +23036,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0084,
     "p_app": 0.0084,
-    "p_60_plus": 0.0056
+    "p_60_plus": 0.0056,
+    "now_cost": 4.5
   },
   {
     "player_code": 232457,
@@ -22740,7 +23100,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 546600,
@@ -22803,7 +23164,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 442967,
@@ -22866,7 +23228,8 @@
     "c11_defensive_contributions": 0.0018,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 240514,
@@ -22929,7 +23292,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 4.5
   },
   {
     "player_code": 216055,
@@ -22992,7 +23356,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 474120,
@@ -23055,7 +23420,8 @@
     "c11_defensive_contributions": 0.0008,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.8889
+    "p_60_plus": 0.8889,
+    "now_cost": 5.5
   },
   {
     "player_code": 572584,
@@ -23118,7 +23484,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0035,
     "p_app": 0.0035,
-    "p_60_plus": 0.0023
+    "p_60_plus": 0.0023,
+    "now_cost": 4.0
   },
   {
     "player_code": 524180,
@@ -23181,7 +23548,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 153682,
@@ -23244,7 +23612,8 @@
     "c11_defensive_contributions": 0.0106,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.7778
+    "p_60_plus": 0.7778,
+    "now_cost": 6.5
   },
   {
     "player_code": 201595,
@@ -23307,7 +23676,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 434752,
@@ -23370,7 +23740,8 @@
     "c11_defensive_contributions": 0.6706,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 214225,
@@ -23433,7 +23804,8 @@
     "c11_defensive_contributions": 0.3539,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 226182,
@@ -23496,7 +23868,8 @@
     "c11_defensive_contributions": 0.1214,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 243526,
@@ -23559,7 +23932,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 220627,
@@ -23622,7 +23996,8 @@
     "c11_defensive_contributions": 0.4549,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 437738,
@@ -23685,11 +24060,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 522047,
-    "web_name": "Muharemovi\u0107",
+    "web_name": "Muharemović",
     "team": "Leeds",
     "position": "DEF",
     "season_minutes": 90,
@@ -23748,7 +24124,8 @@
     "c11_defensive_contributions": 0.1743,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 466525,
@@ -23811,7 +24188,8 @@
     "c11_defensive_contributions": 0.4378,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 435997,
@@ -23874,7 +24252,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0084,
     "p_app": 0.0084,
-    "p_60_plus": 0.0056
+    "p_60_plus": 0.0056,
+    "now_cost": 6.0
   },
   {
     "player_code": 427637,
@@ -23937,7 +24316,8 @@
     "c11_defensive_contributions": 0.1311,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 199598,
@@ -24000,7 +24380,8 @@
     "c11_defensive_contributions": 0.7587,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 180135,
@@ -24063,7 +24444,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0028,
     "p_app": 0.0028,
-    "p_60_plus": 0.0019
+    "p_60_plus": 0.0019,
+    "now_cost": 5.0
   },
   {
     "player_code": 492859,
@@ -24126,7 +24508,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 221399,
@@ -24189,7 +24572,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 200617,
@@ -24252,7 +24636,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 486520,
@@ -24315,7 +24700,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 248056,
@@ -24378,7 +24764,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 177815,
@@ -24441,7 +24828,8 @@
     "c11_defensive_contributions": 0.0025,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 174594,
@@ -24504,7 +24892,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 235826,
@@ -24567,7 +24956,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 565297,
@@ -24630,7 +25020,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 432720,
@@ -24693,7 +25084,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 5.0
   },
   {
     "player_code": 173774,
@@ -24756,7 +25148,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 643970,
@@ -24819,7 +25212,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 592740,
@@ -24882,7 +25276,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 116535,
@@ -24945,7 +25340,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 5.5
   },
   {
     "player_code": 449027,
@@ -25008,7 +25404,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 155503,
@@ -25071,7 +25468,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 586268,
@@ -25134,7 +25532,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 432987,
@@ -25197,7 +25596,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 464353,
@@ -25260,7 +25660,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 97032,
@@ -25323,7 +25724,8 @@
     "c11_defensive_contributions": 0.3239,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.5
   },
   {
     "player_code": 216094,
@@ -25386,7 +25788,8 @@
     "c11_defensive_contributions": 0.0085,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 544877,
@@ -25449,7 +25852,8 @@
     "c11_defensive_contributions": 0.0425,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 171287,
@@ -25512,7 +25916,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 492777,
@@ -25575,7 +25980,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 519440,
@@ -25638,7 +26044,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 606702,
@@ -25701,7 +26108,8 @@
     "c11_defensive_contributions": 0.0316,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.8667
+    "p_60_plus": 0.8667,
+    "now_cost": 5.0
   },
   {
     "player_code": 647681,
@@ -25764,7 +26172,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 214285,
@@ -25827,7 +26236,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 489580,
@@ -25890,7 +26300,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 494595,
@@ -25953,7 +26364,8 @@
     "c11_defensive_contributions": 0.0072,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.7111
+    "p_60_plus": 0.7111,
+    "now_cost": 7.5
   },
   {
     "player_code": 243298,
@@ -26016,7 +26428,8 @@
     "c11_defensive_contributions": 0.0114,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 7.0
   },
   {
     "player_code": 424876,
@@ -26079,7 +26492,8 @@
     "c11_defensive_contributions": 0.2149,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 7.0
   },
   {
     "player_code": 611922,
@@ -26142,7 +26556,8 @@
     "c11_defensive_contributions": 0.0007,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.7111
+    "p_60_plus": 0.7111,
+    "now_cost": 6.0
   },
   {
     "player_code": 223541,
@@ -26205,7 +26620,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 441266,
@@ -26268,7 +26684,8 @@
     "c11_defensive_contributions": 0.0894,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 243016,
@@ -26331,7 +26748,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0095,
     "p_app": 0.0095,
-    "p_60_plus": 0.0063
+    "p_60_plus": 0.0063,
+    "now_cost": 5.5
   },
   {
     "player_code": 206915,
@@ -26394,7 +26812,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 158983,
@@ -26457,7 +26876,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 591386,
@@ -26520,7 +26940,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 535928,
@@ -26583,7 +27004,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 551499,
@@ -26646,7 +27068,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0095,
     "p_app": 0.0095,
-    "p_60_plus": 0.0063
+    "p_60_plus": 0.0063,
+    "now_cost": 6.5
   },
   {
     "player_code": 491501,
@@ -26709,7 +27132,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 219168,
@@ -26772,11 +27196,12 @@
     "c11_defensive_contributions": 0.0005,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 9.0
   },
   {
     "player_code": 510663,
-    "web_name": "Ekitik\u00e9",
+    "web_name": "Ekitiké",
     "team": "Liverpool",
     "position": "FWD",
     "season_minutes": 0,
@@ -26835,7 +27260,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 7.5
   },
   {
     "player_code": 514514,
@@ -26898,7 +27324,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0042,
     "p_app": 0.0042,
-    "p_60_plus": 0.0028
+    "p_60_plus": 0.0028,
+    "now_cost": 5.0
   },
   {
     "player_code": 500058,
@@ -26961,7 +27388,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 444884,
@@ -27024,7 +27452,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 445087,
@@ -27087,7 +27516,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.007,
     "p_app": 0.007,
-    "p_60_plus": 0.0047
+    "p_60_plus": 0.0047,
+    "now_cost": 5.5
   },
   {
     "player_code": 114283,
@@ -27150,7 +27580,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0028,
     "p_app": 0.0028,
-    "p_60_plus": 0.0019
+    "p_60_plus": 0.0019,
+    "now_cost": 6.5
   },
   {
     "player_code": 204936,
@@ -27213,7 +27644,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 5.5
   },
   {
     "player_code": 122074,
@@ -27276,7 +27708,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 472769,
@@ -27339,11 +27772,12 @@
     "c11_defensive_contributions": 0.0137,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.7111
+    "p_60_plus": 0.7111,
+    "now_cost": 6.5
   },
   {
     "player_code": 209036,
-    "web_name": "Gu\u00e9hi",
+    "web_name": "Guéhi",
     "team": "Man City",
     "position": "DEF",
     "season_minutes": 90,
@@ -27402,7 +27836,8 @@
     "c11_defensive_contributions": 0.2998,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 465351,
@@ -27465,11 +27900,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0116,
     "p_app": 0.0116,
-    "p_60_plus": 0.0077
+    "p_60_plus": 0.0077,
+    "now_cost": 6.0
   },
   {
     "player_code": 171314,
-    "web_name": "R\u00faben",
+    "web_name": "Rúben",
     "team": "Man City",
     "position": "DEF",
     "season_minutes": 90,
@@ -27528,7 +27964,8 @@
     "c11_defensive_contributions": 0.188,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 477424,
@@ -27591,11 +28028,12 @@
     "c11_defensive_contributions": 0.1986,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 448514,
-    "web_name": "A\u00eft-Nouri",
+    "web_name": "Aït-Nouri",
     "team": "Man City",
     "position": "DEF",
     "season_minutes": 0,
@@ -27654,7 +28092,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 578153,
@@ -27717,7 +28156,8 @@
     "c11_defensive_contributions": 0.3002,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 494307,
@@ -27780,7 +28220,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 477064,
@@ -27843,7 +28284,8 @@
     "c11_defensive_contributions": 0.0079,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.5778
+    "p_60_plus": 0.5778,
+    "now_cost": 4.5
   },
   {
     "player_code": 616222,
@@ -27906,7 +28348,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 437730,
@@ -27969,7 +28412,8 @@
     "c11_defensive_contributions": 0.0788,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 8.5
   },
   {
     "player_code": 209244,
@@ -28032,7 +28476,8 @@
     "c11_defensive_contributions": 0.078,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 7.0
   },
   {
     "player_code": 466052,
@@ -28095,7 +28540,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0095,
     "p_app": 0.0095,
-    "p_60_plus": 0.0063
+    "p_60_plus": 0.0063,
+    "now_cost": 7.5
   },
   {
     "player_code": 248875,
@@ -28158,7 +28604,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 7.5
   },
   {
     "player_code": 438234,
@@ -28221,7 +28668,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 7.0
   },
   {
     "player_code": 220566,
@@ -28284,7 +28732,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.5
   },
   {
     "player_code": 510281,
@@ -28347,7 +28796,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.5
   },
   {
     "player_code": 433036,
@@ -28410,7 +28860,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 465694,
@@ -28473,11 +28924,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 91651,
-    "web_name": "Kova\u010di\u0107",
+    "web_name": "Kovačić",
     "team": "Man City",
     "position": "MID",
     "season_minutes": 27,
@@ -28536,7 +28988,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0095,
     "p_app": 0.0095,
-    "p_60_plus": 0.0063
+    "p_60_plus": 0.0063,
+    "now_cost": 5.5
   },
   {
     "player_code": 575204,
@@ -28599,7 +29052,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 155405,
@@ -28662,7 +29116,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 590039,
@@ -28725,7 +29180,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 649208,
@@ -28788,7 +29244,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 223094,
@@ -28851,7 +29308,8 @@
     "c11_defensive_contributions": 0.0009,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 15.5
   },
   {
     "player_code": 215379,
@@ -28914,7 +29372,8 @@
     "c11_defensive_contributions": 0.3997,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.7111
+    "p_60_plus": 0.7111,
+    "now_cost": 6.5
   },
   {
     "player_code": 106921,
@@ -28977,7 +29436,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 166989,
@@ -29040,7 +29500,8 @@
     "c11_defensive_contributions": 0.0803,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.8
+    "p_60_plus": 0.8,
+    "now_cost": 6.0
   },
   {
     "player_code": 532605,
@@ -29103,7 +29564,8 @@
     "c11_defensive_contributions": 0.0448,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.8
+    "p_60_plus": 0.8,
+    "now_cost": 5.0
   },
   {
     "player_code": 59735,
@@ -29166,7 +29628,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 465247,
@@ -29229,7 +29692,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 5.0
   },
   {
     "player_code": 451302,
@@ -29292,7 +29756,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 21205,
@@ -29355,7 +29820,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 596777,
@@ -29418,7 +29884,8 @@
     "c11_defensive_contributions": 0.0003,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.3333
+    "p_60_plus": 0.3333,
+    "now_cost": 6.0
   },
   {
     "player_code": 209365,
@@ -29481,7 +29948,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 216051,
@@ -29544,7 +30012,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0035,
     "p_app": 0.0035,
-    "p_60_plus": 0.0023
+    "p_60_plus": 0.0023,
+    "now_cost": 5.0
   },
   {
     "player_code": 95658,
@@ -29607,7 +30076,8 @@
     "c11_defensive_contributions": 0.3375,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 221820,
@@ -29670,7 +30140,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 550864,
@@ -29733,7 +30204,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 606745,
@@ -29796,7 +30268,8 @@
     "c11_defensive_contributions": 0.3176,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 230001,
@@ -29859,7 +30332,8 @@
     "c11_defensive_contributions": 0.1837,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 106760,
@@ -29922,7 +30396,8 @@
     "c11_defensive_contributions": 0.1455,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 577974,
@@ -29985,7 +30460,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 547676,
@@ -30048,7 +30524,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 141746,
@@ -30111,7 +30588,8 @@
     "c11_defensive_contributions": 0.1809,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 12.0
   },
   {
     "player_code": 446008,
@@ -30174,7 +30652,8 @@
     "c11_defensive_contributions": 0.0156,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 8.0
   },
   {
     "player_code": 430871,
@@ -30237,7 +30716,8 @@
     "c11_defensive_contributions": 0.0794,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 8.0
   },
   {
     "player_code": 176297,
@@ -30300,7 +30780,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0158,
     "p_app": 0.0158,
-    "p_60_plus": 0.0105
+    "p_60_plus": 0.0105,
+    "now_cost": 7.0
   },
   {
     "player_code": 184341,
@@ -30363,7 +30844,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 493250,
@@ -30426,7 +30908,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 516895,
@@ -30489,7 +30972,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0081,
     "p_app": 0.0081,
-    "p_60_plus": 0.0054
+    "p_60_plus": 0.0054,
+    "now_cost": 5.5
   },
   {
     "player_code": 232112,
@@ -30552,7 +31036,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 547037,
@@ -30615,7 +31100,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 576628,
@@ -30678,7 +31164,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0035,
     "p_app": 0.0035,
-    "p_60_plus": 0.0023
+    "p_60_plus": 0.0023,
+    "now_cost": 5.0
   },
   {
     "player_code": 490881,
@@ -30741,7 +31228,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 576620,
@@ -30804,7 +31292,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 519913,
@@ -30867,11 +31356,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 485711,
-    "web_name": "\u0160e\u0161ko",
+    "web_name": "Šeško",
     "team": "Man Utd",
     "position": "FWD",
     "season_minutes": 23,
@@ -30930,7 +31420,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0081,
     "p_app": 0.0081,
-    "p_60_plus": 0.0054
+    "p_60_plus": 0.0054,
+    "now_cost": 7.0
   },
   {
     "player_code": 458249,
@@ -30993,7 +31484,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 596047,
@@ -31056,7 +31548,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 98747,
@@ -31119,7 +31612,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 81441,
@@ -31182,7 +31676,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 554578,
@@ -31245,7 +31740,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 465642,
@@ -31308,11 +31804,12 @@
     "c11_defensive_contributions": 0.2151,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 119471,
-    "web_name": "Sch\u00e4r",
+    "web_name": "Schär",
     "team": "Newcastle",
     "position": "DEF",
     "season_minutes": 1,
@@ -31371,7 +31868,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0004,
     "p_app": 0.0004,
-    "p_60_plus": 0.0002
+    "p_60_plus": 0.0002,
+    "now_cost": 5.0
   },
   {
     "player_code": 220237,
@@ -31434,7 +31932,8 @@
     "c11_defensive_contributions": 0.5132,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 78916,
@@ -31497,7 +31996,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 487838,
@@ -31560,7 +32060,8 @@
     "c11_defensive_contributions": 0.1137,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 441191,
@@ -31623,7 +32124,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 545477,
@@ -31686,7 +32188,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 201666,
@@ -31749,7 +32252,8 @@
     "c11_defensive_contributions": 0.0069,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 449434,
@@ -31812,7 +32316,8 @@
     "c11_defensive_contributions": 0.0008,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 232653,
@@ -31875,7 +32380,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0119,
     "p_app": 0.0119,
-    "p_60_plus": 0.008
+    "p_60_plus": 0.008,
+    "now_cost": 5.0
   },
   {
     "player_code": 114243,
@@ -31938,7 +32444,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0049,
     "p_app": 0.0049,
-    "p_60_plus": 0.0033
+    "p_60_plus": 0.0033,
+    "now_cost": 6.0
   },
   {
     "player_code": 180974,
@@ -32001,7 +32508,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 547719,
@@ -32064,7 +32572,8 @@
     "c11_defensive_contributions": 0.0711,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 200089,
@@ -32127,11 +32636,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0119,
     "p_app": 0.0119,
-    "p_60_plus": 0.008
+    "p_60_plus": 0.008,
+    "now_cost": 5.0
   },
   {
     "player_code": 611665,
-    "web_name": "Tour\u00e9",
+    "web_name": "Touré",
     "team": "Newcastle",
     "position": "MID",
     "season_minutes": 0,
@@ -32190,7 +32700,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 636852,
@@ -32253,7 +32764,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.5556
+    "p_60_plus": 0.5556,
+    "now_cost": 5.0
   },
   {
     "player_code": 470313,
@@ -32316,7 +32828,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 216646,
@@ -32379,7 +32892,8 @@
     "c11_defensive_contributions": 0.0003,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 538207,
@@ -32442,7 +32956,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.5556
+    "p_60_plus": 0.5556,
+    "now_cost": 6.0
   },
   {
     "player_code": 599303,
@@ -32505,7 +33020,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 632794,
@@ -32568,11 +33084,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0049,
     "p_app": 0.0049,
-    "p_60_plus": 0.0033
+    "p_60_plus": 0.0033,
+    "now_cost": 5.0
   },
   {
     "player_code": 470551,
-    "web_name": "Horn\u00ed\u010dek",
+    "web_name": "Horníček",
     "team": "Newcastle",
     "position": "GK",
     "season_minutes": 90,
@@ -32631,11 +33148,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 5.0
   },
   {
     "player_code": 463726,
-    "web_name": "Dedi\u0107",
+    "web_name": "Dedić",
     "team": "Newcastle",
     "position": "DEF",
     "season_minutes": 90,
@@ -32694,7 +33212,8 @@
     "c11_defensive_contributions": 0.0858,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 553746,
@@ -32757,7 +33276,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 85633,
@@ -32820,7 +33340,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 5.0
   },
   {
     "player_code": 221389,
@@ -32883,7 +33404,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 215136,
@@ -32946,7 +33468,8 @@
     "c11_defensive_contributions": 0.2299,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 485047,
@@ -33009,11 +33532,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 227444,
-    "web_name": "Milenkovi\u0107",
+    "web_name": "Milenković",
     "team": "Nott'm Forest",
     "position": "DEF",
     "season_minutes": 90,
@@ -33072,7 +33596,8 @@
     "c11_defensive_contributions": 0.4165,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 575476,
@@ -33135,7 +33660,8 @@
     "c11_defensive_contributions": 0.5499,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 159506,
@@ -33198,7 +33724,8 @@
     "c11_defensive_contributions": 0.1026,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.9556
+    "p_60_plus": 0.9556,
+    "now_cost": 4.5
   },
   {
     "player_code": 575458,
@@ -33261,7 +33788,8 @@
     "c11_defensive_contributions": 0.3518,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 500151,
@@ -33324,7 +33852,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 204822,
@@ -33387,7 +33916,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 549067,
@@ -33450,7 +33980,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 470315,
@@ -33513,7 +34044,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0056,
     "p_app": 0.0056,
-    "p_60_plus": 0.0037
+    "p_60_plus": 0.0037,
+    "now_cost": 4.5
   },
   {
     "player_code": 538638,
@@ -33576,7 +34108,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 222531,
@@ -33639,7 +34172,8 @@
     "c11_defensive_contributions": 0.043,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 8.0
   },
   {
     "player_code": 209046,
@@ -33702,7 +34236,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 456512,
@@ -33765,7 +34300,8 @@
     "c11_defensive_contributions": 0.0163,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.6889
+    "p_60_plus": 0.6889,
+    "now_cost": 5.5
   },
   {
     "player_code": 503301,
@@ -33828,7 +34364,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 476887,
@@ -33891,7 +34428,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 432714,
@@ -33954,7 +34492,8 @@
     "c11_defensive_contributions": 0.0423,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.9556
+    "p_60_plus": 0.9556,
+    "now_cost": 5.5
   },
   {
     "player_code": 250199,
@@ -34017,11 +34556,12 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 210462,
-    "web_name": "I.Sangar\u00e9",
+    "web_name": "I.Sangaré",
     "team": "Nott'm Forest",
     "position": "MID",
     "season_minutes": 90,
@@ -34080,7 +34620,8 @@
     "c11_defensive_contributions": 0.7873,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 204968,
@@ -34143,7 +34684,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 60689,
@@ -34206,7 +34748,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0098,
     "p_app": 0.0098,
-    "p_60_plus": 0.0065
+    "p_60_plus": 0.0065,
+    "now_cost": 6.0
   },
   {
     "player_code": 482973,
@@ -34269,7 +34812,8 @@
     "c11_defensive_contributions": 0.0215,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 465680,
@@ -34332,7 +34876,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0004,
     "p_app": 0.0004,
-    "p_60_plus": 0.0002
+    "p_60_plus": 0.0002,
+    "now_cost": 5.5
   },
   {
     "player_code": 204561,
@@ -34395,7 +34940,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0056,
     "p_app": 0.0056,
-    "p_60_plus": 0.0037
+    "p_60_plus": 0.0037,
+    "now_cost": 5.0
   },
   {
     "player_code": 568420,
@@ -34458,7 +35004,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 428971,
@@ -34521,7 +35068,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 469142,
@@ -34584,7 +35132,8 @@
     "c11_defensive_contributions": 0.4499,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 432422,
@@ -34647,7 +35196,8 @@
     "c11_defensive_contributions": 0.3169,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 184254,
@@ -34710,7 +35260,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 214572,
@@ -34773,7 +35324,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 485055,
@@ -34836,7 +35388,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 4.5
   },
   {
     "player_code": 67089,
@@ -34899,7 +35452,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 221466,
@@ -34962,7 +35516,8 @@
     "c11_defensive_contributions": 0.7265,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 441164,
@@ -35025,7 +35580,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 221632,
@@ -35088,7 +35644,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 135720,
@@ -35151,7 +35708,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 122798,
@@ -35214,7 +35772,8 @@
     "c11_defensive_contributions": 0.0489,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 491279,
@@ -35277,7 +35836,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 232859,
@@ -35340,7 +35900,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 487053,
@@ -35403,7 +35964,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0014,
     "p_app": 0.0014,
-    "p_60_plus": 0.0009
+    "p_60_plus": 0.0009,
+    "now_cost": 4.5
   },
   {
     "player_code": 548308,
@@ -35466,7 +36028,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 115556,
@@ -35529,7 +36092,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 640419,
@@ -35592,7 +36156,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 499716,
@@ -35655,7 +36220,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 616221,
@@ -35718,7 +36284,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 460842,
@@ -35781,7 +36348,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.5
   },
   {
     "player_code": 493362,
@@ -35844,7 +36412,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 511499,
@@ -35907,7 +36476,8 @@
     "c11_defensive_contributions": 0.1218,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 172780,
@@ -35970,7 +36540,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0077,
     "p_app": 0.0077,
-    "p_60_plus": 0.0051
+    "p_60_plus": 0.0051,
+    "now_cost": 6.5
   },
   {
     "player_code": 202993,
@@ -36033,7 +36604,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0158,
     "p_app": 0.0158,
-    "p_60_plus": 0.0105
+    "p_60_plus": 0.0105,
+    "now_cost": 5.5
   },
   {
     "player_code": 550839,
@@ -36096,7 +36668,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 482442,
@@ -36159,7 +36732,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 232787,
@@ -36222,7 +36796,8 @@
     "c11_defensive_contributions": 0.0073,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.3333
+    "p_60_plus": 0.3333,
+    "now_cost": 5.5
   },
   {
     "player_code": 570526,
@@ -36285,7 +36860,8 @@
     "c11_defensive_contributions": 0.0018,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.3333
+    "p_60_plus": 0.3333,
+    "now_cost": 5.5
   },
   {
     "player_code": 445044,
@@ -36348,7 +36924,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 6.5
   },
   {
     "player_code": 547701,
@@ -36411,7 +36988,8 @@
     "c11_defensive_contributions": 0.1396,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 499721,
@@ -36474,7 +37052,8 @@
     "c11_defensive_contributions": 0.0004,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.8222
+    "p_60_plus": 0.8222,
+    "now_cost": 5.0
   },
   {
     "player_code": 499726,
@@ -36537,7 +37116,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 551226,
@@ -36600,7 +37180,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0158,
     "p_app": 0.0158,
-    "p_60_plus": 0.0105
+    "p_60_plus": 0.0105,
+    "now_cost": 6.0
   },
   {
     "player_code": 154566,
@@ -36663,7 +37244,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0077,
     "p_app": 0.0077,
-    "p_60_plus": 0.0051
+    "p_60_plus": 0.0051,
+    "now_cost": 6.0
   },
   {
     "player_code": 212319,
@@ -36726,7 +37308,8 @@
     "c11_defensive_contributions": 0.0101,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.8222
+    "p_60_plus": 0.8222,
+    "now_cost": 6.0
   },
   {
     "player_code": 490145,
@@ -36789,7 +37372,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 611917,
@@ -36852,7 +37436,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 498016,
@@ -36915,7 +37500,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.99
+    "p_60_plus": 0.99,
+    "now_cost": 5.0
   },
   {
     "player_code": 232571,
@@ -36978,7 +37564,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 515046,
@@ -37041,7 +37628,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 223827,
@@ -37104,7 +37692,8 @@
     "c11_defensive_contributions": 0.5283,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 200834,
@@ -37167,7 +37756,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 487676,
@@ -37230,7 +37820,8 @@
     "c11_defensive_contributions": 0.0369,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 201895,
@@ -37293,7 +37884,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0081,
     "p_app": 0.0081,
-    "p_60_plus": 0.0054
+    "p_60_plus": 0.0054,
+    "now_cost": 5.0
   },
   {
     "player_code": 434399,
@@ -37356,7 +37948,8 @@
     "c11_defensive_contributions": 0.1817,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 519634,
@@ -37419,7 +38012,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 477547,
@@ -37482,7 +38076,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 167512,
@@ -37545,7 +38140,8 @@
     "c11_defensive_contributions": 0.0402,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.8
+    "p_60_plus": 0.8,
+    "now_cost": 4.0
   },
   {
     "player_code": 105717,
@@ -37608,7 +38204,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 4.0
   },
   {
     "player_code": 93605,
@@ -37671,11 +38268,12 @@
     "c11_defensive_contributions": 0.1169,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 4.5
   },
   {
     "player_code": 484420,
-    "web_name": "E.Le F\u00e9e",
+    "web_name": "E.Le Fée",
     "team": "Sunderland",
     "position": "MID",
     "season_minutes": 79,
@@ -37734,7 +38332,8 @@
     "c11_defensive_contributions": 0.2146,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 6.0
   },
   {
     "player_code": 547027,
@@ -37797,7 +38396,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0035,
     "p_app": 0.0035,
-    "p_60_plus": 0.0023
+    "p_60_plus": 0.0023,
+    "now_cost": 5.5
   },
   {
     "player_code": 84450,
@@ -37860,7 +38460,8 @@
     "c11_defensive_contributions": 0.5098,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.5
   },
   {
     "player_code": 577669,
@@ -37923,7 +38524,8 @@
     "c11_defensive_contributions": 0.1313,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 1.0
+    "p_60_plus": 1.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 535818,
@@ -37986,7 +38588,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 461199,
@@ -38049,7 +38652,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 554197,
@@ -38112,7 +38716,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0035,
     "p_app": 0.0035,
-    "p_60_plus": 0.0023
+    "p_60_plus": 0.0023,
+    "now_cost": 5.0
   },
   {
     "player_code": 549912,
@@ -38175,7 +38780,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0109,
     "p_app": 0.0109,
-    "p_60_plus": 0.0073
+    "p_60_plus": 0.0073,
+    "now_cost": 5.5
   },
   {
     "player_code": 699989,
@@ -38238,7 +38844,8 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0,
     "p_app": 0.0,
-    "p_60_plus": 0.0
+    "p_60_plus": 0.0,
+    "now_cost": 5.0
   },
   {
     "player_code": 536661,
@@ -38301,7 +38908,8 @@
     "c11_defensive_contributions": 0.0028,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.6222
+    "p_60_plus": 0.6222,
+    "now_cost": 5.0
   },
   {
     "player_code": 441264,
@@ -38364,7 +38972,8 @@
     "c11_defensive_contributions": 0.0001,
     "p_start": 1.0,
     "p_app": 1.0,
-    "p_60_plus": 0.8
+    "p_60_plus": 0.8,
+    "now_cost": 6.0
   },
   {
     "player_code": 437505,
@@ -38427,6 +39036,7 @@
     "c11_defensive_contributions": 0.0,
     "p_start": 0.0081,
     "p_app": 0.0081,
-    "p_60_plus": 0.0054
+    "p_60_plus": 0.0054,
+    "now_cost": 5.5
   }
 ]

@@ -240,35 +240,23 @@ export default function TransferWorkbench({
 
       {/* Transfer Marketplace */}
       <div className="data-table-container" style={{ marginTop: '30px' }}>
-        <div style={{ padding: '14px 18px', background: 'var(--bg-surface-2)', borderBottom: '1px solid var(--border-subtle)', display: 'flex', flexWrap: 'wrap', gap: '14px', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)' }}>
-              Player Scout & Transfer Market
-            </span>
-            <span style={{ marginLeft: '10px', fontSize: '12px', color: 'var(--text-muted)' }}>
-              (Click row to view stats · Click Compare to test transfer)
-            </span>
+        <div className="scout-controls">
+          <div className="scout-title-group">
+            <span className="scout-title">Player Scout &amp; Transfer Market</span>
+            <span className="scout-hint">(Click row to view stats · Click Compare to test transfer)</span>
           </div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
+          <div className="scout-filters">
             {/* Search Input */}
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-              <MagnifyingGlass size={14} style={{ position: 'absolute', left: '10px', color: 'var(--text-muted)' }} />
+            <div className="scout-search-wrap">
+              <MagnifyingGlass size={14} className="scout-search-icon" />
               <input
                 type="text"
                 placeholder="Search player or team..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 aria-label="Search players by name or club"
-                style={{
-                  background: 'var(--bg-surface-1)',
-                  border: '1px solid var(--border-medium)',
-                  color: 'var(--text-primary)',
-                  padding: '6px 12px 6px 30px',
-                  borderRadius: 'var(--radius-sm)',
-                  fontSize: '12px',
-                  width: '190px'
-                }}
+                className="scout-search-input"
               />
             </div>
 
@@ -287,7 +275,7 @@ export default function TransferWorkbench({
             </div>
 
             {/* Max Price Slider */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+            <div className="scout-price-control">
               <span>Max: £{maxPrice}m</span>
               <input
                 type="range"
@@ -297,7 +285,7 @@ export default function TransferWorkbench({
                 value={maxPrice}
                 onChange={e => setMaxPrice(Number(e.target.value))}
                 aria-label={`Maximum player cost slider, currently £${maxPrice}M`}
-                style={{ width: '80px', accentColor: 'var(--accent-emerald)', cursor: 'pointer' }}
+                className="scout-price-slider"
               />
             </div>
 
@@ -306,16 +294,7 @@ export default function TransferWorkbench({
               value={sortBy}
               onChange={e => setSortBy(e.target.value)}
               aria-label="Sort players by metric"
-              style={{
-                background: 'var(--bg-surface-1)',
-                color: 'var(--text-primary)',
-                border: '1px solid var(--border-medium)',
-                borderRadius: 'var(--radius-sm)',
-                padding: '6px 10px',
-                fontSize: '12px',
-                fontFamily: 'var(--font-sans)',
-                cursor: 'pointer'
-              }}
+              className="scout-sort-select"
             >
               <option value="xP">Highest Projected Points</option>
               <option value="cost_desc">Price (High to Low)</option>

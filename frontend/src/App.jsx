@@ -38,7 +38,6 @@ const HASH_TO_TAB = {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('pitch');
-  const [selectedStrategy, setSelectedStrategy] = useState('pure_xp');
   const [inspectedPlayer, setInspectedPlayer] = useState(null);
   const [activeChip, setActiveChip] = useState('none');
   const [compareSubItem, setCompareSubItem] = useState(null);
@@ -166,10 +165,6 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={handleTabChange}
         liveData={liveMatchdayData}
-        selectedStrategy={selectedStrategy}
-        setSelectedStrategy={setSelectedStrategy}
-        activeChip={activeChip}
-        setActiveChip={handleChipChange}
       />
 
       {/* 3-Level Breadcrumb Trail */}
