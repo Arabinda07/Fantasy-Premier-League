@@ -9,7 +9,7 @@
 
 An open-source quantitative analytics engine, Mixed Integer Linear Programming (MILP) solver, and interactive matchday terminal for Fantasy Premier League.
 
-👉 **[Launch Live Web Terminal (Vercel)](https://frontend-two-eta-z417h3t78v.vercel.app)** · **[GitHub Pages Mirror](https://arabinda07.github.io/Fantasy-Premier-League/)**
+👉 **[Launch Live Web Terminal](https://frontend-two-eta-z417h3t78v.vercel.app)**
 
 ---
 
