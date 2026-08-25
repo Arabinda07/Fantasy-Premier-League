@@ -98,6 +98,17 @@ body {
   background: var(--text-muted);
 }
 
+/* Focus Ring Utilities (A11y WCAG 2.4.7) */
+:focus-visible {
+  outline: 2px solid var(--accent-emerald);
+  outline-offset: 2px;
+}
+
+button:focus-visible, input:focus-visible, select:focus-visible, .player-card:focus-visible, .bench-item:focus-visible {
+  outline: 2px solid var(--accent-emerald);
+  outline-offset: 2px;
+}
+
 /* Typography Utilities */
 .font-mono {
   font-family: var(--font-mono);

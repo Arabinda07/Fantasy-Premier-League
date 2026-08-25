@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import Header from './components/Header';
 import TacticalPitch from './components/TacticalPitch';
 import TransferWorkbench from './components/TransferWorkbench';
 import FixtureHeatmap from './components/FixtureHeatmap';
-import PlayerDNAInspector from './components/PlayerDNAInspector';
 import MarketVelocityTicker from './components/MarketVelocityTicker';
+
+// Lazy-load Recharts heavy charting component on demand
+const PlayerDNAInspector = lazy(() => import('./components/PlayerDNAInspector'));
 
 // Import live data payloads
 import liveMatchdayData from './data/live_matchday_gw2.json';
@@ -158,12 +160,14 @@ export default function App() {
         )}
       </main>
 
-      {/* 11-Component Player DNA Modal */}
+      {/* 11-Component Player DNA Modal with Lazy-Load Suspense */}
       {inspectedPlayer && (
-        <PlayerDNAInspector
-          player={inspectedPlayer}
-          onClose={() => setInspectedPlayer(null)}
-        />
+        <Suspense fallback={<div className="modal-overlay"><div className="modal-content skeleton" style={{ height: '400px' }}></div></div>}>
+          <PlayerDNAInspector
+            player={inspectedPlayer}
+            onClose={() => setInspectedPlayer(null)}
+          />
+        </Suspense>
       )}
     </div>
   );

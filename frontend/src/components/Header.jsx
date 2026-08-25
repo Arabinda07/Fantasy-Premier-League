@@ -19,14 +19,18 @@ export default function Header({ activeTab, setActiveTab, liveData, selectedStra
         </span>
       </div>
 
-      <nav className="nav-tabs">
+      <nav className="nav-tabs" role="tablist" aria-label="Main Navigation Tabs">
         {tabs.map(tab => (
           <button
             key={tab.id}
+            id={`tab-${tab.id}`}
+            role="tab"
+            aria-selected={activeTab === tab.id}
+            aria-controls={`panel-${tab.id}`}
             className={`nav-tab-btn ${activeTab === tab.id ? 'active' : ''}`}
             onClick={() => setActiveTab(tab.id)}
           >
-            <span>{tab.icon}</span>
+            <span aria-hidden="true">{tab.icon}</span>
             <span>{tab.label}</span>
           </button>
         ))}
@@ -36,12 +40,13 @@ export default function Header({ activeTab, setActiveTab, liveData, selectedStra
         <select
           value={selectedStrategy}
           onChange={e => setSelectedStrategy(e.target.value)}
+          aria-label="Select Optimization Strategy Mode"
           style={{
             background: 'var(--bg-surface-2)',
             color: 'var(--text-primary)',
             border: '1px solid var(--border-medium)',
             borderRadius: 'var(--radius-sm)',
-            padding: '5px 10px',
+            padding: '6px 12px',
             fontSize: '12px',
             fontFamily: 'var(--font-mono)',
             cursor: 'pointer'

@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
 
 export default function PlayerDNAInspector({ player, onClose }) {
+  // Close on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   if (!player) return null;
 
   // Approximate 11 component decomposition for the player
@@ -34,13 +45,13 @@ export default function PlayerDNAInspector({ player, onClose }) {
   ].filter(c => c.value !== 0);
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="dna-modal-title">
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '16px', marginBottom: '20px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span className={`player-position-pill ${pos}`}>{pos}</span>
-              <h2 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+              <h2 id="dna-modal-title" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
                 {player.web_name}
               </h2>
             </div>
@@ -50,13 +61,16 @@ export default function PlayerDNAInspector({ player, onClose }) {
           </div>
           <button
             onClick={onClose}
+            aria-label="Close player DNA inspector"
             style={{
               background: 'transparent',
               border: 'none',
               color: 'var(--text-muted)',
               fontSize: '20px',
               cursor: 'pointer',
-              padding: '4px 8px'
+              padding: '6px 10px',
+              borderRadius: 'var(--radius-xs)',
+              lineHeight: 1
             }}
           >
             ✕

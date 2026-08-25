@@ -95,33 +95,36 @@ export default function TransferWorkbench({ roadmap, allPlayers, onInspectPlayer
               placeholder="Search player or team..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
+              aria-label="Search players by name or club"
               style={{
                 background: 'var(--bg-surface-1)',
                 border: '1px solid var(--border-medium)',
                 color: 'var(--text-primary)',
-                padding: '6px 12px',
+                padding: '8px 12px',
                 borderRadius: 'var(--radius-sm)',
                 fontSize: '12px',
-                width: '180px'
+                width: '190px'
               }}
             />
 
             {/* Position Filter */}
-            <div style={{ display: 'flex', gap: '2px' }}>
+            <div role="group" aria-label="Filter by player position" style={{ display: 'flex', gap: '3px' }}>
               {['ALL', 'GK', 'DEF', 'MID', 'FWD'].map(pos => (
                 <button
                   key={pos}
                   onClick={() => setSelectedPos(pos)}
+                  aria-pressed={selectedPos === pos}
                   style={{
                     background: selectedPos === pos ? 'var(--accent-emerald)' : 'var(--bg-surface-1)',
-                    color: selectedPos === pos ? '#06261C' : 'var(--text-secondary)',
+                    color: selectedPos === pos ? 'var(--text-inverse)' : 'var(--text-secondary)',
                     border: '1px solid var(--border-subtle)',
-                    padding: '4px 8px',
+                    padding: '8px 12px',
                     fontSize: '11px',
                     fontFamily: 'var(--font-mono)',
                     fontWeight: 700,
                     borderRadius: 'var(--radius-xs)',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    minHeight: '36px'
                   }}
                 >
                   {pos}
@@ -130,7 +133,7 @@ export default function TransferWorkbench({ roadmap, allPlayers, onInspectPlayer
             </div>
 
             {/* Max Price Slider */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
               <span>Max: £{maxPrice}M</span>
               <input
                 type="range"
@@ -139,7 +142,8 @@ export default function TransferWorkbench({ roadmap, allPlayers, onInspectPlayer
                 step="0.5"
                 value={maxPrice}
                 onChange={e => setMaxPrice(Number(e.target.value))}
-                style={{ width: '80px', cursor: 'pointer' }}
+                aria-label={`Maximum player cost slider, currently £${maxPrice}M`}
+                style={{ width: '85px', cursor: 'pointer' }}
               />
             </div>
 
@@ -147,15 +151,17 @@ export default function TransferWorkbench({ roadmap, allPlayers, onInspectPlayer
             <select
               value={sortBy}
               onChange={e => setSortBy(e.target.value)}
+              aria-label="Sort players by metric"
               style={{
                 background: 'var(--bg-surface-1)',
                 color: 'var(--text-primary)',
                 border: '1px solid var(--border-medium)',
                 borderRadius: 'var(--radius-sm)',
-                padding: '5px 8px',
+                padding: '8px 12px',
                 fontSize: '12px',
                 fontFamily: 'var(--font-mono)',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                minHeight: '36px'
               }}
             >
               <option value="xP">Sort by xP (High to Low)</option>

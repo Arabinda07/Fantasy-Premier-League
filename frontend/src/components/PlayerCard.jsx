@@ -16,17 +16,51 @@ export default function PlayerCard({ player, isSelected, onClick, onInspect }) {
     <div
       className={`player-card ${isCaptain ? 'is-captain' : ''} ${isVice ? 'is-vice' : ''} ${isSelected ? 'is-selected' : ''}`}
       onClick={onClick}
-      onDoubleClick={() => onInspect && onInspect(player)}
-      title="Click to swap / Double-click for 11-Component breakdown"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      tabIndex={0}
+      role="button"
+      aria-label={`Select ${player.web_name}, ${player.position}, cost £${Number(player.cost || 0).toFixed(1)}M, ${Number(player.expected_points || 0).toFixed(2)} expected points`}
+      title="Click to select/swap · Click [DNA] to inspect"
     >
       {/* Role Badges */}
       {isCaptain && <span className="player-role-badge captain">C</span>}
       {isVice && !isCaptain && <span className="player-role-badge vice">V</span>}
 
-      {/* Position Tag */}
-      <span className={`player-position-pill ${player.position}`}>
-        {player.position}
-      </span>
+      {/* Position & Inspect Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+        <span className={`player-position-pill ${player.position}`}>
+          {player.position}
+        </span>
+        {onInspect && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onInspect(player);
+            }}
+            aria-label={`Inspect ${player.web_name} DNA statistics`}
+            style={{
+              background: 'var(--bg-surface-subtle)',
+              border: '1px solid var(--border-subtle)',
+              color: 'var(--accent-emerald)',
+              fontSize: '9px',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: 700,
+              padding: '1px 4px',
+              borderRadius: 'var(--radius-xs)',
+              cursor: 'pointer'
+            }}
+            title="Inspect 11-Component DNA"
+          >
+            DNA
+          </button>
+        )}
+      </div>
 
       {/* Player Web Name */}
       <div className="player-name">

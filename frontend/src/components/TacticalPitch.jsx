@@ -42,7 +42,12 @@ export default function TacticalPitch({
             {Number(startingXp || 0).toFixed(2)}
             <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
           </div>
-          <div className="kpi-subtext">Optimal Formation: {formation}</div>
+          <div className="kpi-subtext" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
+            <span>Active:</span>
+            <span style={{ background: 'var(--bg-surface-subtle)', color: 'var(--accent-emerald)', fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '11px', padding: '1px 6px', borderRadius: 'var(--radius-xs)', border: '1px solid var(--border-subtle)' }}>
+              FORMATION {formation}
+            </span>
+          </div>
         </div>
 
         <div className="kpi-card">
@@ -151,8 +156,16 @@ export default function TacticalPitch({
                     key={p.player_code}
                     className={`bench-item ${isSelected ? 'is-selected' : ''}`}
                     onClick={() => onSelectPlayer(p)}
-                    onDoubleClick={() => onInspectPlayer && onInspectPlayer(p)}
-                    title="Click to swap with starter / Double-click to inspect"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onSelectPlayer(p);
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`Bench ${slotLabel}: ${p.web_name}, ${p.position}, cost £${Number(p.cost || 0).toFixed(1)}M, ${Number(p.expected_points || 0).toFixed(2)} expected points`}
+                    title="Click to swap with starter · Double-click to inspect"
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                       <span className="bench-slot-tag">{slotLabel}</span>
@@ -166,11 +179,36 @@ export default function TacticalPitch({
                         </div>
                       </div>
                     </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: 'var(--accent-emerald)' }}>
-                        {Number(p.expected_points || 0).toFixed(2)}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: 'var(--accent-emerald)' }}>
+                          {Number(p.expected_points || 0).toFixed(2)}
+                        </div>
+                        <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>xP</div>
                       </div>
-                      <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>xP</div>
+                      {onInspectPlayer && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onInspectPlayer(p);
+                          }}
+                          aria-label={`Inspect ${p.web_name} DNA`}
+                          style={{
+                            background: 'var(--bg-surface-subtle)',
+                            border: '1px solid var(--border-subtle)',
+                            color: 'var(--accent-emerald)',
+                            fontSize: '9px',
+                            fontFamily: 'var(--font-mono)',
+                            fontWeight: 700,
+                            padding: '2px 5px',
+                            borderRadius: 'var(--radius-xs)',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          DNA
+                        </button>
+                      )}
                     </div>
                   </div>
                 );

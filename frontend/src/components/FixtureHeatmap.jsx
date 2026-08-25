@@ -81,22 +81,25 @@ export default function FixtureHeatmap({ fixtures, teams }) {
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }} role="group" aria-label="Select lookahead fixture horizon">
           <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>Lookahead Run:</span>
           {[3, 5, 8, 12].map(w => (
             <button
               key={w}
               onClick={() => setGwWindow(w)}
+              aria-label={`Lookahead window: ${w} gameweeks`}
+              aria-pressed={gwWindow === w}
               style={{
                 background: gwWindow === w ? 'var(--accent-emerald)' : 'var(--bg-surface-2)',
-                color: gwWindow === w ? '#06261C' : 'var(--text-secondary)',
+                color: gwWindow === w ? 'var(--text-inverse)' : 'var(--text-secondary)',
                 border: '1px solid var(--border-subtle)',
-                padding: '4px 10px',
+                padding: '8px 14px',
                 fontSize: '11px',
                 fontFamily: 'var(--font-mono)',
                 fontWeight: 700,
                 borderRadius: 'var(--radius-xs)',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                minHeight: '36px'
               }}
             >
               {w} GWs
