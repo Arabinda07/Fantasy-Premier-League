@@ -1,0 +1,72 @@
+name: Daily FPL Data Sync & Squad Optimization
+
+on:
+  schedule:
+    # Runs every day at 06:00 UTC (07:00 BST / 11:30 IST)
+    - cron: '0 6 * * *'
+  # Allows you to trigger the workflow manually anytime from your phone or GitHub web UI:
+  workflow_dispatch:
+    inputs:
+      gameweek:
+        description: 'Target Gameweek (leave empty for auto-detect)'
+        required: false
+        default: ''
+      mode:
+        description: 'Pipeline Mode (sync / full / solver_only)'
+        required: false
+        default: 'sync'
+        type: choice
+        options:
+          - sync
+          - full
+          - solver_only
+
+permissions:
+  contents: write
+
+jobs:
+  fpl_sync:
+    runs-on: ubuntu-latest
+    name: Sync Live FPL Data & Run Optimization
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run FPL Live Pipeline & Model Optimization
+        run: |
+          GW_ARG=""
+          if [ -n "${{ github.event.inputs.gameweek }}" ]; then
+            GW_ARG="--gw ${{ github.event.inputs.gameweek }}"
+          fi
+          
+          MODE="${{ github.event.inputs.mode || 'sync' }}"
+          python -m model.pipeline_automation --season 2026-27 --mode "$MODE" $GW_ARG
+
+      - name: Commit & Push Live Matchday Reports
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No data changes detected. Skipping commit."
+          else
+            TODAY=$(date -u +"%Y-%m-%d")
+            git commit -m "Automated Daily FPL Sync & Predictions Refresh ($TODAY) [skip ci]"
+            git push origin master
+          fi
