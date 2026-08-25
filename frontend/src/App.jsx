@@ -76,6 +76,8 @@ export default function App() {
         liveData={liveMatchdayData}
         selectedStrategy={selectedStrategy}
         setSelectedStrategy={setSelectedStrategy}
+        activeChip={activeChip}
+        setActiveChip={setActiveChip}
       />
 
       <main className="app-container">

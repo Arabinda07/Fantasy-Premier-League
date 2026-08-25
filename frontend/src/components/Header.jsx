@@ -1,6 +1,14 @@
 import React from 'react';
 
-export default function Header({ activeTab, setActiveTab, liveData, selectedStrategy, setSelectedStrategy }) {
+export default function Header({
+  activeTab,
+  setActiveTab,
+  liveData,
+  selectedStrategy,
+  setSelectedStrategy,
+  activeChip = 'none',
+  setActiveChip = () => {}
+}) {
   const tabs = [
     { id: 'pitch', label: 'Tactical Pitch', icon: '⚽' },
     { id: 'transfers', label: 'Transfer Hub (3-GW)', icon: '🔄' },
@@ -36,7 +44,32 @@ export default function Header({ activeTab, setActiveTab, liveData, selectedStra
         ))}
       </nav>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+        {/* Chip Strategy Global Selector */}
+        <select
+          value={activeChip}
+          onChange={e => setActiveChip(e.target.value)}
+          aria-label="Active Chip Simulation Selector"
+          style={{
+            background: activeChip !== 'none' ? 'rgba(16, 185, 129, 0.15)' : 'var(--bg-surface-2)',
+            color: activeChip !== 'none' ? 'var(--accent-emerald)' : 'var(--text-primary)',
+            border: activeChip !== 'none' ? '1px solid var(--accent-emerald)' : '1px solid var(--border-medium)',
+            borderRadius: 'var(--radius-sm)',
+            padding: '6px 10px',
+            fontSize: '12px',
+            fontFamily: 'var(--font-mono)',
+            fontWeight: 700,
+            cursor: 'pointer'
+          }}
+        >
+          <option value="none">Chip: Standard Lineup</option>
+          <option value="wildcard">🃏 Chip: Wildcard (£100M)</option>
+          <option value="freehit">⚡ Chip: Free Hit</option>
+          <option value="bboost">🚀 Chip: Bench Boost</option>
+          <option value="3xc">👑 Chip: Triple Captain</option>
+        </select>
+
+        {/* Strategy Profile Selector */}
         <select
           value={selectedStrategy}
           onChange={e => setSelectedStrategy(e.target.value)}
@@ -46,7 +79,7 @@ export default function Header({ activeTab, setActiveTab, liveData, selectedStra
             color: 'var(--text-primary)',
             border: '1px solid var(--border-medium)',
             borderRadius: 'var(--radius-sm)',
-            padding: '6px 12px',
+            padding: '6px 10px',
             fontSize: '12px',
             fontFamily: 'var(--font-mono)',
             cursor: 'pointer'
