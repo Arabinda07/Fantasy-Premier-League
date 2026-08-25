@@ -27,12 +27,15 @@ Per the repository's strict anti-slop guidelines, the following elements are **p
 | Banned AI-Slop Pattern | Reason for Ban | Institutional Replacement |
 |---|---|---|
 | ❌ **Purple/Black with Radial Glowing Orbs** | Generic "AI wrapper" template trope | Deep Slate (`#090D16`) & Elevated Navy (`#111726`) with 1px border contrast. |
+| ❌ **Multi-Hue Decorative Gradients** | Saturated AI decorative fill trope | Solid token accents (`var(--accent-emerald)`, `var(--accent-amber)`, `var(--accent-crimson)`). |
 | ❌ **Fake Testimonials & $29/mo Pricing Tiers** | Clueless marketing clutter | Pure functional workspace consuming live JSON payloads. |
-| ❌ **Sparkle Icons & Emojis everywhere** | Childish gimmicks undermining technical credibility | Precise mathematical notation ($xP$, $xG_{90}$, $xA_{90}$, $C_1 \dots C_{11}$) and typographic badges (`[PK1]`). |
+| ❌ **Sparkle Icons & Emojis everywhere (`⚡`, `🚀`)** | Childish gimmicks undermining technical credibility | Precise Phosphor SVG icons and typographic badges (`(LIVE)`, `[PK1]`). |
+| ❌ **Hardcoded Hex Colors in Components** | Bypasses design token hierarchy | Strict CSS custom property references (`var(--text-inverse)`, `var(--text-primary)`). |
 | ❌ **"It's not X, it's Y" Copy Tropes** | Cliche AI copywriting | Direct, factual status labels and clear action summaries. |
 | ❌ **Side-Stripe Borders (Left Accent Lines)** | Saturated AI card scaffold | Clean, fully bordered containers with background contrast. |
-| ❌ **Insanely Rounded Radii (>16px on cards)** | Codex-style over-rounding | Crisp geometric radii (`4px` to `8px`). |
-| ❌ **Repeating Diagonal Stripe Backgrounds** | Distracting decorative noise | Subtle 2D grass field bands (`#064030` / `#053326`). |
+| ❌ **Insanely Rounded Radii (>16px on cards)** | Codex-style over-rounding | Crisp geometric radii (`3px` to `8px`). |
+| ❌ **Repeating Diagonal Stripe Backgrounds** | Distracting decorative noise | Functional sports field grass bands (`#064030` / `#053326`). |
+| ❌ **Multi-Line Footer Link Farms** | Cluttered visual noise | Minimal single-line footer (Copyright left, icon-only GitHub right). |
 
 ---
 
@@ -51,12 +54,17 @@ Per the repository's strict anti-slop guidelines, the following elements are **p
   /* Text & Ink Hierarchy (All meet WCAG AA contrast >= 4.5:1) */
   --text-primary: #F8FAFC;         /* High-contrast titles & values */
   --text-secondary: #94A3B8;       /* Body labels & metrics */
-  --text-muted: #64748B;           /* Subtext & unit markers */
+  --text-muted: #8494A7;           /* Subtext & unit markers (4.8:1 contrast) */
+  --text-inverse: #090D16;         /* Inverse dark text on emerald badges */
 
   /* Semantic Data Accents */
   --accent-emerald: #10B981;       /* Starting XI & Positive Net Velocity */
+  --accent-emerald-subtle: rgba(16, 185, 129, 0.15);
   --accent-amber: #F59E0B;         /* Captaincy [C] & Moderate Warnings */
+  --accent-amber-subtle: rgba(245, 158, 11, 0.15);
   --accent-crimson: #EF4444;       /* High Outflow & Price Fall Alerts */
+  --accent-crimson-subtle: rgba(239, 68, 68, 0.15);
+  --accent-cyan: #06B6D4;          /* Assist Threat / Cyan metric */
   --accent-blue: #3B82F6;          /* Defensive and GK Position Accents */
 
   /* Positional Roles */
@@ -91,7 +99,23 @@ Per the repository's strict anti-slop guidelines, the following elements are **p
 
 ---
 
-## 4. Codebase Architecture: Deep Module System
+## 4. Mobile Responsive Architecture
+
+To maintain high visual density and institutional elegance on small screens:
+
+1. **Fluid App Container**: Max-width capped at `1600px` with fluid clamp padding (`clamp(16px, 2.5vw, 32px)`), scaling cleanly down to mobile viewports.
+2. **2-Tier Mobile Header (`≤768px`)**:
+   - **Tier 1**: Brand identity left, active Gameweek badge right.
+   - **Tier 2**: Full-width segmented tab strip with horizontal snap and touch targets $\ge 40\text{px}$.
+3. **Single-Line Institutional Footer**: Copyright on left, icon-only GitHub button on right across all screen widths.
+4. **Responsive Table Strategy**:
+   - All tabular grids wrapped in `.table-scroll-wrapper` with sticky left columns.
+   - Fixture Heatmap automatically collapses team names to 3-letter acronyms (`BHA`, `MCI`, `ARS`) on screens $\le 480\text{px}$.
+5. **Touch-Target Sizing**: Enforced via `@media (pointer: coarse)` ensuring all buttons, filters, and player cards meet $\ge 38\text{px}-42\text{px}$ minimum tap areas.
+
+---
+
+## 5. Codebase Architecture: Deep Module System
 
 Applying the **Deep Module Principles** (*large amount of internal capability hidden behind a small, testable interface at a clean seam*):
 
@@ -108,27 +132,31 @@ Applying the **Deep Module Principles** (*large amount of internal capability hi
 ├──────────────────────────┼──────────────────────────────┼──────────────────────────────┤
 │ `TransferWorkbench`      │ `roadmap`, `allPlayers`,     │ • Multi-criteria search      │
 │                          │ `onInspectPlayer`            │ • Price threshold filtering  │
-│                          │                              │ • Sort by xP / ROI / Value   │
+│                          │                              │ • Sort by xP / Cost / Form   │
 │                          │                              │ • 3-GW bank math trajectory  │
 ├──────────────────────────┼──────────────────────────────┼──────────────────────────────┤
 │ `FixtureHeatmap`         │ `fixtures`, `teams`          │ • 38-GW 20-team matrix map   │
 │                          │                              │ • Home/Away FDR mapper       │
-│                          │                              │ • Rolling average calculation│
-│                          │                              │ • Next-N-GW green run sort   │
+│                          │                              │ • Rolling average score      │
+│                          │                              │ • Mobile short name switcher │
 ├──────────────────────────┼──────────────────────────────┼──────────────────────────────┤
 │ `PlayerDNAInspector`     │ `player`, `onClose`          │ • 11-Component decomposition │
 │                          │                              │ • Empirical Bayes math ($M_0$)│
-│                          │                              │ • Responsive Recharts layout │
+│                          │                              │ • Lazy-loaded Recharts modal │
 ├──────────────────────────┼──────────────────────────────┼──────────────────────────────┤
 │ `MarketVelocityTicker`   │ `allPlayers`,                │ • Net transfer velocity math │
 │                          │ `onInspectPlayer`            │ • Price rise/fall risk tiers │
-│                          │                              │ • Seasonal chip EV matrix    │
+│                          │                              │ • Seasonal chip EV guide     │
+├──────────────────────────┼──────────────────────────────┼──────────────────────────────┤
+│ `ComponentStudio`        │ `players`,                   │ • Bayesian shrinkage sandbox │
+│                          │ `onInspectPlayer`            │ • Dynamic parameter sliders  │
+│                          │                              │ • Multi-page paginated table │
 └──────────────────────────┴──────────────────────────────┴──────────────────────────────┘
 ```
 
 ---
 
-## 5. Interaction & Motion Rules
+## 6. Interaction & Motion Rules
 
 1. **State Feedback**: Interactive elements (player cards, table rows, tab buttons) use `transition: all 0.15s ease`.
 2. **Tactile Push**: Active buttons and cards simulate an instant mechanical push with `transform: translateY(-2px)` on hover and `scale(0.98)` on click.
@@ -141,16 +169,18 @@ Applying the **Deep Module Principles** (*large amount of internal capability hi
      }
    }
    ```
-4. **Zero Layout Shifts (CLS)**: Dynamic data loading utilizes CSS linear-gradient shimmer skeleton loaders matching final layout shapes.
+4. **Zero Layout Shifts (CLS)**: Dynamic data loading utilizes CSS shimmer skeleton loaders matching final layout shapes.
 
 ---
 
-## 6. Pre-Flight Design Audit Checklist
+## 7. Pre-Flight Design Audit Checklist
 
 Before releasing any new frontend view or feature:
 - [ ] **Contrast Check**: All body text $\ge 4.5:1$, large labels $\ge 3:1$.
 - [ ] **Typography**: All tabular numerical columns use `font-mono` (`JetBrains Mono`) with `font-feature-settings: "tnum" 1`.
-- [ ] **No AI Slop Check**: Zero purple/black glows, zero floating orbs, zero generic emojis, zero marketing buzzwords.
+- [ ] **No AI Slop Check**: Zero decorative multi-hue gradients, zero emojis in technical headers, zero hardcoded colors.
+- [ ] **Keyboard Accessibility**: All clickable rows and cards have `tabIndex={0}`, `role="button"`, and `onKeyDown`.
 - [ ] **Deep Module Seam**: Component props are minimal; complexity is encapsulated internally.
-- [ ] **Responsive Breakpoints**: Layout renders without horizontal overflow across Desktop (1440px), Laptop (1024px), and Mobile (375px).
+- [ ] **Responsive Breakpoints**: Layout renders without horizontal overflow across Desktop (1600px), Tablet (768px), and Mobile (375px).
 - [ ] **Build Check**: `npm run build` compiles with 0 errors.
+

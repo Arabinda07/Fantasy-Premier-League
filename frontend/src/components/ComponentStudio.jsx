@@ -261,6 +261,15 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                 <tr
                   key={p.player_code || p.id}
                   onClick={() => onInspectPlayer && onInspectPlayer(p)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      if (onInspectPlayer) onInspectPlayer(p);
+                    }
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`${p.web_name}, ${p.position}, £${Number(p.now_cost || p.cost || 0).toFixed(1)}M, projected score ${p.simulatedXp.toFixed(2)}`}
                   style={{ cursor: 'pointer' }}
                   title="Click to view detailed point projections"
                 >

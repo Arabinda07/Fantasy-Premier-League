@@ -137,7 +137,7 @@ export default function TransferWorkbench({
         <div className="compare-workbench-container" style={{ margin: '24px 0', background: 'var(--bg-surface-1)', border: '1px solid var(--border-active)', borderRadius: 'var(--radius-lg)', padding: 'clamp(14px, 2vw, 20px)', boxShadow: '0 8px 24px rgba(0,0,0,0.5)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ background: 'var(--accent-emerald)', color: '#090D16', padding: '3px 6px', borderRadius: 'var(--radius-xs)', display: 'flex', alignItems: 'center' }}>
+              <div style={{ background: 'var(--accent-emerald)', color: 'var(--text-inverse)', padding: '3px 6px', borderRadius: 'var(--radius-xs)', display: 'flex', alignItems: 'center' }}>
                 <Scales size={15} weight="bold" />
               </div>
               <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)' }}>
@@ -323,6 +323,15 @@ export default function TransferWorkbench({
                 <tr
                   key={p.player_code || p.id}
                   onClick={() => onInspectPlayer && onInspectPlayer(p)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      if (onInspectPlayer) onInspectPlayer(p);
+                    }
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`${p.web_name}, ${p.position}, £${Number(p.now_cost || p.cost || 0).toFixed(1)}M, ${Number(p.expected_points || 0).toFixed(1)} points`}
                   style={{ cursor: 'pointer' }}
                   title="Click to view detailed point projections"
                 >
@@ -348,7 +357,7 @@ export default function TransferWorkbench({
                         padding: '3px 8px',
                         fontSize: '11px',
                         background: playerIn?.web_name === p.web_name ? 'var(--accent-emerald)' : undefined,
-                        color: playerIn?.web_name === p.web_name ? '#090D16' : undefined
+                        color: playerIn?.web_name === p.web_name ? 'var(--text-inverse)' : undefined
                       }}
                       title="Compare this player against your squad"
                     >

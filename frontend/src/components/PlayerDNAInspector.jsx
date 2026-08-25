@@ -89,7 +89,7 @@ export default function PlayerDNAInspector({ player, onClose }) {
               <XAxis type="number" stroke="var(--text-muted)" fontSize={11} domain={['dataMin', 'dataMax']} />
               <YAxis dataKey="name" type="category" stroke="var(--text-muted)" fontSize={11} tickLine={false} width={120} />
               <Tooltip
-                contentStyle={{ background: 'var(--bg-surface-2)', border: '1px solid var(--border-medium)', borderRadius: '4px', fontSize: '12px', color: '#fff' }}
+                contentStyle={{ background: 'var(--bg-surface-2)', border: '1px solid var(--border-medium)', borderRadius: '4px', fontSize: '12px', color: 'var(--text-primary)' }}
                 formatter={(val) => [`${val} pts`, 'Estimated Contribution']}
               />
               <Bar dataKey="value" radius={[0, 4, 4, 0]}>

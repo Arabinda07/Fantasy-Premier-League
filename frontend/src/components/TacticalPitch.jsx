@@ -210,7 +210,7 @@ export default function TacticalPitch({
                 style={{
                   width: `${Math.min(100, ((isChipActive ? currentChipData.budget_used : 98.0) / 100.0) * 100)}%`,
                   height: '100%',
-                  background: 'linear-gradient(90deg, #10B981, #059669)',
+                  background: 'var(--accent-emerald)',
                   borderRadius: '3px',
                   transition: 'width 0.3s ease'
                 }}

@@ -25,7 +25,7 @@ export default function Header({
       <div className="top-nav-inner">
         <div className="brand-section">
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ background: 'var(--accent-emerald)', color: '#090D16', padding: '4px 6px', borderRadius: 'var(--radius-xs)', display: 'flex', alignItems: 'center' }}>
+            <div style={{ background: 'var(--accent-emerald)', color: 'var(--text-inverse)', padding: '4px 6px', borderRadius: 'var(--radius-xs)', display: 'flex', alignItems: 'center' }}>
               <SoccerBall size={16} weight="fill" />
             </div>
             <span className="brand-title">FPL Matchday Hub</span>

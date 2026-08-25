@@ -160,6 +160,11 @@ export default function App() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      {/* Skip-to-Content Accessibility Link (WCAG 2.4.1) */}
+      <a href="#main-content" className="skip-to-content">
+        Skip to main content
+      </a>
+
       {/* Top Navigation */}
       <Header
         activeTab={activeTab}
@@ -178,7 +183,7 @@ export default function App() {
         }}
       />
 
-      <main className="app-container" style={{ flex: '1 0 auto' }}>
+      <main id="main-content" className="app-container" style={{ flex: '1 0 auto' }}>
         {/* View 1: Tactical Pitch & Lineup Visualizer */}
         {activeTab === 'pitch' && (
           <TacticalPitch

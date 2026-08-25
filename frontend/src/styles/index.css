@@ -18,7 +18,7 @@
   /* Typography Colors */
   --text-primary: #F8FAFC;
   --text-secondary: #94A3B8;
-  --text-muted: #64748B;
+  --text-muted: #8494A7;
   --text-inverse: #090D16;
 
   /* Tactical Accents */
@@ -103,6 +103,26 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
+}
+
+/* Skip-to-Content Link (A11y WCAG 2.4.1) */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 100;
+  background: var(--accent-emerald);
+  color: var(--text-inverse);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: top 0.2s ease-out;
+}
+
+.skip-to-content:focus {
+  top: 12px;
 }
 
 /* Focus Ring Utilities (A11y WCAG 2.4.7) */
@@ -893,10 +913,11 @@ h1, h2, h3, h4, h5, h6 {
   padding: 10px 14px;
   border-bottom: 1px solid var(--border-subtle);
   color: var(--text-secondary);
+  transition: background 0.15s ease-out, color 0.15s ease-out;
 }
 
 .data-table tr:hover td {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.03);
   color: var(--text-primary);
 }
 
@@ -904,6 +925,17 @@ h1, h2, h3, h4, h5, h6 {
 .data-table th:first-child,
 .data-table td:first-child {
   box-shadow: var(--shadow-sticky);
+}
+
+.team-name-full {
+  display: inline;
+}
+
+.team-name-short {
+  display: none;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  letter-spacing: 0.04em;
 }
 
 /* FDR Heatmap Grid */
@@ -1490,8 +1522,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (max-width: 768px) {
-  .app-container {
-    padding: 0 10px 30px;
+  .top-nav {
+    margin-bottom: 14px;
+  }
+
+  .top-nav-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  .brand-section {
+    justify-content: space-between;
+    width: 100%;
   }
 
   .brand-title {
@@ -1499,12 +1543,35 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   .brand-meta {
-    display: none;
+    display: inline-block;
+    font-size: 11px;
+    color: var(--accent-emerald);
+    background: rgba(16, 185, 129, 0.1);
+    padding: 2px 6px;
+    border-radius: var(--radius-xs);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+  }
+
+  .nav-tabs-wrapper {
+    width: 100%;
+  }
+
+  .nav-tabs {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    gap: 3px;
   }
 
   .nav-tab-btn {
-    font-size: 12px;
-    padding: 6px 9px;
+    font-size: 11px;
+    padding: 6px 8px;
+    flex-shrink: 0;
+  }
+
+  .app-container {
+    padding: 0 10px 30px;
   }
 
   .kpi-strip {
@@ -1646,6 +1713,14 @@ h1, h2, h3, h4, h5, h6 {
 
   .baseline-cards-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Fixture Heatmap: short team codes on mobile */
+  .team-name-full {
+    display: none;
+  }
+  .team-name-short {
+    display: inline;
   }
 
   /* Roadmap: always 1-col at very small screens */
@@ -1802,47 +1877,47 @@ h1, h2, h3, h4, h5, h6 {
 .terminal-footer-simple {
   border-top: 1px solid var(--border-subtle);
   background: var(--bg-surface-1);
-  padding: 14px 0;
+  padding: 12px 0;
   margin-top: auto;
   width: 100%;
 }
 
 .footer-simple-inner {
-  max-width: 1440px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 0 clamp(12px, 2vw, 24px);
+  padding: 0 clamp(16px, 2.5vw, 32px);
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
   font-size: 12px;
   color: var(--text-muted);
-  flex-wrap: wrap;
 }
 
 .footer-copyright {
   font-size: 12px;
   color: var(--text-secondary);
+  font-weight: 500;
 }
 
-.footer-github-link {
+.footer-github-icon-link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  color: var(--text-primary);
+  justify-content: center;
+  color: var(--text-secondary);
   background: var(--bg-surface-2);
   border: 1px solid var(--border-medium);
-  padding: 5px 10px;
+  width: 32px;
+  height: 32px;
   border-radius: var(--radius-sm);
-  font-size: 12px;
-  font-weight: 600;
   text-decoration: none;
   transition: all 0.15s ease;
 }
 
-.footer-github-link:hover {
+.footer-github-icon-link:hover {
   border-color: var(--accent-emerald);
   color: var(--accent-emerald);
+  background: var(--bg-surface-subtle);
 }
 
 /* ==========================================================================

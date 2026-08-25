@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { GridNine } from '@phosphor-icons/react';
+import { GridNine, Lightning } from '@phosphor-icons/react';
 
 export default function FixtureHeatmap({ fixtures, teams }) {
   const [gwWindow, setGwWindow] = useState(6);
@@ -105,7 +105,10 @@ export default function FixtureHeatmap({ fixtures, teams }) {
                 <th style={{ textAlign: 'center' }}>Avg Difficulty</th>
                 {Array.from({ length: 12 }, (_, i) => i + 1).map(gw => (
                   <th key={gw} style={{ textAlign: 'center', background: gw === 2 ? 'rgba(16, 185, 129, 0.15)' : undefined }}>
-                    GW{gw} {gw === 2 ? '⚡' : ''}
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', justifyContent: 'center' }}>
+                      GW{gw}
+                      {gw === 2 && <Lightning size={12} weight="fill" color="var(--accent-emerald)" title="Current Active Gameweek" />}
+                    </span>
                   </th>
                 ))}
               </tr>
@@ -114,14 +117,19 @@ export default function FixtureHeatmap({ fixtures, teams }) {
               {matrix.map(team => (
                 <tr key={team.id}>
                   <td style={{ position: 'sticky', left: 0, zIndex: 10, background: 'var(--bg-surface-1)', fontWeight: 700, color: 'var(--text-primary)' }}>
-                    {team.name}
+                    <span className="team-name-full">{team.name}</span>
+                    <span className="team-name-short">{team.short_name || team.name.slice(0, 3).toUpperCase()}</span>
                   </td>
                   <td className="font-mono" style={{ textAlign: 'center', fontWeight: 700, color: team.avgDiff <= 2.5 ? 'var(--accent-emerald)' : (team.avgDiff >= 3.8 ? 'var(--accent-crimson)' : 'var(--text-secondary)') }}>
                     {team.avgDiff.toFixed(2)}
                   </td>
                   {team.fixtures.slice(0, 12).map(f => (
                     <td key={f.gw} style={{ padding: '4px', textAlign: 'center' }}>
-                      <div className={`fdr-cell ${fdrClass(f.diff)}`}>
+                      <div
+                        className={`fdr-cell ${fdrClass(f.diff)}`}
+                        title={`GW${f.gw}: ${f.label} — FDR Difficulty ${f.diff}/5`}
+                        aria-label={`Gameweek ${f.gw} vs ${f.label}, difficulty ${f.diff} of 5`}
+                      >
                         {f.label}
                       </div>
                     </td>
