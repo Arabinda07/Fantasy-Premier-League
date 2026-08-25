@@ -1,5 +1,6 @@
 # FPL Intelligence Platform
 
+[![Live Web Terminal](https://img.shields.io/badge/Live%20Cockpit-GitHub%20Pages-10B981.svg?style=for-the-badge&logo=githubpages)](https://arabinda07.github.io/Fantasy-Premier-League/)
 [![Build & Test Status](https://img.shields.io/badge/tests-148%2F148%20passing-brightgreen.svg?style=for-the-badge&logo=pytest)](file:///e:/Fantasy-Premier-League/model/)
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg?style=for-the-badge&logo=python)](file:///e:/Fantasy-Premier-League/)
 [![Season](https://img.shields.io/badge/FPL%20Season-2026--27%20Live-orange.svg?style=for-the-badge)](file:///e:/Fantasy-Premier-League/data/2026-27/)
@@ -7,6 +8,8 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge)](LICENSE)
 
 An open-source quantitative analytics engine, Mixed Integer Linear Programming (MILP) solver, and interactive matchday terminal for Fantasy Premier League.
+
+👉 **[Launch Live Web Terminal](https://arabinda07.github.io/Fantasy-Premier-League/)**
 
 ---
 
