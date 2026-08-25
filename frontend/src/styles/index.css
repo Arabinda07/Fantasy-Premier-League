@@ -110,9 +110,17 @@ button:focus-visible, input:focus-visible, select:focus-visible, .player-card:fo
 }
 
 /* Typography Utilities */
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
 .font-mono {
   font-family: var(--font-mono);
   font-feature-settings: "tnum" 1;
+}
+
+.kpi-value {
+  letter-spacing: -0.02em;
 }
 
 /* Layout Containers */

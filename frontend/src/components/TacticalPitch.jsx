@@ -47,7 +47,7 @@ export default function TacticalPitch({
           <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             SIMULATE CHIP:
           </span>
-          <div role="group" aria-label="Select active FPL chip simulation" style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+          <div role="group" aria-label="Select active FPL chip simulation" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
             {chipOptions.map(c => (
               <button
                 key={c.id}
@@ -57,7 +57,8 @@ export default function TacticalPitch({
                   background: activeChip === c.id ? (c.id === 'none' ? 'var(--bg-surface-subtle)' : 'var(--accent-emerald)') : 'var(--bg-surface-2)',
                   color: activeChip === c.id ? (c.id === 'none' ? 'var(--text-primary)' : 'var(--text-inverse)') : 'var(--text-secondary)',
                   border: activeChip === c.id ? '1px solid var(--border-active)' : '1px solid var(--border-subtle)',
-                  padding: '6px 10px',
+                  boxShadow: activeChip === c.id && c.id !== 'none' ? '0 4px 20px rgba(16, 185, 129, 0.25)' : 'none',
+                  padding: '7px 12px',
                   borderRadius: 'var(--radius-xs)',
                   fontSize: '11px',
                   fontFamily: 'var(--font-mono)',
@@ -65,7 +66,8 @@ export default function TacticalPitch({
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '4px'
+                  gap: '5px',
+                  transition: 'all 0.15s ease'
                 }}
               >
                 <span>{c.icon}</span>
@@ -84,7 +86,7 @@ export default function TacticalPitch({
 
       {/* Matchday Action Header / Chip Description */}
       {isChipActive ? (
-        <div className="action-banner" style={{ borderColor: 'var(--accent-emerald)' }}>
+        <div className="action-banner" style={{ borderColor: 'var(--accent-emerald)', boxShadow: '0 4px 20px rgba(16, 185, 129, 0.10)' }}>
           <div className="action-text">
             <span className="action-pill" style={{ background: 'var(--accent-emerald)', color: 'var(--text-inverse)' }}>
               {currentChipData.chip_name.toUpperCase()} SCENARIO
@@ -135,11 +137,32 @@ export default function TacticalPitch({
         </div>
 
         <div className="kpi-card">
-          <div className="kpi-label">Active Bank Balance</div>
+          <div className="kpi-label">Active Bank & Budget Utilization</div>
           <div className="kpi-value">
-            £2.0<span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>M</span>
+            £{isChipActive ? (100.0 - currentChipData.budget_used).toFixed(1) : '2.0'}
+            <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>M Bank</span>
           </div>
-          <div className="kpi-subtext">1 Free Transfer Available</div>
+          {/* Prorated Mini-Gauge */}
+          <div style={{ marginTop: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginBottom: '3px' }}>
+              <span>£{Number(isChipActive ? currentChipData.budget_used : 98.0).toFixed(1)}M Spent</span>
+              <span>£100.0M Cap</span>
+            </div>
+            <div style={{ width: '100%', height: '5px', background: 'var(--bg-surface-subtle)', borderRadius: '3px', overflow: 'hidden' }}>
+              <div
+                style={{
+                  width: `${Math.min(100, ((isChipActive ? currentChipData.budget_used : 98.0) / 100.0) * 100)}%`,
+                  height: '100%',
+                  background: 'linear-gradient(90deg, #10B981, #059669)',
+                  borderRadius: '3px',
+                  transition: 'width 0.3s ease'
+                }}
+              />
+            </div>
+          </div>
+          <div className="kpi-subtext" style={{ marginTop: '6px' }}>
+            {isChipActive ? 'Chip Budget Cap: £100.0M' : '1 Free Transfer Available'}
+          </div>
         </div>
 
         <div className="kpi-card">
