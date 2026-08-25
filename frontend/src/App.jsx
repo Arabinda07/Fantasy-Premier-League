@@ -2,10 +2,13 @@ import React, { useState, useEffect, lazy, Suspense } from 'react';
 import Header from './components/Header';
 import Breadcrumbs from './components/Breadcrumbs';
 import TacticalPitch from './components/TacticalPitch';
-import TransferWorkbench from './components/TransferWorkbench';
+import MultiGwPlanner from './components/MultiGwPlanner';
+import RivalThreatMatrix from './components/RivalThreatMatrix';
 import FixtureHeatmap from './components/FixtureHeatmap';
 import MarketVelocityTicker from './components/MarketVelocityTicker';
 import ComponentStudio from './components/ComponentStudio';
+import LiveTeamSyncModal from './components/LiveTeamSyncModal';
+import FixtureProbabilityDrawer from './components/FixtureProbabilityDrawer';
 import Footer from './components/Footer';
 
 // Lazy-load Recharts heavy charting component on demand
@@ -20,18 +23,23 @@ import teamsData from './data/teams_all.json';
 // Helper to map tab IDs to hash routes
 const TAB_TO_HASH = {
   pitch: 'lineup',
-  transfers: 'transfers',
+  transfers: 'planner',
+  rivals: 'rivals',
   fixtures: 'fixtures',
   market: 'market',
-  math: 'methodology'
+  math: 'studio'
 };
 
 const HASH_TO_TAB = {
   lineup: 'pitch',
   pitch: 'pitch',
+  planner: 'transfers',
+  strategy: 'transfers',
   transfers: 'transfers',
+  rivals: 'rivals',
   fixtures: 'fixtures',
   market: 'market',
+  studio: 'math',
   methodology: 'math',
   math: 'math'
 };
@@ -42,7 +50,13 @@ export default function App() {
   const [activeChip, setActiveChip] = useState('none');
   const [compareSubItem, setCompareSubItem] = useState(null);
 
-  // Squad State (Allowing interactive starter / bench swaps)
+  // Modals & Drawers
+  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
+  const [isFixtureDrawerOpen, setIsFixtureDrawerOpen] = useState(false);
+  const [activeDrawerFixture, setActiveDrawerFixture] = useState(null);
+
+  // Live Manager & Squad State
+  const [liveData, setLiveData] = useState(liveMatchdayData);
   const [starters, setStarters] = useState(liveMatchdayData.starters || []);
   const [bench, setBench] = useState(liveMatchdayData.bench || []);
   const [selectedSwapPlayer, setSelectedSwapPlayer] = useState(null);
@@ -96,8 +110,22 @@ export default function App() {
   };
 
   const handleInspectPlayer = (player) => {
-    setInspectedPlayer(player);
-    if (player) {
+    if (!player) {
+      setInspectedPlayer(null);
+      return;
+    }
+
+    // Lookup full mathematical profile from database
+    const detailed = allPlayersData?.find(
+      p => (p.player_code === player.player_code) ||
+           (p.code === player.player_code) ||
+           (p.web_name && player.web_name && p.web_name.toLowerCase() === player.web_name.toLowerCase())
+    );
+
+    const merged = detailed ? { ...detailed, ...player } : player;
+    setInspectedPlayer(merged);
+
+    if (player.web_name) {
       const hashRoute = TAB_TO_HASH[activeTab] || 'lineup';
       const chipQuery = activeChip !== 'none' ? `chip=${activeChip}&` : '';
       window.location.hash = `${hashRoute}?${chipQuery}player=${encodeURIComponent(player.web_name)}`;
@@ -111,7 +139,18 @@ export default function App() {
     window.location.hash = `${hashRoute}${chipQuery}`;
   };
 
-  // Handle interactive player selection and swap
+  // Fixture Drawer Handlers
+  const handleOpenFixtureDrawer = (fixtureDetails) => {
+    setActiveDrawerFixture(fixtureDetails);
+    setIsFixtureDrawerOpen(true);
+  };
+
+  const handleCloseFixtureDrawer = () => {
+    setIsFixtureDrawerOpen(false);
+    setActiveDrawerFixture(null);
+  };
+
+  // Interactive starter / bench swap handler
   const handleSelectPlayer = (player) => {
     if (!selectedSwapPlayer) {
       setSelectedSwapPlayer(player);
@@ -169,7 +208,8 @@ export default function App() {
       <Header
         activeTab={activeTab}
         setActiveTab={handleTabChange}
-        liveData={liveMatchdayData}
+        liveData={liveData}
+        onOpenSyncModal={() => setIsSyncModalOpen(true)}
       />
 
       {/* 3-Level Breadcrumb Trail */}
@@ -192,27 +232,36 @@ export default function App() {
             selectedPlayer={selectedSwapPlayer}
             onSelectPlayer={handleSelectPlayer}
             onInspectPlayer={handleInspectPlayer}
-            actionSummary={liveMatchdayData.action_summary}
+            onOpenMatchup={handleOpenFixtureDrawer}
+            actionSummary={liveData.action_summary}
             startingXp={startingXp + Number(captBonus)}
-            totalXp={liveMatchdayData.total_xp}
-            chipSimulations={liveMatchdayData.chip_simulations || {}}
+            totalXp={liveData.total_xp}
+            chipSimulations={liveData.chip_simulations || {}}
             activeChip={activeChip}
             onSelectChip={handleChipChange}
           />
         )}
 
-        {/* View 2: Multi-Horizon Transfer Workbench */}
+        {/* View 2: Multi-Horizon 5-GW Strategy Canvas */}
         {activeTab === 'transfers' && (
-          <TransferWorkbench
-            roadmap={liveMatchdayData.multi_horizon_roadmap}
-            allPlayers={allPlayersData}
+          <MultiGwPlanner
+            roadmap={liveData.multi_horizon_roadmap}
             squadPlayers={[...starters, ...bench]}
+            allPlayers={allPlayersData}
             onInspectPlayer={handleInspectPlayer}
-            onCompareChange={setCompareSubItem}
           />
         )}
 
-        {/* View 3: 38-Gameweek Fixture Heatmap */}
+        {/* View 3: Mini-League Rival Threat Matrix */}
+        {activeTab === 'rivals' && (
+          <RivalThreatMatrix
+            managerProfile={liveData.manager_profile}
+            starters={starters}
+            bench={bench}
+          />
+        )}
+
+        {/* View 4: 38-Gameweek Fixture Heatmap */}
         {activeTab === 'fixtures' && (
           <FixtureHeatmap
             fixtures={fixturesData}
@@ -220,7 +269,7 @@ export default function App() {
           />
         )}
 
-        {/* View 4: Market Velocity & Price Trends */}
+        {/* View 5: Market Velocity & Price Trends */}
         {activeTab === 'market' && (
           <MarketVelocityTicker
             allPlayers={allPlayersData}
@@ -228,7 +277,7 @@ export default function App() {
           />
         )}
 
-        {/* View 5: 11-Component Mathematical Studio */}
+        {/* View 6: 11-Component Mathematical Studio */}
         {activeTab === 'math' && (
           <ComponentStudio
             players={allPlayersData}
@@ -236,6 +285,30 @@ export default function App() {
           />
         )}
       </main>
+
+      {/* 1-Click Live Team Sync Modal */}
+      <LiveTeamSyncModal
+        isOpen={isSyncModalOpen}
+        onClose={() => setIsSyncModalOpen(false)}
+        currentProfile={liveData.manager_profile}
+        onSyncSuccess={(newProfile) => {
+          setLiveData(prev => ({
+            ...prev,
+            manager_profile: {
+              ...prev.manager_profile,
+              ...newProfile
+            }
+          }));
+        }}
+      />
+
+      {/* Dixon-Coles Fixture Probability Drawer */}
+      <FixtureProbabilityDrawer
+        isOpen={isFixtureDrawerOpen}
+        onClose={handleCloseFixtureDrawer}
+        fixtureData={activeDrawerFixture}
+        dixonColesList={liveData.dixon_coles_fixtures || []}
+      />
 
       {/* 11-Component Player DNA Modal with Lazy-Load Suspense */}
       {inspectedPlayer && (
@@ -250,7 +323,7 @@ export default function App() {
       {/* Institutional Footer Navigation */}
       <Footer
         onNavigateTab={handleTabChange}
-        liveData={liveMatchdayData}
+        liveData={liveData}
       />
     </div>
   );

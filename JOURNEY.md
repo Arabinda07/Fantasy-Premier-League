@@ -295,11 +295,32 @@ This document tracks the phased rebuild of the Fantasy Premier League (FPL) poin
 
 ---
 
+## Frontend Next-Gen Cockpit & Repeatable Elements System (Completed)
+
+1. **Next-Gen Frontend Cockpit Architecture & Ingestion**:
+   - Integrated live matchday and 5-Gameweek multi-horizon planning state (`live_matchday_gw2.json`).
+   - Integrated Dixon-Coles Poisson joint scoreline matrices ($\rho = -0.05$), clean sheet probabilities, and continuous minutes hazard indicators (`ShieldCheck`, `Warning`).
+   - Built 1-Click FPL Team ID & Mini-League live sync modal with `localStorage` persistence.
+   - Built Rival Radar threat matrix with differential tracking and competitor rank analysis.
+
+2. **Repeatable Element System & Anti-Slop Design Architecture**:
+   - Formalized and implemented the **5 Repeatable Element Rules**:
+     1. **Concentric Mathematical Radius Scale**: $8\text{px}$ canvas $\rightarrow$ $6\text{px}$ card $\rightarrow$ $4\text{px}$ rail $\rightarrow$ $3\text{px}$ chip; completely banned $9999\text{px}$ bubble pills and $50\%$ circles.
+     2. **Precision Data Chips & Micro-Flags**: Monospace squircle badges (`[GK]`, `[DEF]`, `[MID]`, `[FWD]`, `[C]`, `[V]`) and left-bordered gauge flags (`HAUL 28%`, `PK1`).
+     3. **Segmented Hardware Switcher Rails**: Unified scenario switcher track replacing floating lozenge buttons.
+     4. **Integrated Matchday Strategy Bars**: Machined status indicator bar with clean executive strategy copy.
+     5. **Structured Tabular Asset Ledgers**: Two-column tabular rows replacing chaotic differential pill clouds.
+   - Codified de-slopped FPL fan vocabulary across all views (*Matchday XI*, *5-Week Planner*, *Rival Radar*, *Danger Men*, *Clean Sheet Odds*, *Roll Free Transfer*).
+   - Codified and updated the root specification in `DESIGN.md`.
+   - Verified production build: `npm run build` in **862ms**, 0 errors.
+
+---
+
 ## Current Status & Next Horizon
 
-All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, **Phase B Direct Ingestion & Live Sync**, **Milestone 2 (Continuous Minutes Hazard Engine)**, **Milestone 3 (Risk-Adjusted CVaR & Auto-Sub Solver)**, and **Historical Backtest Validation with Chip Automation** are **100% complete and verified with 185/185 passing unit tests**.
+All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, **Milestone 2 (Continuous Minutes Hazard Engine)**, **Milestone 3 (Risk-Adjusted CVaR & Auto-Sub Solver)**, **Historical Backtest Validation with Chip Automation**, and the **Next-Gen Frontend Cockpit with the Repeatable Design System** are **100% complete and production verified**.
 
 For the complete Gameweek 2 transition playbook, elite best practices roadmap, and frontend web dashboard architecture, see:
-👉 **[docs/HANDOVER_AND_ROADMAP.md](file:///e:/Fantasy-Premier-League/docs/HANDOVER_AND_ROADMAP.md)**
+👉 **[DESIGN.md](file:///e:/Fantasy-Premier-League/DESIGN.md)** and **[docs/HANDOVER_AND_ROADMAP.md](file:///e:/Fantasy-Premier-League/docs/HANDOVER_AND_ROADMAP.md)**
 
 

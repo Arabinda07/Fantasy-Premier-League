@@ -1,6 +1,6 @@
 # DESIGN.md — FPL Quantitative Analytics Terminal
 
-This document is the permanent single source of truth for the visual design system, frontend architecture, and component interfaces of the **FPL Quantitative Analytics Terminal**.
+This document is the permanent single source of truth for the visual design system, frontend architecture, component interfaces, and repeatable UI frameworks of the **FPL Quantitative Analytics Terminal**.
 
 ---
 
@@ -26,20 +26,82 @@ Per the repository's strict anti-slop guidelines, the following elements are **p
 
 | Banned AI-Slop Pattern | Reason for Ban | Institutional Replacement |
 |---|---|---|
+| ❌ **Capsule Bubble Pills (`border-radius: 9999px`)** | Generic consumer bubble template trope | Concentric Squircles (`3px` to `8px`) with 1px hairline borders. |
+| ❌ **Floating Circular Badges (`50%` circles)** | Disconnected floating elements | Flush square squircle tags (`[C]`, `[V]`) with top inset highlights. |
+| ❌ **Decorative Emojis (`⚡`, `⚠️`, `🎯`, `✨`)** | Childish gimmicks undermining technical credibility | Precise Phosphor SVG icons and typographic tags (`HAUL 28%`, `[PK1]`). |
+| ❌ **Raw Debug Uppercase Text in Strips** | Unfinished backend console log appearance | Executive, human strategy copy with status indicator tags. |
+| ❌ **Chaotic "Pill Clouds" for Comparisons** | Disorganized, unaligned visual noise | Structured 2-column tabular asset ledgers with delta numbers. |
 | ❌ **Purple/Black with Radial Glowing Orbs** | Generic "AI wrapper" template trope | Deep Slate (`#090D16`) & Elevated Navy (`#111726`) with 1px border contrast. |
 | ❌ **Multi-Hue Decorative Gradients** | Saturated AI decorative fill trope | Solid token accents (`var(--accent-emerald)`, `var(--accent-amber)`, `var(--accent-crimson)`). |
 | ❌ **Fake Testimonials & $29/mo Pricing Tiers** | Clueless marketing clutter | Pure functional workspace consuming live JSON payloads. |
-| ❌ **Sparkle Icons & Emojis everywhere (`⚡`, `🚀`)** | Childish gimmicks undermining technical credibility | Precise Phosphor SVG icons and typographic badges (`(LIVE)`, `[PK1]`). |
 | ❌ **Hardcoded Hex Colors in Components** | Bypasses design token hierarchy | Strict CSS custom property references (`var(--text-inverse)`, `var(--text-primary)`). |
 | ❌ **"It's not X, it's Y" Copy Tropes** | Cliche AI copywriting | Direct, factual status labels and clear action summaries. |
-| ❌ **Side-Stripe Borders (Left Accent Lines)** | Saturated AI card scaffold | Clean, fully bordered containers with background contrast. |
 | ❌ **Insanely Rounded Radii (>16px on cards)** | Codex-style over-rounding | Crisp geometric radii (`3px` to `8px`). |
-| ❌ **Repeating Diagonal Stripe Backgrounds** | Distracting decorative noise | Functional sports field grass bands (`#064030` / `#053326`). |
-| ❌ **Multi-Line Footer Link Farms** | Cluttered visual noise | Minimal single-line footer (Copyright left, icon-only GitHub right). |
 
 ---
 
-## 3. Design System Tokens (CSS Custom Properties)
+## 3. The 5 Repeatable Element Rules (Design System Blueprint)
+
+```
+┌───────────────────────────────────────────────────────────────────────────────────────────────┐
+│ REPEATABLE ELEMENT DESIGN SPECIFICATION                                                       │
+├───────────────────┬──────────────────────────────┬────────────────────────────────────────────┤
+│ Element Category  │ Anti-Pattern (To Avoid)      │ Best Practice Alternative (Institutional)  │
+├───────────────────┼──────────────────────────────┼────────────────────────────────────────────┤
+│ 1. Radius Scale   │ `border-radius: 9999px / 50%`│ Concentric Squircles (8px ➔ 6px ➔ 4px ➔ 3px)│
+│ 2. Data Chips     │ Floating emoji bubble `⚡28%` │ Micro-Gauged Monospace Tag `HAUL 28%`      │
+│ 3. Switchers/Tabs │ Rounded floating lozenges    │ Segmented Hardware Rail (Flush 4px radius) │
+│ 4. Strategy Strip │ Clunky debug uppercase box   │ Integrated Machined Status Bar             │
+│ 5. Differentials  │ Scattered "Pill Cloud"       │ Compact Tabular Asset Ledger               │
+└───────────────────┴──────────────────────────────┴────────────────────────────────────────────┘
+```
+
+### Rule 1: Concentric Mathematical Radius Scale
+All UI containers follow a concentric, nested mathematical hierarchy:
+- **Outer Canvas / Bento Panels**: `8px` (`--radius-lg`)
+- **Player & KPI Cards**: `6px` (`--radius-md`)
+- **Interactive Switchers / Inputs**: `4px` (`--radius-sm`)
+- **Data Chips & Status Flags**: `3px` (`--radius-xs` with subtle inset highlights `inset 0 1px 0 rgba(255,255,255,0.06)`)
+
+### Rule 2: Precision Data Chips & Badges
+- **Position Tags**: Squircle tags (`[GK]`, `[DEF]`, `[MID]`, `[FWD]`) with $1\text{px}$ hairline borders and uppercase monospace typography.
+- **Captaincy & Vice Badges**: Flush $18\text{px}$ square squircle tags (`[C]`, `[V]`) with inset top highlights.
+- **Haul Potential**: Gauge micro-flags (`HAUL 28%`) with a $2\text{px}$ solid crimson left border.
+- **Set-Piece Roles**: High-density monospace badges (`PK1`, `CK1`, `FK1`) with $1\text{px}$ borders.
+
+### Rule 3: Segmented Hardware Switcher Rails
+- Replace standalone floating buttons with unified segmented hardware tracks (`.segmented-chip-rail`):
+  - Inactive segments are clean, flat monospace tabs.
+  - Active segment is an elevated, tactile surface with subtle inset lighting and emerald contrast.
+
+### Rule 4: Integrated Matchday Strategy Bars
+- Strategy recommendations sit flush above the pitch container as an integrated hardware strip:
+  - **Left**: `[MATCHDAY STRATEGY]` live status flag with green pulse dot.
+  - **Center**: Executive human copy: `Optimal 15-man squad locked · 1 Free Transfer saved for GW3 · 0 hits taken` (or clean `[IN] ➔ [OUT]` pair).
+  - **Right**: Horizon target projection indicator (`GW2 → GW4`).
+
+### Rule 5: Structured Tabular Asset Ledgers
+- Replace chaotic "pill clouds" with structured 2-column tabular rows (`.diff-ledger-row`):
+  - Left: Position squircle + player name.
+  - Right: Cost + exact differential point delta ($+5.8\text{ xP}$) or risk exposure level.
+
+---
+
+## 4. De-slopped FPL Fan Vocabulary Standard
+
+| Robotic / Academic Term | De-slopped, Authentic FPL Vocabulary |
+|---|---|
+| "Algorithmic Lineup Optimizer" | **Matchday Starting XI** |
+| "Multi-Horizon LP Transfer Engine" | **5-Week Transfer Planner** |
+| "Bayesian Points Decomposition" | **Points Breakdown & DNA** |
+| "Minimax Threat Exposure" | **Rival Radar & Danger Men** |
+| "Dixon-Coles Poisson Match Modeler" | **Match Preview & Clean Sheet Odds** |
+| "Net Asset Market Momentum" | **Price Riser / Faller Tracker** |
+| "Rolling Invariant Decision" | **Roll Free Transfer (Bank FT)** |
+
+---
+
+## 5. Design System Tokens (CSS Custom Properties)
 
 ```css
 :root {
@@ -85,7 +147,7 @@ Per the repository's strict anti-slop guidelines, the following elements are **p
   --border-medium: rgba(255, 255, 255, 0.15);
   --border-active: rgba(16, 185, 129, 0.50);
 
-  /* Geometry Radii */
+  /* Geometry Radii (Concentric Squircles) */
   --radius-xs: 3px;
   --radius-sm: 4px;
   --radius-md: 6px;
@@ -99,7 +161,7 @@ Per the repository's strict anti-slop guidelines, the following elements are **p
 
 ---
 
-## 4. Mobile Responsive Architecture
+## 6. Mobile Responsive Architecture
 
 To maintain high visual density and institutional elegance on small screens:
 
@@ -115,7 +177,7 @@ To maintain high visual density and institutional elegance on small screens:
 
 ---
 
-## 5. Codebase Architecture: Deep Module System
+## 7. Codebase Architecture: Deep Module System
 
 Applying the **Deep Module Principles** (*large amount of internal capability hidden behind a small, testable interface at a clean seam*):
 
@@ -127,13 +189,18 @@ Applying the **Deep Module Principles** (*large amount of internal capability hi
 ├──────────────────────────┼──────────────────────────────┼──────────────────────────────┤
 │ `TacticalPitch`          │ `starters`, `bench`,         │ • Dynamic formation parser   │
 │                          │ `onSelectPlayer`,            │ • Spatial 2D row grouping    │
-│                          │ `onInspectPlayer`,           │ • Field line SVG geometry    │
+│                          │ `onInspectPlayer`,           │ • Field line CSS geometry    │
 │                          │ `startingXp`, `totalXp`      │ • Bench swap validity        │
+│                          │                              │ • Segmented chip switcher    │
+│                          │                              │ • Integrated strategy bar    │
 ├──────────────────────────┼──────────────────────────────┼──────────────────────────────┤
-│ `TransferWorkbench`      │ `roadmap`, `allPlayers`,     │ • Multi-criteria search      │
-│                          │ `onInspectPlayer`            │ • Price threshold filtering  │
-│                          │                              │ • Sort by xP / Cost / Form   │
-│                          │                              │ • 3-GW bank math trajectory  │
+│ `MultiGwPlanner`         │ `roadmap`, `allPlayers`,     │ • 5-GW Transfer roadmap      │
+│                          │ `onInspectPlayer`            │ • Multi-gameweek chip solver │
+│                          │                              │ • Transfer transaction ledger│
+├──────────────────────────┼──────────────────────────────┼──────────────────────────────┤
+│ `RivalThreatMatrix`      │ `rivals`, `onInspectPlayer`  │ • Mini-league rank radar     │
+│                          │                              │ • Tabular differential ledger│
+│                          │                              │ • Danger men risk exposure   │
 ├──────────────────────────┼──────────────────────────────┼──────────────────────────────┤
 │ `FixtureHeatmap`         │ `fixtures`, `teams`          │ • 38-GW 20-team matrix map   │
 │                          │                              │ • Home/Away FDR mapper       │
@@ -141,12 +208,12 @@ Applying the **Deep Module Principles** (*large amount of internal capability hi
 │                          │                              │ • Mobile short name switcher │
 ├──────────────────────────┼──────────────────────────────┼──────────────────────────────┤
 │ `PlayerDNAInspector`     │ `player`, `onClose`          │ • 11-Component decomposition │
-│                          │                              │ • Empirical Bayes math ($M_0$)│
-│                          │                              │ • Lazy-loaded Recharts modal │
+│                          │                              │ • Fail-safe Point Ledger     │
+│                          │                              │ • Underlying match metrics   │
 ├──────────────────────────┼──────────────────────────────┼──────────────────────────────┤
-│ `MarketVelocityTicker`   │ `allPlayers`,                │ • Net transfer velocity math │
-│                          │ `onInspectPlayer`            │ • Price rise/fall risk tiers │
-│                          │                              │ • Seasonal chip EV guide     │
+│ `FixtureProbabilityDrawer│ `fixtureDetails`, `onClose`  │ • Dixon-Coles Poisson matrix │
+│                          │                              │ • Joint scoreline odds       │
+│                          │                              │ • Clean sheet percentages    │
 ├──────────────────────────┼──────────────────────────────┼──────────────────────────────┤
 │ `ComponentStudio`        │ `players`,                   │ • Bayesian shrinkage sandbox │
 │                          │ `onInspectPlayer`            │ • Dynamic parameter sliders  │
@@ -156,7 +223,7 @@ Applying the **Deep Module Principles** (*large amount of internal capability hi
 
 ---
 
-## 6. Interaction & Motion Rules
+## 8. Interaction & Motion Rules
 
 1. **State Feedback**: Interactive elements (player cards, table rows, tab buttons) use `transition: all 0.15s ease`.
 2. **Tactile Push**: Active buttons and cards simulate an instant mechanical push with `transform: translateY(-2px)` on hover and `scale(0.98)` on click.
@@ -173,9 +240,11 @@ Applying the **Deep Module Principles** (*large amount of internal capability hi
 
 ---
 
-## 7. Pre-Flight Design Audit Checklist
+## 9. Pre-Flight Design Audit Checklist
 
 Before releasing any new frontend view or feature:
+- [ ] **Concentric Radius Scale**: All elements follow `8px` $\rightarrow$ `6px` $\rightarrow$ `4px` $\rightarrow$ `3px`. Zero $9999\text{px}$ bubble pills.
+- [ ] **Data Tags**: Position tags, captaincy, haul probability, and set pieces use squircle monospace micro-flags.
 - [ ] **Contrast Check**: All body text $\ge 4.5:1$, large labels $\ge 3:1$.
 - [ ] **Typography**: All tabular numerical columns use `font-mono` (`JetBrains Mono`) with `font-feature-settings: "tnum" 1`.
 - [ ] **No AI Slop Check**: Zero decorative multi-hue gradients, zero emojis in technical headers, zero hardcoded colors.
@@ -183,4 +252,3 @@ Before releasing any new frontend view or feature:
 - [ ] **Deep Module Seam**: Component props are minimal; complexity is encapsulated internally.
 - [ ] **Responsive Breakpoints**: Layout renders without horizontal overflow across Desktop (1600px), Tablet (768px), and Mobile (375px).
 - [ ] **Build Check**: `npm run build` compiles with 0 errors.
-

@@ -18,6 +18,7 @@ export default function TacticalPitch({
   selectedPlayer,
   onSelectPlayer,
   onInspectPlayer,
+  onOpenMatchup,
   actionSummary,
   startingXp,
   totalXp,
@@ -78,22 +79,27 @@ export default function TacticalPitch({
       );
     }
 
+    // Humanized fallback for locked initial squad or rolling transfer
+    const cleanMsg = summary.includes('LOCKED') || summary.includes('INITIAL')
+      ? 'Optimal 15-man squad locked · 1 Free Transfer saved for GW3 · 0 hits taken'
+      : summary.replace(/EXECUTE\s*\d*\s*FREE\s*TRANSFER\(S\):\s*/i, '');
+
     return (
       <div className="rec-generic-text">
-        <span>{summary.replace(/EXECUTE\s*\d*\s*FREE\s*TRANSFER\(S\):\s*/i, '')}</span>
+        <span>{cleanMsg}</span>
       </div>
     );
   };
 
   return (
     <div>
-      {/* Chip Simulation Toggle Bar */}
-      <div style={{ background: 'var(--bg-surface-1)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', padding: '10px 16px', marginBottom: '14px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>
-            Simulate Chip:
+      {/* Chip Simulation Segmented Switcher (Rule 3) */}
+      <div className="chip-switcher-bar">
+        <div className="chip-switcher-left">
+          <span className="chip-switcher-label">
+            Active Scenario:
           </span>
-          <div role="group" aria-label="Select active FPL chip" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+          <div role="group" aria-label="Select active FPL chip" className="segmented-chip-rail">
             {chipOptions.map(c => {
               const Icon = c.icon;
               const isSelected = activeChip === c.id;
@@ -102,24 +108,9 @@ export default function TacticalPitch({
                   key={c.id}
                   onClick={() => onSelectChip(c.id)}
                   aria-pressed={isSelected}
-                  style={{
-                    background: isSelected ? (c.id === 'none' ? 'var(--bg-surface-subtle)' : 'var(--accent-emerald)') : 'var(--bg-surface-2)',
-                    color: isSelected ? (c.id === 'none' ? 'var(--text-primary)' : 'var(--text-inverse)') : 'var(--text-secondary)',
-                    border: isSelected ? '1px solid var(--border-active)' : '1px solid var(--border-subtle)',
-                    boxShadow: isSelected && c.id !== 'none' ? '0 4px 20px rgba(16, 185, 129, 0.25)' : 'none',
-                    padding: '6px 11px',
-                    borderRadius: 'var(--radius-sm)',
-                    fontSize: '12px',
-                    fontFamily: 'var(--font-sans)',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '5px',
-                    transition: 'all 0.15s ease'
-                  }}
+                  className={`segmented-chip-btn ${isSelected ? 'active' : ''}`}
                 >
-                  <Icon size={14} weight={isSelected ? "fill" : "bold"} />
+                  <Icon size={13} weight={isSelected ? "fill" : "bold"} />
                   <span>{c.label}</span>
                 </button>
               );
@@ -127,42 +118,44 @@ export default function TacticalPitch({
           </div>
         </div>
 
-        {isChipActive && (
-          <div style={{ fontSize: '12px', color: 'var(--accent-emerald)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+        {isChipActive ? (
+          <div className="chip-active-tag font-mono">
             {currentChipData.chip_name} · {currentChipData.formation} · £{currentChipData.budget_used.toFixed(1)}m squad cost
+          </div>
+        ) : (
+          <div className="chip-status-tag font-mono">
+            Standard Lineup · 1 FT Saved · £2.0m Bank
           </div>
         )}
       </div>
 
-      {/* Gameweek Strategic Recommendation Banner */}
+      {/* Strategic Recommendation Status Bar (Rule 4) */}
       {isChipActive ? (
-        <div className="action-banner chip-active-banner">
-          <div className="action-left">
-            <span className="action-pill chip-pill">
-              <Lightning size={13} weight="fill" />
-              <span>{currentChipData.chip_name}</span>
+        <div className="strategy-status-bar chip-active">
+          <div className="strategy-status-left">
+            <span className="status-tag chip-tag">
+              <Lightning size={12} weight="fill" />
+              <span>{currentChipData.chip_name.toUpperCase()}</span>
             </span>
-            <span className="action-desc">{currentChipData.description}</span>
+            <span className="strategy-desc">{currentChipData.description}</span>
           </div>
-          <div className="action-right">
-            <span className="rec-xp-label">Projected:</span>
-            <span className="rec-xp-val">{currentChipData.total_xp.toFixed(1)} pts</span>
+          <div className="strategy-status-right">
+            <span className="rec-xp-label">Horizon Target:</span>
+            <span className="rec-xp-val font-mono">{currentChipData.total_xp.toFixed(1)} pts</span>
           </div>
         </div>
       ) : actionSummary && (
-        <div className="action-banner">
-          <div className="action-left">
-            <span className="action-pill transfer-pill">
-              <ArrowsLeftRight size={13} weight="bold" />
-              <span>1 Free Transfer</span>
+        <div className="strategy-status-bar">
+          <div className="strategy-status-left">
+            <span className="status-tag optimal-tag">
+              <span className="status-dot"></span>
+              <span>MATCHDAY STRATEGY</span>
             </span>
             {renderTransferPills(actionSummary)}
           </div>
-          <div className="action-right">
-            <div className="status-indicator">
-              <span className="status-dot"></span>
-              <span className="status-label">Optimal Lineup</span>
-            </div>
+          <div className="strategy-status-right">
+            <span className="rec-xp-label">Horizon:</span>
+            <span className="rec-xp-val font-mono">GW2 → GW4</span>
           </div>
         </div>
       )}
@@ -184,13 +177,13 @@ export default function TacticalPitch({
         </div>
 
         <div className="kpi-card">
-          <div className="kpi-label">Full Squad Total</div>
+          <div className="kpi-label">Squad Total (Bench Weighted)</div>
           <div className="kpi-value">
             {Number(displayTotalXp || 0).toFixed(1)}
             <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
           </div>
           <div className="kpi-subtext">
-            {activeChip === 'bboost' ? 'All 15 players scoring points' : 'Starters + auto-sub backup'}
+            {activeChip === 'bboost' ? 'All 15 players scoring points' : 'Starters + auto-sub safety net'}
           </div>
         </div>
 
@@ -223,11 +216,11 @@ export default function TacticalPitch({
         </div>
 
         <div className="kpi-card">
-          <div className="kpi-label">Planning Horizon</div>
+          <div className="kpi-label">Lookahead Horizon</div>
           <div className="kpi-value">
             3 <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Gameweeks</span>
           </div>
-          <div className="kpi-subtext">Looking ahead through GW4</div>
+          <div className="kpi-subtext">Planning ahead through GW4</div>
         </div>
       </div>
 
@@ -249,6 +242,7 @@ export default function TacticalPitch({
                 isSelected={selectedPlayer?.player_code === p.player_code}
                 onClick={() => onSelectPlayer(p)}
                 onInspect={onInspectPlayer}
+                onOpenMatchup={onOpenMatchup}
               />
             ))}
           </div>
@@ -262,6 +256,7 @@ export default function TacticalPitch({
                 isSelected={selectedPlayer?.player_code === p.player_code}
                 onClick={() => onSelectPlayer(p)}
                 onInspect={onInspectPlayer}
+                onOpenMatchup={onOpenMatchup}
               />
             ))}
           </div>
@@ -275,6 +270,7 @@ export default function TacticalPitch({
                 isSelected={selectedPlayer?.player_code === p.player_code}
                 onClick={() => onSelectPlayer(p)}
                 onInspect={onInspectPlayer}
+                onOpenMatchup={onOpenMatchup}
               />
             ))}
           </div>
@@ -288,6 +284,7 @@ export default function TacticalPitch({
                 isSelected={selectedPlayer?.player_code === p.player_code}
                 onClick={() => onSelectPlayer(p)}
                 onInspect={onInspectPlayer}
+                onOpenMatchup={onOpenMatchup}
               />
             ))}
           </div>
@@ -341,6 +338,11 @@ export default function TacticalPitch({
                       <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: 'var(--accent-emerald)' }}>
                         {Number(p.expected_points || 0).toFixed(1)} pts
                       </div>
+                      {p.ceiling_p90 && (
+                        <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                          max {p.ceiling_p90}
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -348,7 +350,7 @@ export default function TacticalPitch({
             </div>
 
             <div style={{ marginTop: '14px', fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
-              Click any starter and bench player to swap them. Double-click any player to see how their points are calculated.
+              Click any starter and bench player to swap. Double-click any card to see full player breakdown.
             </div>
           </div>
         </div>

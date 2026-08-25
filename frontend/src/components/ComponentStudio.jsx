@@ -269,7 +269,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                   }}
                   tabIndex={0}
                   role="button"
-                  aria-label={`${p.web_name}, ${p.position}, £${Number(p.now_cost || p.cost || 0).toFixed(1)}M, projected score ${p.simulatedXp.toFixed(2)}`}
+                  aria-label={`${p.web_name}, ${p.position}, £${Number(p.now_cost || p.cost || 0).toFixed(1)}M, projected score ${(p.dynamicXp || 0).toFixed(1)}`}
                   style={{ cursor: 'pointer' }}
                   title="Click to view detailed point projections"
                 >

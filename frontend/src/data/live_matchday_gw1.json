@@ -84,7 +84,109 @@
       "446008": 8.0,
       "223827": 5.0
     },
-    "rivals": null
+    "rivals": [
+      {
+        "entry_id": 1001,
+        "manager_name": "Magnus Carlsen",
+        "team_name": "Turing Test XI",
+        "overall_rank": 124,
+        "overall_points": 78,
+        "captain_name": "Haaland",
+        "differentials": [
+          "Salah",
+          "Isak"
+        ],
+        "shared_players": [
+          "Haaland",
+          "B.Fernandes",
+          "Raya",
+          "White"
+        ],
+        "threat_level": "HIGH",
+        "overlap_pct": 60.0
+      },
+      {
+        "entry_id": 1002,
+        "manager_name": "Fabio Borges",
+        "team_name": "Porto Knights",
+        "overall_rank": 540,
+        "overall_points": 74,
+        "captain_name": "Haaland",
+        "differentials": [
+          "Palmer",
+          "Gvardiol"
+        ],
+        "shared_players": [
+          "Haaland",
+          "Calafiori",
+          "Mbeumo",
+          "Szoboszlai"
+        ],
+        "threat_level": "MEDIUM",
+        "overlap_pct": 53.3
+      },
+      {
+        "entry_id": 1003,
+        "manager_name": "Ben Crellin",
+        "team_name": "Planner FC",
+        "overall_rank": 1280,
+        "overall_points": 71,
+        "captain_name": "B.Fernandes",
+        "differentials": [
+          "Watkins",
+          "Saka"
+        ],
+        "shared_players": [
+          "B.Fernandes",
+          "Calafiori",
+          "Raya",
+          "Ballard"
+        ],
+        "threat_level": "HIGH",
+        "overlap_pct": 46.7
+      },
+      {
+        "entry_id": 1004,
+        "manager_name": "Mark Sutherns",
+        "team_name": "Black & White",
+        "overall_rank": 2400,
+        "overall_points": 69,
+        "captain_name": "Haaland",
+        "differentials": [
+          "Son",
+          "Porro"
+        ],
+        "shared_players": [
+          "Haaland",
+          "Tavernier",
+          "Mbeumo",
+          "Leno"
+        ],
+        "threat_level": "LOW",
+        "overlap_pct": 40.0
+      },
+      {
+        "entry_id": 1005,
+        "manager_name": "Lateriser12",
+        "team_name": "Upside Chaser",
+        "overall_rank": 3800,
+        "overall_points": 66,
+        "captain_name": "Palmer",
+        "differentials": [
+          "Palmer",
+          "Gordon",
+          "Muniz"
+        ],
+        "shared_players": [
+          "Haaland",
+          "Stach",
+          "White",
+          "Calvert-Lewin"
+        ],
+        "threat_level": "MEDIUM",
+        "overlap_pct": 46.7
+      }
+    ]
   },
   "action_summary": "LOCKED GW2 INITIAL ENTRY SQUAD (Unlimited Transfers - Optimal 15-Man Draft)",
   "starting_xp": 58.41,
@@ -102,7 +204,25 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": true,
-      "bench_order": null
+      "bench_order": null,
+      "floor_p10": 1.8,
+      "median_p50": 4.8,
+      "ceiling_p90": 8.5,
+      "haul_prob": 0.02,
+      "p_start": 0.4,
+      "p_mins_60": 0.4,
+      "hook_hazard": 0.0,
+      "rest_days": 7,
+      "sp_pk_order": null,
+      "sp_ck_order": null,
+      "sp_fk_order": null,
+      "fixture_details": {
+        "home_team": "Arsenal",
+        "away_team": "Coventry City",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.122,
+        "most_likely_score": "2-1"
+      }
     },
     {
       "player_code": 466075,
@@ -114,7 +234,25 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "floor_p10": 1.6,
+      "median_p50": 4.5,
+      "ceiling_p90": 7.9,
+      "haul_prob": 0.02,
+      "p_start": 0.4,
+      "p_mins_60": 0.32,
+      "hook_hazard": 0.08,
+      "rest_days": 7,
+      "sp_pk_order": null,
+      "sp_ck_order": null,
+      "sp_fk_order": null,
+      "fixture_details": {
+        "home_team": "Arsenal",
+        "away_team": "Coventry City",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.122,
+        "most_likely_score": "2-1"
+      }
     },
     {
       "player_code": 198869,
@@ -126,7 +264,25 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "floor_p10": 1.6,
+      "median_p50": 4.3,
+      "ceiling_p90": 7.7,
+      "haul_prob": 0.02,
+      "p_start": 0.4,
+      "p_mins_60": 0.32,
+      "hook_hazard": 0.08,
+      "rest_days": 7,
+      "sp_pk_order": null,
+      "sp_ck_order": null,
+      "sp_fk_order": null,
+      "fixture_details": {
+        "home_team": "Arsenal",
+        "away_team": "Coventry City",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.122,
+        "most_likely_score": "2-1"
+      }
     },
     {
       "player_code": 201658,
@@ -138,7 +294,25 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "floor_p10": 1.9,
+      "median_p50": 5.2,
+      "ceiling_p90": 10.6,
+      "haul_prob": 0.075,
+      "p_start": 0.4,
+      "p_mins_60": 0.27,
+      "hook_hazard": 0.13,
+      "rest_days": 7,
+      "sp_pk_order": 3,
+      "sp_ck_order": 1,
+      "sp_fk_order": 1,
+      "fixture_details": {
+        "home_team": "Man City",
+        "away_team": "Bournemouth",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.122,
+        "most_likely_score": "2-1"
+      }
     },
     {
       "player_code": 466525,
@@ -150,7 +324,25 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "floor_p10": 1.7,
+      "median_p50": 4.5,
+      "ceiling_p90": 9.3,
+      "haul_prob": 0.03,
+      "p_start": 0.4,
+      "p_mins_60": 0.28,
+      "hook_hazard": 0.12,
+      "rest_days": 7,
+      "sp_pk_order": null,
+      "sp_ck_order": 1,
+      "sp_fk_order": 1,
+      "fixture_details": {
+        "home_team": "Nott'm Forest",
+        "away_team": "Leeds",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.235,
+        "most_likely_score": "1-1"
+      }
     },
     {
       "player_code": 177815,
@@ -162,7 +354,25 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "floor_p10": 1.8,
+      "median_p50": 5.0,
+      "ceiling_p90": 10.3,
+      "haul_prob": 0.061,
+      "p_start": 0.4,
+      "p_mins_60": 0.28,
+      "hook_hazard": 0.12,
+      "rest_days": 7,
+      "sp_pk_order": 1,
+      "sp_ck_order": null,
+      "sp_fk_order": null,
+      "fixture_details": {
+        "home_team": "Nott'm Forest",
+        "away_team": "Leeds",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.235,
+        "most_likely_score": "1-1"
+      }
     },
     {
       "player_code": 424876,
@@ -174,7 +384,25 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "floor_p10": 1.9,
+      "median_p50": 5.1,
+      "ceiling_p90": 10.5,
+      "haul_prob": 0.068,
+      "p_start": 0.4,
+      "p_mins_60": 0.26,
+      "hook_hazard": 0.15,
+      "rest_days": 7,
+      "sp_pk_order": 1,
+      "sp_ck_order": 1,
+      "sp_fk_order": 1,
+      "fixture_details": {
+        "home_team": "Newcastle",
+        "away_team": "Liverpool",
+        "home_cs_prob": 0.157,
+        "away_cs_prob": 0.235,
+        "most_likely_score": "1-1"
+      }
     },
     {
       "player_code": 223094,
@@ -186,7 +414,25 @@
       "is_starter": true,
       "is_captain": true,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "floor_p10": 2.2,
+      "median_p50": 6.0,
+      "ceiling_p90": 12.3,
+      "haul_prob": 0.157,
+      "p_start": 0.4,
+      "p_mins_60": 0.24,
+      "hook_hazard": 0.16,
+      "rest_days": 7,
+      "sp_pk_order": 1,
+      "sp_ck_order": null,
+      "sp_fk_order": null,
+      "fixture_details": {
+        "home_team": "Man City",
+        "away_team": "Bournemouth",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.122,
+        "most_likely_score": "2-1"
+      }
     },
     {
       "player_code": 141746,
@@ -198,7 +444,25 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "floor_p10": 2.4,
+      "median_p50": 6.5,
+      "ceiling_p90": 13.4,
+      "haul_prob": 0.216,
+      "p_start": 0.4,
+      "p_mins_60": 0.27,
+      "hook_hazard": 0.13,
+      "rest_days": 7,
+      "sp_pk_order": 1,
+      "sp_ck_order": 1,
+      "sp_fk_order": 1,
+      "fixture_details": {
+        "home_team": "Hull City",
+        "away_team": "Man Utd",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.235,
+        "most_likely_score": "1-1"
+      }
     },
     {
       "player_code": 446008,
@@ -210,7 +474,25 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "floor_p10": 2.0,
+      "median_p50": 5.5,
+      "ceiling_p90": 11.2,
+      "haul_prob": 0.101,
+      "p_start": 0.4,
+      "p_mins_60": 0.27,
+      "hook_hazard": 0.13,
+      "rest_days": 7,
+      "sp_pk_order": 1,
+      "sp_ck_order": 1,
+      "sp_fk_order": 2,
+      "fixture_details": {
+        "home_team": "Hull City",
+        "away_team": "Man Utd",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.235,
+        "most_likely_score": "1-1"
+      }
     },
     {
       "player_code": 223827,
@@ -222,7 +504,25 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "floor_p10": 1.5,
+      "median_p50": 4.2,
+      "ceiling_p90": 7.4,
+      "haul_prob": 0.02,
+      "p_start": 0.4,
+      "p_mins_60": 0.34,
+      "hook_hazard": 0.06,
+      "rest_days": 7,
+      "sp_pk_order": null,
+      "sp_ck_order": null,
+      "sp_fk_order": null,
+      "fixture_details": {
+        "home_team": "Ipswich Town",
+        "away_team": "Sunderland",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.235,
+        "most_likely_score": "1-1"
+      }
     }
   ],
   "bench": [
@@ -236,7 +536,25 @@
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": 1
+      "bench_order": 1,
+      "floor_p10": 1.4,
+      "median_p50": 3.9,
+      "ceiling_p90": 7.0,
+      "haul_prob": 0.02,
+      "p_start": 0.4,
+      "p_mins_60": 0.4,
+      "hook_hazard": 0.0,
+      "rest_days": 7,
+      "sp_pk_order": null,
+      "sp_ck_order": null,
+      "sp_fk_order": null,
+      "fixture_details": {
+        "home_team": "Fulham",
+        "away_team": "Chelsea",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.235,
+        "most_likely_score": "1-1"
+      }
     },
     {
       "player_code": 173878,
@@ -248,7 +566,25 @@
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": 2
+      "bench_order": 2,
+      "floor_p10": 1.2,
+      "median_p50": 3.1,
+      "ceiling_p90": 5.6,
+      "haul_prob": 0.02,
+      "p_start": 0.4,
+      "p_mins_60": 0.34,
+      "hook_hazard": 0.06,
+      "rest_days": 7,
+      "sp_pk_order": null,
+      "sp_ck_order": null,
+      "sp_fk_order": null,
+      "fixture_details": {
+        "home_team": "Arsenal",
+        "away_team": "Coventry City",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.122,
+        "most_likely_score": "2-1"
+      }
     },
     {
       "player_code": 539142,
@@ -260,7 +596,25 @@
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": 3
+      "bench_order": 3,
+      "floor_p10": 1.2,
+      "median_p50": 3.1,
+      "ceiling_p90": 5.6,
+      "haul_prob": 0.02,
+      "p_start": 0.4,
+      "p_mins_60": 0.34,
+      "hook_hazard": 0.06,
+      "rest_days": 7,
+      "sp_pk_order": null,
+      "sp_ck_order": null,
+      "sp_fk_order": null,
+      "fixture_details": {
+        "home_team": "Arsenal",
+        "away_team": "Coventry City",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.122,
+        "most_likely_score": "2-1"
+      }
     },
     {
       "player_code": 230730,
@@ -272,7 +626,25 @@
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": 4
+      "bench_order": 4,
+      "floor_p10": 1.0,
+      "median_p50": 2.7,
+      "ceiling_p90": 5.6,
+      "haul_prob": 0.02,
+      "p_start": 0.4,
+      "p_mins_60": 0.29,
+      "hook_hazard": 0.11,
+      "rest_days": 7,
+      "sp_pk_order": 4,
+      "sp_ck_order": null,
+      "sp_fk_order": null,
+      "fixture_details": {
+        "home_team": "Arsenal",
+        "away_team": "Coventry City",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.122,
+        "most_likely_score": "2-1"
+      }
     }
   ],
   "multi_horizon_roadmap": [
@@ -319,6 +691,378 @@
       "hits_taken": 0,
       "net_xp": 62.65,
       "bank": 0.0
+    }
+  ],
+  "dixon_coles_fixtures": [
+    {
+      "fixture_id": 1,
+      "home_team": "Arsenal",
+      "away_team": "Coventry City",
+      "kickoff_time": "2026-08-21T19:00:00Z",
+      "expected_home_goals": 2.1,
+      "expected_away_goals": 1.15,
+      "home_win_prob": 0.587,
+      "draw_prob": 0.216,
+      "away_win_prob": 0.197,
+      "home_cs_prob": 0.317,
+      "away_cs_prob": 0.122,
+      "btts_prob": 0.604,
+      "over_2_5_prob": 0.63,
+      "most_likely_scorelines": [
+        {
+          "score": "2-1",
+          "prob": 0.098
+        },
+        {
+          "score": "1-1",
+          "prob": 0.098
+        },
+        {
+          "score": "2-0",
+          "prob": 0.086
+        },
+        {
+          "score": "1-0",
+          "prob": 0.077
+        },
+        {
+          "score": "3-1",
+          "prob": 0.069
+        }
+      ]
+    },
+    {
+      "fixture_id": 4,
+      "home_team": "Hull City",
+      "away_team": "Man Utd",
+      "kickoff_time": "2026-08-22T11:30:00Z",
+      "expected_home_goals": 1.45,
+      "expected_away_goals": 1.15,
+      "home_win_prob": 0.434,
+      "draw_prob": 0.273,
+      "away_win_prob": 0.294,
+      "home_cs_prob": 0.317,
+      "away_cs_prob": 0.235,
+      "btts_prob": 0.529,
+      "over_2_5_prob": 0.482,
+      "most_likely_scorelines": [
+        {
+          "score": "1-1",
+          "prob": 0.13
+        },
+        {
+          "score": "1-0",
+          "prob": 0.102
+        },
+        {
+          "score": "2-1",
+          "prob": 0.09
+        },
+        {
+          "score": "0-0",
+          "prob": 0.081
+        },
+        {
+          "score": "0-1",
+          "prob": 0.079
+        }
+      ]
+    },
+    {
+      "fixture_id": 3,
+      "home_team": "Everton",
+      "away_team": "Crystal Palace",
+      "kickoff_time": "2026-08-22T14:00:00Z",
+      "expected_home_goals": 1.45,
+      "expected_away_goals": 1.15,
+      "home_win_prob": 0.434,
+      "draw_prob": 0.273,
+      "away_win_prob": 0.294,
+      "home_cs_prob": 0.317,
+      "away_cs_prob": 0.235,
+      "btts_prob": 0.529,
+      "over_2_5_prob": 0.482,
+      "most_likely_scorelines": [
+        {
+          "score": "1-1",
+          "prob": 0.13
+        },
+        {
+          "score": "1-0",
+          "prob": 0.102
+        },
+        {
+          "score": "2-1",
+          "prob": 0.09
+        },
+        {
+          "score": "0-0",
+          "prob": 0.081
+        },
+        {
+          "score": "0-1",
+          "prob": 0.079
+        }
+      ]
+    },
+    {
+      "fixture_id": 5,
+      "home_team": "Ipswich Town",
+      "away_team": "Sunderland",
+      "kickoff_time": "2026-08-22T14:00:00Z",
+      "expected_home_goals": 1.45,
+      "expected_away_goals": 1.15,
+      "home_win_prob": 0.434,
+      "draw_prob": 0.273,
+      "away_win_prob": 0.294,
+      "home_cs_prob": 0.317,
+      "away_cs_prob": 0.235,
+      "btts_prob": 0.529,
+      "over_2_5_prob": 0.482,
+      "most_likely_scorelines": [
+        {
+          "score": "1-1",
+          "prob": 0.13
+        },
+        {
+          "score": "1-0",
+          "prob": 0.102
+        },
+        {
+          "score": "2-1",
+          "prob": 0.09
+        },
+        {
+          "score": "0-0",
+          "prob": 0.081
+        },
+        {
+          "score": "0-1",
+          "prob": 0.079
+        }
+      ]
+    },
+    {
+      "fixture_id": 6,
+      "home_team": "Nott'm Forest",
+      "away_team": "Leeds",
+      "kickoff_time": "2026-08-22T14:00:00Z",
+      "expected_home_goals": 1.45,
+      "expected_away_goals": 1.15,
+      "home_win_prob": 0.434,
+      "draw_prob": 0.273,
+      "away_win_prob": 0.294,
+      "home_cs_prob": 0.317,
+      "away_cs_prob": 0.235,
+      "btts_prob": 0.529,
+      "over_2_5_prob": 0.482,
+      "most_likely_scorelines": [
+        {
+          "score": "1-1",
+          "prob": 0.13
+        },
+        {
+          "score": "1-0",
+          "prob": 0.102
+        },
+        {
+          "score": "2-1",
+          "prob": 0.09
+        },
+        {
+          "score": "0-0",
+          "prob": 0.081
+        },
+        {
+          "score": "0-1",
+          "prob": 0.079
+        }
+      ]
+    },
+    {
+      "fixture_id": 2,
+      "home_team": "Brentford",
+      "away_team": "Spurs",
+      "kickoff_time": "2026-08-22T16:30:00Z",
+      "expected_home_goals": 1.45,
+      "expected_away_goals": 1.15,
+      "home_win_prob": 0.434,
+      "draw_prob": 0.273,
+      "away_win_prob": 0.294,
+      "home_cs_prob": 0.317,
+      "away_cs_prob": 0.235,
+      "btts_prob": 0.529,
+      "over_2_5_prob": 0.482,
+      "most_likely_scorelines": [
+        {
+          "score": "1-1",
+          "prob": 0.13
+        },
+        {
+          "score": "1-0",
+          "prob": 0.102
+        },
+        {
+          "score": "2-1",
+          "prob": 0.09
+        },
+        {
+          "score": "0-0",
+          "prob": 0.081
+        },
+        {
+          "score": "0-1",
+          "prob": 0.079
+        }
+      ]
+    },
+    {
+      "fixture_id": 7,
+      "home_team": "Brighton",
+      "away_team": "Aston Villa",
+      "kickoff_time": "2026-08-23T13:00:00Z",
+      "expected_home_goals": 1.45,
+      "expected_away_goals": 1.15,
+      "home_win_prob": 0.434,
+      "draw_prob": 0.273,
+      "away_win_prob": 0.294,
+      "home_cs_prob": 0.317,
+      "away_cs_prob": 0.235,
+      "btts_prob": 0.529,
+      "over_2_5_prob": 0.482,
+      "most_likely_scorelines": [
+        {
+          "score": "1-1",
+          "prob": 0.13
+        },
+        {
+          "score": "1-0",
+          "prob": 0.102
+        },
+        {
+          "score": "2-1",
+          "prob": 0.09
+        },
+        {
+          "score": "0-0",
+          "prob": 0.081
+        },
+        {
+          "score": "0-1",
+          "prob": 0.079
+        }
+      ]
+    },
+    {
+      "fixture_id": 8,
+      "home_team": "Man City",
+      "away_team": "Bournemouth",
+      "kickoff_time": "2026-08-23T13:00:00Z",
+      "expected_home_goals": 2.1,
+      "expected_away_goals": 1.15,
+      "home_win_prob": 0.587,
+      "draw_prob": 0.216,
+      "away_win_prob": 0.197,
+      "home_cs_prob": 0.317,
+      "away_cs_prob": 0.122,
+      "btts_prob": 0.604,
+      "over_2_5_prob": 0.63,
+      "most_likely_scorelines": [
+        {
+          "score": "2-1",
+          "prob": 0.098
+        },
+        {
+          "score": "1-1",
+          "prob": 0.098
+        },
+        {
+          "score": "2-0",
+          "prob": 0.086
+        },
+        {
+          "score": "1-0",
+          "prob": 0.077
+        },
+        {
+          "score": "3-1",
+          "prob": 0.069
+        }
+      ]
+    },
+    {
+      "fixture_id": 9,
+      "home_team": "Newcastle",
+      "away_team": "Liverpool",
+      "kickoff_time": "2026-08-23T15:30:00Z",
+      "expected_home_goals": 1.45,
+      "expected_away_goals": 1.85,
+      "home_win_prob": 0.298,
+      "draw_prob": 0.235,
+      "away_win_prob": 0.466,
+      "home_cs_prob": 0.157,
+      "away_cs_prob": 0.235,
+      "btts_prob": 0.65,
+      "over_2_5_prob": 0.641,
+      "most_likely_scorelines": [
+        {
+          "score": "1-1",
+          "prob": 0.104
+        },
+        {
+          "score": "1-2",
+          "prob": 0.091
+        },
+        {
+          "score": "2-1",
+          "prob": 0.072
+        },
+        {
+          "score": "2-2",
+          "prob": 0.066
+        },
+        {
+          "score": "0-1",
+          "prob": 0.063
+        }
+      ]
+    },
+    {
+      "fixture_id": 10,
+      "home_team": "Fulham",
+      "away_team": "Chelsea",
+      "kickoff_time": "2026-08-24T19:00:00Z",
+      "expected_home_goals": 1.45,
+      "expected_away_goals": 1.15,
+      "home_win_prob": 0.434,
+      "draw_prob": 0.273,
+      "away_win_prob": 0.294,
+      "home_cs_prob": 0.317,
+      "away_cs_prob": 0.235,
+      "btts_prob": 0.529,
+      "over_2_5_prob": 0.482,
+      "most_likely_scorelines": [
+        {
+          "score": "1-1",
+          "prob": 0.13
+        },
+        {
+          "score": "1-0",
+          "prob": 0.102
+        },
+        {
+          "score": "2-1",
+          "prob": 0.09
+        },
+        {
+          "score": "0-0",
+          "prob": 0.081
+        },
+        {
+          "score": "0-1",
+          "prob": 0.079
+        }
+      ]
     }
   ]
 }
