@@ -17,9 +17,9 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
   ];
 
   const chips = [
-    { name: 'Triple Captain (3XC)', target_gw: 'GW25 or GW34', value: '+14.2 pts gain', reason: 'Save for a prolific premium attacker (Haaland/Salah) during a Double Gameweek.' },
-    { name: 'Bench Boost (BB)', target_gw: 'GW37', value: '+18.5 pts gain', reason: 'Deploy when your entire 15-man squad has two fixtures in the biggest double gameweek of the season.' },
-    { name: 'Free Hit (FH)', target_gw: 'GW29', value: '+22.0 pts gain', reason: 'Navigate FA Cup clash weekends when only 8–10 clubs play, fielding a full XI without burning transfers.' },
+    { name: 'Triple Captain (3XC)', target_gw: 'GW25 or GW34', value: '+14.2 pts gain', reason: 'Deploy on a prolific premium attacker (Haaland/Salah) during a Double Gameweek.' },
+    { name: 'Bench Boost (BB)', target_gw: 'GW37', value: '+18.5 pts gain', reason: 'Deploy when your entire 15-man squad has two fixtures in the season\'s largest double gameweek.' },
+    { name: 'Free Hit (FH)', target_gw: 'GW29', value: '+22.0 pts gain', reason: 'Navigate blank FA Cup weekends when only 8–10 clubs play, fielding a full XI without burning transfers.' },
     { name: 'First Wildcard (WC1)', target_gw: 'GW6 to GW8', value: '+9.4 pts per GW', reason: 'Capitalize on the major early-season fixture swing to load up on Arsenal, City, and Liverpool assets.' },
   ];
 
@@ -43,14 +43,14 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
   };
 
   return (
-    <div>
+    <div className="view-fluid">
       <div className="market-panels-grid">
         {/* Rising Assets Radar */}
         <div className="sidebar-panel">
           <div className="panel-header">
             <span className="market-section-title rising">
               <TrendUp size={16} weight="bold" />
-              Players Set to Rise in Price (+£0.1m)
+              <span>Players Set to Rise in Price (+£0.1m)</span>
             </span>
           </div>
 
@@ -60,26 +60,22 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
                 key={p.web_name}
                 onClick={() => handleInspect(p)}
                 className="market-asset-row"
-                title="Click to view player stats"
+                title="Click to inspect player DNA"
               >
-                <div style={{ flex: 1 }}>
+                <div className="asset-main-info">
                   <div className="market-asset-identity">
-                    <span className={`player-position-pill ${p.pos}`}>{p.pos}</span>
-                    <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{p.web_name}</span>
-                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>({p.team})</span>
+                    <span className={`player-pos-tag ${p.pos}`}>{p.pos}</span>
+                    <span className="asset-player-name">{p.web_name}</span>
+                    <span className="asset-team-name font-mono">({p.team})</span>
                   </div>
-                  <div className="market-asset-meta" style={{ marginBottom: '6px' }}>
+                  <div className="market-asset-meta font-mono">
                     £{p.cost.toFixed(1)}m · +{p.net_vel.toLocaleString()} net transfers
                   </div>
                   {/* Thermometer Progress Bar */}
-                  <div style={{ width: '90%', height: '4px', background: 'rgba(255,255,255,0.08)', borderRadius: '2px', overflow: 'hidden' }}>
+                  <div className="velocity-thermometer-track">
                     <div
-                      style={{
-                        width: `${Math.min(100, p.progress)}%`,
-                        height: '100%',
-                        background: p.progress >= 100 ? 'var(--accent-emerald)' : 'rgba(16, 185, 129, 0.65)',
-                        boxShadow: p.progress >= 100 ? '0 0 6px rgba(16, 185, 129, 0.8)' : undefined
-                      }}
+                      className={`velocity-thermometer-fill ${p.progress >= 100 ? 'saturated' : ''}`}
+                      style={{ width: `${Math.min(100, p.progress)}%` }}
                     />
                   </div>
                 </div>
@@ -97,7 +93,7 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
           <div className="panel-header">
             <span className="market-section-title falling">
               <TrendDown size={16} weight="bold" />
-              Players Set to Drop in Price (-£0.1m)
+              <span>Players Set to Drop in Price (-£0.1m)</span>
             </span>
           </div>
 
@@ -107,26 +103,22 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
                 key={p.web_name}
                 onClick={() => handleInspect(p)}
                 className="market-asset-row"
-                title="Click to view player stats"
+                title="Click to inspect player DNA"
               >
-                <div style={{ flex: 1 }}>
+                <div className="asset-main-info">
                   <div className="market-asset-identity">
-                    <span className={`player-position-pill ${p.pos}`}>{p.pos}</span>
-                    <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{p.web_name}</span>
-                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>({p.team})</span>
+                    <span className={`player-pos-tag ${p.pos}`}>{p.pos}</span>
+                    <span className="asset-player-name">{p.web_name}</span>
+                    <span className="asset-team-name font-mono">({p.team})</span>
                   </div>
-                  <div className="market-asset-meta" style={{ marginBottom: '6px' }}>
+                  <div className="market-asset-meta font-mono">
                     £{p.cost.toFixed(1)}m · {p.net_vel.toLocaleString()} net transfers
                   </div>
                   {/* Thermometer Progress Bar */}
-                  <div style={{ width: '90%', height: '4px', background: 'rgba(255,255,255,0.08)', borderRadius: '2px', overflow: 'hidden' }}>
+                  <div className="velocity-thermometer-track">
                     <div
-                      style={{
-                        width: `${Math.min(100, p.progress)}%`,
-                        height: '100%',
-                        background: p.progress >= 100 ? 'var(--accent-crimson)' : 'rgba(239, 68, 68, 0.65)',
-                        boxShadow: p.progress >= 100 ? '0 0 6px rgba(239, 68, 68, 0.8)' : undefined
-                      }}
+                      className={`velocity-thermometer-fill falling ${p.progress >= 100 ? 'saturated-falling' : ''}`}
+                      style={{ width: `${Math.min(100, p.progress)}%` }}
                     />
                   </div>
                 </div>
@@ -140,25 +132,27 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
         </div>
       </div>
 
-      {/* Strategic Chip Guide */}
-      <h3 className="market-section-title" style={{ marginBottom: '12px' }}>
-        <CalendarCheck size={18} weight="bold" />
-        Chip Strategy Guide &amp; Target Windows
-      </h3>
+      {/* Season Chip Optimization Guide */}
+      <div className="chip-guide-panel">
+        <div className="panel-header">
+          <span className="market-section-title">
+            <CalendarCheck size={16} weight="bold" />
+            <span>Season Chip Strategy & Double Gameweek Roadmap</span>
+          </span>
+        </div>
 
-      <div className="chip-guide-grid">
-        {chips.map(c => (
-          <div key={c.name} className="chip-guide-card">
-            <div className="chip-guide-header">
-              <span className="chip-guide-name">{c.name}</span>
-              <span className="chip-guide-value">{c.value}</span>
+        <div className="chip-guide-grid">
+          {chips.map(chip => (
+            <div key={chip.name} className="chip-guide-card">
+              <div className="chip-guide-header">
+                <span className="chip-guide-title font-mono">{chip.name}</span>
+                <span className="chip-guide-gain font-mono">{chip.value}</span>
+              </div>
+              <div className="chip-guide-target font-mono">Recommended Target: {chip.target_gw}</div>
+              <div className="chip-guide-reason">{chip.reason}</div>
             </div>
-            <div className="chip-guide-target">
-              Recommended Target: {c.target_gw}
-            </div>
-            <div className="chip-guide-reason">{c.reason}</div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

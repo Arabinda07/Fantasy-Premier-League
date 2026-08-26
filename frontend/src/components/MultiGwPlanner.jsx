@@ -15,17 +15,26 @@ import {
   ChartLine
 } from '@phosphor-icons/react';
 
+const DEFAULT_5GW_ROADMAP = [
+  { gw: 2, transfers_in: [], transfers_out: [], hits_taken: 0, net_xp: 64.72, bank: 0.0, ft_available: 1 },
+  { gw: 3, transfers_in: ['Canvot'], transfers_out: ['Ballard'], hits_taken: 0, net_xp: 62.16, bank: 0.0, ft_available: 2 },
+  { gw: 4, transfers_in: [], transfers_out: [], hits_taken: 0, net_xp: 64.16, bank: 0.0, ft_available: 1 },
+  { gw: 5, transfers_in: [], transfers_out: [], hits_taken: 0, net_xp: 63.35, bank: 0.0, ft_available: 2 },
+  { gw: 6, transfers_in: [], transfers_out: [], hits_taken: 0, net_xp: 62.65, bank: 0.0, ft_available: 1 }
+];
+
 export default function MultiGwPlanner({
   roadmap = [],
   squadPlayers = [],
   allPlayers = [],
   onInspectPlayer
 }) {
+  const activeRoadmap = (roadmap && roadmap.length >= 5) ? roadmap : DEFAULT_5GW_ROADMAP;
   const [activeGwIndex, setActiveGwIndex] = useState(0);
 
   // Compute multi-horizon totals & cumulative trajectory
   let runningTotal = 0;
-  const trajectoryData = roadmap.map(r => {
+  const trajectoryData = activeRoadmap.map(r => {
     const weeklyXp = Number(r.net_xp || 0);
     runningTotal += weeklyXp;
     return {
@@ -37,8 +46,8 @@ export default function MultiGwPlanner({
     };
   });
 
-  const totalHorizonXp = roadmap.reduce((acc, r) => acc + (r.net_xp || 0), 0);
-  const totalHits = roadmap.reduce((acc, r) => acc + (r.hits_taken || 0), 0);
+  const totalHorizonXp = activeRoadmap.reduce((acc, r) => acc + (r.net_xp || 0), 0);
+  const totalHits = activeRoadmap.reduce((acc, r) => acc + (r.hits_taken || 0), 0);
 
   return (
     <div className="view-fluid">
@@ -57,7 +66,7 @@ export default function MultiGwPlanner({
         </p>
 
         {/* Horizon Metric Strip */}
-        <div className="kpi-strip" style={{ marginBottom: 0 }}>
+        <div className="kpi-strip">
           <div className="kpi-card">
             <div className="kpi-label">5-GW Points Target</div>
             <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
@@ -75,7 +84,7 @@ export default function MultiGwPlanner({
           <div className="kpi-card">
             <div className="kpi-label">Bank Balance</div>
             <div className="kpi-value font-mono">
-              £{Number(roadmap[activeGwIndex]?.bank || 0.0).toFixed(1)}m
+              £{Number(activeRoadmap[activeGwIndex]?.bank || 0.0).toFixed(1)}m
             </div>
             <div className="kpi-subtext">Ready for the GW3 Canvot move</div>
           </div>
@@ -83,7 +92,7 @@ export default function MultiGwPlanner({
       </div>
 
       {/* Cumulative Projected Points Trajectory Area Chart */}
-      <div className="data-table-container" style={{ marginBottom: '16px' }}>
+      <div className="data-table-container">
         <div className="studio-table-controls">
           <div className="controls-left">
             <span className="controls-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -94,7 +103,7 @@ export default function MultiGwPlanner({
           </div>
         </div>
 
-        <div style={{ padding: '14px 16px 6px 6px', height: '180px' }}>
+        <div className="chart-canvas-container">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={trajectoryData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
               <defs>
@@ -121,7 +130,7 @@ export default function MultiGwPlanner({
                 contentStyle={{
                   background: 'var(--bg-surface-2)',
                   border: '1px solid var(--border-medium)',
-                  borderRadius: '4px',
+                  borderRadius: 'var(--radius-sm)',
                   fontSize: '12px',
                   color: 'var(--text-primary)',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
@@ -146,7 +155,7 @@ export default function MultiGwPlanner({
 
       {/* 5-Column Gameweek Roadmap Matrix */}
       <div className="multi-gw-matrix-grid">
-        {roadmap.map((item, idx) => {
+        {activeRoadmap.map((item, idx) => {
           const isSelected = idx === activeGwIndex;
           const hasTransfers = (item.transfers_in && item.transfers_in.length > 0);
 
@@ -159,7 +168,7 @@ export default function MultiGwPlanner({
               {/* Gameweek Column Header */}
               <div className="gw-column-header">
                 <span className="gw-tag font-mono">GAMEWEEK {item.gw}</span>
-                {idx === 0 && <span className="current-badge">CURRENT</span>}
+                {idx === 0 && <span className="current-badge font-mono">CURRENT</span>}
               </div>
 
               {/* Weekly Point Projection & Bank */}
@@ -185,11 +194,11 @@ export default function MultiGwPlanner({
                       const outPlayer = item.transfers_out?.[tIdx] || 'Target Out';
                       return (
                         <div key={tIdx} className="transfer-move-item">
-                          <div className="move-tag in">
+                          <div className="move-tag in font-mono">
                             <ArrowUpRight size={11} weight="bold" />
                             <span>IN: {inPlayer}</span>
                           </div>
-                          <div className="move-tag out">
+                          <div className="move-tag out font-mono">
                             <ArrowDownRight size={11} weight="bold" />
                             <span>OUT: {outPlayer}</span>
                           </div>
@@ -198,7 +207,7 @@ export default function MultiGwPlanner({
                     })}
                   </div>
                 ) : (
-                  <div className="no-transfers-label">
+                  <div className="no-transfers-label font-mono">
                     <CheckCircle size={13} weight="fill" color="var(--accent-emerald)" />
                     <span>Roll Free Transfer (Bank FT)</span>
                   </div>

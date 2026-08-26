@@ -166,23 +166,23 @@ def sync_api_data(
         # Write players_raw.csv
         base_filename = season_dir + '/'
         parse_players(data['elements'], base_filename)
-        print(f"[Pipeline]   → Updated players_raw.csv ({len(data['elements'])} players)")
+        print(f"[Pipeline]   -> Updated players_raw.csv ({len(data['elements'])} players)")
 
         # Write teams.csv
         parse_team_data(data['teams'], base_filename)
-        print(f"[Pipeline]   → Updated teams.csv ({len(data['teams'])} teams)")
+        print(f"[Pipeline]   -> Updated teams.csv ({len(data['teams'])} teams)")
 
         # Write cleaned_players.csv and player_idlist.csv
         from global_scraper import clean_players, id_players
         clean_players(os.path.join(season_dir, 'players_raw.csv'), base_filename)
         id_players(os.path.join(season_dir, 'players_raw.csv'), base_filename)
-        print("[Pipeline]   → Updated cleaned_players.csv and player_idlist.csv")
+        print("[Pipeline]   -> Updated cleaned_players.csv and player_idlist.csv")
 
         # Fetch and write fixtures
         print("[Pipeline] Stage 1a: Fetching FPL fixtures API...")
         fixtures_data = get_fixtures_data()
         parse_fixtures(fixtures_data, base_filename)
-        print(f"[Pipeline]   → Updated fixtures.csv ({len(fixtures_data)} fixtures)")
+        print(f"[Pipeline]   -> Updated fixtures.csv ({len(fixtures_data)} fixtures)")
 
         return StageResult(
             stage='api_sync',
@@ -286,9 +286,9 @@ def record_price_snapshot(
             rising = alerts_df[alerts_df['trend'].isin([RISING_LOCK, RISING_ALERT])].sort_values('net_velocity', ascending=False).head(5)
             falling = alerts_df[alerts_df['trend'].isin([FALLING_LOCK, FALLING_ALERT])].sort_values('net_velocity').head(5)
             for _, r in rising.iterrows():
-                print(f"  ▲ [{r['trend']}] {r['web_name']} | £{r['now_cost']:.1f}M | +{r['net_velocity']:,} net")
+                print(f"  [^] [{r['trend']}] {r['web_name']} | GBP {r['now_cost']:.1f}M | +{r['net_velocity']:,} net")
             for _, r in falling.iterrows():
-                print(f"  ▼ [{r['trend']}] {r['web_name']} | £{r['now_cost']:.1f}M | {r['net_velocity']:,} net")
+                print(f"  [v] [{r['trend']}] {r['web_name']} | GBP {r['now_cost']:.1f}M | {r['net_velocity']:,} net")
 
         return StageResult(
             stage='price_snapshot',
@@ -471,14 +471,14 @@ def generate_predictions(
         print(f"[Pipeline] Stage 4: Generating baseline predictions for GW{gw}...")
         pred_df = predict_all_players(season=season, data_root=data_root)
         pred_count = len(pred_df) if pred_df is not None and not pred_df.empty else 0
-        print(f"[Pipeline]   → Baseline predictions: {pred_count} players")
+        print(f"[Pipeline]   -> Baseline predictions: {pred_count} players")
 
         print(f"[Pipeline] Stage 4: Generating fixture-adjusted predictions for GW{gw}...")
         fix_df = predict_gameweek_fixtures(
             season=season, gw=gw, data_root=data_root, save_csv=True,
         )
         fix_count = len(fix_df) if fix_df is not None and not fix_df.empty else 0
-        print(f"[Pipeline]   → Fixture predictions: {fix_count} players")
+        print(f"[Pipeline]   -> Fixture predictions: {fix_count} players")
 
         return StageResult(
             stage='predictions',
@@ -504,6 +504,8 @@ def generate_predictions(
 def run_live_solver(
     season: str = '2026-27',
     gw: int = 1,
+    team_id: Optional[int] = None,
+    league_id: Optional[int] = None,
     bank: float = 0.0,
     free_transfers: int = 1,
     horizon: int = 3,
@@ -517,6 +519,8 @@ def run_live_solver(
     Args:
         season: season string.
         gw: target gameweek number.
+        team_id: optional official FPL team / entry ID for 1-click sync.
+        league_id: optional mini-league ID for rival threat analysis.
         bank: current bank balance in £M.
         free_transfers: available free transfers.
         horizon: multi-gameweek lookahead horizon.
@@ -537,6 +541,8 @@ def run_live_solver(
         result = manage_gameweek(
             season=season,
             gw=gw,
+            team_id=team_id,
+            league_id=league_id,
             bank=bank,
             free_transfers=free_transfers,
             horizon=horizon,
@@ -550,11 +556,12 @@ def run_live_solver(
         if result and result.get('squad_solution'):
             total_xp = result['squad_solution'].total_xp
 
+        msg_extra = f" (Team ID: {team_id})" if team_id else ""
         return StageResult(
             stage='live_solver',
             success=True,
             duration_seconds=time.time() - stage_start,
-            message=f'Solver complete. Total projected xP: {total_xp:.2f}',
+            message=f'Solver complete. Total projected xP: {total_xp:.2f}{msg_extra}',
         )
 
     except Exception as e:
@@ -568,6 +575,47 @@ def run_live_solver(
 
 
 # ---------------------------------------------------------------------------
+# Stage 6: Frontend Enrichment
+# ---------------------------------------------------------------------------
+
+def enrich_frontend_stage(
+    season: str = '2026-27',
+    gw: int = 1,
+    data_root: str = 'data',
+) -> StageResult:
+    """Stage 6: Enrich matchday JSON with Dixon-Coles matrices and minutes hazard."""
+    stage_start = time.time()
+
+    try:
+        from model.enrich_frontend_data import enrich_matchday_json
+        print(f"[Pipeline] Stage 6: Enriching matchday JSON with Dixon-Coles & minutes hazard for GW{gw}...")
+        success = enrich_matchday_json(gw=gw, season=season, data_root=data_root)
+
+        if success:
+            return StageResult(
+                stage='frontend_enrichment',
+                success=True,
+                duration_seconds=time.time() - stage_start,
+                message=f'Enriched GW{gw} matchday data with Dixon-Coles matrices & minutes hazard.',
+            )
+        else:
+            return StageResult(
+                stage='frontend_enrichment',
+                success=False,
+                duration_seconds=time.time() - stage_start,
+                message=f'Enrichment skipped or incomplete for GW{gw}.',
+            )
+    except Exception as e:
+        return StageResult(
+            stage='frontend_enrichment',
+            success=False,
+            duration_seconds=time.time() - stage_start,
+            message=f'Frontend enrichment failed: {e}',
+            error=str(e),
+        )
+
+
+# ---------------------------------------------------------------------------
 # Master Pipeline Orchestrator
 # ---------------------------------------------------------------------------
 
@@ -575,12 +623,15 @@ def run_live_pipeline(
     season: str = '2026-27',
     gw: Optional[int] = None,
     mode: str = 'sync',
+    team_id: Optional[int] = None,
+    league_id: Optional[int] = None,
     bank: float = 0.0,
     free_transfers: int = 1,
     horizon: int = 3,
     strategy: str = 'pure_xp',
     data_root: str = 'data',
     offline: bool = False,
+    scrape: bool = False,
     export_excel: bool = True,
     export_json: bool = True,
 ) -> PipelineResult:
@@ -669,7 +720,7 @@ def run_live_pipeline(
     if mode in ('sync', 'full'):
         ds_result = rebuild_dataset(
             season=season, gw=resolved_gw, data_root=data_root,
-            skip_scrape=True,
+            skip_scrape=not scrape,
         )
         stages.append(ds_result)
         if not ds_result.success:
@@ -693,6 +744,8 @@ def run_live_pipeline(
         solver_result = run_live_solver(
             season=season,
             gw=resolved_gw,
+            team_id=team_id,
+            league_id=league_id,
             bank=bank,
             free_transfers=free_transfers,
             horizon=horizon,
@@ -704,6 +757,15 @@ def run_live_pipeline(
         stages.append(solver_result)
 
     # ------------------------------------------------------------------
+    # Stage 6: Frontend Enrichment (when JSON export is enabled)
+    # ------------------------------------------------------------------
+    if export_json and mode in ('sync', 'full', 'solver_only'):
+        enrich_result = enrich_frontend_stage(
+            season=season, gw=resolved_gw, data_root=data_root,
+        )
+        stages.append(enrich_result)
+
+    # ------------------------------------------------------------------
     # Pipeline Summary
     # ------------------------------------------------------------------
     total_time = time.time() - pipeline_start
@@ -713,8 +775,8 @@ def run_live_pipeline(
     print(f"  PIPELINE EXECUTION SUMMARY")
     print("=" * 90)
     for s in stages:
-        status = "✓" if s.success else "✗"
-        print(f"  [{status}] {s.stage:<22} | {s.duration_seconds:>6.1f}s | {s.message}")
+        status = "OK" if s.success else "FAIL"
+        print(f"  [{status:<4}] {s.stage:<22} | {s.duration_seconds:>6.1f}s | {s.message}")
     print("-" * 90)
     print(f"  Total Duration: {total_time:.1f}s | Overall: {'SUCCESS' if all_success else 'PARTIAL FAILURE'}")
     print("=" * 90 + "\n")
@@ -741,11 +803,14 @@ def run_scheduler_daemon(
     season: str = '2026-27',
     interval_hours: float = 6.0,
     mode: str = 'sync',
+    team_id: Optional[int] = None,
+    league_id: Optional[int] = None,
     bank: float = 0.0,
     free_transfers: int = 1,
     horizon: int = 3,
     strategy: str = 'pure_xp',
     data_root: str = 'data',
+    scrape: bool = False,
     max_iterations: Optional[int] = None,
 ) -> None:
     """Run the pipeline on a repeating schedule.
@@ -754,18 +819,21 @@ def run_scheduler_daemon(
         season: season string.
         interval_hours: hours between pipeline executions.
         mode: pipeline execution mode.
+        team_id: optional official FPL team ID.
+        league_id: optional mini-league ID.
         bank: bank balance.
         free_transfers: available free transfers.
         horizon: lookahead horizon.
         strategy: game theory strategy.
         data_root: root data directory.
+        scrape: run live scrapers.
         max_iterations: maximum number of runs (None = infinite).
     """
     interval_seconds = interval_hours * 3600.0
     iteration = 0
 
     print(f"[Daemon] Starting pipeline scheduler: every {interval_hours:.1f}h | mode={mode}")
-    print(f"[Daemon] Season: {season} | Strategy: {strategy}")
+    print(f"[Daemon] Season: {season} | Strategy: {strategy}" + (f" | Team ID: {team_id}" if team_id else ""))
     if max_iterations:
         print(f"[Daemon] Max iterations: {max_iterations}")
     print()
@@ -783,11 +851,14 @@ def run_scheduler_daemon(
             result = run_live_pipeline(
                 season=season,
                 mode=mode,
+                team_id=team_id,
+                league_id=league_id,
                 bank=bank,
                 free_transfers=free_transfers,
                 horizon=horizon,
                 strategy=strategy,
                 data_root=data_root,
+                scrape=scrape,
             )
             status = 'SUCCESS' if result.success else 'PARTIAL FAILURE'
             print(f"[Daemon] Pipeline result: {status} ({result.total_duration_seconds:.1f}s)")
@@ -812,11 +883,11 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Fast daily sync (API + price delta + predictions + solver):
-  python -m model.pipeline_automation --season 2026-27 --mode sync
+  # Fast daily sync with team & league sync:
+  python -m model.pipeline_automation --season 2026-27 --mode sync --team-id 9500404 --league-id 1305495
 
-  # Complete post-gameweek rebuild:
-  python -m model.pipeline_automation --season 2026-27 --mode full
+  # Complete post-gameweek rebuild with live scrapers:
+  python -m model.pipeline_automation --season 2026-27 --mode full --scrape --team-id 9500404
 
   # Re-run solver only (no network, no re-prediction):
   python -m model.pipeline_automation --season 2026-27 --mode solver_only --bank 1.5 --ft 2
@@ -825,13 +896,15 @@ Examples:
   python -m model.pipeline_automation --season 2026-27 --mode predictions_only --gw 2
 
   # Scheduled daemon (every 6 hours):
-  python -m model.pipeline_automation --season 2026-27 --daemon --interval-hours 6
+  python -m model.pipeline_automation --season 2026-27 --daemon --interval-hours 6 --team-id 9500404
         """,
     )
     parser.add_argument('--season', default='2026-27', help="Season string (e.g. 2026-27)")
     parser.add_argument('--gw', type=int, default=None, help="Target gameweek number (auto-detected if omitted)")
     parser.add_argument('--mode', default='sync', choices=['sync', 'full', 'predictions_only', 'solver_only'],
                         help="Pipeline execution mode")
+    parser.add_argument('--team-id', type=int, default=None, help="Official FPL Entry / Team ID for 1-click live squad sync")
+    parser.add_argument('--league-id', type=int, default=None, help="Mini-league ID for rival threat analysis")
     parser.add_argument('--bank', type=float, default=0.0, help="Bank balance in £M")
     parser.add_argument('--ft', type=int, default=1, help="Available free transfers (1-5)")
     parser.add_argument('--horizon', type=int, default=3, help="Lookahead horizon in gameweeks (1-5)")
@@ -841,6 +914,8 @@ Examples:
     parser.add_argument('--data-root', default='data', help="Root data directory")
     parser.add_argument('--offline', action='store_true', default=False,
                         help="Skip all network calls, use local cached data only")
+    parser.add_argument('--scrape', action='store_true', default=False,
+                        help="Run live web scrapers (FBref, Understat) during dataset rebuild")
     parser.add_argument('--daemon', action='store_true', default=False,
                         help="Run as a repeating scheduler daemon")
     parser.add_argument('--interval-hours', type=float, default=6.0,
@@ -859,11 +934,14 @@ Examples:
             season=args.season,
             interval_hours=args.interval_hours,
             mode=args.mode,
+            team_id=args.team_id,
+            league_id=args.league_id,
             bank=args.bank,
             free_transfers=args.ft,
             horizon=args.horizon,
             strategy=args.strategy,
             data_root=args.data_root,
+            scrape=args.scrape,
             max_iterations=args.max_iterations,
         )
     else:
@@ -871,12 +949,15 @@ Examples:
             season=args.season,
             gw=args.gw,
             mode=args.mode,
+            team_id=args.team_id,
+            league_id=args.league_id,
             bank=args.bank,
             free_transfers=args.ft,
             horizon=args.horizon,
             strategy=args.strategy,
             data_root=args.data_root,
             offline=args.offline,
+            scrape=args.scrape,
             export_excel=not args.no_excel,
             export_json=not args.no_json,
         )

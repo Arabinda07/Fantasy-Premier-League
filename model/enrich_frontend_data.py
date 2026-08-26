@@ -23,27 +23,51 @@ from model.minutes_model import compute_player_minutes_hazard
 from model.match_simulator import compute_dixon_coles_matrix, analyze_bivariate_scoreline_matrix
 
 
-def enrich_matchday_json(gw: int = 2, season: str = '2026-27') -> None:
-    json_path = os.path.join(REPO_ROOT, 'frontend', 'src', 'data', f'live_matchday_gw{gw}.json')
-    if not os.path.exists(json_path):
-        print(f"File {json_path} not found.")
-        return
+def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data_root: str = 'data') -> bool:
+    """Enrich live matchday JSON payloads for the frontend cockpit."""
+    if gw is None:
+        from model.pipeline_automation import detect_active_gameweek
+        _, next_gw, _ = detect_active_gameweek(season=season, data_root=data_root, offline=True)
+        gw = next_gw or 1
 
-    with open(json_path, 'r', encoding='utf-8') as f:
+    frontend_json = os.path.join(REPO_ROOT, 'frontend', 'src', 'data', f'live_matchday_gw{gw}.json')
+    data_json = os.path.join(REPO_ROOT, data_root, season, f'fpl_matchday_live_gw{gw}.json')
+
+    # Find the source JSON
+    source_path = None
+    if os.path.exists(frontend_json):
+        source_path = frontend_json
+    elif os.path.exists(data_json):
+        source_path = data_json
+
+    if not source_path:
+        print(f"[Enrichment] Warning: No matchday JSON found for GW{gw} at {frontend_json} or {data_json}")
+        return False
+
+    with open(source_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     # Load predictions and raw players
-    preds_path = os.path.join(REPO_ROOT, 'data', season, f'fixture_predictions_gw{gw}.csv')
+    preds_path = os.path.join(REPO_ROOT, data_root, season, f'fixture_predictions_gw{gw}.csv')
     if not os.path.exists(preds_path):
-        preds_path = os.path.join(REPO_ROOT, 'data', season, 'fixture_predictions.csv')
+        preds_path = os.path.join(REPO_ROOT, data_root, season, 'fixture_predictions.csv')
+    if not os.path.exists(preds_path):
+        print(f"[Enrichment] Warning: Predictions CSV not found at {preds_path}")
+        return False
     preds_df = pd.read_csv(preds_path)
 
-    raw_path = os.path.join(REPO_ROOT, 'data', season, 'players_raw.csv')
+    raw_path = os.path.join(REPO_ROOT, data_root, season, 'players_raw.csv')
     raw_df = pd.read_csv(raw_path) if os.path.exists(raw_path) else preds_df
 
     # Load fixtures and teams
-    fixtures_df = pd.read_csv(os.path.join(REPO_ROOT, 'data', season, 'fixtures.csv'))
-    teams_df = pd.read_csv(os.path.join(REPO_ROOT, 'data', season, 'teams.csv'))
+    fixtures_path = os.path.join(REPO_ROOT, data_root, season, 'fixtures.csv')
+    teams_path = os.path.join(REPO_ROOT, data_root, season, 'teams.csv')
+    if not os.path.exists(fixtures_path) or not os.path.exists(teams_path):
+        print("[Enrichment] Warning: fixtures.csv or teams.csv not found.")
+        return False
+
+    fixtures_df = pd.read_csv(fixtures_path)
+    teams_df = pd.read_csv(teams_path)
     teams_map = dict(zip(teams_df['id'], teams_df['name']))
 
     gw_fixtures = fixtures_df[fixtures_df['event'] == gw]
@@ -254,13 +278,31 @@ def enrich_matchday_json(gw: int = 2, season: str = '2026-27') -> None:
         }
     ]
 
-    with open(json_path, 'w', encoding='utf-8') as f:
+    # Write to both frontend data and season data directories
+    os.makedirs(os.path.dirname(frontend_json), exist_ok=True)
+    with open(frontend_json, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
 
-    print(f"Successfully enriched {json_path} with quantitative metrics & fixtures!")
+    os.makedirs(os.path.dirname(data_json), exist_ok=True)
+    with open(data_json, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2)
+
+    print(f"[Enrichment] Successfully enriched GW{gw} matchday data at:\n  -> {frontend_json}\n  -> {data_json}")
+    return True
+
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Enrich live matchday JSON with quantitative analytics")
+    parser.add_argument('--gw', type=int, default=None, help="Target gameweek number (auto-detected if None)")
+    parser.add_argument('--season', default='2026-27', help="Season string (e.g. 2026-27)")
+    parser.add_argument('--data-root', default='data', help="Root data directory")
+    args = parser.parse_args()
+
+    success = enrich_matchday_json(gw=args.gw, season=args.season, data_root=args.data_root)
+    if not success:
+        sys.exit(1)
 
 
 if __name__ == '__main__':
-    enrich_matchday_json(gw=2)
-    if os.path.exists(os.path.join(REPO_ROOT, 'frontend', 'src', 'data', 'live_matchday_gw1.json')):
-        enrich_matchday_json(gw=1)
+    main()

@@ -54,7 +54,7 @@ jobs:
           fi
           
           MODE="${{ github.event.inputs.mode || 'sync' }}"
-          python -m model.pipeline_automation --season 2026-27 --mode "$MODE" $GW_ARG
+          python -m model.pipeline_automation --season 2026-27 --mode "$MODE" --team-id 9500404 --league-id 1305495 $GW_ARG
 
       - name: Commit & Push Live Matchday Reports
         run: |

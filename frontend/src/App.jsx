@@ -14,8 +14,13 @@ import Footer from './components/Footer';
 // Lazy-load Recharts heavy charting component on demand
 const PlayerDNAInspector = lazy(() => import('./components/PlayerDNAInspector'));
 
-// Import live data payloads
-import liveMatchdayData from './data/live_matchday_gw2.json';
+// Import dynamic matchday data loader and static database payloads
+import {
+  getLatestMatchdayData,
+  getMatchdayData,
+  availableGameweeks,
+  latestGameweek
+} from './utils/loadLatestMatchday';
 import allPlayersData from './data/players_full.json';
 import fixturesData from './data/fixtures_all.json';
 import teamsData from './data/teams_all.json';
@@ -55,11 +60,26 @@ export default function App() {
   const [isFixtureDrawerOpen, setIsFixtureDrawerOpen] = useState(false);
   const [activeDrawerFixture, setActiveDrawerFixture] = useState(null);
 
-  // Live Manager & Squad State
-  const [liveData, setLiveData] = useState(liveMatchdayData);
-  const [starters, setStarters] = useState(liveMatchdayData.starters || []);
-  const [bench, setBench] = useState(liveMatchdayData.bench || []);
+  // Dynamic Live Matchday State (defaults automatically to latest available GW)
+  const initialMatchday = getLatestMatchdayData();
+  const [selectedGw, setSelectedGw] = useState(initialMatchday.gameweek || 1);
+  const [liveData, setLiveData] = useState(initialMatchday.data || {});
+  const [starters, setStarters] = useState(initialMatchday.data?.starters || []);
+  const [bench, setBench] = useState(initialMatchday.data?.bench || []);
   const [selectedSwapPlayer, setSelectedSwapPlayer] = useState(null);
+
+  // Switch Gameweek Dataset handler
+  const handleSelectGw = (gw) => {
+    const numGw = Number(gw);
+    setSelectedGw(numGw);
+    const data = getMatchdayData(numGw);
+    if (data) {
+      setLiveData(data);
+      setStarters(data.starters || []);
+      setBench(data.bench || []);
+      setSelectedSwapPlayer(null);
+    }
+  };
 
   // Parse URL Hash on initial load and handle back/forward navigation
   useEffect(() => {
@@ -209,6 +229,9 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={handleTabChange}
         liveData={liveData}
+        selectedGw={selectedGw}
+        availableGameweeks={availableGameweeks}
+        onSelectGw={handleSelectGw}
         onOpenSyncModal={() => setIsSyncModalOpen(true)}
       />
 

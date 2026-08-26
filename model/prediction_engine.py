@@ -449,14 +449,18 @@ def predict_all_players(
     gw: int = 1,
     data_root: str = 'data',
     save_csv: bool = True,
+    season: Optional[str] = None,
 ) -> pd.DataFrame:
     """Generate baseline expected point predictions for all players in a season or given DataFrame."""
+    if season is not None:
+        season_or_df = season
+
     if isinstance(season_or_df, pd.DataFrame):
         df = season_or_df.copy()
         save_csv = False
     else:
-        season = str(season_or_df)
-        season_dir = os.path.join(data_root, season)
+        season_str = str(season_or_df)
+        season_dir = os.path.join(data_root, season_str)
         dataset_path = os.path.join(season_dir, 'model_dataset.csv')
 
         if not os.path.exists(dataset_path):

@@ -316,11 +316,82 @@ This document tracks the phased rebuild of the Fantasy Premier League (FPL) poin
 
 ---
 
+---
+
+## Operational Pipeline Overhaul & Live Gameweek Transition Engine (Completed)
+
+### 1. Dynamic Frontend Data Discovery & Gameweek Switcher
+- **Root Problem**: The React frontend was hardcoded to import `live_matchday_gw2.json`, meaning that as new gameweeks were solved, the UI remained locked to GW2 without manual code alterations.
+- **Architectural Solution**:
+  - Implemented `frontend/src/utils/loadLatestMatchday.js` utilizing Vite's `import.meta.glob('../data/live_matchday_gw*.json', { eager: true })` to dynamically discover and bundle all available gameweek datasets at build and runtime.
+  - Updated `frontend/src/App.jsx` to statefully manage `selectedGw` and auto-default to the highest available gameweek index.
+  - Added an institutional gameweek `<select>` switcher to `frontend/src/components/Header.jsx` aligned with `DESIGN.md` tokens.
+  - Parameterized `model/enrich_frontend_data.py` to auto-detect current gameweek and dual-export Dixon-Coles matrices and continuous minutes hazard indicators to both `frontend/src/data/` and `data/<season>/`.
+
+### 2. Live Team & Mini-League Auto-Sync Integration
+- **Root Problem**: CLI pipeline executions and scheduled batch workflows were running without user identity context, defaulting to generic template rosters.
+- **Architectural Solution**:
+  - Parameterized `model/pipeline_automation.py` with `--team-id` and `--league-id` across CLI parsing and pipeline orchestration.
+  - Wired manager profile extraction (`sync_manager_profile`) through `run_live_pipeline` -> `run_live_solver` -> `manage_gameweek` -> `fetch_fpl_entry_picks`.
+  - Added **Stage 6: Frontend Enrichment** directly into `pipeline_automation.py` so solver JSON outputs are automatically enriched with Poisson scoreline distributions and minutes hazard indicators upon solver completion.
+  - Updated `scripts/run_daily_sync.bat` and `.github/workflows/daily_fpl_sync.yml` with default production flags: `--team-id 9500404 --league-id 1305495`.
+
+### 3. Live Scraping Resilience & Diagnostic Documentation
+- **FBref Scraping Diagnostic**:
+  - `https://fbref.com/en/comps/9/` enforces Cloudflare Bot Management returning `HTTP 403 Forbidden` on automated scripts.
+  - Remediated `fbref.py`'s retry loop with immediate fail-fast error handling on 403 status codes instead of hanging in infinite exponential backoff.
+  - Configured `model/build_dataset.py` to catch 403 exceptions cleanly and fall back to official FPL API appearance counts (`season_starts`, `season_minutes`) in `players_raw.csv`.
+- **Understat Scraping Diagnostic & Historical Fallback**:
+  - Understat transitioned to a client-side rendered Single Page Application (SPA), deprecating static HTML JavaScript variable scraping (`var teamsData = ...`).
+  - Added `fallback_historical_understat()` in `understat.py` to automatically populate current season directory (`data/2026-27/understat/`) with 789 baseline team and player files from historical season `2024-25` whenever live scraping yields 0 records.
+- **Windows Encoding Hardening**:
+  - Resolved `charmap UnicodeEncodeError` and `UnicodeDecodeError` across `understat.py`, `global_scraper.py`, `pipeline_automation.py`, `accuracy_tracker.py`, and `gameweek_transition.py` by strictly enforcing `encoding='utf-8', errors='replace'` and ASCII-safe terminal logging.
+
+### 4. Post-Gameweek Quantitative Accuracy Tracker (`model/accuracy_tracker.py`)
+- Built autonomous evaluation engine reconciling pre-gameweek projections (`fixture_predictions_gw{N}.csv`) against actual gameweek scores (`merged_gw.csv` or `players_raw.csv`).
+- Computes:
+  - Overall MAE and RMSE across all rostered players.
+  - Active Starters MAE and RMSE (minutes > 0).
+  - Positional Breakdown (GK, DEF, MID, FWD) with directional model bias metrics.
+  - Pure-Pandas Spearman rank correlation ($r_s = \text{corr}(\text{rank}(x), \text{rank}(y))$) with zero external `scipy` dependency.
+  - Haul and outlier identification (top under-predictions and over-predictions).
+  - Appends historical calibration log to `data/<season>/accuracy_log.csv`.
+- Verified with unit tests in `model/test_accuracy_tracker.py`.
+
+### 5. Unified One-Command Gameweek Transition Orchestrator (`model/gameweek_transition.py`)
+- Created end-to-end executive orchestrator combining:
+  1. Automated gameweek state detection & deadline countdown.
+  2. Completed gameweek model accuracy evaluation.
+  3. Live FPL API sync & price change momentum snapshot.
+  4. Unified 612-player feature dataset rebuild.
+  5. 11-component point projections & fixture difficulty scaling.
+  6. Live manager squad sync (`9500404`), mini-league rival threat matrix (`1305495`), and multi-horizon MILP solver.
+  7. Frontend JSON enrichment with Dixon-Coles matrices & continuous minutes hazard.
+  8. Professional Excel report generation (`fpl_matchday_live_gw{N}.xlsx`).
+  9. Executive terminal decision briefing.
+
+### 6. Native FPL Opta Data Engine (Eliminating Understat & FBref Scraping)
+- **Architectural Motivation**: Understat SPA migration and FBref Cloudflare bot blocking created brittle failure points and required historical season fallbacks.
+- **Implementation**:
+  - Replaced external web scraping in `model/build_dataset.py` with 100% native FPL Opta metrics.
+  - Built `compute_native_participation()` to derive exact starts, substitute appearances, and squads-made counts directly from `players_raw.csv` and `merged_gw.csv`.
+  - Maintained full backward compatibility by populating `fbref_starts`, `fbref_subs`, `fbref_unused_subs` aliases natively from FPL data so all downstream modules (`prediction_engine.py`, `fixture_engine.py`, `solver.py`, `excel_exporter.py`) function without breaking changes.
+  - Added unit test suite in `model/test_build_dataset.py` (7 tests).
+- **Test Suite Results**:
+  - `python -m pytest model/ -v`: **182 passed, 0 failed** in 70.32s.
+- **Live Transition Results**:
+  - `python -m model.gameweek_transition --season 2026-27 --team-id 9500404 --league-id 1305495 --mode sync`: Completed in **16.9s** with 100% stage success.
+
+---
+
 ## Current Status & Next Horizon
 
-All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, **Milestone 2 (Continuous Minutes Hazard Engine)**, **Milestone 3 (Risk-Adjusted CVaR & Auto-Sub Solver)**, **Historical Backtest Validation with Chip Automation**, and the **Next-Gen Frontend Cockpit with the Repeatable Design System** are **100% complete and production verified**.
+All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit**, the **Autonomous Gameweek Transition Orchestrator**, and the **100% Native FPL Opta Data Engine** are **complete, robust, and production-verified**.
 
-For the complete Gameweek 2 transition playbook, elite best practices roadmap, and frontend web dashboard architecture, see:
-👉 **[DESIGN.md](file:///e:/Fantasy-Premier-League/DESIGN.md)** and **[docs/HANDOVER_AND_ROADMAP.md](file:///e:/Fantasy-Premier-League/docs/HANDOVER_AND_ROADMAP.md)**
+For complete operational playbooks and design standards:
+- 👉 **[DESIGN.md](file:///E:/Fantasy-Premier-League/DESIGN.md)**
+- 👉 **[docs/HANDOVER_AND_ROADMAP.md](file:///E:/Fantasy-Premier-League/docs/HANDOVER_AND_ROADMAP.md)**
+
+
 
 

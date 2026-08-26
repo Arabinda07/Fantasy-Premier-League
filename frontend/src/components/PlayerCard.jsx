@@ -17,9 +17,15 @@ export default function PlayerCard({
   const pos = (player.position || 'MID').toUpperCase();
   const cost = Number(player.cost || player.now_cost || 0).toFixed(1);
 
-  // Matchup info
-  const opponent = player.fixture_opponent || player.fixture_details?.away_team || player.fixture_details?.opponent;
-  const venue = player.fixture_venue || (player.fixture_details ? (player.fixture_details.home_team === player.team ? 'H' : 'A') : '');
+  // Matchup info — derive opponent correctly for both home and away players
+  const fd = player.fixture_details;
+  let opponent = player.fixture_opponent || null;
+  let venue = player.fixture_venue || '';
+  if (!opponent && fd) {
+    const isHome = fd.home_team === player.team;
+    venue = isHome ? 'H' : 'A';
+    opponent = isHome ? fd.away_team : fd.home_team;
+  }
   const fixtureLabel = opponent
     ? `${venue === 'H' ? 'vs' : '@'} ${opponent.substring(0, 3).toUpperCase()}`
     : '';
@@ -28,12 +34,16 @@ export default function PlayerCard({
     <div
       className={`player-pitch-card ${isSubTarget ? 'sub-target' : ''} ${isBoosted ? 'bench-boosted' : ''}`}
       onClick={() => {
-        if (onInspect) onInspect(player);
+        if (onSelectSub) {
+          onSelectSub(player);
+        } else if (onInspect) {
+          onInspect(player);
+        }
       }}
       onDoubleClick={() => {
         if (onInspect) onInspect(player);
       }}
-      title="Click or double-click to view complete player DNA & point breakdown"
+      title="Click to select/swap, double-click to view complete player DNA & point breakdown"
     >
       {/* Top Header: Badge / Position + Price */}
       <div className="player-card-top-row">

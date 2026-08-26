@@ -33,7 +33,13 @@ class PlayerData:
 # Low-level HTTP helpers
 # ---------------------------------------------------------------------------
 
-def _get_with_retry(url, session=None, max_retries=10, backoff=5):
+DEFAULT_HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+}
+
+
+def _get_with_retry(url, session=None, max_retries=3, backoff=2):
     """Fetch a URL with retry-on-non-200.
 
     Args:
@@ -49,13 +55,20 @@ def _get_with_retry(url, session=None, max_retries=10, backoff=5):
     attempts = 0
     while True:
         print("Getting data for: " + url)
-        response = getter.get(url)
-        if response.status_code == 200:
-            return response.text
+        try:
+            response = getter.get(url, headers=DEFAULT_HEADERS, timeout=10)
+            if response.status_code == 200:
+                return response.text
+            if response.status_code == 403:
+                raise Exception(f"FBref returned 403 Forbidden (Cloudflare bot protection active on {url})")
+        except Exception as req_err:
+            if "403 Forbidden" in str(req_err):
+                raise
+            print(f"Request attempt failed ({req_err}), retrying...")
+
         attempts += 1
         if attempts >= max_retries:
-            raise Exception("Response was code " + str(response.status_code)
-                            + " after " + str(max_retries) + " retries for " + url)
+            raise Exception("Failed after " + str(max_retries) + " retries for " + url)
         time.sleep(backoff)
 
 

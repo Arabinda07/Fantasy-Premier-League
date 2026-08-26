@@ -123,7 +123,8 @@ def parse_data():
         parse_player_gw_history(player_data["history"], player_base_filename, name, i)
     if gw_num > 0:
         print("Writing expected points")
-        with open(os.path.join(gw_base_filename, 'xP' + str(gw_num) + '.csv'), 'w+') as outf:
+        os.makedirs(gw_base_filename, exist_ok=True)
+        with open(os.path.join(gw_base_filename, 'xP' + str(gw_num) + '.csv'), 'w+', encoding='utf-8', newline='') as outf:
             w = csv.DictWriter(outf, ['id', 'xP'])
             w.writeheader()
             for xp in xPoints:

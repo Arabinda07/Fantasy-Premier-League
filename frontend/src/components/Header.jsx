@@ -13,6 +13,9 @@ export default function Header({
   activeTab,
   setActiveTab,
   liveData,
+  selectedGw,
+  availableGameweeks,
+  onSelectGw,
   onOpenSyncModal
 }) {
   const tabs = [
@@ -31,20 +34,46 @@ export default function Header({
       <div className="top-nav-inner">
         {/* Brand section */}
         <div className="brand-section">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ background: 'var(--accent-emerald)', color: 'var(--text-inverse)', padding: '4px 6px', borderRadius: 'var(--radius-xs)', display: 'flex', alignItems: 'center' }}>
+          <div className="brand-badge-group">
+            <div className="brand-icon-box">
               <SoccerBall size={16} weight="fill" />
             </div>
-            <span className="brand-title">FPL Quant Cockpit</span>
+            <span className="brand-title">FPL Analytics Terminal</span>
           </div>
-          <span className="brand-meta">
-            {liveData?.season || '2026-27'} · GW{liveData?.gameweek || 2}
+          <span className="brand-meta font-mono" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+            <span>{liveData?.season || '2026-27'}</span>
+            <span>·</span>
+            {availableGameweeks && availableGameweeks.length > 1 ? (
+              <select
+                value={selectedGw || liveData?.gameweek || 1}
+                onChange={(e) => onSelectGw && onSelectGw(Number(e.target.value))}
+                className="font-mono"
+                style={{
+                  background: 'var(--bg-surface-2, #182035)',
+                  color: 'var(--accent-emerald, #10B981)',
+                  border: '1px solid var(--border-subtle, rgba(255,255,255,0.15))',
+                  borderRadius: '3px',
+                  padding: '1px 5px',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  outline: 'none',
+                }}
+                aria-label="Select Gameweek"
+              >
+                {availableGameweeks.map(gw => (
+                  <option key={gw} value={gw}>GW{gw}</option>
+                ))}
+              </select>
+            ) : (
+              <span>GW{liveData?.gameweek || selectedGw || 1}</span>
+            )}
           </span>
         </div>
 
         {/* Center navigation tabs */}
         <div className="nav-tabs-wrapper">
-          <nav className="nav-tabs" role="tablist" aria-label="Main Navigation">
+          <nav className="nav-tabs segmented-nav-rail" role="tablist" aria-label="Main Navigation">
             {tabs.map(tab => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -58,7 +87,7 @@ export default function Header({
                   className={`nav-tab-btn ${isActive ? 'active' : ''}`}
                   onClick={() => setActiveTab(tab.id)}
                 >
-                  <Icon size={16} weight={isActive ? "fill" : "bold"} />
+                  <Icon size={15} weight={isActive ? "fill" : "bold"} />
                   <span>{tab.label}</span>
                 </button>
               );
@@ -74,7 +103,7 @@ export default function Header({
             title="Sync Official FPL Team ID & Mini-League"
           >
             <ArrowsClockwise size={14} weight="bold" />
-            <span className="sync-nav-text">
+            <span className="sync-nav-text font-mono">
               {manager?.manager_name ? `${manager.manager_name.split(' ')[0]} (#${manager.entry_id || '9500404'})` : 'Sync My Team'}
             </span>
           </button>

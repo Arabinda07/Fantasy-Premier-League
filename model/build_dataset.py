@@ -55,21 +55,89 @@ def load_teams_map(season: str, data_root: str = 'data') -> dict:
     return dict(zip(df['id'], df['name']))
 
 
-def load_fbref_summary(season: str, data_root: str = 'data') -> pd.DataFrame:
-    """Load FBref season summary if available on disk.
+def compute_native_participation(
+    season: str,
+    gw: int = 38,
+    data_root: str = 'data',
+) -> pd.DataFrame:
+    """Compute player participation statistics (starts, subs, appearances) natively from FPL data.
+
+    Reads players_raw.csv and merged_gw.csv to extract exact appearance metrics
+    without relying on external scraping or third-party websites.
 
     Args:
-        season: season string.
+        season: season string e.g. '2026-27'.
+        gw: target gameweek number.
         data_root: root data directory.
 
     Returns:
-        pd.DataFrame with columns [fbref_id, player, squad, starts, subs, unused_subs, squads_made]
-        or empty DataFrame if not found.
+        pd.DataFrame with columns: [player_code, season_starts, season_subs,
+        fbref_starts, fbref_subs, fbref_unused_subs, fbref_squads_made]
     """
-    path = os.path.join(data_root, season, 'fbref', 'season_summary.csv')
-    if not os.path.exists(path):
+    season_dir = os.path.join(data_root, season)
+    players_raw_path = os.path.join(season_dir, 'players_raw.csv')
+    if not os.path.exists(players_raw_path):
         return pd.DataFrame()
-    return pd.read_csv(path)
+
+    pr = pd.read_csv(players_raw_path, encoding='utf-8', encoding_errors='replace')
+    if 'code' not in pr.columns:
+        return pd.DataFrame()
+
+    # Base starts & minutes from players_raw
+    id_to_code = dict(zip(pr['id'], pr['code'])) if 'id' in pr.columns else {}
+    records = []
+
+    # Check merged_gw.csv for per-match appearances and substitution breakdowns
+    merged_gw_path = os.path.join(season_dir, 'gws', 'merged_gw.csv')
+    gw_stats = {}
+    if os.path.exists(merged_gw_path):
+        try:
+            gw_df = pd.read_csv(merged_gw_path, encoding='utf-8', encoding_errors='replace')
+            if 'element' in gw_df.columns and 'GW' in gw_df.columns:
+                if gw is not None:
+                    gw_df = gw_df[gw_df['GW'] <= gw]
+                for elem_id, group in gw_df.groupby('element'):
+                    p_code = id_to_code.get(elem_id)
+                    if p_code is not None:
+                        minutes = pd.to_numeric(group.get('minutes', 0), errors='coerce').fillna(0)
+                        starts = pd.to_numeric(group.get('starts', 0), errors='coerce').fillna(0)
+                        app_count = int((minutes > 0).sum())
+                        start_count = int((starts > 0).sum())
+                        sub_count = max(0, app_count - start_count)
+                        gw_stats[p_code] = {
+                            'starts': start_count,
+                            'subs': sub_count,
+                            'apps': app_count,
+                        }
+        except Exception:
+            pass
+
+    for _, r in pr.iterrows():
+        p_code = r.get('code')
+        pr_starts = int(r.get('starts', 0) or 0)
+        pr_mins = float(r.get('minutes', 0) or 0)
+
+        # Merge gw stats if available, otherwise use players_raw
+        if p_code in gw_stats:
+            starts = gw_stats[p_code]['starts']
+            subs = gw_stats[p_code]['subs']
+            squads_made = gw_stats[p_code]['apps']
+        else:
+            starts = pr_starts
+            subs = 1 if (pr_mins > 0 and starts == 0) else 0
+            squads_made = starts + subs
+
+        records.append({
+            'player_code': p_code,
+            'season_starts': starts,
+            'season_subs': subs,
+            'fbref_starts': starts,
+            'fbref_subs': subs,
+            'fbref_unused_subs': 0,
+            'fbref_squads_made': squads_made,
+        })
+
+    return pd.DataFrame(records)
 
 
 def determine_current_gw(season: str, data_root: str = 'data') -> int:
@@ -102,6 +170,9 @@ def build_dataset(
 ) -> pd.DataFrame:
     """Build the consolidated model dataset for the given season and gameweek.
 
+    Uses 100% native FPL Opta data (rolling player form, rolling team form,
+    and native participation stats) without relying on external web scrapers.
+
     Args:
         season: season string (e.g. '2026-27').
         gw: target gameweek number. If None, auto-determined from data.
@@ -116,21 +187,12 @@ def build_dataset(
     os.makedirs(season_dir, exist_ok=True)
 
     if not skip_scrape:
-        print(f"[{season}] Running global FPL scraper...")
+        print(f"[{season}] Refreshing native FPL API data...")
         try:
             import global_scraper
             global_scraper.parse_data()
         except Exception as e:
-            print(f"Warning: global_scraper encountered error: {e}")
-
-        print(f"[{season}] Running Understat scraper...")
-        try:
-            import understat
-            understat_dir = os.path.join(season_dir, 'understat')
-            understat.parse_epl_data(understat_dir, season)
-            understat.match_ids(understat_dir, season_dir)
-        except Exception as e:
-            print(f"Warning: understat scraper encountered error: {e}")
+            print(f"[Build Dataset] Notice: global_scraper encountered: {e}")
 
     if gw is None:
         gw = determine_current_gw(season, data_root)
@@ -151,9 +213,9 @@ def build_dataset(
     teams_map = load_teams_map(season, data_root)
     players_raw_path = os.path.join(season_dir, 'players_raw.csv')
     if os.path.exists(players_raw_path):
-        pr = pd.read_csv(players_raw_path)
+        pr = pd.read_csv(players_raw_path, encoding='utf-8', encoding_errors='replace')
         # Extract season-to-date fields
-        season_cols = ['code', 'team', 'minutes', 'starts']
+        season_cols = ['code', 'team', 'minutes', 'starts', 'now_cost', 'status']
         available_cols = [c for c in season_cols if c in pr.columns]
         pr_subset = pr[available_cols].rename(columns={
             'code': 'player_code',
@@ -188,68 +250,17 @@ def build_dataset(
         if 'team_team_dup' in player_form.columns:
             player_form = player_form.drop(columns=['team_team_dup'])
 
-    # 4. Optional FBref season totals with robust full-name matching (Fix 3)
-    fbref_df = load_fbref_summary(season, data_root)
-    if not fbref_df.empty and 'player' in fbref_df.columns:
-        fb_cols = ['player', 'starts', 'subs', 'unused_subs', 'squads_made']
-        fb_avail = [c for c in fb_cols if c in fbref_df.columns]
-        fb_sub = fbref_df[fb_avail].copy()
-
-        # Build Name -> player_code lookup
-        name_to_code = {}
-        if os.path.exists(players_raw_path):
-            pr_full = pd.read_csv(players_raw_path)
-            for _, r in pr_full.iterrows():
-                pcode = r.get('code')
-                fname = str(r.get('first_name', '')).strip()
-                sname = str(r.get('second_name', '')).strip()
-                wname = str(r.get('web_name', '')).strip()
-                full_name = f"{fname} {sname}".strip()
-
-                if full_name:
-                    name_to_code[normalize_name(full_name)] = pcode
-                    name_to_code[full_name] = pcode
-                if wname:
-                    name_to_code[normalize_name(wname)] = pcode
-                    name_to_code[wname] = pcode
-
-        idlist_path = os.path.join(season_dir, 'player_idlist.csv')
-        if os.path.exists(idlist_path) and os.path.exists(players_raw_path):
-            idlist = pd.read_csv(idlist_path)
-            # Map season id -> player_code
-            id_to_code = dict(zip(pr_full['id'], pr_full['code'])) if 'id' in pr_full.columns and 'code' in pr_full.columns else {}
-            for _, r in idlist.iterrows():
-                fname = str(r.get('first_name', '')).strip()
-                sname = str(r.get('second_name', '')).strip()
-                full_name = f"{fname} {sname}".strip()
-                elem_id = r.get('id')
-                pcode = id_to_code.get(elem_id)
-                if pcode is not None and full_name:
-                    name_to_code[normalize_name(full_name)] = pcode
-
-        # Map FBref player name to player_code
-        fb_sub['norm_player'] = fb_sub['player'].apply(normalize_name)
-        fb_sub['player_code'] = fb_sub['norm_player'].map(name_to_code)
-        # Fallback to direct name lookup
-        fb_sub['player_code'] = fb_sub['player_code'].fillna(fb_sub['player'].map(name_to_code))
-
-        # Drop duplicates and rows that couldn't be matched
-        fb_matched = fb_sub.dropna(subset=['player_code']).drop_duplicates(subset=['player_code'])
-
-        fb_rename = {
-            'starts': 'fbref_starts',
-            'subs': 'fbref_subs',
-            'unused_subs': 'fbref_unused_subs',
-            'squads_made': 'fbref_squads_made',
-        }
-        cols_to_merge = ['player_code'] + [c for c in fb_rename if c in fb_matched.columns]
-        fb_final = fb_matched[cols_to_merge].rename(columns=fb_rename)
-
-        player_form = player_form.merge(fb_final, on='player_code', how='left')
+    # 4. Native participation metrics (starts, subs, squads made)
+    part_df = compute_native_participation(season=season, gw=gw, data_root=data_root)
+    if not part_df.empty:
+        # Drop redundant columns before merging
+        part_cols = [c for c in part_df.columns if c != 'season_starts' or 'season_starts' not in player_form.columns]
+        player_form = player_form.merge(part_df[part_cols], on='player_code', how='left')
         player_form['fbref_subs'] = player_form['fbref_subs'].fillna(0)
         player_form['fbref_unused_subs'] = player_form['fbref_unused_subs'].fillna(0)
         player_form['fbref_squads_made'] = player_form['fbref_squads_made'].fillna(player_form.get('season_starts', 0))
     else:
+        player_form['fbref_starts'] = player_form.get('season_starts', 0)
         player_form['fbref_subs'] = 0
         player_form['fbref_unused_subs'] = 0
         player_form['fbref_squads_made'] = player_form.get('season_starts', 0)
@@ -270,7 +281,7 @@ def build_dataset(
     final_df = player_form[present_cols + extra_cols].rename(columns={'team_name': 'team'})
 
     out_csv = os.path.join(season_dir, 'model_dataset.csv')
-    final_df.to_csv(out_csv, index=False)
+    final_df.to_csv(out_csv, index=False, encoding='utf-8')
     print(f"[{season}] Successfully wrote {len(final_df)} players to {out_csv}")
 
     return final_df
