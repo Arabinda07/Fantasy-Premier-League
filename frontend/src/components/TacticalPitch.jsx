@@ -6,7 +6,6 @@ import {
   Lightning,
   RocketLaunch,
   Crown,
-  ArrowsLeftRight,
   ArrowUpRight,
   ArrowDownRight,
   CaretRight
@@ -52,10 +51,10 @@ export default function TacticalPitch({
       { player_code: 177815, web_name: 'Watkins', team: 'Aston Villa', position: 'FWD', cost: 9.0, expected_points: 6.2, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Aston Villa', away_team: 'Arsenal' } }
     ];
     const freeHitBench = [
-      { player_code: 80201, web_name: 'Fabianski', team: 'West Ham', position: 'GK', cost: 4.0, expected_points: 1.5, is_starter: false },
-      { player_code: 173878, web_name: 'Bednarek', team: 'Southampton', position: 'DEF', cost: 4.0, expected_points: 2.1, is_starter: false },
-      { player_code: 539142, web_name: 'Winks', team: 'Leicester', position: 'MID', cost: 4.5, expected_points: 2.3, is_starter: false },
-      { player_code: 223827, web_name: 'Jebbison', team: 'Bournemouth', position: 'FWD', cost: 4.5, expected_points: 1.8, is_starter: false }
+      { player_code: 80201, web_name: 'Fabianski', team: 'West Ham', position: 'GK', cost: 4.0, expected_points: 1.5, is_starter: false, bench_order: 1 },
+      { player_code: 173878, web_name: 'Bednarek', team: 'Southampton', position: 'DEF', cost: 4.0, expected_points: 2.1, is_starter: false, bench_order: 2 },
+      { player_code: 539142, web_name: 'Winks', team: 'Leicester', position: 'MID', cost: 4.5, expected_points: 2.3, is_starter: false, bench_order: 3 },
+      { player_code: 223827, web_name: 'Jebbison', team: 'Bournemouth', position: 'FWD', cost: 4.5, expected_points: 1.8, is_starter: false, bench_order: 4 }
     ];
 
     // 4. Wildcard (£100m) Multi-GW Reconstruction (GW2-GW6 Balanced: 3-5-2 formation)
@@ -73,10 +72,10 @@ export default function TacticalPitch({
       { player_code: 446008, web_name: 'Calvert-Lewin', team: 'Everton', position: 'FWD', cost: 6.0, expected_points: 5.3, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Bournemouth', away_team: 'Everton' } }
     ];
     const wildcardBench = [
-      { player_code: 80201, web_name: 'Valdimarsson', team: 'Brentford', position: 'GK', cost: 4.0, expected_points: 1.5, is_starter: false },
-      { player_code: 173878, web_name: 'Harwood-Bellis', team: 'Southampton', position: 'DEF', cost: 4.0, expected_points: 2.2, is_starter: false },
-      { player_code: 539142, web_name: 'Greaves', team: 'Ipswich', position: 'DEF', cost: 4.0, expected_points: 2.3, is_starter: false },
-      { player_code: 223827, web_name: 'Armstrong', team: 'Southampton', position: 'FWD', cost: 5.5, expected_points: 3.5, is_starter: false }
+      { player_code: 80201, web_name: 'Valdimarsson', team: 'Brentford', position: 'GK', cost: 4.0, expected_points: 1.5, is_starter: false, bench_order: 1 },
+      { player_code: 173878, web_name: 'Harwood-Bellis', team: 'Southampton', position: 'DEF', cost: 4.0, expected_points: 2.2, is_starter: false, bench_order: 2 },
+      { player_code: 539142, web_name: 'Greaves', team: 'Ipswich', position: 'DEF', cost: 4.0, expected_points: 2.3, is_starter: false, bench_order: 3 },
+      { player_code: 223827, web_name: 'Armstrong', team: 'Southampton', position: 'FWD', cost: 5.5, expected_points: 3.5, is_starter: false, bench_order: 4 }
     ];
 
     return {
@@ -184,8 +183,8 @@ export default function TacticalPitch({
       {/* Chip Simulation Segmented Switcher */}
       <div className="chip-switcher-bar">
         <div className="chip-switcher-left">
-          <span className="chip-switcher-label">
-            Active Scenario:
+          <span className="chip-switcher-label font-mono">
+            ACTIVE SCENARIO:
           </span>
           <div className="segmented-chip-rail">
             {chipOptions.map(chip => {
@@ -237,16 +236,15 @@ export default function TacticalPitch({
         </div>
       </div>
 
-      {/* Tactical Pitch Surface */}
-      <div className="tactical-pitch-surface">
-        <div className="pitch-grass-lines" />
-        <div className="pitch-center-circle" />
-        <div className="pitch-half-line" />
-        <div className="pitch-penalty-box-top" />
-        <div className="pitch-penalty-box-bottom" />
+      {/* Classical 2-Column Pitch Workspace (Pitch on Left, Substitutes Sidebar on Right) */}
+      <div className="pitch-workspace">
+        {/* Tactical Pitch Surface (Left Column) */}
+        <div className="pitch-container">
+          <div className="pitch-marking-center-line" />
+          <div className="pitch-marking-center-circle" />
+          <div className="pitch-marking-penalty-top" />
+          <div className="pitch-marking-penalty-bottom" />
 
-        {/* Pitch Rows */}
-        <div className="pitch-inner-layout">
           {/* Row 1: Goalkeepers */}
           <div className="pitch-row">
             {gks.map(p => (
@@ -319,38 +317,71 @@ export default function TacticalPitch({
             ))}
           </div>
         </div>
-      </div>
 
-      {/* Bench Dugout Section */}
-      <div className={`bench-dugout-container ${activeChip === 'bboost' ? 'boost-active' : ''}`}>
-        <div className="bench-dugout-header">
-          <span className="bench-title">
-            {activeChip === 'bboost' ? 'BENCH BOOST ACTIVE (ALL 4 PLAYERS SCORING)' : 'BENCH (SUBSTITUTES)'}
-          </span>
-          <span className="bench-subtitle">
-            {activeChip === 'bboost' ? 'Points scored by bench assets will be counted in GW2 total' : 'Click a bench player and a starter to swap positions'}
-          </span>
-        </div>
-
-        <div className="bench-cards-row">
-          {displayBench.map((p, idx) => (
-            <div key={p.player_code || p.id || p.web_name} className="bench-card-wrapper">
-              <span className="bench-order-tag font-mono">
-                {idx === 0 ? 'GK2' : `SUB ${idx}`}
+        {/* Substitutes Sidebar (Right Column) */}
+        <div className="pitch-sidebar">
+          <div className="sidebar-panel">
+            <div className="panel-header">
+              <span className="panel-title">
+                {activeChip === 'bboost' ? 'BENCH BOOST ACTIVE' : 'Substitutes'}
               </span>
-              <PlayerCard
-                player={p}
-                isCaptain={p.is_captain}
-                isViceCaptain={p.is_vice_captain}
-                isBoosted={activeChip === 'bboost'}
-                isSubTarget={selectedPlayer?.player_code === p.player_code}
-                onSelectSub={onSelectPlayer}
-                onInspect={onInspectPlayer}
-                onOpenMatchup={onOpenMatchup}
-                compact
-              />
+              <span className="panel-badge font-mono">
+                {activeChip === 'bboost' ? '4 Scoring' : '4 on bench'}
+              </span>
             </div>
-          ))}
+
+            <div className="bench-list">
+              {displayBench.map((p, idx) => {
+                const isSelected = selectedPlayer?.player_code === p.player_code;
+                const slotLabel = idx === 0 ? 'GK Sub' : `Sub ${idx}`;
+                return (
+                  <div
+                    key={p.player_code || p.id || p.web_name}
+                    className={`bench-item ${isSelected ? 'is-selected' : ''} ${activeChip === 'bboost' ? 'boost-active' : ''}`}
+                    onClick={() => onSelectPlayer(p)}
+                    onDoubleClick={() => onInspectPlayer && onInspectPlayer(p)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onSelectPlayer(p);
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`Bench ${slotLabel}: ${p.web_name}, ${p.position}, £${Number(p.cost || 0).toFixed(1)}M, ${Number(p.expected_points || 0).toFixed(1)} expected points`}
+                    title="Click to swap with starter · Double-click for DNA stats"
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+                      <span className={`bench-slot-tag font-mono ${activeChip === 'bboost' ? 'boost-tag' : ''}`}>
+                        {activeChip === 'bboost' ? 'ACTIVE' : slotLabel}
+                      </span>
+                      <span className={`player-pos-tag ${p.position}`}>{p.position}</span>
+                      <div style={{ minWidth: 0, overflow: 'hidden' }}>
+                        <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                          {p.web_name}
+                        </div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                          {p.team} · £{Number(p.cost || 0).toFixed(1)}m
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 800, color: 'var(--accent-emerald)' }}>
+                        {Number(p.expected_points || 0).toFixed(1)} pts
+                      </div>
+                      <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                        exp xP
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="bench-help-text">
+              Click any starter and bench player to swap. Double-click any player card to view full Player DNA breakdown.
+            </div>
+          </div>
         </div>
       </div>
     </div>

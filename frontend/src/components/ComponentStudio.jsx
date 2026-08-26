@@ -201,32 +201,39 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
 
       {/* Positional Baseline Rates Reference */}
       <div className="studio-baselines-panel">
-        <h3 className="studio-section-title">
-          Premier League Positional Baselines (per 90 minutes)
-        </h3>
+        <div className="studio-baselines-header">
+          <div>
+            <h3 className="studio-section-title">
+              Premier League Positional Baselines (per 90 minutes)
+            </h3>
+            <div className="studio-section-subtitle">
+              League-wide prior baselines (μ₀) used for Empirical Bayesian Shrinkage on low-sample players
+            </div>
+          </div>
+        </div>
         <div className="studio-baselines-grid">
           {Object.entries(POSITIONAL_BASELINES).map(([pos, data]) => (
             <div key={pos} className="baseline-card">
               <div className="baseline-header">
-                <span className={`player-position-pill ${pos}`}>{pos}</span>
+                <span className={`player-pos-tag ${pos}`}>{pos}</span>
                 <span className="baseline-label">{data.label}</span>
               </div>
               <div className="baseline-metrics-list">
                 <div className="baseline-metric-row">
-                  <span className="metric-name">Expected Goals (xG/90)</span>
-                  <span className="metric-val font-mono">{data.xG90.toFixed(2)}</span>
+                  <span className="metric-name">Expected Goals</span>
+                  <span className="metric-val font-mono">{data.xG90.toFixed(2)} <span className="metric-unit">xG</span></span>
                 </div>
                 <div className="baseline-metric-row">
-                  <span className="metric-name">Expected Assists (xA/90)</span>
-                  <span className="metric-val font-mono">{data.xA90.toFixed(2)}</span>
+                  <span className="metric-name">Expected Assists</span>
+                  <span className="metric-val font-mono">{data.xA90.toFixed(2)} <span className="metric-unit">xA</span></span>
                 </div>
                 <div className="baseline-metric-row">
                   <span className="metric-name">Clean Sheet Rate</span>
                   <span className="metric-val font-mono">{Math.round(data.cleanSheet * 100)}%</span>
                 </div>
                 <div className="baseline-metric-row">
-                  <span className="metric-name">Bonus Rate (BPS/90)</span>
-                  <span className="metric-val font-mono">{data.bonus90.toFixed(2)}</span>
+                  <span className="metric-name">Bonus Potential</span>
+                  <span className="metric-val font-mono">{data.bonus90.toFixed(2)} <span className="metric-unit">BPS</span></span>
                 </div>
               </div>
             </div>
