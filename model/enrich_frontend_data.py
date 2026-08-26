@@ -222,7 +222,7 @@ def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data
         if 'player_code' in p
     ]
     
-    mgr_profile = data.get('manager_profile', {})
+    mgr_profile = data.get('manager_profile') or {}
     league_id = mgr_profile.get('league_id') or 1305495
     user_entry_id = mgr_profile.get('entry_id') or 9500404
 
