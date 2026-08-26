@@ -2206,139 +2206,154 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
-   NEXT-GEN PROBABILITY SPARKLINE & SET-PIECE CARD STYLES
+   MINIMALIST INSTITUTIONAL PLAYER PITCH CARDS
    ========================================================================== */
 
-.player-card-header {
+.player-pitch-card {
+  background: rgba(9, 13, 22, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  flex: 1 1 0;
+  max-width: 124px;
+  min-width: 86px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+  user-select: none;
+}
+
+.player-pitch-card:hover {
+  border-color: var(--border-medium);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.player-pitch-card.sub-target {
+  border-color: var(--accent-emerald);
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.4);
+}
+
+.player-pitch-card.bench-boosted {
+  border-color: var(--accent-emerald);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.player-card-top-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 
+.captain-badge {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 9px;
+  background: var(--accent-amber);
+  color: #1A1102;
+  padding: 1px 4px;
+  border-radius: 2px;
+  line-height: 1;
+}
+
+.captain-badge.triple {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  color: #000;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
+
+.vice-captain-badge {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 9px;
+  background: var(--text-secondary);
+  color: #090D16;
+  padding: 1px 4px;
+  border-radius: 2px;
+  line-height: 1;
+}
+
+.player-pos-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: var(--radius-xs);
+  line-height: 1;
+}
+
+.player-pos-tag.GK { background: rgba(245, 158, 11, 0.18); color: var(--pos-gk); }
+.player-pos-tag.DEF { background: rgba(59, 130, 246, 0.18); color: var(--pos-def); }
+.player-pos-tag.MID { background: rgba(16, 185, 129, 0.18); color: var(--pos-mid); }
+.player-pos-tag.FWD { background: rgba(239, 68, 68, 0.18); color: var(--pos-fwd); }
+
 .player-cost-val {
-  font-size: clamp(8px, 1.8vw, 10px);
+  font-size: 9.5px;
   color: var(--text-muted);
   font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+.player-name {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+  letter-spacing: -0.01em;
 }
 
 .player-team-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 3px;
+  margin-bottom: 5px;
 }
 
 .player-team-tag {
-  font-size: clamp(8px, 1.8vw, 10px);
+  font-size: 9.5px;
   color: var(--text-muted);
   font-family: var(--font-mono);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
-  text-decoration: underline;
-  text-decoration-color: rgba(255, 255, 255, 0.2);
+  transition: color 0.15s ease;
 }
 
 .player-team-tag:hover {
   color: var(--accent-emerald);
-  text-decoration-color: var(--accent-emerald);
 }
 
-.set-piece-pills {
-  display: flex;
-  gap: 2px;
-}
-
-.sp-pill {
-  font-size: 7.5px;
-  font-family: var(--font-mono);
-  font-weight: 800;
-  padding: 0 3px;
-  border-radius: 2px;
-  background: rgba(245, 158, 11, 0.25);
-  color: var(--accent-amber);
-  border: 1px solid rgba(245, 158, 11, 0.4);
-  line-height: 1.2;
-}
-
-.xp-unit {
-  font-size: 8px;
-  color: var(--text-muted);
+.fixture-sub-tag {
+  color: var(--text-secondary);
   font-weight: 600;
 }
 
-.haul-badge {
-  display: inline-flex;
+.player-stats-bar {
+  background: var(--bg-surface-subtle);
+  border-radius: var(--radius-xs);
+  padding: 3px 6px;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 2px;
-  background: rgba(239, 68, 68, 0.2);
-  color: var(--accent-crimson);
-  border: 1px solid rgba(239, 68, 68, 0.35);
-  font-size: 8.5px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.player-xp {
   font-family: var(--font-mono);
+  font-size: 12px;
   font-weight: 800;
-  padding: 0 4px;
-  border-radius: 2px;
-  line-height: 1.2;
-}
-
-/* 3-Tier Probability Distribution Range Bar */
-.prob-range-container {
-  margin-top: 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.prob-range-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 7.5px;
-  font-family: var(--font-mono);
-  color: var(--text-muted);
-  line-height: 1;
-}
-
-.prob-floor {
-  color: var(--text-muted);
-}
-
-.prob-median {
   color: var(--accent-emerald);
-  font-weight: 700;
 }
 
-.prob-ceiling {
-  color: var(--accent-amber);
-  font-weight: 700;
-}
-
-.prob-range-track {
-  width: 100%;
-  height: 3px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 2px;
-  position: relative;
-  overflow: hidden;
-}
-
-.prob-range-fill {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(245, 158, 11, 0.6));
-  border-radius: 2px;
-}
-
-.prob-median-dot {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--accent-emerald);
-  box-shadow: 0 0 4px var(--accent-emerald);
+.xp-unit {
+  font-size: 9px;
+  color: var(--text-muted);
+  font-weight: 600;
 }
 
 /* ==========================================================================

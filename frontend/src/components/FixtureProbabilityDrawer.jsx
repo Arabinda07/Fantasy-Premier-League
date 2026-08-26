@@ -40,14 +40,29 @@ export default function FixtureProbabilityDrawer({
 }) {
   const [hoveredCell, setHoveredCell] = useState(null);
 
-  if (!isOpen) return null;
+  const cleanStr = (s) => (s || '').toLowerCase().trim();
 
-  // Match against fixtureData or fallback to first fixture
-  const fixture = dixonColesList.find(
-    f => f.home_team === fixtureData?.home_team || f.away_team === fixtureData?.away_team
-  ) || dixonColesList[0] || {
-    home_team: 'Aston Villa',
-    away_team: 'Arsenal',
+  // Robust matching against fixtureData (supports team, opponent, home_team, away_team)
+  const matchedFixture = useMemo(() => {
+    if (!fixtureData || !dixonColesList || dixonColesList.length === 0) return null;
+    return dixonColesList.find(f => {
+      const fHome = cleanStr(f.home_team);
+      const fAway = cleanStr(f.away_team);
+      const targetHome = cleanStr(fixtureData.home_team || fixtureData.team);
+      const targetAway = cleanStr(fixtureData.away_team || fixtureData.opponent);
+
+      return (
+        (targetHome && (fHome.includes(targetHome) || targetHome.includes(fHome))) ||
+        (targetAway && (fAway.includes(targetAway) || targetAway.includes(fAway))) ||
+        (targetHome && (fAway.includes(targetHome) || targetHome.includes(fAway))) ||
+        (targetAway && (fHome.includes(targetAway) || targetAway.includes(fHome)))
+      );
+    });
+  }, [fixtureData, dixonColesList]);
+
+  const fixture = matchedFixture || (dixonColesList && dixonColesList[0]) || {
+    home_team: fixtureData?.home_team || 'Aston Villa',
+    away_team: fixtureData?.away_team || 'Arsenal',
     expected_home_goals: 1.18,
     expected_away_goals: 1.62,
     home_win_prob: 0.284,
@@ -69,7 +84,7 @@ export default function FixtureProbabilityDrawer({
   const lambda = Number(fixture.expected_home_goals || 1.25);
   const mu = Number(fixture.expected_away_goals || 1.45);
 
-  // Compute 5x5 Joint Poisson Probability Matrix
+  // Compute 5x5 Joint Poisson Probability Matrix unconditionally
   const { matrix, maxProb } = useMemo(() => {
     const goals = [0, 1, 2, 3, 4];
     const grid = [];
@@ -86,6 +101,9 @@ export default function FixtureProbabilityDrawer({
     }
     return { matrix: grid, maxProb: highest || 0.15 };
   }, [lambda, mu]);
+
+  // Conditional early return AFTER all hooks
+  if (!isOpen) return null;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -145,24 +163,24 @@ export default function FixtureProbabilityDrawer({
           <div className="prob-split-bar">
             <div
               className="split-segment home"
-              style={{ width: `${Math.round(fixture.home_win_prob * 100)}%` }}
-              title={`Home Win: ${Math.round(fixture.home_win_prob * 100)}%`}
+              style={{ width: `${Math.round((fixture.home_win_prob || 0.38) * 100)}%` }}
+              title={`Home Win: ${Math.round((fixture.home_win_prob || 0.38) * 100)}%`}
             >
-              <span>{fixture.home_team}: {Math.round(fixture.home_win_prob * 100)}%</span>
+              <span>{fixture.home_team}: {Math.round((fixture.home_win_prob || 0.38) * 100)}%</span>
             </div>
             <div
               className="split-segment draw"
-              style={{ width: `${Math.round(fixture.draw_prob * 100)}%` }}
-              title={`Draw: ${Math.round(fixture.draw_prob * 100)}%`}
+              style={{ width: `${Math.round((fixture.draw_prob || 0.26) * 100)}%` }}
+              title={`Draw: ${Math.round((fixture.draw_prob || 0.26) * 100)}%`}
             >
-              <span>Draw: {Math.round(fixture.draw_prob * 100)}%</span>
+              <span>Draw: {Math.round((fixture.draw_prob || 0.26) * 100)}%</span>
             </div>
             <div
               className="split-segment away"
-              style={{ width: `${Math.round(fixture.away_win_prob * 100)}%` }}
-              title={`Away Win: ${Math.round(fixture.away_win_prob * 100)}%`}
+              style={{ width: `${Math.round((fixture.away_win_prob || 0.36) * 100)}%` }}
+              title={`Away Win: ${Math.round((fixture.away_win_prob || 0.36) * 100)}%`}
             >
-              <span>{fixture.away_team}: {Math.round(fixture.away_win_prob * 100)}%</span>
+              <span>{fixture.away_team}: {Math.round((fixture.away_win_prob || 0.36) * 100)}%</span>
             </div>
           </div>
         </div>
@@ -256,7 +274,7 @@ export default function FixtureProbabilityDrawer({
           <div className="kpi-card">
             <div className="kpi-label">{fixture.home_team} Clean Sheet</div>
             <div className="kpi-value font-mono" style={{ color: 'var(--accent-blue)' }}>
-              {Math.round(fixture.home_cs_prob * 100)}%
+              {Math.round((fixture.home_cs_prob || 0.28) * 100)}%
             </div>
             <div className="kpi-subtext">Column 0 sum (Away 0 goals)</div>
           </div>
@@ -264,7 +282,7 @@ export default function FixtureProbabilityDrawer({
           <div className="kpi-card">
             <div className="kpi-label">{fixture.away_team} Clean Sheet</div>
             <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
-              {Math.round(fixture.away_cs_prob * 100)}%
+              {Math.round((fixture.away_cs_prob || 0.32) * 100)}%
             </div>
             <div className="kpi-subtext">Row 0 sum (Home 0 goals)</div>
           </div>
@@ -272,7 +290,7 @@ export default function FixtureProbabilityDrawer({
           <div className="kpi-card">
             <div className="kpi-label">Both Teams to Score</div>
             <div className="kpi-value font-mono" style={{ color: 'var(--accent-amber)' }}>
-              {Math.round(fixture.btts_prob * 100)}%
+              {Math.round((fixture.btts_prob || 0.54) * 100)}%
             </div>
             <div className="kpi-subtext">H &gt; 0 and A &gt; 0</div>
           </div>
@@ -280,7 +298,7 @@ export default function FixtureProbabilityDrawer({
           <div className="kpi-card">
             <div className="kpi-label">Over 2.5 Total Goals</div>
             <div className="kpi-value font-mono" style={{ color: 'var(--text-primary)' }}>
-              {Math.round(fixture.over_2_5_prob * 100)}%
+              {Math.round((fixture.over_2_5_prob || 0.51) * 100)}%
             </div>
             <div className="kpi-subtext">Total goals sum &ge; 3</div>
           </div>
@@ -295,7 +313,13 @@ export default function FixtureProbabilityDrawer({
             </div>
           </div>
           <div className="scorelines-grid">
-            {fixture.most_likely_scorelines.map((s, idx) => (
+            {(fixture.most_likely_scorelines || [
+              { score: '1-1', prob: 0.128 },
+              { score: '1-2', prob: 0.114 },
+              { score: '0-1', prob: 0.098 },
+              { score: '0-2', prob: 0.082 },
+              { score: '1-0', prob: 0.076 }
+            ]).map((s, idx) => (
               <div key={s.score} className="scoreline-pill-card">
                 <span className="scoreline-rank">#{idx + 1}</span>
                 <span className="scoreline-result font-mono">{s.score}</span>
