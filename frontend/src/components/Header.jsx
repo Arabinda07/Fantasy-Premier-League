@@ -16,7 +16,9 @@ export default function Header({
   selectedGw,
   availableGameweeks,
   onSelectGw,
-  onOpenSyncModal
+  onOpenSyncModal,
+  strategy = 'pure_xp',
+  onSelectStrategy
 }) {
   const tabs = [
     { id: 'pitch', label: 'Matchday XI', icon: SoccerBall },
@@ -28,6 +30,12 @@ export default function Header({
   ];
 
   const manager = liveData?.manager_profile;
+
+  const strategyLabels = {
+    pure_xp: 'Pure xP',
+    rank_protect: 'Rank Shield',
+    differential_chase: 'Diff Chase'
+  };
 
   return (
     <header className="top-nav">
@@ -67,6 +75,32 @@ export default function Header({
               </select>
             ) : (
               <span>GW{liveData?.gameweek || selectedGw || 1}</span>
+            )}
+            <span>·</span>
+            {onSelectStrategy ? (
+              <select
+                value={strategy}
+                onChange={(e) => onSelectStrategy(e.target.value)}
+                className="font-mono"
+                style={{
+                  background: 'var(--bg-surface-2, #182035)',
+                  color: strategy === 'differential_chase' ? 'var(--accent-amber, #F59E0B)' : strategy === 'rank_protect' ? 'var(--accent-cyan, #06B6D4)' : 'var(--accent-emerald, #10B981)',
+                  border: '1px solid var(--border-subtle, rgba(255,255,255,0.15))',
+                  borderRadius: '3px',
+                  padding: '1px 5px',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  outline: 'none',
+                }}
+                aria-label="Select Game Theory Strategy"
+              >
+                <option value="pure_xp">🎯 Pure xP</option>
+                <option value="rank_protect">🛡️ Rank Shield</option>
+                <option value="differential_chase">⚡ Diff Chase</option>
+              </select>
+            ) : (
+              <span style={{ color: 'var(--accent-cyan)' }}>{strategyLabels[strategy] || 'Pure xP'}</span>
             )}
           </span>
         </div>

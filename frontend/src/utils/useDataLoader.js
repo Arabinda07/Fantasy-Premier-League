@@ -31,7 +31,6 @@ export function useDataLoader() {
   useEffect(() => {
     // If all datasets are already cached in memory, return immediately
     if (dataCache.players && dataCache.fixtures && dataCache.teams) {
-      setIsLoading(false);
       return;
     }
 

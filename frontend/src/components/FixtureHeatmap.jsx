@@ -1,7 +1,12 @@
 import React, { useState, useMemo } from 'react';
-import { GridNine, Lightning } from '@phosphor-icons/react';
+import { GridNine } from '@phosphor-icons/react';
 
-export default function FixtureHeatmap({ fixtures, teams }) {
+export default function FixtureHeatmap({
+  fixtures,
+  teams,
+  selectedGw = 2,
+  onOpenMatchup
+}) {
   const [gwWindow, setGwWindow] = useState(6);
 
   // Build matrix: team_name -> [GW1, GW2, ... GW38]
@@ -14,6 +19,8 @@ export default function FixtureHeatmap({ fixtures, teams }) {
       short_name: t.short_name
     }));
 
+    const teamIdToName = Object.fromEntries(teams.map(t => [t.id, t.name]));
+
     const result = teamList.map(team => {
       const teamFixtures = [];
       for (let gw = 1; gw <= 38; gw++) {
@@ -23,28 +30,35 @@ export default function FixtureHeatmap({ fixtures, teams }) {
 
         if (match) {
           const isHome = match.team_h === team.id;
+          const oppId = isHome ? match.team_a : match.team_h;
+          const oppName = teamIdToName[oppId] || (isHome ? match.away_short : match.home_short);
           const oppShort = isHome ? match.away_short : match.home_short;
           const diff = isHome ? match.team_h_difficulty : match.team_a_difficulty;
           teamFixtures.push({
             gw,
             isHome,
             oppShort,
+            oppName,
             diff: diff || 3,
-            label: `${oppShort} (${isHome ? 'H' : 'A'})`
+            label: `${oppShort} (${isHome ? 'H' : 'A'})`,
+            fixture_id: match.id,
+            home_team: isHome ? team.name : oppName,
+            away_team: isHome ? oppName : team.name,
           });
         } else {
           teamFixtures.push({
             gw,
             isHome: false,
             oppShort: 'BLANK',
+            oppName: null,
             diff: 0,
             label: 'Blank'
           });
         }
       }
 
-      const currentGw = 2;
-      const nextN = teamFixtures.slice(currentGw - 1, currentGw - 1 + gwWindow);
+      const currentGw = Number(selectedGw || 2);
+      const nextN = teamFixtures.slice(Math.max(0, currentGw - 1), currentGw - 1 + gwWindow);
       const avgDiff = nextN.reduce((acc, f) => acc + (f.diff || 3), 0) / (nextN.length || 1);
 
       return {
@@ -56,7 +70,7 @@ export default function FixtureHeatmap({ fixtures, teams }) {
 
     // Sort by easiest upcoming run
     return result.sort((a, b) => a.avgDiff - b.avgDiff);
-  }, [fixtures, teams, gwWindow]);
+  }, [fixtures, teams, gwWindow, selectedGw]);
 
   const fdrClass = (diff) => {
     if (diff === 1) return 'fdr-1';
@@ -67,6 +81,16 @@ export default function FixtureHeatmap({ fixtures, teams }) {
     return '';
   };
 
+  const handleCellClick = (f) => {
+    if (f.oppShort === 'BLANK' || !onOpenMatchup) return;
+    onOpenMatchup({
+      home_team: f.home_team,
+      away_team: f.away_team,
+      fixture_id: f.fixture_id,
+      event: f.gw
+    });
+  };
+
   return (
     <div className="view-fluid">
       {/* Ticker Header & Controls Bar */}
@@ -74,10 +98,10 @@ export default function FixtureHeatmap({ fixtures, teams }) {
         <div className="ticker-title-group">
           <h3 className="ticker-title">
             <GridNine size={18} weight="bold" />
-            <span>Fixture Schedule & Difficulty Ticker</span>
+            <span>Fixture Schedule &amp; Difficulty Ticker</span>
           </h3>
           <div className="ticker-subtitle">
-            Teams ranked from easiest to toughest fixture run over the next {gwWindow} gameweeks (GW2–GW{1 + gwWindow}).
+            Teams ranked from easiest to toughest fixture run over the next {gwWindow} gameweeks (GW{selectedGw}–GW{Math.min(38, Number(selectedGw) + gwWindow - 1)}). Click any matchup to inspect Dixon-Coles Poisson probabilities.
           </div>
         </div>
 
@@ -109,7 +133,7 @@ export default function FixtureHeatmap({ fixtures, teams }) {
                 <th className="sticky-col team-col">Team</th>
                 <th className="avg-col font-mono">FDR Avg</th>
                 {Array.from({ length: 38 }, (_, i) => i + 1).map(gw => (
-                  <th key={gw} className={`gw-col font-mono ${gw === 2 ? 'current-gw-header' : ''}`}>
+                  <th key={gw} className={`gw-col font-mono ${gw === Number(selectedGw) ? 'current-gw-header' : ''}`}>
                     GW{gw}
                   </th>
                 ))}
@@ -127,14 +151,31 @@ export default function FixtureHeatmap({ fixtures, teams }) {
                       {team.avgDiff.toFixed(2)}
                     </span>
                   </td>
-                  {team.fixtures.map(f => (
-                    <td key={f.gw} className={`fdr-cell ${fdrClass(f.diff)} ${f.gw === 2 ? 'current-gw-col' : ''}`}>
-                      <div className="fdr-cell-content">
-                        <span className="opp-name font-mono">{f.oppShort}</span>
-                        <span className="venue-tag font-mono">{f.isHome ? 'H' : 'A'}</span>
-                      </div>
-                    </td>
-                  ))}
+                  {team.fixtures.map(f => {
+                    const isInteractive = f.oppShort !== 'BLANK' && Boolean(onOpenMatchup);
+                    return (
+                      <td
+                        key={f.gw}
+                        className={`fdr-cell ${fdrClass(f.diff)} ${f.gw === Number(selectedGw) ? 'current-gw-col' : ''}`}
+                        onClick={() => handleCellClick(f)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleCellClick(f);
+                          }
+                        }}
+                        tabIndex={isInteractive ? 0 : undefined}
+                        role={isInteractive ? 'button' : undefined}
+                        style={{ cursor: isInteractive ? 'pointer' : 'default' }}
+                        title={isInteractive ? `Click to view ${f.home_team} vs ${f.away_team} Dixon-Coles odds (GW${f.gw})` : undefined}
+                      >
+                        <div className="fdr-cell-content">
+                          <span className="opp-name font-mono">{f.oppShort}</span>
+                          <span className="venue-tag font-mono">{f.isHome ? 'H' : 'A'}</span>
+                        </div>
+                      </td>
+                    );
+                  })}
                 </tr>
               ))}
             </tbody>

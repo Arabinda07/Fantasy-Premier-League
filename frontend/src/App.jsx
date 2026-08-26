@@ -19,8 +19,7 @@ const PlayerDNAInspector = lazy(() => import('./components/PlayerDNAInspector'))
 import {
   getLatestMatchdayData,
   getMatchdayData,
-  availableGameweeks,
-  latestGameweek
+  availableGameweeks
 } from './utils/loadLatestMatchday';
 import useDataLoader from './utils/useDataLoader';
 
@@ -74,6 +73,7 @@ export default function App() {
   const [starters, setStarters] = useState(initialMatchday.data?.starters || []);
   const [bench, setBench] = useState(initialMatchday.data?.bench || []);
   const [selectedSwapPlayer, setSelectedSwapPlayer] = useState(null);
+  const [activeStrategy, setActiveStrategy] = useState(initialMatchday.data?.strategy || 'pure_xp');
 
   // Switch Gameweek Dataset handler
   const handleSelectGw = (gw) => {
@@ -85,6 +85,7 @@ export default function App() {
       setStarters(data.starters || []);
       setBench(data.bench || []);
       setSelectedSwapPlayer(null);
+      if (data.strategy) setActiveStrategy(data.strategy);
     }
   };
 
@@ -262,6 +263,8 @@ export default function App() {
         availableGameweeks={availableGameweeks}
         onSelectGw={handleSelectGw}
         onOpenSyncModal={() => setIsSyncModalOpen(true)}
+        strategy={activeStrategy}
+        onSelectStrategy={setActiveStrategy}
       />
 
       {/* 3-Level Breadcrumb Trail */}
@@ -289,6 +292,7 @@ export default function App() {
                 <TacticalPitch
                   starters={starters}
                   bench={bench}
+                  allPlayers={allPlayersData}
                   selectedPlayer={selectedSwapPlayer}
                   onSelectPlayer={handleSelectPlayer}
                   onInspectPlayer={handleInspectPlayer}
@@ -299,11 +303,13 @@ export default function App() {
                   chipSimulations={liveData.chip_simulations || {}}
                   activeChip={activeChip}
                   onSelectChip={handleChipChange}
+                  strategy={activeStrategy}
+                  onSelectStrategy={setActiveStrategy}
                 />
               </ErrorBoundary>
             )}
 
-            {/* View 2: Multi-Horizon 5-GW Strategy Canvas */}
+            {/* View 2: Multi-Horizon 5-GW Strategy Canvas & Transfer Workbench */}
             {activeTab === 'transfers' && (
               <ErrorBoundary componentName="Transfer Workbench">
                 <MultiGwPlanner
@@ -311,6 +317,7 @@ export default function App() {
                   squadPlayers={[...starters, ...bench]}
                   allPlayers={allPlayersData}
                   onInspectPlayer={handleInspectPlayer}
+                  onCompareChange={setCompareSubItem}
                 />
               </ErrorBoundary>
             )}
@@ -322,6 +329,8 @@ export default function App() {
                   managerProfile={liveData.manager_profile}
                   starters={starters}
                   bench={bench}
+                  allPlayers={allPlayersData}
+                  onInspectPlayer={handleInspectPlayer}
                 />
               </ErrorBoundary>
             )}
@@ -332,6 +341,8 @@ export default function App() {
                 <FixtureHeatmap
                   fixtures={fixturesData}
                   teams={teamsData}
+                  selectedGw={selectedGw}
+                  onOpenMatchup={handleOpenFixtureDrawer}
                 />
               </ErrorBoundary>
             )}

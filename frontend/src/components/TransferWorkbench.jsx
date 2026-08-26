@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import {
   MagnifyingGlass,
-  ArrowsLeftRight,
   Scales,
   X,
   TrendUp,
@@ -9,7 +8,7 @@ import {
 } from '@phosphor-icons/react';
 
 export default function TransferWorkbench({
-  roadmap,
+  _roadmap,
   allPlayers,
   squadPlayers = [],
   onInspectPlayer,
@@ -82,58 +81,24 @@ export default function TransferWorkbench({
   const xaIn = Number(playerIn?.expected_assists_per_90 || playerIn?.short_form_expected_assists_90 || 0);
 
   return (
-    <div>
-      {/* 3-Gameweek Lookahead Roadmap */}
-      <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <ArrowsLeftRight size={18} weight="bold" />
-        Transfer Plan: Next 3 Gameweeks
-      </h3>
-
-      <div className="roadmap-grid">
-        {(roadmap || []).map(step => (
-          <div key={step.gw} className={`roadmap-card ${step.gw === 2 ? 'active' : ''}`}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <span className="roadmap-gw-badge">Gameweek {step.gw}</span>
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
-                Bank: £{Number(step.bank || 0).toFixed(1)}m
-              </span>
-            </div>
-
-            <div className="transfer-pair">
-              {step.transfers_in?.length > 0 ? (
-                <>
-                  <div className="transfer-row">
-                    <span className="transfer-label in">IN</span>
-                    <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
-                      {step.transfers_in.join(', ')}
-                    </span>
-                  </div>
-                  <div className="transfer-row">
-                    <span className="transfer-label out">OUT</span>
-                    <span style={{ color: 'var(--text-secondary)' }}>
-                      {step.transfers_out.join(', ')}
-                    </span>
-                  </div>
-                </>
-              ) : (
-                <div style={{ color: 'var(--text-muted)', fontSize: '13px', fontStyle: 'italic' }}>
-                  Roll transfer (save 2 free transfers for next week)
-                </div>
-              )}
-            </div>
-
-            <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '10px', display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Projected Score</span>
-              <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--accent-emerald)' }}>
-                {Number(step.net_xp || 0).toFixed(1)} pts
-              </span>
-            </div>
+    <div className="view-fluid">
+      {/* Workbench Context Header */}
+      <div className="studio-hero-panel" style={{ marginBottom: '20px' }}>
+        <div className="studio-hero-header">
+          <div className="studio-badge">
+            <Scales size={14} weight="fill" />
+            <span>H2H TRANSFER SIMULATOR &amp; SCOUT MARKETPLACE</span>
           </div>
-        ))}
+          <span className="studio-version font-mono">LIVE OPTIMIZATION WORKBENCH</span>
+        </div>
+        <h1 className="studio-title">Head-to-Head Transfer Simulator &amp; Target Scout</h1>
+        <p className="studio-description">
+          Test potential transfers against your current 15-man squad in real time. Compare expected points ($\Delta\text{xP}$), budget impact ($\Delta\text{Cost}$), and underlying goal &amp; assist threat ($\Delta\text{xG90} / \Delta\text{xA90}$) before locking in your deadline moves.
+        </p>
       </div>
 
-      {/* Side-by-Side Transfer Comparison Workbench (Contextual Seam) */}
-      {playerIn && (
+      {/* Side-by-Side Transfer Comparison Workbench */}
+      {playerIn ? (
         <div className="compare-workbench-container" style={{ margin: '24px 0', background: 'var(--bg-surface-1)', border: '1px solid var(--border-active)', borderRadius: 'var(--radius-lg)', padding: 'clamp(14px, 2vw, 20px)', boxShadow: '0 8px 24px rgba(0,0,0,0.5)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -236,10 +201,20 @@ export default function TransferWorkbench({
             </div>
           </div>
         </div>
+      ) : (
+        <div className="compare-workbench-container" style={{ margin: '20px 0', background: 'var(--bg-surface-1)', border: '1px dashed var(--border-medium)', borderRadius: 'var(--radius-lg)', padding: '20px', textAlign: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: 'var(--accent-emerald)', marginBottom: '6px' }}>
+            <Scales size={20} weight="bold" />
+            <span style={{ fontWeight: 700, fontSize: '14px' }}>Head-to-Head Transfer Simulator Ready</span>
+          </div>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '13px', margin: 0 }}>
+            Click the <strong style={{ color: 'var(--text-primary)' }}>&quot;Compare&quot;</strong> button on any player in the Transfer Market below to test a live swap against your squad and inspect point, budget, and threat deltas.
+          </p>
+        </div>
       )}
 
       {/* Transfer Marketplace */}
-      <div className="data-table-container" style={{ marginTop: '30px' }}>
+      <div className="data-table-container" style={{ marginTop: '20px' }}>
         <div className="scout-controls">
           <div className="scout-title-group">
             <span className="scout-title">Player Scout &amp; Transfer Market</span>

@@ -5,10 +5,6 @@ import {
 } from 'recharts';
 import {
   X,
-  Lightning,
-  ShieldCheck,
-  Target,
-  SoccerBall,
   ChartBar,
   Polygon
 } from '@phosphor-icons/react';

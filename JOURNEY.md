@@ -382,16 +382,36 @@ This document tracks the phased rebuild of the Fantasy Premier League (FPL) poin
 - **Live Transition Results**:
   - `python -m model.gameweek_transition --season 2026-27 --team-id 9500404 --league-id 1305495 --mode sync`: Completed in **16.9s** with 100% stage success.
 
+### 7. Strategic 4-Chip Scenario Simulations & Frontend Reactive Lineup Solvers
+- **Problem**: When selecting chip scenario buttons (Wildcard, Free Hit) on the tactical pitch, the squad on display did not change because `chip_simulations` was not being generated or preserved by the live data pipeline, and the frontend lacked client-side fallback solvers for unconstrained £100M squad optimization.
+- **Implementation**:
+  - Integrated full 4-chip scenario optimization (`wildcard`, `freehit`, `bboost`, `3xc`) into `model/enrich_frontend_data.py` and `model/live_manager.py`.
+  - Enriched all chip squad players with Dixon-Coles matchup intelligence, home/away fixture details, and probability percentiles (`floor_p10`, `median_p50`, `ceiling_p90`, `haul_prob`).
+  - Added in-browser client-side fallback heuristic in `frontend/src/components/TacticalPitch.jsx` using `allPlayers` for live squad syncs.
+  - Standardized status directive banner labels and updated substitutes sidebar headers (`WILDCARD BENCH`, `FREE HIT BENCH`, `BENCH BOOST ACTIVE`).
+  - Enriched both `live_matchday_gw1.json` and `live_matchday_gw2.json` with fully solved 4-chip scenario payloads.
+- **Verification**:
+  - `python -m pytest`: **203 passed** across all model tests.
+  - `npm run build`: Frontend production build succeeded in 1.02s.
+
+### 8. Unified Transfer Studio, Dynamic Price Velocity & Interactive Heatmap Wiring
+- **Implementation**:
+  - **Unified Transfer Studio**: Integrated [`TransferWorkbench.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/TransferWorkbench.jsx) into [`MultiGwPlanner.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/MultiGwPlanner.jsx) with a 3-mode segmented switcher (`5-Week Strategy Roadmap`, `Interactive Transfer Scout & H2H Bench`, `Unified Canvas`).
+  - **Dynamic Price Velocity Radars**: Refactored [`MarketVelocityTicker.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/MarketVelocityTicker.jsx) to dynamically derive rising and falling assets from `allPlayersData` using real net transfer velocities, alert thresholds, and discrete trend states.
+  - **Interactive Fixture Heatmap**: Connected [`FixtureHeatmap.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/FixtureHeatmap.jsx) to dynamic `selectedGw` lookahead windows and wired 1-click tile inspection to slide open the Dixon-Coles Poisson Drawer.
+  - **Rival Differentials DNA Inspection**: Wired `allPlayers` and `onInspectPlayer` into [`RivalThreatMatrix.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/RivalThreatMatrix.jsx) so all mini-league differential threats and shared assets can be inspected in 1 click.
+  - **Model Calibration Scorecards**: Embedded historical empirical Spearman correlation ($r_s = +0.684$) and active starters MAE benchmarks into [`ComponentStudio.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/ComponentStudio.jsx).
+- **Verification**:
+  - `npm run build`: Production bundle generated in 985ms.
+  - `python scripts/validate_okf.py`: 0 errors verified across 43 catalog documents.
+
 ---
 
 ## Current Status & Next Horizon
 
-All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit**, the **Autonomous Gameweek Transition Orchestrator**, and the **100% Native FPL Opta Data Engine** are **complete, robust, and production-verified**.
+All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit with Reactive 4-Chip Projections**, the **Autonomous Gameweek Transition Orchestrator**, and the **100% Native FPL Opta Data Engine** are **complete, robust, and production-verified**.
 
 For complete operational playbooks and design standards:
 - 👉 **[DESIGN.md](file:///E:/Fantasy-Premier-League/DESIGN.md)**
 - 👉 **[docs/HANDOVER_AND_ROADMAP.md](file:///E:/Fantasy-Premier-League/docs/HANDOVER_AND_ROADMAP.md)**
-
-
-
 

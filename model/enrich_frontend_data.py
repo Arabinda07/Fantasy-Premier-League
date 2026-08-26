@@ -265,6 +265,90 @@ def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data
     except Exception as e:
         print(f"[Enrichment] Warning: Could not enrich mini-league rivals ({e}). Retaining existing.")
 
+    # 4. Compute & Enrich Strategic 4-Chip Simulations (Wildcard, Free Hit, Bench Boost, Triple Captain)
+    try:
+        from model.solver import solve_initial_squad
+        from dataclasses import asdict
+
+        def sanitize_val(val):
+            if pd.isna(val) or val is None:
+                return None
+            if isinstance(val, (np.floating, float)) and (np.isnan(val) or np.isinf(val)):
+                return None
+            if isinstance(val, (np.integer, int)):
+                return int(val)
+            if isinstance(val, (np.floating, float)):
+                return round(float(val), 4)
+            return val
+
+        def sanitize_dict(d):
+            return {k: sanitize_val(v) for k, v in d.items()}
+
+        wc_sol = solve_initial_squad(df=preds_df, budget=100.0, chip='wildcard')
+        fh_sol = solve_initial_squad(df=preds_df, budget=100.0, chip='freehit')
+        bb_sol = solve_initial_squad(df=preds_df, budget=100.0, chip='bboost')
+        tc_sol = solve_initial_squad(df=preds_df, budget=100.0, chip='3xc')
+
+        bb_bench_xp = sum(float(p.expected_points or 0) for p in bb_sol.bench)
+
+        data['chip_simulations'] = {
+            'wildcard': {
+                'chip_name': 'Wildcard',
+                'label': f"Wildcard Active (£100.0M Solved Optimal Template · Formation {wc_sol.formation})",
+                'description': 'Complete 15-man squad overhaul under £100.0M budget without hit penalties for long-term fixture runs.',
+                'formation': wc_sol.formation,
+                'starting_xp': round(wc_sol.starting_xp, 1),
+                'total_xp': round(wc_sol.total_xp, 1),
+                'captain': wc_sol.captain.web_name if wc_sol.captain else None,
+                'vice_captain': wc_sol.vice_captain.web_name if wc_sol.vice_captain else None,
+                'starters': enrich_player_list([sanitize_dict(asdict(p)) for p in wc_sol.starters], True),
+                'bench': enrich_player_list([sanitize_dict(asdict(p)) for p in wc_sol.bench], False),
+                'budget_used': round(wc_sol.total_cost, 1),
+            },
+            'freehit': {
+                'chip_name': 'Free Hit',
+                'label': f"Free Hit Active (Optimal GW{gw} 1-Round Ceiling Squad · Formation {fh_sol.formation})",
+                'description': 'Temporary 1-week squad targeting maximum single-round ceiling with cheap £4.0M bench enablers.',
+                'formation': fh_sol.formation,
+                'starting_xp': round(fh_sol.starting_xp, 1),
+                'total_xp': round(fh_sol.total_xp, 1),
+                'captain': fh_sol.captain.web_name if fh_sol.captain else None,
+                'vice_captain': fh_sol.vice_captain.web_name if fh_sol.vice_captain else None,
+                'starters': enrich_player_list([sanitize_dict(asdict(p)) for p in fh_sol.starters], True),
+                'bench': enrich_player_list([sanitize_dict(asdict(p)) for p in fh_sol.bench], False),
+                'budget_used': round(fh_sol.total_cost, 1),
+            },
+            'bboost': {
+                'chip_name': 'Bench Boost',
+                'label': f"Bench Boost Active (+{round(bb_bench_xp, 1)} xP from Bench Assets · 15 Scoring)",
+                'description': 'All 15 players are active point scorers. Optimizes both Starting XI and all 4 bench slots.',
+                'formation': bb_sol.formation,
+                'starting_xp': round(bb_sol.starting_xp, 1),
+                'total_xp': round(bb_sol.total_xp, 1),
+                'captain': bb_sol.captain.web_name if bb_sol.captain else None,
+                'vice_captain': bb_sol.vice_captain.web_name if bb_sol.vice_captain else None,
+                'starters': enrich_player_list([sanitize_dict(asdict(p)) for p in bb_sol.starters], True),
+                'bench': enrich_player_list([sanitize_dict({**asdict(p), 'is_boosted': True}) for p in bb_sol.bench], False),
+                'budget_used': round(bb_sol.total_cost, 1),
+            },
+            '3xc': {
+                'chip_name': 'Triple Captain',
+                'label': f"Triple Captain Active ({tc_sol.captain.web_name if tc_sol.captain else 'Captain'} 3x Multiplier Active)",
+                'description': 'Triples the point returns of your selected captain (+3x multiplier instead of standard 2x).',
+                'formation': tc_sol.formation,
+                'starting_xp': round(tc_sol.starting_xp, 1),
+                'total_xp': round(tc_sol.total_xp, 1),
+                'captain': tc_sol.captain.web_name if tc_sol.captain else None,
+                'vice_captain': tc_sol.vice_captain.web_name if tc_sol.vice_captain else None,
+                'starters': enrich_player_list([sanitize_dict(asdict(p)) for p in tc_sol.starters], True),
+                'bench': enrich_player_list([sanitize_dict(asdict(p)) for p in tc_sol.bench], False),
+                'budget_used': round(tc_sol.total_cost, 1),
+            }
+        }
+        print(f"[Enrichment] Successfully computed & enriched 4 chip simulations for GW{gw}.")
+    except Exception as e:
+        print(f"[Enrichment] Warning: Could not compute chip simulations: {e}")
+
     # Write to both frontend data and season data directories
     os.makedirs(os.path.dirname(frontend_json), exist_ok=True)
     with open(frontend_json, 'w', encoding='utf-8') as f:

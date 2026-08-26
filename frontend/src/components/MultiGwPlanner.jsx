@@ -4,16 +4,14 @@ import {
 } from 'recharts';
 import {
   ArrowsLeftRight,
-  Sparkle,
-  TrendUp,
   CalendarCheck,
-  Coins,
   ArrowUpRight,
   ArrowDownRight,
   CheckCircle,
-  PlusCircle,
-  ChartLine
+  ChartLine,
+  Scales
 } from '@phosphor-icons/react';
+import TransferWorkbench from './TransferWorkbench';
 
 const DEFAULT_5GW_ROADMAP = [
   { gw: 2, transfers_in: [], transfers_out: [], hits_taken: 0, net_xp: 64.72, bank: 0.0, ft_available: 1 },
@@ -27,69 +25,112 @@ export default function MultiGwPlanner({
   roadmap = [],
   squadPlayers = [],
   allPlayers = [],
-  onInspectPlayer
+  onInspectPlayer,
+  onCompareChange
 }) {
   const activeRoadmap = (roadmap && roadmap.length >= 5) ? roadmap : DEFAULT_5GW_ROADMAP;
   const [activeGwIndex, setActiveGwIndex] = useState(0);
+  const [viewMode, setViewMode] = useState('roadmap'); // 'roadmap' | 'workbench' | 'both'
 
   // Compute multi-horizon totals & cumulative trajectory
-  let runningTotal = 0;
-  const trajectoryData = activeRoadmap.map(r => {
-    const weeklyXp = Number(r.net_xp || 0);
-    runningTotal += weeklyXp;
-    return {
-      gw: `GW${r.gw}`,
-      weeklyXp: Number(weeklyXp.toFixed(1)),
-      cumulativeXp: Number(runningTotal.toFixed(1)),
-      bank: Number(r.bank || 0.0).toFixed(1),
-      hits: r.hits_taken || 0
-    };
-  });
+  const trajectoryData = React.useMemo(() => {
+    return activeRoadmap.reduce((acc, r, idx) => {
+      const weeklyXp = Number(r.net_xp || 0);
+      const prevTotal = idx > 0 ? acc[idx - 1].cumulativeXp : 0;
+      const cumulativeXp = Number((prevTotal + weeklyXp).toFixed(1));
+      acc.push({
+        gw: `GW${r.gw}`,
+        weeklyXp: Number(weeklyXp.toFixed(1)),
+        cumulativeXp,
+        bank: Number(r.bank || 0.0).toFixed(1),
+        hits: r.hits_taken || 0
+      });
+      return acc;
+    }, []);
+  }, [activeRoadmap]);
 
   const totalHorizonXp = activeRoadmap.reduce((acc, r) => acc + (r.net_xp || 0), 0);
   const totalHits = activeRoadmap.reduce((acc, r) => acc + (r.hits_taken || 0), 0);
 
   return (
     <div className="view-fluid">
-      {/* Hero Header */}
-      <div className="studio-hero-panel">
-        <div className="studio-hero-header">
-          <div className="studio-badge">
-            <CalendarCheck size={14} weight="fill" />
-            <span>5-WEEK TRANSFER ROADMAP</span>
+      {/* Sub-View Switcher Rail */}
+      <div className="chip-switcher-bar" style={{ marginBottom: '16px' }}>
+        <div className="chip-switcher-left">
+          <span className="chip-switcher-label font-mono">PLANNER WORKSPACE:</span>
+          <div className="segmented-chip-rail">
+            <button
+              type="button"
+              className={`segmented-chip-btn ${viewMode === 'roadmap' ? 'active' : ''}`}
+              onClick={() => setViewMode('roadmap')}
+            >
+              <CalendarCheck size={14} weight={viewMode === 'roadmap' ? 'fill' : 'bold'} />
+              <span>5-Week Strategy Roadmap</span>
+            </button>
+            <button
+              type="button"
+              className={`segmented-chip-btn ${viewMode === 'workbench' ? 'active' : ''}`}
+              onClick={() => setViewMode('workbench')}
+            >
+              <Scales size={14} weight={viewMode === 'workbench' ? 'fill' : 'bold'} />
+              <span>Interactive Transfer Scout &amp; H2H Bench</span>
+            </button>
+            <button
+              type="button"
+              className={`segmented-chip-btn ${viewMode === 'both' ? 'active' : ''}`}
+              onClick={() => setViewMode('both')}
+            >
+              <ArrowsLeftRight size={14} weight={viewMode === 'both' ? 'fill' : 'bold'} />
+              <span>Unified Canvas</span>
+            </button>
           </div>
-          <span className="studio-version font-mono">HORIZON: GW2 → GW6</span>
         </div>
-        <h1 className="studio-title">5-Week Transfer Roadmap & Bank Strategy</h1>
-        <p className="studio-description">
-          Plan your moves ahead: roll free transfers to build flexibility, avoid unnecessary minus-4 hits, and save cash for the big fixture swings.
-        </p>
-
-        {/* Horizon Metric Strip */}
-        <div className="kpi-strip">
-          <div className="kpi-card">
-            <div className="kpi-label">5-GW Points Target</div>
-            <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
-              {totalHorizonXp.toFixed(1)} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
-            </div>
-            <div className="kpi-subtext">Projected haul across 5 gameweeks</div>
-          </div>
-          <div className="kpi-card">
-            <div className="kpi-label">Transfer Hits Budgeted</div>
-            <div className="kpi-value font-mono" style={{ color: totalHits === 0 ? 'var(--accent-emerald)' : 'var(--accent-amber)' }}>
-              {totalHits} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Hits (0 pts lost)</span>
-            </div>
-            <div className="kpi-subtext">No point deductions needed</div>
-          </div>
-          <div className="kpi-card">
-            <div className="kpi-label">Bank Balance</div>
-            <div className="kpi-value font-mono">
-              £{Number(activeRoadmap[activeGwIndex]?.bank || 0.0).toFixed(1)}m
-            </div>
-            <div className="kpi-subtext">Ready for the GW3 Canvot move</div>
-          </div>
+        <div className="chip-switcher-right font-mono" style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+          {viewMode === 'roadmap' ? 'LP Horizon Engine' : viewMode === 'workbench' ? 'Live Scout & Comparison' : 'Full Strategy Suite'}
         </div>
       </div>
+
+      {(viewMode === 'roadmap' || viewMode === 'both') && (
+        <>
+          {/* Hero Header */}
+          <div className="studio-hero-panel">
+            <div className="studio-hero-header">
+              <div className="studio-badge">
+                <CalendarCheck size={14} weight="fill" />
+                <span>5-WEEK TRANSFER ROADMAP</span>
+              </div>
+              <span className="studio-version font-mono">HORIZON: GW2 → GW6</span>
+            </div>
+            <h1 className="studio-title">5-Week Transfer Roadmap &amp; Bank Strategy</h1>
+            <p className="studio-description">
+              Plan your moves ahead: roll free transfers to build flexibility, avoid unnecessary minus-4 hits, and save cash for the big fixture swings.
+            </p>
+
+            {/* Horizon Metric Strip */}
+            <div className="kpi-strip">
+              <div className="kpi-card">
+                <div className="kpi-label">5-GW Points Target</div>
+                <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
+                  {totalHorizonXp.toFixed(1)} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
+                </div>
+                <div className="kpi-subtext">Projected haul across 5 gameweeks</div>
+              </div>
+              <div className="kpi-card">
+                <div className="kpi-label">Transfer Hits Budgeted</div>
+                <div className="kpi-value font-mono" style={{ color: totalHits === 0 ? 'var(--accent-emerald)' : 'var(--accent-amber)' }}>
+                  {totalHits} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Hits (0 pts lost)</span>
+                </div>
+                <div className="kpi-subtext">No point deductions needed</div>
+              </div>
+              <div className="kpi-card">
+                <div className="kpi-label">Bank Balance</div>
+                <div className="kpi-value font-mono">
+                  £{Number(activeRoadmap[activeGwIndex]?.bank || 0.0).toFixed(1)}m
+                </div>
+                <div className="kpi-subtext">Ready for the GW3 Canvot move</div>
+              </div>
+            </div>
+          </div>
 
       {/* Cumulative Projected Points Trajectory Area Chart */}
       <div className="data-table-container">
@@ -223,6 +264,20 @@ export default function MultiGwPlanner({
           );
         })}
       </div>
+    </>
+  )}
+
+  {(viewMode === 'workbench' || viewMode === 'both') && (
+    <div style={{ marginTop: viewMode === 'both' ? '32px' : '0' }}>
+      <TransferWorkbench
+        roadmap={activeRoadmap}
+        allPlayers={allPlayers}
+        squadPlayers={squadPlayers}
+        onInspectPlayer={onInspectPlayer}
+        onCompareChange={onCompareChange}
+      />
     </div>
-  );
+  )}
+</div>
+);
 }

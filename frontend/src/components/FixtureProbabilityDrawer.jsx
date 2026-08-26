@@ -2,11 +2,6 @@ import React, { useState, useMemo } from 'react';
 import {
   X,
   SoccerBall,
-  ShieldCheck,
-  TrendUp,
-  Percent,
-  Sparkle,
-  CalendarCheck,
   Table
 } from '@phosphor-icons/react';
 
@@ -32,6 +27,32 @@ const dixonColesTau = (x, y, lambda, mu, rho = -0.05) => {
   return 1.0;
 };
 
+// Baseline attack/defense strength approximations for Premier League teams (goals/game)
+const TEAM_STRENGTHS = {
+  'man city': { att: 2.25, def: 0.90 },
+  'arsenal': { att: 2.15, def: 0.85 },
+  'liverpool': { att: 2.10, def: 0.95 },
+  'chelsea': { att: 1.80, def: 1.20 },
+  'aston villa': { att: 1.65, def: 1.25 },
+  'tottenham': { att: 1.75, def: 1.35 },
+  'newcastle': { att: 1.70, def: 1.20 },
+  'man utd': { att: 1.55, def: 1.30 },
+  'brighton': { att: 1.50, def: 1.35 },
+  'brentford': { att: 1.45, def: 1.40 },
+  'bournemouth': { att: 1.40, def: 1.45 },
+  'fulham': { att: 1.35, def: 1.40 },
+  'crystal palace': { att: 1.35, def: 1.35 },
+  'west ham': { att: 1.30, def: 1.50 },
+  'everton': { att: 1.15, def: 1.35 },
+  'nottingham forest': { att: 1.20, def: 1.45 },
+  'wolves': { att: 1.15, def: 1.50 },
+  'leicester': { att: 1.10, def: 1.60 },
+  'ipswich': { att: 1.05, def: 1.65 },
+  'southampton': { att: 1.00, def: 1.70 },
+  'leeds': { att: 1.10, def: 1.55 },
+  'sunderland': { att: 1.05, def: 1.60 },
+};
+
 export default function FixtureProbabilityDrawer({
   isOpen,
   onClose,
@@ -42,27 +63,77 @@ export default function FixtureProbabilityDrawer({
 
   const cleanStr = (s) => (s || '').toLowerCase().trim();
 
-  // Robust matching against fixtureData (supports team, opponent, home_team, away_team)
-  const matchedFixture = useMemo(() => {
-    if (!fixtureData || !dixonColesList || dixonColesList.length === 0) return null;
-    return dixonColesList.find(f => {
-      const fHome = cleanStr(f.home_team);
-      const fAway = cleanStr(f.away_team);
-      const targetHome = cleanStr(fixtureData.home_team || fixtureData.team);
-      const targetAway = cleanStr(fixtureData.away_team || fixtureData.opponent);
+  // Match against pre-computed list or generate dynamically for any 38-GW matchup
+  const fixture = useMemo(() => {
+    if (!fixtureData) return null;
 
-      return (
-        (targetHome && (fHome.includes(targetHome) || targetHome.includes(fHome))) ||
-        (targetAway && (fAway.includes(targetAway) || targetAway.includes(fAway))) ||
-        (targetHome && (fAway.includes(targetHome) || targetHome.includes(fAway))) ||
-        (targetAway && (fHome.includes(targetAway) || targetAway.includes(fHome)))
-      );
-    });
+    const targetHome = cleanStr(fixtureData.home_team || fixtureData.team || 'Aston Villa');
+    const targetAway = cleanStr(fixtureData.away_team || fixtureData.opponent || 'Arsenal');
+
+    // 1. Try matching against live matchday pre-computed list
+    if (dixonColesList && dixonColesList.length > 0) {
+      const matched = dixonColesList.find(f => {
+        const fHome = cleanStr(f.home_team);
+        const fAway = cleanStr(f.away_team);
+        return (
+          (fHome.includes(targetHome) || targetHome.includes(fHome)) &&
+          (fAway.includes(targetAway) || targetAway.includes(fAway))
+        );
+      });
+      if (matched) return matched;
+    }
+
+    // 2. Dynamically compute Dixon-Coles parameters for ANY of the 380 PL fixtures
+    const homeProfile = Object.entries(TEAM_STRENGTHS).find(([k]) => targetHome.includes(k) || k.includes(targetHome))?.[1] || { att: 1.40, def: 1.35 };
+    const awayProfile = Object.entries(TEAM_STRENGTHS).find(([k]) => targetAway.includes(k) || k.includes(targetAway))?.[1] || { att: 1.30, def: 1.40 };
+
+    // Expected goals = HomeAtt * AwayDef * HomeAdvantage (1.12) / LeagueAvg (~1.40)
+    const expHome = Number(Math.max(0.6, Math.min(3.5, (homeProfile.att * awayProfile.def * 1.12) / 1.35)).toFixed(2));
+    const expAway = Number(Math.max(0.5, Math.min(3.2, (awayProfile.att * homeProfile.def * 0.90) / 1.35)).toFixed(2));
+
+    // Calculate outcomes over 0..6 goals
+    let homeWin = 0;
+    let draw = 0;
+    let awayWin = 0;
+    let btts = 0;
+    let over25 = 0;
+    const scorelines = [];
+
+    for (let h = 0; h <= 6; h++) {
+      for (let a = 0; a <= 6; a++) {
+        const p = Math.max(0, dixonColesTau(h, a, expHome, expAway, -0.05) * poissonPmf(h, expHome) * poissonPmf(a, expAway));
+        if (h > a) homeWin += p;
+        else if (h === a) draw += p;
+        else awayWin += p;
+
+        if (h > 0 && a > 0) btts += p;
+        if (h + a > 2.5) over25 += p;
+
+        scorelines.push({ score: `${h}-${a}`, prob: p });
+      }
+    }
+
+    scorelines.sort((a, b) => b.prob - a.prob);
+
+    return {
+      home_team: fixtureData.home_team || fixtureData.team || 'Home Club',
+      away_team: fixtureData.away_team || fixtureData.opponent || 'Away Club',
+      expected_home_goals: expHome,
+      expected_away_goals: expAway,
+      home_win_prob: Number(homeWin.toFixed(3)),
+      draw_prob: Number(draw.toFixed(3)),
+      away_win_prob: Number(awayWin.toFixed(3)),
+      home_cs_prob: Number(Math.exp(-expAway).toFixed(3)),
+      away_cs_prob: Number(Math.exp(-expHome).toFixed(3)),
+      btts_prob: Number(btts.toFixed(3)),
+      over_2_5_prob: Number(over25.toFixed(3)),
+      most_likely_scorelines: scorelines.slice(0, 5)
+    };
   }, [fixtureData, dixonColesList]);
 
-  const fixture = matchedFixture || (dixonColesList && dixonColesList[0]) || {
-    home_team: fixtureData?.home_team || 'Aston Villa',
-    away_team: fixtureData?.away_team || 'Arsenal',
+  const activeFixture = fixture || {
+    home_team: 'Aston Villa',
+    away_team: 'Arsenal',
     expected_home_goals: 1.18,
     expected_away_goals: 1.62,
     home_win_prob: 0.284,
@@ -81,10 +152,10 @@ export default function FixtureProbabilityDrawer({
     ]
   };
 
-  const lambda = Number(fixture.expected_home_goals || 1.25);
-  const mu = Number(fixture.expected_away_goals || 1.45);
+  const lambda = Number(activeFixture.expected_home_goals || 1.25);
+  const mu = Number(activeFixture.expected_away_goals || 1.45);
 
-  // Compute 5x5 Joint Poisson Probability Matrix unconditionally
+  // Compute 5x5 Joint Poisson Probability Matrix
   const { matrix, maxProb } = useMemo(() => {
     const goals = [0, 1, 2, 3, 4];
     const grid = [];

@@ -396,6 +396,13 @@ def manage_gameweek(
             frontend_json = os.path.join(frontend_data_dir, f'live_matchday_gw{gw}.json')
             _atomic_json_write(frontend_json, payload)
 
+        # Automatically enrich payload with Dixon-Coles and 4-chip strategic simulations
+        try:
+            from model.enrich_frontend_data import enrich_matchday_json
+            enrich_matchday_json(gw=gw, season=season, data_root=data_root)
+        except Exception as e:
+            print(f"[!] Warning: Automated matchday enrichment encountered an error ({e}).")
+
     return {
         'action_summary': action_summary,
         'live_profile': live_profile,

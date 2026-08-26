@@ -4,10 +4,6 @@ import {
   ShieldCheck,
   ShieldWarning,
   Crown,
-  TrendUp,
-  CaretRight,
-  ArrowsLeftRight,
-  Sparkle,
   Gauge
 } from '@phosphor-icons/react';
 
@@ -77,7 +73,9 @@ const DEFAULT_RIVALS = [
 export default function RivalThreatMatrix({
   managerProfile,
   starters = [],
-  bench = []
+  _bench = [],
+  allPlayers = [],
+  onInspectPlayer
 }) {
   const rivals = (managerProfile?.rivals && managerProfile.rivals.length > 0)
     ? managerProfile.rivals
@@ -90,6 +88,27 @@ export default function RivalThreatMatrix({
   const leagueName = managerProfile?.league_name || 'Arsenal Bengal FPL 2026-27';
   const leagueId = managerProfile?.league_id || '1305495';
   const myCaptain = starters.find(p => p.is_captain)?.web_name || 'Haaland';
+
+  const handleInspect = (playerName, fallback = {}) => {
+    if (!onInspectPlayer) return;
+    const clean = (playerName || '').toLowerCase().trim();
+    const matched = allPlayers?.find(
+      p => (p.web_name || '').toLowerCase() === clean ||
+           (p.name || '').toLowerCase() === clean ||
+           (p.second_name || '').toLowerCase() === clean
+    );
+    if (matched) {
+      onInspectPlayer(matched);
+    } else {
+      onInspectPlayer({
+        web_name: playerName,
+        team: fallback.team || 'PL',
+        position: fallback.pos || 'MID',
+        cost: fallback.cost || 6.0,
+        expected_points: fallback.xp || 4.5
+      });
+    }
+  };
 
   // Compute dynamic KPI metrics across all rivals
   const { captainBackingPct, captainBackingCount, topThreatPlayer, threatFrequency, userDiffNames } = useMemo(() => {
@@ -333,7 +352,21 @@ export default function RivalThreatMatrix({
               </div>
               <div className="diff-cards-list">
                 {userDiffCards.map(p => (
-                  <div key={p.name} className="diff-ledger-row green">
+                  <div
+                    key={p.name}
+                    className="diff-ledger-row green"
+                    onClick={() => handleInspect(p.name, p)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleInspect(p.name, p);
+                      }
+                    }}
+                    style={{ cursor: 'pointer' }}
+                    title={`Click to inspect ${p.name} DNA breakdown`}
+                    role="button"
+                    tabIndex={0}
+                  >
                     <div className="diff-player-left">
                       <span className={`player-pos-tag ${p.pos || 'MID'}`}>{p.pos || 'MID'}</span>
                       <span className="diff-player-name">{p.name}</span>
@@ -356,7 +389,21 @@ export default function RivalThreatMatrix({
               </div>
               <div className="diff-cards-list">
                 {rivalDiffCards.map(p => (
-                  <div key={p.name} className="diff-ledger-row red">
+                  <div
+                    key={p.name}
+                    className="diff-ledger-row red"
+                    onClick={() => handleInspect(p.name, p)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleInspect(p.name, p);
+                      }
+                    }}
+                    style={{ cursor: 'pointer' }}
+                    title={`Click to inspect ${p.name} DNA breakdown`}
+                    role="button"
+                    tabIndex={0}
+                  >
                     <div className="diff-player-left">
                       <span className={`player-pos-tag ${p.pos || 'MID'}`}>{p.pos || 'MID'}</span>
                       <span className="diff-player-name">{p.name}</span>
