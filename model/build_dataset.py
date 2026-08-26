@@ -280,8 +280,16 @@ def build_dataset(
     extra_cols = [c for c in player_form.columns if c not in preferred_order and c not in ('id', 'element', 'team')]
     final_df = player_form[present_cols + extra_cols].rename(columns={'team_name': 'team'})
 
+    # Validate output schema before writing
+    from model.schema_validator import validate_dataframe_schema
+    from model.file_utils import atomic_write_csv
+
+    is_valid, errors = validate_dataframe_schema(final_df, 'model_dataset')
+    if not is_valid:
+        print(f"[!] Warning: model_dataset schema validation found issues: {errors}")
+
     out_csv = os.path.join(season_dir, 'model_dataset.csv')
-    final_df.to_csv(out_csv, index=False, encoding='utf-8')
+    atomic_write_csv(out_csv, final_df)
     print(f"[{season}] Successfully wrote {len(final_df)} players to {out_csv}")
 
     return final_df

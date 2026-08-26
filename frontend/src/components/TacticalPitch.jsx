@@ -26,6 +26,8 @@ export default function TacticalPitch({
   onSelectChip = () => {}
 }) {
   // Compute Dynamic Chip Simulations if not provided in payload
+  // Compute Dynamic Chip Simulations for TC and BB only.
+  // Free Hit and Wildcard require solver output — consumed from chipSimulations prop.
   const resolvedChipData = useMemo(() => {
     // 1. Triple Captain Simulation
     const capt = starters.find(p => p.is_captain);
@@ -36,56 +38,14 @@ export default function TacticalPitch({
     const benchXp = bench.reduce((acc, p) => acc + Number(p.expected_points || 0), 0);
     const benchBoostXp = startingXp + benchXp;
 
-    // 3. Free Hit Dream Team (Optimal GW2 1-Week Ceiling XI: 3-4-3 formation)
-    const freeHitStarters = [
-      { player_code: 154561, web_name: 'Raya', team: 'Arsenal', position: 'GK', cost: 6.0, expected_points: 5.0, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Aston Villa', away_team: 'Arsenal' } },
-      { player_code: 466075, web_name: 'Gabriel', team: 'Arsenal', position: 'DEF', cost: 6.0, expected_points: 5.2, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Aston Villa', away_team: 'Arsenal' } },
-      { player_code: 198869, web_name: 'Alexander-Arnold', team: 'Liverpool', position: 'DEF', cost: 7.5, expected_points: 6.1, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Liverpool', away_team: 'Brentford' } },
-      { player_code: 201658, web_name: 'Gvardiol', team: 'Man City', position: 'DEF', cost: 6.0, expected_points: 5.4, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Man City', away_team: 'Ipswich' } },
-      { player_code: 118748, web_name: 'Salah', team: 'Liverpool', position: 'MID', cost: 12.5, expected_points: 8.8, is_starter: true, is_captain: false, is_vice_captain: true, fixture_details: { home_team: 'Liverpool', away_team: 'Brentford' } },
-      { player_code: 223340, web_name: 'Saka', team: 'Arsenal', position: 'MID', cost: 10.0, expected_points: 7.6, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Aston Villa', away_team: 'Arsenal' } },
-      { player_code: 424876, web_name: 'Palmer', team: 'Chelsea', position: 'MID', cost: 10.5, expected_points: 7.9, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Wolves', away_team: 'Chelsea' } },
-      { player_code: 141746, web_name: 'B.Fernandes', team: 'Man Utd', position: 'MID', cost: 12.0, expected_points: 6.9, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Brighton', away_team: 'Man Utd' } },
-      { player_code: 223094, web_name: 'Haaland', team: 'Man City', position: 'FWD', cost: 15.5, expected_points: 9.4, is_starter: true, is_captain: true, is_vice_captain: false, fixture_details: { home_team: 'Man City', away_team: 'Ipswich' } },
-      { player_code: 446008, web_name: 'Isak', team: 'Newcastle', position: 'FWD', cost: 8.5, expected_points: 6.8, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Bournemouth', away_team: 'Newcastle' } },
-      { player_code: 177815, web_name: 'Watkins', team: 'Aston Villa', position: 'FWD', cost: 9.0, expected_points: 6.2, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Aston Villa', away_team: 'Arsenal' } }
-    ];
-    const freeHitBench = [
-      { player_code: 80201, web_name: 'Fabianski', team: 'West Ham', position: 'GK', cost: 4.0, expected_points: 1.5, is_starter: false, bench_order: 1 },
-      { player_code: 173878, web_name: 'Bednarek', team: 'Southampton', position: 'DEF', cost: 4.0, expected_points: 2.1, is_starter: false, bench_order: 2 },
-      { player_code: 539142, web_name: 'Winks', team: 'Leicester', position: 'MID', cost: 4.5, expected_points: 2.3, is_starter: false, bench_order: 3 },
-      { player_code: 223827, web_name: 'Jebbison', team: 'Bournemouth', position: 'FWD', cost: 4.5, expected_points: 1.8, is_starter: false, bench_order: 4 }
-    ];
-
-    // 4. Wildcard (£100m) Multi-GW Reconstruction (GW2-GW6 Balanced: 3-5-2 formation)
-    const wildcardStarters = [
-      { player_code: 154561, web_name: 'Raya', team: 'Arsenal', position: 'GK', cost: 6.0, expected_points: 5.0, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Aston Villa', away_team: 'Arsenal' } },
-      { player_code: 466075, web_name: 'Gabriel', team: 'Arsenal', position: 'DEF', cost: 6.0, expected_points: 5.2, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Aston Villa', away_team: 'Arsenal' } },
-      { player_code: 198869, web_name: 'Saliba', team: 'Arsenal', position: 'DEF', cost: 6.0, expected_points: 5.1, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Aston Villa', away_team: 'Arsenal' } },
-      { player_code: 201658, web_name: 'Munoz', team: 'Crystal Palace', position: 'DEF', cost: 5.0, expected_points: 4.6, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Crystal Palace', away_team: 'West Ham' } },
-      { player_code: 118748, web_name: 'Salah', team: 'Liverpool', position: 'MID', cost: 12.5, expected_points: 8.8, is_starter: true, is_captain: false, is_vice_captain: true, fixture_details: { home_team: 'Liverpool', away_team: 'Brentford' } },
-      { player_code: 223340, web_name: 'Saka', team: 'Arsenal', position: 'MID', cost: 10.0, expected_points: 7.6, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Aston Villa', away_team: 'Arsenal' } },
-      { player_code: 177815, web_name: 'Szoboszlai', team: 'Liverpool', position: 'MID', cost: 7.0, expected_points: 5.4, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Liverpool', away_team: 'Brentford' } },
-      { player_code: 466525, web_name: 'Rogers', team: 'Aston Villa', position: 'MID', cost: 5.5, expected_points: 4.8, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Aston Villa', away_team: 'Arsenal' } },
-      { player_code: 201658, web_name: 'Tavernier', team: 'Bournemouth', position: 'MID', cost: 6.0, expected_points: 5.4, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Bournemouth', away_team: 'Everton' } },
-      { player_code: 223094, web_name: 'Haaland', team: 'Man City', position: 'FWD', cost: 15.5, expected_points: 9.4, is_starter: true, is_captain: true, is_vice_captain: false, fixture_details: { home_team: 'Man City', away_team: 'Ipswich' } },
-      { player_code: 446008, web_name: 'Calvert-Lewin', team: 'Everton', position: 'FWD', cost: 6.0, expected_points: 5.3, is_starter: true, is_captain: false, is_vice_captain: false, fixture_details: { home_team: 'Bournemouth', away_team: 'Everton' } }
-    ];
-    const wildcardBench = [
-      { player_code: 80201, web_name: 'Valdimarsson', team: 'Brentford', position: 'GK', cost: 4.0, expected_points: 1.5, is_starter: false, bench_order: 1 },
-      { player_code: 173878, web_name: 'Harwood-Bellis', team: 'Southampton', position: 'DEF', cost: 4.0, expected_points: 2.2, is_starter: false, bench_order: 2 },
-      { player_code: 539142, web_name: 'Greaves', team: 'Ipswich', position: 'DEF', cost: 4.0, expected_points: 2.3, is_starter: false, bench_order: 3 },
-      { player_code: 223827, web_name: 'Armstrong', team: 'Southampton', position: 'FWD', cost: 5.5, expected_points: 3.5, is_starter: false, bench_order: 4 }
-    ];
-
-    return {
+    const result = {
       '3xc': {
         starters: starters,
         bench: bench,
         starting_xp: Number(tripleCaptainXp.toFixed(1)),
         total_xp: Number(tripleCaptainXp.toFixed(1)),
         formation: `${starters.filter(p => p.position === 'DEF').length}-${starters.filter(p => p.position === 'MID').length}-${starters.filter(p => p.position === 'FWD').length}`,
-        label: 'Triple Captain Active (Haaland 3x Points)'
+        label: `Triple Captain Active (${capt?.web_name || 'Captain'} 3x Points)`
       },
       'bboost': {
         starters: starters,
@@ -95,24 +55,15 @@ export default function TacticalPitch({
         formation: `${starters.filter(p => p.position === 'DEF').length}-${starters.filter(p => p.position === 'MID').length}-${starters.filter(p => p.position === 'FWD').length}`,
         label: `Bench Boost Active (+${benchXp.toFixed(1)} xP from Bench Assets)`
       },
-      'freehit': {
-        starters: freeHitStarters,
-        bench: freeHitBench,
-        starting_xp: 84.3,
-        total_xp: 84.3,
-        formation: '3-4-3',
-        label: 'Optimal 1-GW Free Hit Dream Squad (84.3 xP Target)'
-      },
-      'wildcard': {
-        starters: wildcardStarters,
-        bench: wildcardBench,
-        starting_xp: 77.2,
-        total_xp: 77.2,
-        formation: '3-5-2',
-        label: 'Optimal Multi-GW Wildcard Reconstruction (£100.0m Budget)'
-      }
     };
-  }, [starters, bench, startingXp]);
+
+    // F-11 fix: Free Hit and Wildcard data comes from solver payload (chipSimulations prop),
+    // NOT from hardcoded player lists. Only include if provided externally.
+    if (chipSimulations.freehit) result.freehit = chipSimulations.freehit;
+    if (chipSimulations.wildcard) result.wildcard = chipSimulations.wildcard;
+
+    return result;
+  }, [starters, bench, startingXp, chipSimulations]);
 
   // Determine active display data
   const currentChipData = activeChip !== 'none' ? (chipSimulations[activeChip] || resolvedChipData[activeChip]) : null;

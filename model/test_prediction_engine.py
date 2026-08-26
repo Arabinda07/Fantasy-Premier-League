@@ -269,8 +269,8 @@ class TestEmpiricalBayesShrinkage:
             'team_long_form_xgc90': 0.7635,
         }
         pred = predict_player_points(dowman)
-        # Should no longer be 7.07, should drop by ~3 points to ~4.2
-        assert 3.5 <= pred['expected_points'] <= 4.5
+        # Should no longer be 7.07, should drop by ~2.5 points to ~4.5
+        assert 3.5 <= pred['expected_points'] <= 4.8
         # Goals component should be ~1.4 (5 * 0.279), not 3.52
         assert 1.1 <= pred['c8_goals'] <= 1.6
 
@@ -353,7 +353,7 @@ class TestColdStartPriors:
 
 
 class TestDisciplinaryCorrection:
-    """Verify yellow card deduction avoids double-counting 2-yellow red cards."""
+    """Verify yellow card and red card deductions follow official FPL rules."""
 
     def test_yellow_red_separation(self):
         player = {
@@ -365,8 +365,8 @@ class TestDisciplinaryCorrection:
             'red_cards_90': 0.05,
         }
         pred = predict_player_points(player)
-        # Effective yellow rate should be 0.30 - 2 * 0.05 = 0.20
-        # c4 should be -0.20, c5 should be -0.15 (total -0.35 instead of -0.45)
-        assert abs(pred['c4_yellow_cards'] - (-0.20)) < 1e-3
+        # F-02 fix: in FPL, yellow cards and red cards are both deducted separately
+        # c4 should be -0.30 (1.0 * 0.30 * 1.0), c5 should be -0.15 (3.0 * 0.05 * 1.0)
+        assert abs(pred['c4_yellow_cards'] - (-0.30)) < 1e-3
         assert abs(pred['c5_red_cards'] - (-0.15)) < 1e-3
 

@@ -380,8 +380,8 @@ def simulate_match_monte_carlo(
     Returns:
         Tuple of (MatchProbabilityMetrics, List of PlayerSimulationDistribution).
     """
-    if random_seed is not None:
-        np.random.seed(random_seed)
+    # F-15 fix: use isolated Generator instead of legacy global np.random.seed
+    rng = np.random.default_rng(random_seed)
 
     # 1. Compute exact Dixon-Coles bivariate probability grid
     matrix = compute_dixon_coles_matrix(lambda_h, mu_a, rho=rho, max_goals=DEFAULT_MAX_GOALS)
@@ -397,7 +397,7 @@ def simulate_match_monte_carlo(
     flat_probs = matrix.ravel()
     flat_probs = flat_probs / np.sum(flat_probs)
     n_states = len(flat_probs)
-    sampled_indices = np.random.choice(n_states, size=n_sims, p=flat_probs)
+    sampled_indices = rng.choice(n_states, size=n_sims, p=flat_probs)
 
     dim_y = matrix.shape[1]
     sim_home_goals = sampled_indices // dim_y
@@ -454,45 +454,45 @@ def simulate_match_monte_carlo(
                 'player_code': p['player_code'],
                 'position': p['position'],
                 'is_home': p['is_home'],
-                'mins_played': 90 if np.random.rand() < _safe_float(p.get('p_start', 0.85)) else (20 if np.random.rand() < _safe_float(p.get('p_app', 0.15)) else 0),
+                'mins_played': 90 if rng.random() < _safe_float(p.get('p_start', 0.85)) else (20 if rng.random() < _safe_float(p.get('p_app', 0.15)) else 0),
                 'goals': 0,
                 'assists': 0,
                 'saves': 0,
-                'dc': np.random.poisson(max(0.1, _safe_float(p.get('dc90', 2.0)) * 0.8)),
-                'yc': 1 if np.random.rand() < _safe_float(p.get('yc90', 0.12)) else 0,
-                'rc': 1 if np.random.rand() < _safe_float(p.get('rc90', 0.01)) else 0,
+                'dc': rng.poisson(max(0.1, _safe_float(p.get('dc90', 2.0)) * 0.8)),
+                'yc': 1 if rng.random() < _safe_float(p.get('yc90', 0.12)) else 0,
+                'rc': 1 if rng.random() < _safe_float(p.get('rc90', 0.01)) else 0,
             }
 
         # Attribute Home Goals & Assists
         if h_goals > 0 and len(home_players) > 0:
-            scorers = np.random.choice(len(home_players), size=h_goals, p=h_xg_w)
+            scorers = rng.choice(len(home_players), size=h_goals, p=h_xg_w)
             for sc_idx in scorers:
                 p_code = home_players[sc_idx]['player_code']
                 sim_stat_map[p_code]['goals'] += 1
                 player_sim_goals[p_code][s] += 1
 
                 # Assist attribution (75% of goals are assisted)
-                if np.random.rand() < 0.75 and len(home_players) > 1:
+                if rng.random() < 0.75 and len(home_players) > 1:
                     temp_xa = h_xa_w.copy()
                     temp_xa[sc_idx] = 0.0
                     sum_xa = np.sum(temp_xa)
                     if sum_xa > 0:
                         temp_xa /= sum_xa
-                        as_idx = np.random.choice(len(home_players), p=temp_xa)
+                        as_idx = rng.choice(len(home_players), p=temp_xa)
                         as_code = home_players[as_idx]['player_code']
                         sim_stat_map[as_code]['assists'] += 1
                         player_sim_assists[as_code][s] += 1
 
         # Attribute Away Goals & Assists
         if a_goals > 0 and len(away_players) > 0:
-            scorers = np.random.choice(len(away_players), size=a_goals, p=a_xg_w)
+            scorers = rng.choice(len(away_players), size=a_goals, p=a_xg_w)
             for sc_idx in scorers:
                 p_code = away_players[sc_idx]['player_code']
                 sim_stat_map[p_code]['goals'] += 1
                 player_sim_goals[p_code][s] += 1
 
                 # Assist attribution
-                if np.random.rand() < 0.75 and len(away_players) > 1:
+                if rng.random() < 0.75 and len(away_players) > 1:
                     temp_xa = a_xa_w.copy()
                     temp_xa[sc_idx] = 0.0
                     sum_xa = np.sum(temp_xa)

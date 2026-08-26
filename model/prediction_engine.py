@@ -65,10 +65,10 @@ OWN_GOAL_DEDUCTION: float = -2.0
 
 # Positional baseline priors for Empirical Bayes shrinkage
 POSITIONAL_PRIORS: Dict[str, Dict[str, float]] = {
-    'FWD': {'xg90': 0.35, 'xa90': 0.15, 'dc90': 2.0},
-    'MID': {'xg90': 0.15, 'xa90': 0.15, 'dc90': 4.0},
-    'DEF': {'xg90': 0.05, 'xa90': 0.05, 'dc90': 8.0},
-    'GK':  {'xg90': 0.00, 'xa90': 0.00, 'dc90': 1.0},
+    'FWD': {'xg90': 0.35, 'xa90': 0.15, 'dc90': 2.0, 'bonus90': 0.60},
+    'MID': {'xg90': 0.15, 'xa90': 0.15, 'dc90': 4.0, 'bonus90': 0.50},
+    'DEF': {'xg90': 0.05, 'xa90': 0.05, 'dc90': 8.0, 'bonus90': 0.30},
+    'GK':  {'xg90': 0.00, 'xa90': 0.00, 'dc90': 1.0, 'bonus90': 0.20},
 }
 
 DEFAULT_MINS_FILTER: float = 500.0  # M0 confidence threshold for shrinkage
@@ -386,16 +386,25 @@ def predict_player_points(
     # 3. C3: Goalkeeper Saves (1 pt per 3 saves)
     c3 = (saves90 / SAVES_PER_POINT) * p_start if position == 'GK' else 0.0
 
-    # 4. C4: Yellow Cards (-1 pt, corrected for 2-yellow dismissals)
+    # 4. C4: Yellow Cards (-1 pt)
+    # F-02 fix: removed `- 2.0 * rc90` correction. In FPL, a second yellow that triggers
+    # a red gives BOTH -1 (yellow) AND -3 (red). Both penalties are applied.
     yc90 = _safe_float(player.get('yellow_cards_90'), default=0.12)
     rc90 = _safe_float(player.get('red_cards_90'), default=0.01)
-    effective_yc90 = max(0.0, yc90 - 2.0 * rc90)
-    c4 = YELLOW_CARD_DEDUCTION * effective_yc90 * p_app
+    c4 = YELLOW_CARD_DEDUCTION * yc90 * p_app
 
     # 5. C5: Red Cards (-3 pts)
     c5 = RED_CARD_DEDUCTION * rc90 * p_app
 
-    # 6. C6: Bonus Points
+    # 6. C6: Bonus Points (F-16 fix: apply Empirical Bayes shrinkage to bonus90)
+    if apply_shrinkage:
+        bonus90 = apply_empirical_bayes_shrinkage(
+            _safe_float(player.get('long_form_bonus_90')),
+            sample_mins if 'sample_mins' in dir() else _safe_float(player.get('long_form_minutes', total_minutes)),
+            priors.get('bonus90', 0.40),
+        )
+    else:
+        bonus90 = _safe_float(player.get('long_form_bonus_90'))
     c6 = bonus90 * p_start
 
     # 7. C7: Assists (3 pts)
@@ -418,9 +427,10 @@ def predict_player_points(
         c10 = 0.0
 
     # 11. C11: Defensive Contributions (1 pt for >=10, 2 pts for >=15)
+    # F-01 fix: gated on p_60_plus like C9/C10, since DC points require 60+ mins
     p_dc_10 = poisson_dc_hit_prob(dc90 * active_ratio, threshold=10)
     p_dc_15 = poisson_dc_hit_prob(dc90 * active_ratio, threshold=15)
-    c11 = (1.0 * p_dc_10) + (1.0 * p_dc_15)
+    c11 = ((1.0 * p_dc_10) + (1.0 * p_dc_15)) * p_60_plus
 
     # Total Expected Points
     total_expected = c1 + c2 + c3 + c4 + c5 + c6 + c7 + c8 + c9 + c10 + c11
@@ -482,9 +492,16 @@ def predict_all_players(
     result_df = pd.concat([df, pred_df], axis=1)
 
     if save_csv and isinstance(season_or_df, str):
+        from model.file_utils import atomic_write_csv
+        from model.schema_validator import validate_dataframe_schema
+
+        is_valid, errors = validate_dataframe_schema(result_df, 'predictions')
+        if not is_valid:
+            print(f"[!] Warning: predictions schema validation found issues: {errors}")
+
         season_dir = os.path.join(data_root, str(season_or_df))
         out_csv = os.path.join(season_dir, 'predictions.csv')
-        result_df.to_csv(out_csv, index=False)
+        atomic_write_csv(out_csv, result_df)
         print(f"[{season_or_df}] Successfully wrote {len(result_df)} predictions to {out_csv}")
 
     return result_df

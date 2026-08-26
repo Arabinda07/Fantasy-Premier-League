@@ -214,69 +214,56 @@ def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data
     data['starters'] = enrich_player_list(data.get('starters', []), True)
     data['bench'] = enrich_player_list(data.get('bench', []), False)
 
-    # 3. Add Mini-League Rival Threat Matrix
-    data['manager_profile']['rivals'] = [
-        {
-            'entry_id': 1001,
-            'manager_name': 'Magnus Carlsen',
-            'team_name': 'Turing Test XI',
-            'overall_rank': 124,
-            'overall_points': 78,
-            'captain_name': 'Haaland',
-            'differentials': ['Salah', 'Isak'],
-            'shared_players': ['Haaland', 'B.Fernandes', 'Raya', 'White'],
-            'threat_level': 'HIGH',
-            'overlap_pct': 60.0
-        },
-        {
-            'entry_id': 1002,
-            'manager_name': 'Fabio Borges',
-            'team_name': 'Porto Knights',
-            'overall_rank': 540,
-            'overall_points': 74,
-            'captain_name': 'Haaland',
-            'differentials': ['Palmer', 'Gvardiol'],
-            'shared_players': ['Haaland', 'Calafiori', 'Mbeumo', 'Szoboszlai'],
-            'threat_level': 'MEDIUM',
-            'overlap_pct': 53.3
-        },
-        {
-            'entry_id': 1003,
-            'manager_name': 'Ben Crellin',
-            'team_name': 'Planner FC',
-            'overall_rank': 1280,
-            'overall_points': 71,
-            'captain_name': 'B.Fernandes',
-            'differentials': ['Watkins', 'Saka'],
-            'shared_players': ['B.Fernandes', 'Calafiori', 'Raya', 'Ballard'],
-            'threat_level': 'HIGH',
-            'overlap_pct': 46.7
-        },
-        {
-            'entry_id': 1004,
-            'manager_name': 'Mark Sutherns',
-            'team_name': 'Black & White',
-            'overall_rank': 2400,
-            'overall_points': 69,
-            'captain_name': 'Haaland',
-            'differentials': ['Son', 'Porro'],
-            'shared_players': ['Haaland', 'Tavernier', 'Mbeumo', 'Leno'],
-            'threat_level': 'LOW',
-            'overlap_pct': 40.0
-        },
-        {
-            'entry_id': 1005,
-            'manager_name': 'Lateriser12',
-            'team_name': 'Upside Chaser',
-            'overall_rank': 3800,
-            'overall_points': 66,
-            'captain_name': 'Palmer',
-            'differentials': ['Palmer', 'Gordon', 'Muniz'],
-            'shared_players': ['Haaland', 'Stach', 'White', 'Calvert-Lewin'],
-            'threat_level': 'MEDIUM',
-            'overlap_pct': 46.7
-        }
+    # 3. Add Mini-League Rival Threat Matrix from Real Standings
+    from model.live_sync import fetch_fpl_league_standings, enrich_rival_entries
+
+    user_squad_codes = [
+        int(p['player_code']) for p in (data.get('starters', []) + data.get('bench', []))
+        if 'player_code' in p
     ]
+    
+    mgr_profile = data.get('manager_profile', {})
+    league_id = mgr_profile.get('league_id') or 1305495
+    user_entry_id = mgr_profile.get('entry_id') or 9500404
+
+    try:
+        league_payload = fetch_fpl_league_standings(
+            league_id=int(league_id),
+            season=season,
+            data_root=data_root,
+            use_cache=True,
+        )
+        league_info = league_payload.get('league', {})
+        league_name = str(league_info.get('name', 'Arsenal Bengal FPL 2026-27'))
+        standings_results = league_payload.get('standings', {}).get('results', [])
+
+        enriched_rivals = enrich_rival_entries(
+            standings_results=standings_results,
+            user_squad_codes=user_squad_codes,
+            user_entry_id=user_entry_id,
+            gw=gw,
+            season=season,
+            data_root=data_root,
+            use_cache=True,
+            max_rivals=6,
+        )
+
+        if 'manager_profile' not in data or not data['manager_profile']:
+            data['manager_profile'] = {
+                'entry_id': user_entry_id,
+                'manager_name': 'Arabinda Saha',
+                'team_name': 'Fuljhore Giants',
+                'overall_rank': 0,
+                'overall_points': 0,
+                'bank': 0.5,
+                'free_transfers': 1,
+            }
+
+        data['manager_profile']['league_id'] = int(league_id)
+        data['manager_profile']['league_name'] = league_name
+        data['manager_profile']['rivals'] = enriched_rivals
+    except Exception as e:
+        print(f"[Enrichment] Warning: Could not enrich mini-league rivals ({e}). Retaining existing.")
 
     # Write to both frontend data and season data directories
     os.makedirs(os.path.dirname(frontend_json), exist_ok=True)

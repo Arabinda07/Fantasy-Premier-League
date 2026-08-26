@@ -4059,6 +4059,192 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.04em;
 }
 
+/* ==========================================================================
+   BGW & DGW FIXTURE BADGES
+   ========================================================================== */
+
+.bgw-badge {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 8.5px;
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--accent-crimson);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  padding: 1px 4px;
+  border-radius: 2px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.dgw-badge {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 8.5px;
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--accent-emerald);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  padding: 1px 4px;
+  border-radius: 2px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.player-pitch-card.is-bgw {
+  opacity: 0.75;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.player-pitch-card.is-dgw {
+  border-color: rgba(16, 185, 129, 0.35);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
+}
+
+/* ==========================================================================
+   REACT ERROR BOUNDARY COMPONENT STYLES
+   ========================================================================== */
+
+.error-boundary-container {
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 280px;
+}
+
+.error-boundary-card {
+  background: var(--bg-surface-1);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  max-width: 640px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  text-align: left;
+}
+
+.error-boundary-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.error-icon {
+  color: var(--accent-crimson);
+  flex-shrink: 0;
+}
+
+.error-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+.error-subtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.error-details {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 11px;
+  color: var(--accent-crimson);
+  margin-bottom: 16px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.error-message {
+  font-weight: 700;
+  margin: 0 0 6px 0;
+}
+
+.error-stack {
+  color: var(--text-muted);
+  font-size: 10px;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.error-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.error-retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ==========================================================================
+   INITIAL DATA LOADING SKELETON (F-12)
+   ========================================================================== */
+
+.fpl-loader-skeleton-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 16px;
+}
+
+.fpl-loader-spinner {
+  width: 42px;
+  height: 42px;
+  border: 3px solid rgba(16, 185, 129, 0.15);
+  border-top-color: var(--accent-emerald);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.fpl-loader-text {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+}
+
+/* ==========================================================================
+   RESPONSIVE POLISH (>= 375px Viewport Hardening)
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  .player-pitch-card {
+    padding: 6px 6px;
+    min-width: 72px;
+    max-width: 96px;
+  }
+
+  .player-name {
+    font-size: 11px;
+  }
+
+  .player-cost-val {
+    font-size: 8.5px;
+  }
+
+  .player-xp {
+    font-size: 10.5px;
+  }
+
+  .pitch-row {
+    gap: 6px;
+  }
+
+  .app-container {
+    padding: 8px;
+  }
+}
+
+
 
 
 

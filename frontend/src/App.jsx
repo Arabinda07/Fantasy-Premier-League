@@ -9,21 +9,20 @@ import MarketVelocityTicker from './components/MarketVelocityTicker';
 import ComponentStudio from './components/ComponentStudio';
 import LiveTeamSyncModal from './components/LiveTeamSyncModal';
 import FixtureProbabilityDrawer from './components/FixtureProbabilityDrawer';
+import ErrorBoundary from './components/ErrorBoundary';
 import Footer from './components/Footer';
 
 // Lazy-load Recharts heavy charting component on demand
 const PlayerDNAInspector = lazy(() => import('./components/PlayerDNAInspector'));
 
-// Import dynamic matchday data loader and static database payloads
+// Import dynamic matchday data loader and asynchronous data hook (F-12)
 import {
   getLatestMatchdayData,
   getMatchdayData,
   availableGameweeks,
   latestGameweek
 } from './utils/loadLatestMatchday';
-import allPlayersData from './data/players_full.json';
-import fixturesData from './data/fixtures_all.json';
-import teamsData from './data/teams_all.json';
+import useDataLoader from './utils/useDataLoader';
 
 // Helper to map tab IDs to hash routes
 const TAB_TO_HASH = {
@@ -54,6 +53,14 @@ export default function App() {
   const [inspectedPlayer, setInspectedPlayer] = useState(null);
   const [activeChip, setActiveChip] = useState('none');
   const [compareSubItem, setCompareSubItem] = useState(null);
+
+  // F-12: Asynchronous Lazy-Load for massive static JSON databases
+  const {
+    players: allPlayersData,
+    fixtures: fixturesData,
+    teams: teamsData,
+    isLoading: isDataLoading,
+  } = useDataLoader();
 
   // Modals & Drawers
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
@@ -99,7 +106,7 @@ export default function App() {
         if (chip) setActiveChip(chip);
 
         const playerName = params.get('player');
-        if (playerName && allPlayersData) {
+        if (playerName && allPlayersData && allPlayersData.length > 0) {
           const matched = allPlayersData.find(
             p => (p.web_name || '').toLowerCase() === playerName.toLowerCase()
           );
@@ -111,7 +118,7 @@ export default function App() {
     parseHash();
     window.addEventListener('hashchange', parseHash);
     return () => window.removeEventListener('hashchange', parseHash);
-  }, []);
+  }, [allPlayersData]);
 
   // Sync state changes to URL Hash
   const handleTabChange = (newTab) => {
@@ -188,14 +195,36 @@ export default function App() {
 
     // If swapping between Starter and Bench
     if (isFirstStarter !== isSecondStarter) {
+      const starterPlayer = isFirstStarter ? selectedSwapPlayer : player;
+      const benchPlayer = isFirstStarter ? player : selectedSwapPlayer;
+
+      // F-13 fix: Validate that the resulting formation is legal before committing
+      const newStarterPositions = starters
+        .filter(p => p.player_code !== starterPlayer.player_code)
+        .concat({ ...benchPlayer, is_starter: true })
+        .reduce((acc, p) => { acc[p.position] = (acc[p.position] || 0) + 1; return acc; }, {});
+
+      const isValidFormation = (
+        (newStarterPositions['GK'] || 0) === 1 &&
+        (newStarterPositions['DEF'] || 0) >= 3 &&
+        (newStarterPositions['MID'] || 0) >= 2 &&
+        (newStarterPositions['FWD'] || 0) >= 1
+      );
+
+      if (!isValidFormation) {
+        // Invalid formation — reject swap silently
+        setSelectedSwapPlayer(null);
+        return;
+      }
+
       const newStarters = starters.map(p =>
-        p.player_code === (isFirstStarter ? selectedSwapPlayer.player_code : player.player_code)
-          ? { ...(isFirstStarter ? player : selectedSwapPlayer), is_starter: true }
+        p.player_code === starterPlayer.player_code
+          ? { ...benchPlayer, is_starter: true }
           : p
       );
       const newBench = bench.map(p =>
-        p.player_code === (isFirstStarter ? player.player_code : selectedSwapPlayer.player_code)
-          ? { ...(isFirstStarter ? selectedSwapPlayer : player), is_starter: false }
+        p.player_code === benchPlayer.player_code
+          ? { ...starterPlayer, is_starter: false }
           : p
       );
 
@@ -247,65 +276,86 @@ export default function App() {
       />
 
       <main id="main-content" className="app-container" style={{ flex: '1 0 auto' }}>
-        {/* View 1: Tactical Pitch & Lineup Visualizer */}
-        {activeTab === 'pitch' && (
-          <TacticalPitch
-            starters={starters}
-            bench={bench}
-            selectedPlayer={selectedSwapPlayer}
-            onSelectPlayer={handleSelectPlayer}
-            onInspectPlayer={handleInspectPlayer}
-            onOpenMatchup={handleOpenFixtureDrawer}
-            actionSummary={liveData.action_summary}
-            startingXp={startingXp + Number(captBonus)}
-            totalXp={liveData.total_xp}
-            chipSimulations={liveData.chip_simulations || {}}
-            activeChip={activeChip}
-            onSelectChip={handleChipChange}
-          />
-        )}
+        {isDataLoading ? (
+          <div className="fpl-loader-skeleton-container" role="status">
+            <div className="fpl-loader-spinner"></div>
+            <div className="fpl-loader-text font-mono">HYDRATING FPL MATCHDAY DATA ENGINE...</div>
+          </div>
+        ) : (
+          <>
+            {/* View 1: Tactical Pitch & Lineup Visualizer */}
+            {activeTab === 'pitch' && (
+              <ErrorBoundary componentName="Tactical Pitch">
+                <TacticalPitch
+                  starters={starters}
+                  bench={bench}
+                  selectedPlayer={selectedSwapPlayer}
+                  onSelectPlayer={handleSelectPlayer}
+                  onInspectPlayer={handleInspectPlayer}
+                  onOpenMatchup={handleOpenFixtureDrawer}
+                  actionSummary={liveData.action_summary}
+                  startingXp={startingXp + Number(captBonus)}
+                  totalXp={liveData.total_xp}
+                  chipSimulations={liveData.chip_simulations || {}}
+                  activeChip={activeChip}
+                  onSelectChip={handleChipChange}
+                />
+              </ErrorBoundary>
+            )}
 
-        {/* View 2: Multi-Horizon 5-GW Strategy Canvas */}
-        {activeTab === 'transfers' && (
-          <MultiGwPlanner
-            roadmap={liveData.multi_horizon_roadmap}
-            squadPlayers={[...starters, ...bench]}
-            allPlayers={allPlayersData}
-            onInspectPlayer={handleInspectPlayer}
-          />
-        )}
+            {/* View 2: Multi-Horizon 5-GW Strategy Canvas */}
+            {activeTab === 'transfers' && (
+              <ErrorBoundary componentName="Transfer Workbench">
+                <MultiGwPlanner
+                  roadmap={liveData.multi_horizon_roadmap}
+                  squadPlayers={[...starters, ...bench]}
+                  allPlayers={allPlayersData}
+                  onInspectPlayer={handleInspectPlayer}
+                />
+              </ErrorBoundary>
+            )}
 
-        {/* View 3: Mini-League Rival Threat Matrix */}
-        {activeTab === 'rivals' && (
-          <RivalThreatMatrix
-            managerProfile={liveData.manager_profile}
-            starters={starters}
-            bench={bench}
-          />
-        )}
+            {/* View 3: Mini-League Rival Threat Matrix */}
+            {activeTab === 'rivals' && (
+              <ErrorBoundary componentName="Rival Threat Matrix">
+                <RivalThreatMatrix
+                  managerProfile={liveData.manager_profile}
+                  starters={starters}
+                  bench={bench}
+                />
+              </ErrorBoundary>
+            )}
 
-        {/* View 4: 38-Gameweek Fixture Heatmap */}
-        {activeTab === 'fixtures' && (
-          <FixtureHeatmap
-            fixtures={fixturesData}
-            teams={teamsData}
-          />
-        )}
+            {/* View 4: 38-Gameweek Fixture Heatmap */}
+            {activeTab === 'fixtures' && (
+              <ErrorBoundary componentName="Fixture Heatmap">
+                <FixtureHeatmap
+                  fixtures={fixturesData}
+                  teams={teamsData}
+                />
+              </ErrorBoundary>
+            )}
 
-        {/* View 5: Market Velocity & Price Trends */}
-        {activeTab === 'market' && (
-          <MarketVelocityTicker
-            allPlayers={allPlayersData}
-            onInspectPlayer={handleInspectPlayer}
-          />
-        )}
+            {/* View 5: Market Velocity & Price Trends */}
+            {activeTab === 'market' && (
+              <ErrorBoundary componentName="Market Velocity Ticker">
+                <MarketVelocityTicker
+                  allPlayers={allPlayersData}
+                  onInspectPlayer={handleInspectPlayer}
+                />
+              </ErrorBoundary>
+            )}
 
-        {/* View 6: 11-Component Mathematical Studio */}
-        {activeTab === 'math' && (
-          <ComponentStudio
-            players={allPlayersData}
-            onInspectPlayer={handleInspectPlayer}
-          />
+            {/* View 6: 11-Component Mathematical Studio */}
+            {activeTab === 'math' && (
+              <ErrorBoundary componentName="Mathematical Studio">
+                <ComponentStudio
+                  players={allPlayersData}
+                  onInspectPlayer={handleInspectPlayer}
+                />
+              </ErrorBoundary>
+            )}
+          </>
         )}
       </main>
 

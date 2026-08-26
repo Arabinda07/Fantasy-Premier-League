@@ -76,15 +76,26 @@ class TestLiveSyncUnit:
             assert data['picks'][2]['is_captain'] is True
 
     def test_calculate_available_free_transfers(self):
-        # GW1 default
+        # GW1 default: starts with 1 FT
         assert calculate_available_free_transfers({}, [], current_gw=1) == 1
 
-        # No transfers in previous GW -> 2 FTs accumulated
-        assert calculate_available_free_transfers({}, [], current_gw=3) == 2
+        # GW2 after 0 transfers in GW1: 1 + 1 = 2 FTs
+        assert calculate_available_free_transfers({}, [], current_gw=2) == 2
 
-        # 1 transfer made in previous GW
-        history = [{'event': 2, 'element_in': 10, 'element_out': 20}]
-        assert calculate_available_free_transfers({}, history, current_gw=3) == 1
+        # GW3 after 0 transfers in GW1 and GW2: 1 + 1 + 1 = 3 FTs (2024-25+ rules)
+        assert calculate_available_free_transfers({}, [], current_gw=3) == 3
+
+        # GW3 after 0 in GW1 (2 FTs in GW2), then 1 transfer made in GW2: 2 - 1 + 1 = 2 FTs
+        history_1 = [{'event': 2, 'element_in': 10, 'element_out': 20}]
+        assert calculate_available_free_transfers({}, history_1, current_gw=3) == 2
+
+        # GW3 after taking hits in GW2 (3 transfers made with 2 FTs): reset to 1 FT
+        history_hits = [
+            {'event': 2, 'element_in': 10, 'element_out': 20},
+            {'event': 2, 'element_in': 11, 'element_out': 21},
+            {'event': 2, 'element_in': 12, 'element_out': 22},
+        ]
+        assert calculate_available_free_transfers({}, history_hits, current_gw=3) == 1
 
     def test_fetch_fpl_league_standings_mock(self):
         mock_resp = MagicMock()

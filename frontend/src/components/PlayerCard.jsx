@@ -30,9 +30,14 @@ export default function PlayerCard({
     ? `${venue === 'H' ? 'vs' : '@'} ${opponent.substring(0, 3).toUpperCase()}`
     : '';
 
+  // Determine Blank (BGW) or Double Gameweek (DGW) status
+  const fixtureCount = player.fixture_count !== undefined ? Number(player.fixture_count) : (opponent ? (opponent.includes(',') || opponent.includes('/') ? 2 : 1) : 1);
+  const isBgw = fixtureCount === 0;
+  const isDgw = fixtureCount >= 2;
+
   return (
     <div
-      className={`player-pitch-card ${isSubTarget ? 'sub-target' : ''} ${isBoosted ? 'bench-boosted' : ''}`}
+      className={`player-pitch-card ${isSubTarget ? 'sub-target' : ''} ${isBoosted ? 'bench-boosted' : ''} ${isBgw ? 'is-bgw' : ''} ${isDgw ? 'is-dgw' : ''}`}
       onClick={() => {
         if (onSelectSub) {
           onSelectSub(player);
@@ -45,7 +50,7 @@ export default function PlayerCard({
       }}
       title="Click to select/swap, double-click to view complete player DNA & point breakdown"
     >
-      {/* Top Header: Badge / Position + Price */}
+      {/* Top Header: Badge / Position + BGW/DGW Indicator + Price */}
       <div className="player-card-top-row">
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           {isTripleCaptain ? (
@@ -56,6 +61,8 @@ export default function PlayerCard({
             <span className="vice-captain-badge" title="Vice Captain">V</span>
           ) : null}
           <span className={`player-pos-tag ${pos}`}>{pos}</span>
+          {isBgw && <span className="bgw-badge" title="Blank Gameweek: 0 fixtures scheduled">BLANK</span>}
+          {isDgw && <span className="dgw-badge" title="Double Gameweek: 2 fixtures scheduled">DGW</span>}
         </div>
         <span className="player-cost-val font-mono">£{cost}m</span>
       </div>

@@ -70,3 +70,13 @@ Follow this for any change of meaningful size under `model/`. Small, obviously-c
 ## Current state of the `model/` rebuild
 
 The rebuild is split into five phases: data pipeline → point-prediction engine → fixture/form adjustment → squad solver → Excel write-back. Check `docs/superpowers/specs/` for the specs that exist and their status headers — that's the source of truth for what's built, in progress, or still pending. This section is deliberately not kept in sync with that detail; don't rely on it beyond "the rebuild is phased, go read the specs."
+
+## Knowledge Catalog & Context Management (OKF v0.2)
+
+To prevent hallucinations, formula drift, and schema guesswork, consult the **Open Knowledge Format (OKF v0.2)** catalog at [`knowledge/index.md`](file:///e:/Fantasy-Premier-League/knowledge/index.md) before implementing changes:
+
+* **Data Schemas**: Read [`knowledge/datasets/`](file:///e:/Fantasy-Premier-League/knowledge/datasets/index.md) for exact column names and types (`players_raw.csv`, `merged_gw.csv`, `model_dataset.csv`, `predictions.csv`, `fixture_predictions.csv`).
+* **Mathematical Formulations**: Read [`knowledge/models/`](file:///e:/Fantasy-Premier-League/knowledge/models/index.md) for exact formulas ($C_1 \dots C_{11}$, Poisson clean sheet / goals conceded expectations, Bayesian priors, venue symmetry, MILP solver constraints).
+* **Attested Computation Contracts**: Read [`knowledge/computations/`](file:///e:/Fantasy-Premier-League/knowledge/computations/index.md) for approved CLI parameters, receipts, and deterministic attester checkers.
+* **Validation**: Run `python scripts/validate_okf.py` whenever updating documentation to ensure OKF v0.2 conformance and valid links.
+

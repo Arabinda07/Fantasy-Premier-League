@@ -18,7 +18,7 @@ import json
 import os
 import sys
 import time
-from typing import Dict, Any, List, Tuple, Optional, Union
+from typing import Dict, Any, List, Tuple, Optional, Union, Set
 import requests
 import pandas as pd
 
@@ -26,6 +26,8 @@ import pandas as pd
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
+
+from model.prediction_engine import _safe_float
 
 FPL_BASE_URL = "https://fantasy.premierleague.com/api"
 DEFAULT_HEADERS = {
@@ -54,6 +56,8 @@ class LiveSyncProfile:
     selling_prices: Dict[int, float] = field(default_factory=dict)  # player_code -> £M
     purchase_prices: Dict[int, float] = field(default_factory=dict)  # player_code -> £M
     rivals: Optional[List[Dict[str, Any]]] = None  # Mini-league rivals
+    league_id: Optional[int] = None
+    league_name: Optional[str] = None
 
 
 def _get_cache_dir(season: str = '2026-27', data_root: str = 'data') -> str:
@@ -286,20 +290,206 @@ def calculate_available_free_transfers(
 ) -> int:
     """Calculate available free transfers (1..5) using official FPL rolling rules.
 
-    In 2024-25+ FPL:
-    - Free transfers accumulate up to 5 FTs.
-    - Rolled transfers are not lost on Wildcard / Free Hit.
+    Replays the full transfer history GW-by-GW to compute exact accumulated FTs.
+    In 2024-25+ FPL rules:
+    - Managers start GW1 with 1 FT.
+    - Each gameweek grants +1 FT, accumulating up to a maximum of 5.
+    - If transfers exceed available FTs, hits are taken and FT resets to 1 next GW.
+    - Wildcard and Free Hit GWs do not consume FTs (unlimited transfers, no reset).
+
+    Args:
+        entry_summary: Dict from FPL entry summary API.
+        transfers_history: List of transfer dicts from FPL transfers API.
+        current_gw: The gameweek we want FTs *for* (i.e. the upcoming deadline).
+
+    Returns:
+        Available free transfers (1..5) for current_gw.
     """
     if current_gw <= 1:
         return 1
 
-    # Base heuristic if exact event transfer state is unknown
-    # Typically 1 FT per week unless rolled
-    # Count transfers made in previous GW
-    transfers_last_gw = [t for t in transfers_history if t.get('event') == current_gw - 1]
-    if len(transfers_last_gw) == 0:
-        return min(5, 2)  # Rolled at least 1 transfer
-    return 1
+    # Build a map: gw -> number of transfers made in that gw
+    gw_transfer_counts: Dict[int, int] = {}
+    for t in transfers_history:
+        ev = t.get('event')
+        if ev is not None:
+            gw_transfer_counts[int(ev)] = gw_transfer_counts.get(int(ev), 0) + 1
+
+    # Detect wildcard / freehit GWs from entry_history if available (chips don't cost FTs)
+    # These are not reliably in transfer history, so we check for 0-cost bulk transfers
+    # as a heuristic: if a GW has 4+ transfers and 0 cost, it was likely a WC/FH.
+    chip_gws: set = set()
+    if len(transfers_history) > 0:
+        for gw_num in gw_transfer_counts:
+            if gw_transfer_counts[gw_num] >= 4:
+                gw_transfers = [t for t in transfers_history if t.get('event') == gw_num]
+                total_cost = sum(t.get('event_transfers_cost', 0) for t in gw_transfers)
+                if total_cost == 0 and gw_transfer_counts[gw_num] >= 4:
+                    chip_gws.add(gw_num)
+
+    # Replay FT accumulation from GW1 to current_gw - 1
+    ft = 1  # GW1 always starts with 1 FT
+    for gw in range(1, current_gw):
+        if gw in chip_gws:
+            # Wildcard / Free Hit: unlimited transfers, FTs preserved, gain +1 next GW
+            ft = min(5, ft + 1)
+            continue
+
+        transfers_made = gw_transfer_counts.get(gw, 0)
+        if transfers_made <= ft:
+            # Used some/none of available FTs; gain +1 for next GW, cap at 5
+            remaining = ft - transfers_made
+            ft = min(5, remaining + 1)
+        else:
+            # Took hits: FT resets to 1 for next GW, then gains +1 = 1
+            ft = 1
+
+    return max(1, min(5, ft))
+
+
+def enrich_rival_entries(
+    standings_results: List[Dict[str, Any]],
+    user_squad_codes: List[int],
+    user_entry_id: Optional[int] = None,
+    gw: int = 1,
+    season: str = '2026-27',
+    data_root: str = 'data',
+    use_cache: bool = True,
+    max_rivals: int = 5,
+) -> List[Dict[str, Any]]:
+    """Fetch picks for top mini-league rivals and compute differential threat metrics."""
+    elem_to_code = load_element_to_code_map(season=season, data_root=data_root)
+
+    # Load player lookup metadata (web_name, position, cost, xp)
+    raw_path = os.path.join(data_root, season, 'players_raw.csv')
+    preds_path = os.path.join(data_root, season, f'fixture_predictions_gw{gw}.csv')
+    if not os.path.exists(preds_path):
+        preds_path = os.path.join(data_root, season, 'fixture_predictions.csv')
+
+    player_lookup: Dict[int, Dict[str, Any]] = {}
+    if os.path.exists(raw_path):
+        try:
+            raw_df = pd.read_csv(raw_path)
+            teams_path = os.path.join(data_root, season, 'teams.csv')
+            team_short_map: Dict[int, str] = {}
+            if os.path.exists(teams_path):
+                tdf = pd.read_csv(teams_path)
+                if 'id' in tdf.columns and 'short_name' in tdf.columns:
+                    team_short_map = dict(zip(tdf['id'], tdf['short_name']))
+
+            pos_map = {1: 'GK', 2: 'DEF', 3: 'MID', 4: 'FWD'}
+            for _, r in raw_df.iterrows():
+                c = int(r.get('code', 0))
+                player_lookup[c] = {
+                    'name': str(r.get('web_name', '')),
+                    'pos': pos_map.get(int(r.get('element_type', 3)), 'MID'),
+                    'team': team_short_map.get(int(r.get('team', 0)), 'PL'),
+                    'cost': round(float(r.get('now_cost', 50)) / 10.0, 1),
+                    'xp': 4.5,
+                }
+        except Exception:
+            pass
+
+    if os.path.exists(preds_path):
+        try:
+            pdf = pd.read_csv(preds_path)
+            for _, r in pdf.iterrows():
+                c = int(r.get('player_code', r.get('code', 0)))
+                if c in player_lookup:
+                    player_lookup[c]['xp'] = round(float(r.get('expected_points', 4.5)), 1)
+        except Exception:
+            pass
+
+    user_codes_set = set(user_squad_codes)
+    enriched_rivals: List[Dict[str, Any]] = []
+
+    for r in standings_results:
+        if len(enriched_rivals) >= max_rivals:
+            break
+        r_entry = int(r.get('entry', 0))
+        if user_entry_id and r_entry == user_entry_id:
+            continue
+
+        # Fetch picks
+        picks_payload = fetch_fpl_entry_picks(entry_id=r_entry, gw=gw, season=season, data_root=data_root, use_cache=use_cache)
+        if not picks_payload.get('picks') and gw > 1:
+            picks_payload = fetch_fpl_entry_picks(entry_id=r_entry, gw=gw - 1, season=season, data_root=data_root, use_cache=use_cache)
+
+        picks = picks_payload.get('picks', [])
+        rival_squad_codes: List[int] = []
+        captain_name = 'Unknown'
+        captain_code = None
+
+        for p in picks:
+            elem = int(p.get('element', 0))
+            code = elem_to_code.get(elem, elem)
+            rival_squad_codes.append(code)
+            if p.get('is_captain'):
+                captain_code = code
+                captain_name = player_lookup.get(code, {}).get('name', 'Unknown')
+
+        rival_set = set(rival_squad_codes)
+        shared_codes = [c for c in user_squad_codes if c in rival_set]
+        shared_names = [player_lookup.get(c, {}).get('name', str(c)) for c in shared_codes]
+
+        # User differentials: players user owns that rival doesn't
+        user_diff_codes = [c for c in user_squad_codes if c not in rival_set]
+        user_diff_cards = [
+            player_lookup.get(c, {'name': str(c), 'pos': 'MID', 'team': 'PL', 'cost': 6.0, 'xp': 4.5})
+            for c in user_diff_codes
+        ]
+        user_diff_names = [p['name'] for p in user_diff_cards]
+
+        # Rival differentials: players rival owns that user doesn't
+        rival_diff_codes = [c for c in rival_squad_codes if c not in user_codes_set]
+        rival_diff_cards = [
+            player_lookup.get(c, {'name': str(c), 'pos': 'MID', 'team': 'PL', 'cost': 6.0, 'xp': 4.5})
+            for c in rival_diff_codes
+        ]
+        rival_diff_names = [p['name'] for p in rival_diff_cards]
+
+        overlap_count = len(shared_codes)
+        overlap_pct = round(overlap_count / 15.0 * 100.0, 1) if len(user_squad_codes) > 0 else 50.0
+
+        rank = int(r.get('rank', 0))
+        total_pts = int(r.get('total', 0))
+
+        if rank <= 2 or overlap_pct >= 55.0 or total_pts >= 85:
+            threat_level = 'HIGH'
+        elif rank <= 5 or overlap_pct >= 40.0 or total_pts >= 75:
+            threat_level = 'MEDIUM'
+        else:
+            threat_level = 'LOW'
+
+        your_upside = round(sum(p['xp'] for p in user_diff_cards), 1)
+        rival_upside = round(sum(p['xp'] for p in rival_diff_cards), 1)
+        net_delta = round(your_upside - rival_upside, 1)
+
+        enriched_rivals.append({
+            'entry_id': r_entry,
+            'manager_name': str(r.get('player_name', '')),
+            'team_name': str(r.get('entry_name', '')),
+            'overall_rank': rank,
+            'rank': rank,
+            'overall_points': total_pts,
+            'total_points': total_pts,
+            'event_points': int(r.get('event_total', 0)),
+            'captain_name': captain_name,
+            'captain_code': captain_code,
+            'shared_players': shared_names,
+            'differentials': rival_diff_names,
+            'user_differentials': user_diff_names,
+            'user_differential_cards': user_diff_cards,
+            'rival_differential_cards': rival_diff_cards,
+            'your_upside': your_upside,
+            'rival_upside': rival_upside,
+            'net_delta': net_delta,
+            'threat_level': threat_level,
+            'overlap_count': overlap_count,
+            'overlap_pct': overlap_pct,
+        })
+
+    return enriched_rivals
 
 
 def sync_manager_profile(
@@ -393,19 +583,22 @@ def sync_manager_profile(
 
     # 5. Fetch mini-league standings if requested
     rivals_data: Optional[List[Dict[str, Any]]] = None
+    league_name: Optional[str] = None
     if league_id is not None:
         league_payload = fetch_fpl_league_standings(league_id=league_id, season=season, data_root=data_root, use_cache=use_cache)
+        league_info = league_payload.get('league', {})
+        league_name = str(league_info.get('name', f'Mini-League #{league_id}'))
         standings_results = league_payload.get('standings', {}).get('results', [])
-        rivals_data = []
-        for r in standings_results[:5]:
-            rivals_data.append({
-                'entry_id': int(r.get('entry', 0)),
-                'manager_name': str(r.get('player_name', '')),
-                'team_name': str(r.get('entry_name', '')),
-                'rank': int(r.get('rank', 0)),
-                'total_points': int(r.get('total', 0)),
-                'event_points': int(r.get('event_total', 0)),
-            })
+        rivals_data = enrich_rival_entries(
+            standings_results=standings_results,
+            user_squad_codes=squad_codes,
+            user_entry_id=entry_id,
+            gw=gw,
+            season=season,
+            data_root=data_root,
+            use_cache=use_cache,
+            max_rivals=5,
+        )
 
     return LiveSyncProfile(
         entry_id=entry_id,
@@ -425,7 +618,180 @@ def sync_manager_profile(
         selling_prices=selling_prices,
         purchase_prices=purchase_prices,
         rivals=rivals_data,
+        league_id=league_id,
+        league_name=league_name,
     )
+
+
+# ---------------------------------------------------------------------------
+# Live Matchday Auto-Substitutions & Captaincy Rollover Invariants
+# ---------------------------------------------------------------------------
+
+def evaluate_live_captaincy_rollover(
+    players: List[Dict[str, Any]],
+    captain_code: int,
+    vice_captain_code: int,
+) -> Dict[str, Any]:
+    """Evaluate live captaincy rollover according to official FPL rules.
+
+    Rules:
+        1. If Captain played > 0 minutes -> Captain receives 2x multiplier.
+        2. If Captain played 0 minutes and Vice-Captain played > 0 minutes -> Vice-Captain receives 2x multiplier.
+        3. If BOTH Captain and Vice-Captain played 0 minutes -> No 2x multiplier awarded (both remain 1x).
+
+    Args:
+        players: list of player dicts containing 'player_code' and 'minutes' (or 'minutes_played').
+        captain_code: designated captain player code.
+        vice_captain_code: designated vice-captain player code.
+
+    Returns:
+        Dict with 'effective_captain_code', 'multiplier_applied', 'rollover_reason'.
+    """
+    mins_map = {
+        int(p.get('player_code') or p.get('code') or 0): _safe_float(p.get('minutes', p.get('minutes_played', 0)))
+        for p in players
+    }
+
+    capt_mins = mins_map.get(int(captain_code), 0.0)
+    vc_mins = mins_map.get(int(vice_captain_code), 0.0)
+
+    if capt_mins > 0:
+        return {
+            'effective_captain_code': int(captain_code),
+            'multiplier_applied': 2,
+            'rollover_reason': 'Captain played > 0 minutes',
+        }
+    elif vc_mins > 0:
+        return {
+            'effective_captain_code': int(vice_captain_code),
+            'multiplier_applied': 2,
+            'rollover_reason': 'Captain played 0 mins -> Vice-Captain promoted to 2x',
+        }
+    else:
+        return {
+            'effective_captain_code': None,
+            'multiplier_applied': 1,
+            'rollover_reason': 'Both Captain and Vice-Captain played 0 mins -> Multiplier dropped to 1x',
+        }
+
+
+def evaluate_live_auto_substitutions(
+    starters: List[Dict[str, Any]],
+    bench: List[Dict[str, Any]],
+) -> Dict[str, Any]:
+    """Perform formation-safe auto-substitutions for unplayed starters.
+
+    FPL Invariants:
+        1. An unplayed Goalkeeper can ONLY be replaced by the bench Goalkeeper.
+        2. Unplayed outfield players are replaced by eligible bench outfielders in bench order (1, 2, 3).
+        3. A substitution is ONLY valid if the resulting 11-player formation satisfies:
+           - Exactly 1 GK
+           - At least 3 Defenders
+           - At least 2 Midfielders
+           - At least 1 Forward
+        4. If a bench player's substitution would create an illegal formation, they are skipped
+           and the next bench player in order is tested.
+
+    Args:
+        starters: 11 starting player dicts with 'player_code', 'position', 'minutes'.
+        bench: 4 bench player dicts with 'player_code', 'position', 'minutes', 'bench_order'.
+
+    Returns:
+        Dict containing:
+            'active_starters': list of final 11 players
+            'substitutions': list of {'off': player_code, 'on': player_code, 'reason': str}
+            'unresolved_dnp': list of unreplaced starter codes
+            'formation': string (e.g. '3-5-2')
+    """
+    # Sort bench by bench_order (GK is usually bench_order 0/1 or pos GK)
+    bench_gk = [p for p in bench if str(p.get('position', '')).upper() == 'GK']
+    bench_outfield = sorted(
+        [p for p in bench if str(p.get('position', '')).upper() != 'GK'],
+        key=lambda x: int(x.get('bench_order', 99))
+    )
+
+    active_starters = [dict(p) for p in starters]
+    substitutions: List[Dict[str, Any]] = []
+    used_bench_codes: Set[int] = set()
+
+    # 1. Handle Goalkeeper Auto-Sub
+    starter_gk = next((p for p in active_starters if str(p.get('position', '')).upper() == 'GK'), None)
+    if starter_gk and _safe_float(starter_gk.get('minutes', 0)) <= 0:
+        if bench_gk:
+            bgk = bench_gk[0]
+            if _safe_float(bgk.get('minutes', 0)) > 0:
+                # Replace GK
+                idx = active_starters.index(starter_gk)
+                active_starters[idx] = dict(bgk)
+                substitutions.append({
+                    'off': starter_gk.get('player_code'),
+                    'on': bgk.get('player_code'),
+                    'reason': 'Goalkeeper DNP -> Bench GK subbed on',
+                })
+                used_bench_codes.add(int(bgk.get('player_code', 0)))
+
+    # 2. Handle Outfield Auto-Subs
+    dnp_outfield_starters = [
+        p for p in active_starters
+        if str(p.get('position', '')).upper() != 'GK' and _safe_float(p.get('minutes', 0)) <= 0
+    ]
+
+    for dnp_p in dnp_outfield_starters:
+        dnp_code = int(dnp_p.get('player_code', 0))
+
+        # Find first eligible bench player in bench order
+        sub_found = False
+        for b_cand in bench_outfield:
+            b_code = int(b_cand.get('player_code', 0))
+            if b_code in used_bench_codes:
+                continue
+            if _safe_float(b_cand.get('minutes', 0)) <= 0:
+                continue  # Bench player also didn't play
+
+            # Test formation if we replace dnp_p with b_cand
+            cand_positions = [
+                b_cand['position'] if p.get('player_code') == dnp_code else p.get('position')
+                for p in active_starters
+            ]
+            pos_counts = {
+                'GK': cand_positions.count('GK'),
+                'DEF': cand_positions.count('DEF'),
+                'MID': cand_positions.count('MID'),
+                'FWD': cand_positions.count('FWD'),
+            }
+
+            # Formation legality check
+            is_legal = (
+                pos_counts['GK'] == 1 and
+                pos_counts['DEF'] >= 3 and
+                pos_counts['MID'] >= 2 and
+                pos_counts['FWD'] >= 1
+            )
+
+            if is_legal:
+                # Commit substitution
+                dnp_idx = next(i for i, p in enumerate(active_starters) if p.get('player_code') == dnp_code)
+                active_starters[dnp_idx] = dict(b_cand)
+                used_bench_codes.add(b_code)
+                substitutions.append({
+                    'off': dnp_code,
+                    'on': b_code,
+                    'reason': f"Starter {dnp_p.get('web_name', dnp_code)} DNP -> Subbed on {b_cand.get('web_name', b_code)} (Preserves {pos_counts['DEF']}-{pos_counts['MID']}-{pos_counts['FWD']})",
+                })
+                sub_found = True
+                break
+
+    # Calculate final formation
+    final_def = sum(1 for p in active_starters if p.get('position') == 'DEF')
+    final_mid = sum(1 for p in active_starters if p.get('position') == 'MID')
+    final_fwd = sum(1 for p in active_starters if p.get('position') == 'FWD')
+    formation_str = f"{final_def}-{final_mid}-{final_fwd}"
+
+    return {
+        'active_starters': active_starters,
+        'substitutions': substitutions,
+        'formation': formation_str,
+    }
 
 
 def main():

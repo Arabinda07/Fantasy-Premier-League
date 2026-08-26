@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   UsersThree,
   ShieldCheck,
@@ -13,64 +13,64 @@ import {
 
 const DEFAULT_RIVALS = [
   {
-    entry_id: 1001,
-    manager_name: "Magnus Carlsen",
-    team_name: "Turing Test XI",
+    entry_id: 1198015,
+    manager_name: "Souptik Som",
+    team_name: "The Corner Kings",
     overall_rank: 1,
+    overall_points: 95,
+    captain_name: "Ødegaard",
+    differentials: ["Palmer", "Wirtz", "Gvardiol", "Tzolis", "João Pedro"],
+    shared_players: ["Szoboszlai", "Calafiori", "Haaland"],
+    threat_level: "HIGH",
+    overlap_pct: 20.0
+  },
+  {
+    entry_id: 1670132,
+    manager_name: "Ishaan Agarwal",
+    team_name: "Young Guns",
+    overall_rank: 2,
+    overall_points: 87,
+    captain_name: "Haaland",
+    differentials: ["Palmer", "Ødegaard", "Gvardiol", "Semenyo", "Maguire"],
+    shared_players: ["Haaland", "Szoboszlai", "Ballard"],
+    threat_level: "HIGH",
+    overlap_pct: 20.0
+  },
+  {
+    entry_id: 3400909,
+    manager_name: "SOUMYADEEP MITRA",
+    team_name: "Invincible04",
+    overall_rank: 3,
+    overall_points: 84,
+    captain_name: "João Pedro",
+    differentials: ["Palmer", "Virgil", "Wirtz", "Gvardiol", "Semenyo"],
+    shared_players: ["Raya", "Calafiori"],
+    threat_level: "HIGH",
+    overlap_pct: 13.3
+  },
+  {
+    entry_id: 2721839,
+    manager_name: "Pratik Dutta",
+    team_name: "Its not done yet",
+    overall_rank: 4,
     overall_points: 78,
     captain_name: "Haaland",
-    differentials: ["Salah", "Isak"],
-    shared_players: ["Haaland", "B.Fernandes", "Raya", "White"],
-    threat_level: "HIGH",
-    overlap_pct: 60.0
-  },
-  {
-    entry_id: 1002,
-    manager_name: "Fabio Borges",
-    team_name: "Porto Knights",
-    overall_rank: 2,
-    overall_points: 74,
-    captain_name: "Haaland",
-    differentials: ["Palmer", "Gvardiol"],
-    shared_players: ["Haaland", "Calafiori", "Mbeumo", "Szoboszlai"],
+    differentials: ["Tzolis", "Ndiaye", "Maguire", "Ajer"],
+    shared_players: ["Raya", "Calafiori", "B.Fernandes", "Szoboszlai", "Haaland"],
     threat_level: "MEDIUM",
-    overlap_pct: 53.3
+    overlap_pct: 33.3
   },
   {
-    entry_id: 1003,
-    manager_name: "Ben Crellin",
-    team_name: "Planner FC",
-    overall_rank: 3,
-    overall_points: 71,
-    captain_name: "B.Fernandes",
-    differentials: ["Watkins", "Saka"],
-    shared_players: ["B.Fernandes", "Calafiori", "Raya", "Ballard"],
-    threat_level: "HIGH",
-    overlap_pct: 46.7
-  },
-  {
-    entry_id: 1004,
-    manager_name: "Mark Sutherns",
-    team_name: "Black & White",
-    overall_rank: 4,
-    overall_points: 69,
-    captain_name: "Haaland",
-    differentials: ["Son", "Porro"],
-    shared_players: ["Haaland", "Tavernier", "Mbeumo", "Leno"],
-    threat_level: "LOW",
-    overlap_pct: 40.0
-  },
-  {
-    entry_id: 1005,
-    manager_name: "Lateriser12",
-    team_name: "Upside Chaser",
+    entry_id: 633687,
+    manager_name: "Nikhil Sudheer",
+    team_name: "BluxXI",
     overall_rank: 5,
-    overall_points: 66,
-    captain_name: "Palmer",
-    differentials: ["Palmer", "Gordon", "Muniz"],
-    shared_players: ["Haaland", "Stach", "White", "Calvert-Lewin"],
+    overall_points: 76,
+    captain_name: "B.Fernandes",
+    differentials: ["Palmer", "Wirtz", "Gvardiol", "Mosquera"],
+    shared_players: ["Raya", "Calafiori", "B.Fernandes", "Mbeumo"],
     threat_level: "MEDIUM",
-    overlap_pct: 46.7
+    overlap_pct: 26.7
   }
 ];
 
@@ -83,14 +83,81 @@ export default function RivalThreatMatrix({
     ? managerProfile.rivals
     : DEFAULT_RIVALS;
 
-  const [selectedRival, setSelectedRival] = useState(rivals[0] || null);
+  const [selectedRivalId, setSelectedRivalId] = useState(rivals[0]?.entry_id || 1198015);
 
+  const selectedRival = rivals.find(r => r.entry_id === selectedRivalId) || rivals[0];
+
+  const leagueName = managerProfile?.league_name || 'Arsenal Bengal FPL 2026-27';
+  const leagueId = managerProfile?.league_id || '1305495';
   const myCaptain = starters.find(p => p.is_captain)?.web_name || 'Haaland';
 
+  // Compute dynamic KPI metrics across all rivals
+  const { captainBackingPct, captainBackingCount, topThreatPlayer, threatFrequency, userDiffNames } = useMemo(() => {
+    let captCount = 0;
+    const threatCounts = {};
+
+    rivals.forEach(r => {
+      const rCap = (r.captain_name || '').trim().toLowerCase();
+      if (rCap && rCap === myCaptain.toLowerCase()) {
+        captCount++;
+      }
+
+      const diffList = r.differentials || [];
+      diffList.forEach(pName => {
+        threatCounts[pName] = (threatCounts[pName] || 0) + 1;
+      });
+    });
+
+    const captPct = Math.round((captCount / Math.max(1, rivals.length)) * 100);
+
+    // Find highest frequency rival threat
+    let topThreat = 'Palmer';
+    let maxFreq = 0;
+    Object.entries(threatCounts).forEach(([name, count]) => {
+      if (count > maxFreq) {
+        maxFreq = count;
+        topThreat = name;
+      }
+    });
+
+    // Extract user unique differentials from selected rival or starters
+    const diffs = selectedRival?.user_differentials || [
+      'White', 'B.Fernandes', 'Tavernier', 'Mbeumo', 'Stach', 'Calvert-Lewin'
+    ];
+
+    return {
+      captainBackingPct: captPct,
+      captainBackingCount: captCount,
+      topThreatPlayer: topThreat,
+      threatFrequency: maxFreq || 3,
+      userDiffNames: diffs
+    };
+  }, [rivals, myCaptain, selectedRival]);
+
   // Compute swing potential for selected rival
-  const yourUpside = 24.1; // Sum of your differential projected points
-  const rivalUpside = selectedRival ? Math.min(25, (selectedRival.differentials?.length || 2) * 5.2) : 18.5;
-  const netDelta = Number((yourUpside - rivalUpside).toFixed(1));
+  const userDiffCards = selectedRival?.user_differential_cards || [
+    { name: 'B.Fernandes', pos: 'MID', cost: 8.5, xp: 6.2, team: 'MUN' },
+    { name: 'Mbeumo', pos: 'MID', cost: 7.0, xp: 5.8, team: 'BRE' },
+    { name: 'Tavernier', pos: 'MID', cost: 5.5, xp: 5.4, team: 'BOU' },
+    { name: 'White', pos: 'DEF', cost: 6.5, xp: 4.8, team: 'ARS' },
+    { name: 'Stach', pos: 'MID', cost: 5.5, xp: 4.6, team: 'LEE' },
+  ];
+
+  const rivalDiffCards = selectedRival?.rival_differential_cards || (
+    (selectedRival?.differentials || ['Palmer', 'Wirtz', 'Gvardiol', 'Tzolis']).map(name => ({
+      name,
+      pos: 'MID',
+      cost: 7.5,
+      xp: 5.2,
+      team: 'PL'
+    }))
+  );
+
+  const yourUpside = selectedRival?.your_upside || Number(userDiffCards.reduce((acc, p) => acc + (Number(p.xp) || 4.5), 0).toFixed(1));
+  const rivalUpside = selectedRival?.rival_upside || Number(rivalDiffCards.reduce((acc, p) => acc + (Number(p.xp) || 4.5), 0).toFixed(1));
+  const netDelta = selectedRival?.net_delta !== undefined
+    ? selectedRival.net_delta
+    : Number((yourUpside - rivalUpside).toFixed(1));
 
   return (
     <div className="view-fluid">
@@ -99,15 +166,15 @@ export default function RivalThreatMatrix({
         <div className="studio-hero-header">
           <div className="studio-badge">
             <UsersThree size={14} weight="fill" />
-            <span>MINI-LEAGUE RIVAL RADAR</span>
+            <span>{leagueName.toUpperCase()}</span>
           </div>
           <span className="studio-version font-mono">
-            LEAGUE ID #{managerProfile?.league_id || '1305495'}
+            LEAGUE ID #{leagueId}
           </span>
         </div>
-        <h1 className="studio-title">Mini-League Rival Radar & Differentials</h1>
+        <h1 className="studio-title">{leagueName} · Rival Radar & Differentials</h1>
         <p className="studio-description">
-          Track your closest rivals, spot key differentials to gain ground, and keep tabs on high-ownership players that could hurt your rank.
+          Live head-to-head intelligence against top mini-league contenders. Spot key points weapons to gain rank and monitor dangerous differentials.
         </p>
 
         {/* Top Metric Strip */}
@@ -118,21 +185,27 @@ export default function RivalThreatMatrix({
               {myCaptain}
               <Crown size={16} weight="fill" />
             </div>
-            <div className="kpi-subtext">60% of rivals backing the same pick</div>
+            <div className="kpi-subtext">
+              {captainBackingPct}% of rivals ({captainBackingCount}/{rivals.length}) backing the same pick
+            </div>
           </div>
           <div className="kpi-card">
             <div className="kpi-label">Active Differentials</div>
             <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
-              5 <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Unique Players</span>
+              {userDiffNames.length} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Unique Weapons</span>
             </div>
-            <div className="kpi-subtext">Tavernier, Szoboszlai, Stach, Calafiori, Ballard</div>
+            <div className="kpi-subtext">
+              {userDiffNames.slice(0, 5).join(', ')}{userDiffNames.length > 5 ? '...' : ''}
+            </div>
           </div>
           <div className="kpi-card">
             <div className="kpi-label">Biggest Rival Threat</div>
             <div className="kpi-value" style={{ color: 'var(--accent-crimson)' }}>
-              Palmer / Salah
+              {topThreatPlayer}
             </div>
-            <div className="kpi-subtext">Owned by 3 of your top 5 rivals</div>
+            <div className="kpi-subtext">
+              Owned by {threatFrequency} of your top {rivals.length} mini-league rivals
+            </div>
           </div>
         </div>
       </div>
@@ -143,7 +216,7 @@ export default function RivalThreatMatrix({
         <div className="data-table-container">
           <div className="studio-table-controls">
             <div className="controls-left">
-              <span className="controls-title">Top 5 Rivals in Mini-League</span>
+              <span className="controls-title">Mini-League Contenders</span>
               <span className="controls-count font-mono">{rivals.length} Rivals Tracked</span>
             </div>
           </div>
@@ -153,26 +226,29 @@ export default function RivalThreatMatrix({
               <thead>
                 <tr>
                   <th style={{ width: '8%' }}>Rank</th>
-                  <th style={{ width: '26%' }}>Manager / Team</th>
+                  <th style={{ width: '28%' }}>Manager / Team</th>
                   <th style={{ width: '12%' }}>Points</th>
                   <th style={{ width: '18%' }}>Captain</th>
                   <th style={{ width: '14%' }}>Overlap</th>
-                  <th style={{ width: '12%' }}>Threat</th>
+                  <th style={{ width: '10%' }}>Threat</th>
                   <th style={{ width: '10%' }}>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {rivals.map((r, idx) => {
-                  const isSelected = (selectedRival?.entry_id === r.entry_id) || (!selectedRival && idx === 0);
+                  const isSelected = selectedRival?.entry_id === r.entry_id;
                   const threatClass = r.threat_level === 'HIGH' ? 'threat-high' : r.threat_level === 'MEDIUM' ? 'threat-med' : 'threat-low';
-                  const overlapCount = r.shared_players?.length || r.overlap_count || 7;
-                  const overlapPctVal = r.overlap_pct > 1 ? Math.round(r.overlap_pct) : Math.round((r.overlap_pct || 0.46) * 100);
+                  const overlapCount = r.shared_players?.length || r.overlap_count || 3;
+                  const overlapPctVal = r.overlap_pct !== undefined
+                    ? (r.overlap_pct > 1 ? Math.round(r.overlap_pct) : Math.round(r.overlap_pct * 100))
+                    : Math.round((overlapCount / 15) * 100);
 
                   return (
                     <tr
                       key={r.entry_id || idx}
                       className={isSelected ? 'selected-row' : ''}
-                      onClick={() => setSelectedRival(r)}
+                      onClick={() => setSelectedRivalId(r.entry_id)}
+                      style={{ cursor: 'pointer' }}
                     >
                       <td className="font-mono" style={{ fontWeight: 700 }}>#{r.overall_rank || r.rank || (idx + 1)}</td>
                       <td>
@@ -184,7 +260,7 @@ export default function RivalThreatMatrix({
                       </td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <span style={{ fontWeight: 600 }}>{r.captain_name || r.captain || 'Haaland'}</span>
+                          <span style={{ fontWeight: 600 }}>{r.captain_name || 'Haaland'}</span>
                           <Crown size={12} weight="fill" color="var(--accent-amber)" />
                         </div>
                       </td>
@@ -198,10 +274,10 @@ export default function RivalThreatMatrix({
                           className="table-action-btn"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setSelectedRival(r);
+                            setSelectedRivalId(r.entry_id);
                           }}
                         >
-                          Compare
+                          {isSelected ? 'Active' : 'Compare'}
                         </button>
                       </td>
                     </tr>
@@ -235,8 +311,8 @@ export default function RivalThreatMatrix({
                 <div
                   className="h2h-swing-fill"
                   style={{
-                    left: netDelta >= 0 ? '50%' : `${Math.max(10, 50 + netDelta * 2.5)}%`,
-                    width: `${Math.min(45, Math.abs(netDelta) * 2.5)}%`,
+                    left: netDelta >= 0 ? '50%' : `${Math.max(5, 50 + netDelta * 2.0)}%`,
+                    width: `${Math.min(48, Math.abs(netDelta) * 2.0)}%`,
                     background: netDelta >= 0 ? 'var(--accent-emerald)' : 'var(--accent-crimson)'
                   }}
                 />
@@ -256,21 +332,16 @@ export default function RivalThreatMatrix({
                 <span>Your Points Weapons (Rival Doesn&apos;t Own)</span>
               </div>
               <div className="diff-cards-list">
-                {[
-                  { name: 'Tavernier', pos: 'MID', cost: 6.0, xp: 5.4, team: 'BOU' },
-                  { name: 'Szoboszlai', pos: 'MID', cost: 7.0, xp: 5.4, team: 'LIV' },
-                  { name: 'Stach', pos: 'MID', cost: 6.0, xp: 4.8, team: 'LEE' },
-                  { name: 'Calafiori', pos: 'DEF', cost: 5.5, xp: 4.7, team: 'ARS' },
-                ].map(p => (
+                {userDiffCards.map(p => (
                   <div key={p.name} className="diff-ledger-row green">
                     <div className="diff-player-left">
-                      <span className={`player-pos-tag ${p.pos}`}>{p.pos}</span>
+                      <span className={`player-pos-tag ${p.pos || 'MID'}`}>{p.pos || 'MID'}</span>
                       <span className="diff-player-name">{p.name}</span>
-                      <span className="diff-team-tag font-mono">{p.team}</span>
+                      {p.team && <span className="diff-team-tag font-mono">{p.team}</span>}
                     </div>
                     <div className="diff-player-right font-mono">
-                      <span className="diff-cost">£{p.cost.toFixed(1)}m</span>
-                      <span className="diff-xp">+{p.xp} xP</span>
+                      <span className="diff-cost">£{Number(p.cost || 6.0).toFixed(1)}m</span>
+                      <span className="diff-xp">+{Number(p.xp || 4.5).toFixed(1)} xP</span>
                     </div>
                   </div>
                 ))}
@@ -284,14 +355,16 @@ export default function RivalThreatMatrix({
                 <span>Rival&apos;s Danger Men (You Don&apos;t Own)</span>
               </div>
               <div className="diff-cards-list">
-                {(selectedRival.differentials || ['Salah', 'Palmer', 'Isak']).map((pName) => (
-                  <div key={pName} className="diff-ledger-row red">
+                {rivalDiffCards.map(p => (
+                  <div key={p.name} className="diff-ledger-row red">
                     <div className="diff-player-left">
-                      <span className="player-pos-tag MID">MID</span>
-                      <span className="diff-player-name">{pName}</span>
+                      <span className={`player-pos-tag ${p.pos || 'MID'}`}>{p.pos || 'MID'}</span>
+                      <span className="diff-player-name">{p.name}</span>
+                      {p.team && <span className="diff-team-tag font-mono">{p.team}</span>}
                     </div>
                     <div className="diff-player-right font-mono">
-                      <span className="diff-risk-tag">HIGH THREAT</span>
+                      <span className="diff-cost">£{Number(p.cost || 6.0).toFixed(1)}m</span>
+                      <span className="diff-xp" style={{ color: 'var(--accent-crimson)' }}>+{Number(p.xp || 4.5).toFixed(1)} xP</span>
                     </div>
                   </div>
                 ))}
@@ -303,3 +376,4 @@ export default function RivalThreatMatrix({
     </div>
   );
 }
+

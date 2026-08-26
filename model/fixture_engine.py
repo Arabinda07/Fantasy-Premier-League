@@ -413,9 +413,12 @@ def predict_gameweek_fixtures(
         t_long_xgc = _safe_float(first_row.get('team_long_form_xgc90'), DEFAULT_LEAGUE_AVG_XGC)
         t_short_xgc = _safe_float(first_row.get('team_short_form_xgc90'), t_long_xgc)
 
+        # Use actual team short-form minutes for sample-size weighted blending
+        # (F-07 fix: was hardcoded to 1.0, which made short-form contribute ~0.08%)
+        team_short_mins = _safe_float(first_row.get('team_short_form_minutes'), default=540.0)
         team_stats_map[team_name] = {
-            'xg90': blend_form_rates(t_short_xg, t_long_xg, alpha, 1.0),
-            'xgc90': blend_form_rates(t_short_xgc, t_long_xgc, alpha, 1.0),
+            'xg90': blend_form_rates(t_short_xg, t_long_xg, alpha, team_short_mins),
+            'xgc90': blend_form_rates(t_short_xgc, t_long_xgc, alpha, team_short_mins),
         }
 
     league_avg_xg, league_avg_xgc = compute_team_league_averages(team_stats_map)
@@ -508,6 +511,8 @@ def predict_gameweek_fixtures(
             total_p_start = 0.0
             total_p_app = 0.0
             total_p_60 = 0.0
+            # F-08 fix: collect per-match predictions to avoid variable shadowing
+            match_preds: List[Dict[str, Any]] = []
 
             for match_idx, (fix, is_home) in enumerate(scheduled):
                 fixture_player = dict(player)
@@ -519,6 +524,7 @@ def predict_gameweek_fixtures(
                 pred = predict_player_fixture(
                     fixture_player, fix, is_home, team_stats_map, league_avg_xg, league_avg_xgc, alpha, m0
                 )
+                match_preds.append(pred)
                 total_xp += pred['expected_points']
                 opponents.append(pred['fixture_opponent'])
                 venues.append(pred['fixture_venue'])
@@ -535,8 +541,8 @@ def predict_gameweek_fixtures(
                 'fixture_opponent': ', '.join(opponents),
                 'fixture_venue': ', '.join(venues),
                 'fixture_fdr': '/'.join(fdrs),
-                'fixture_attack_mult': round(sum(pred['fixture_attack_mult'] for fix, is_home in scheduled) / len(scheduled), 4),
-                'fixture_xgc90': round(sum(pred['fixture_xgc90'] for fix, is_home in scheduled) / len(scheduled), 4),
+                'fixture_attack_mult': round(sum(mp['fixture_attack_mult'] for mp in match_preds) / len(match_preds), 4),
+                'fixture_xgc90': round(sum(mp['fixture_xgc90'] for mp in match_preds) / len(match_preds), 4),
                 'expected_points': round(total_xp, 4),
                 'p_start': round(total_p_start, 4),
                 'p_app': round(total_p_app, 4),
@@ -551,10 +557,17 @@ def predict_gameweek_fixtures(
     result_df = pd.concat([df, pred_df], axis=1)
 
     if save_csv:
+        from model.file_utils import atomic_write_csv
+        from model.schema_validator import validate_dataframe_schema
+
+        is_valid, errors = validate_dataframe_schema(result_df, 'fixture_predictions')
+        if not is_valid:
+            print(f"[!] Warning: fixture_predictions schema validation found issues: {errors}")
+
         out_csv = os.path.join(season_dir, 'fixture_predictions.csv')
         out_gw_csv = os.path.join(season_dir, f'fixture_predictions_gw{gw}.csv')
-        result_df.to_csv(out_csv, index=False)
-        result_df.to_csv(out_gw_csv, index=False)
+        atomic_write_csv(out_csv, result_df)
+        atomic_write_csv(out_gw_csv, result_df)
         print(f"[{season}] Successfully wrote {len(result_df)} fixture predictions to {out_csv} and {out_gw_csv}")
 
     return result_df

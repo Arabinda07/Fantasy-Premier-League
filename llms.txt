@@ -1,0 +1,50 @@
+# Fantasy Premier League (FPL) Analytics & Decision Platform
+
+> Enterprise-grade Python points-prediction engine, multi-gameweek lookahead Mixed-Integer Linear Programming (MILP) squad solver, live matchday tracker, and historical Premier League dataset (2016–2027).
+
+---
+
+## 1. Ground Truth Knowledge Catalog (OKF v0.2)
+
+Always consult the **Open Knowledge Format (OKF v0.2)** catalog in `knowledge/` before generating code or making assumptions:
+
+* [Knowledge Catalog Root](knowledge/index.md): Central index for progressive disclosure navigation.
+* [Knowledge Map](KNOWLEDGE_MAP.md): Bidirectional matrix mapping modules, schemas, specs, and tests.
+* [Dataset Schemas](knowledge/datasets/index.md): Verified physical column names, data types, and join keys (`players_raw.csv`, `merged_gw.csv`, `model_dataset.csv`, `predictions.csv`, `fixture_predictions.csv`).
+* [Mathematical Models](knowledge/models/index.md): Explicit mathematical formulas ($C_1 \dots C_{11}$, Poisson distributions, Empirical Bayes shrinkage, venue multipliers, MILP constraints).
+* [Attested Computations](knowledge/computations/index.md): Sanctioned CLI execution contracts, parameter lists, and receipt attestation checkers.
+* [Operational Playbooks](knowledge/playbooks/index.md): SOPs for weekly gameweek workflows and data drift troubleshooting.
+
+---
+
+## 2. Core Mathematical Invariants & Rules
+
+* **Empirical Bayes Prior Shrinkage**: Shrunk with sample weight $M_0 = 500.0\text{ mins}$ towards positional priors (FWD $xG 0.35, xA 0.15$; MID $xG 0.15, xA 0.15$; DEF $xG 0.05, xA 0.05$; GK $xG 0.00, xA 0.00$).
+* **Exact Discrete Poisson $GC \ge 2$ Penalty**: $-\sum_{m=1}^5 m \cdot (P(X = 2m) + P(X = 2m + 1))$.
+* **Conjugate Venue Factors**: $1.08 \longleftrightarrow 0.9259$ enforcing exact goal conservation ($\mathbb{E}[\text{Scored}] \equiv \mathbb{E}[\text{Conceded}]$).
+* **MILP Squad Optimization Rules**:
+  * 15-man squad: exactly 2 GK, 5 DEF, 5 MID, 3 FWD within £100.0M budget.
+  * Starting XI: exactly 11 players with min 3 DEF, min 2 MID, min 1 FWD.
+  * Club limit: max 3 players per Premier League club.
+  * FPL 50% profit retention formula: $\text{selling} = \text{purchase} + \lfloor (\text{current} - \text{purchase})/2 \rfloor$.
+  * Temporal lookahead discount factor: $\gamma = 0.90$.
+
+---
+
+## 3. Primary CLI Execution Commands
+
+* **Build Modeling Dataset**: `python -m model.build_dataset --season 2026-27`
+* **Compute Baseline Predictions**: `python -m model.prediction_engine --season 2026-27`
+* **Apply Fixture & Form Adjustments**: `python -m model.fixture_engine --season 2026-27 --gw 2`
+* **Solve Optimal Squad & Lineup**: `python -m model.solver --season 2026-27 --gw 2 --budget 100.0 --horizon 3`
+* **Export 5-Tab Excel Workbook**: `python -m model.excel_exporter --season 2026-27 --gw 2 --budget 100.0`
+* **Stream Live Matchday Events**: `python -m model.live_sync --season 2026-27 --gw 2 --poll 60`
+
+---
+
+## 4. Verification & Conformance Gates
+
+* **OKF Bundle Conformance Linter**: `python scripts/validate_okf.py`
+* **Schema Invariant Attester**: `python knowledge/references/attesters/verify_schema.py --season 2026-27 --gw 2`
+* **Solver Constraint Attester**: `python knowledge/references/attesters/verify_solver.py --season 2026-27 --gw 2`
+* **Unit Test Regression Suite**: `pytest`

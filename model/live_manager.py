@@ -372,15 +372,29 @@ def manage_gameweek(
                 for p in multi_sol.gw_plans
             ],
         }
-        with open(out_json, 'w') as f:
-            json.dump(payload, f, indent=2)
+        # F-10 fix: Atomic writes using tempfile + os.replace to prevent partial reads
+        import tempfile
+        def _atomic_json_write(filepath: str, data: dict) -> None:
+            """Write JSON atomically: write to temp file, then rename into place."""
+            dir_name = os.path.dirname(filepath)
+            fd, tmp_path = tempfile.mkstemp(suffix='.json.tmp', dir=dir_name)
+            try:
+                with os.fdopen(fd, 'w') as tmp_f:
+                    json.dump(data, tmp_f, indent=2)
+                os.replace(tmp_path, filepath)
+            except Exception:
+                # Clean up temp file on error
+                if os.path.exists(tmp_path):
+                    os.remove(tmp_path)
+                raise
+
+        _atomic_json_write(out_json, payload)
 
         # Also sync to frontend/src/data if present
         frontend_data_dir = os.path.join('frontend', 'src', 'data')
         if os.path.exists(frontend_data_dir):
             frontend_json = os.path.join(frontend_data_dir, f'live_matchday_gw{gw}.json')
-            with open(frontend_json, 'w') as f:
-                json.dump(payload, f, indent=2)
+            _atomic_json_write(frontend_json, payload)
 
     return {
         'action_summary': action_summary,
