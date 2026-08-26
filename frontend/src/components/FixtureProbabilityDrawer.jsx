@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   X,
   SoccerBall,
@@ -6,8 +6,31 @@ import {
   TrendUp,
   Percent,
   Sparkle,
-  CalendarCheck
+  CalendarCheck,
+  Table
 } from '@phosphor-icons/react';
+
+// Factorial helper
+const factorial = (n) => {
+  if (n <= 1) return 1;
+  let res = 1;
+  for (let i = 2; i <= n; i++) res *= i;
+  return res;
+};
+
+// Poisson PMF
+const poissonPmf = (k, lambda) => {
+  return (Math.pow(lambda, k) * Math.exp(-lambda)) / factorial(k);
+};
+
+// Dixon-Coles adjustment tau
+const dixonColesTau = (x, y, lambda, mu, rho = -0.05) => {
+  if (x === 0 && y === 0) return 1 - lambda * mu * rho;
+  if (x === 1 && y === 0) return 1 + mu * rho;
+  if (x === 0 && y === 1) return 1 + lambda * rho;
+  if (x === 1 && y === 1) return 1 - rho;
+  return 1.0;
+};
 
 export default function FixtureProbabilityDrawer({
   isOpen,
@@ -15,6 +38,8 @@ export default function FixtureProbabilityDrawer({
   fixtureData,
   dixonColesList = []
 }) {
+  const [hoveredCell, setHoveredCell] = useState(null);
+
   if (!isOpen) return null;
 
   // Match against fixtureData or fallback to first fixture
@@ -41,6 +66,27 @@ export default function FixtureProbabilityDrawer({
     ]
   };
 
+  const lambda = Number(fixture.expected_home_goals || 1.25);
+  const mu = Number(fixture.expected_away_goals || 1.45);
+
+  // Compute 5x5 Joint Poisson Probability Matrix
+  const { matrix, maxProb } = useMemo(() => {
+    const goals = [0, 1, 2, 3, 4];
+    const grid = [];
+    let highest = 0;
+
+    for (let h of goals) {
+      const row = [];
+      for (let a of goals) {
+        const p = Math.max(0, dixonColesTau(h, a, lambda, mu, -0.05) * poissonPmf(h, lambda) * poissonPmf(a, mu));
+        if (p > highest) highest = p;
+        row.push({ home: h, away: a, prob: p });
+      }
+      grid.push(row);
+    }
+    return { matrix: grid, maxProb: highest || 0.15 };
+  }, [lambda, mu]);
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div
@@ -49,6 +95,7 @@ export default function FixtureProbabilityDrawer({
         role="dialog"
         aria-modal="true"
         aria-labelledby="drawer-title"
+        style={{ maxWidth: '680px' }}
       >
         {/* Drawer Header */}
         <div className="modal-header">
@@ -74,27 +121,27 @@ export default function FixtureProbabilityDrawer({
             <span className="team-role">HOME</span>
             <div className="team-display-name">{fixture.home_team}</div>
             <div className="exp-goals font-mono">
-              {fixture.expected_home_goals} <span className="exp-label">xG</span>
+              {lambda.toFixed(2)} <span className="exp-label">xG</span>
             </div>
           </div>
 
           <div className="vs-badge">
             <span>VS</span>
-            <span className="rho-tag font-mono">Simulated</span>
+            <span className="rho-tag font-mono">Dixon-Coles ρ=-0.05</span>
           </div>
 
           <div className="team-side away">
             <span className="team-role">AWAY</span>
             <div className="team-display-name">{fixture.away_team}</div>
             <div className="exp-goals font-mono">
-              {fixture.expected_away_goals} <span className="exp-label">xG</span>
+              {mu.toFixed(2)} <span className="exp-label">xG</span>
             </div>
           </div>
         </div>
 
         {/* Win/Draw/Loss Outcome Probability Bar */}
-        <div className="prob-breakdown-section">
-          <div className="section-label">Match Outcome Odds</div>
+        <div className="prob-breakdown-section" style={{ marginBottom: '16px' }}>
+          <div className="section-label">Match Outcome Distribution</div>
           <div className="prob-split-bar">
             <div
               className="split-segment home"
@@ -120,38 +167,122 @@ export default function FixtureProbabilityDrawer({
           </div>
         </div>
 
+        {/* 5x5 Joint Scoreline Probability Matrix */}
+        <div className="data-table-container" style={{ marginBottom: '16px' }}>
+          <div className="studio-table-controls">
+            <div className="controls-left">
+              <span className="controls-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Table size={14} weight="bold" />
+                5×5 Joint Scoreline Probability Heatmap
+              </span>
+              <span className="controls-count font-mono">Bivariate Poisson Model</span>
+            </div>
+          </div>
+
+          <div style={{ padding: '12px 14px' }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '8px', textAlign: 'center', fontFamily: 'var(--font-mono)' }}>
+              ◀ {fixture.home_team} (Home Goals) &nbsp;&nbsp;|&nbsp;&nbsp; {fixture.away_team} (Away Goals) ▼
+            </div>
+
+            <div className="matrix-wrapper">
+              <table className="scoreline-matrix-table">
+                <thead>
+                  <tr>
+                    <th className="matrix-corner">H \ A</th>
+                    {[0, 1, 2, 3, 4].map(a => (
+                      <th key={`head-${a}`} className="matrix-col-header font-mono">
+                        {a === 4 ? '4+' : a}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {matrix.map((row, hIdx) => (
+                    <tr key={`row-${hIdx}`}>
+                      <td className="matrix-row-header font-mono">
+                        {hIdx === 4 ? '4+' : hIdx}
+                      </td>
+                      {row.map(cell => {
+                        const isHovered = hoveredCell && hoveredCell.home === cell.home && hoveredCell.away === cell.away;
+                        const isDraw = cell.home === cell.away;
+                        const isHomeWin = cell.home > cell.away;
+                        const isAwayWin = cell.home < cell.away;
+                        const pct = (cell.prob * 100).toFixed(1);
+                        const intensity = Math.min(1, cell.prob / maxProb);
+
+                        // Heatmap color calculation
+                        const baseColor = isHomeWin
+                          ? `rgba(59, 130, 246, ${0.08 + intensity * 0.40})`
+                          : isAwayWin
+                          ? `rgba(16, 185, 129, ${0.08 + intensity * 0.40})`
+                          : `rgba(245, 158, 11, ${0.08 + intensity * 0.35})`;
+
+                        return (
+                          <td
+                            key={`cell-${cell.home}-${cell.away}`}
+                            className={`matrix-cell ${isHovered ? 'hovered' : ''} ${isDraw ? 'is-draw' : ''}`}
+                            style={{ background: baseColor }}
+                            onMouseEnter={() => setHoveredCell(cell)}
+                            onMouseLeave={() => setHoveredCell(null)}
+                            title={`${fixture.home_team} ${cell.home} - ${cell.away} ${fixture.away_team}: ${pct}% probability (${isHomeWin ? 'Home Win' : isAwayWin ? 'Away Win' : 'Draw'})`}
+                          >
+                            <span className="matrix-val font-mono">{pct}%</span>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Matrix Hover Readout */}
+            <div style={{ marginTop: '8px', minHeight: '22px', fontSize: '11.5px', textAlign: 'center', fontFamily: 'var(--font-mono)' }}>
+              {hoveredCell ? (
+                <span style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>
+                  Scoreline: {fixture.home_team} {hoveredCell.home} – {hoveredCell.away} {fixture.away_team} · {(hoveredCell.prob * 100).toFixed(2)}% ({hoveredCell.home > hoveredCell.away ? `${fixture.home_team} Win` : hoveredCell.home < hoveredCell.away ? `${fixture.away_team} Win` : 'Draw'})
+                </span>
+              ) : (
+                <span style={{ color: 'var(--text-muted)' }}>
+                  Hover over any scoreline cell to view exact match outcome probabilities
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
         {/* 4-Card Quantitative Metrics Grid */}
-        <div className="kpi-strip" style={{ marginTop: '16px', marginBottom: '16px' }}>
+        <div className="kpi-strip" style={{ marginBottom: '16px' }}>
           <div className="kpi-card">
-            <div className="kpi-label">{fixture.home_team} Clean Sheet Odds</div>
-            <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
+            <div className="kpi-label">{fixture.home_team} Clean Sheet</div>
+            <div className="kpi-value font-mono" style={{ color: 'var(--accent-blue)' }}>
               {Math.round(fixture.home_cs_prob * 100)}%
             </div>
-            <div className="kpi-subtext">Defensive clean sheet probability</div>
+            <div className="kpi-subtext">Column 0 sum (Away 0 goals)</div>
           </div>
 
           <div className="kpi-card">
-            <div className="kpi-label">{fixture.away_team} Clean Sheet Odds</div>
+            <div className="kpi-label">{fixture.away_team} Clean Sheet</div>
             <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
               {Math.round(fixture.away_cs_prob * 100)}%
             </div>
-            <div className="kpi-subtext">Defensive clean sheet probability</div>
+            <div className="kpi-subtext">Row 0 sum (Home 0 goals)</div>
           </div>
 
           <div className="kpi-card">
-            <div className="kpi-label">Both Teams to Score (BTTS)</div>
+            <div className="kpi-label">Both Teams to Score</div>
             <div className="kpi-value font-mono" style={{ color: 'var(--accent-amber)' }}>
               {Math.round(fixture.btts_prob * 100)}%
             </div>
-            <div className="kpi-subtext">Likelihood of both sides scoring</div>
+            <div className="kpi-subtext">H &gt; 0 and A &gt; 0</div>
           </div>
 
           <div className="kpi-card">
             <div className="kpi-label">Over 2.5 Total Goals</div>
-            <div className="kpi-value font-mono" style={{ color: 'var(--accent-blue)' }}>
+            <div className="kpi-value font-mono" style={{ color: 'var(--text-primary)' }}>
               {Math.round(fixture.over_2_5_prob * 100)}%
             </div>
-            <div className="kpi-subtext">High-scoring fixture potential</div>
+            <div className="kpi-subtext">Total goals sum &ge; 3</div>
           </div>
         </div>
 
@@ -159,8 +290,8 @@ export default function FixtureProbabilityDrawer({
         <div className="data-table-container">
           <div className="studio-table-controls">
             <div className="controls-left">
-              <span className="controls-title">Most Likely Scorelines</span>
-              <span className="controls-count font-mono">10,000 Match Simulations</span>
+              <span className="controls-title">Top 5 Most Likely Scorelines</span>
+              <span className="controls-count font-mono">Ranked by Joint Likelihood</span>
             </div>
           </div>
           <div className="scorelines-grid">
@@ -175,7 +306,7 @@ export default function FixtureProbabilityDrawer({
         </div>
 
         {/* Footer Actions */}
-        <div className="modal-actions" style={{ marginTop: '18px' }}>
+        <div className="modal-actions" style={{ marginTop: '16px' }}>
           <button type="button" className="btn-secondary" onClick={onClose}>
             Close
           </button>
