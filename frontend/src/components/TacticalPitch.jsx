@@ -93,9 +93,11 @@ export default function TacticalPitch({
   // Helper to parse transfer actions into clean icon-driven pills
   const renderTransferPills = (summary) => {
     if (!summary) return null;
+    const summaryStr = typeof summary === 'string' ? summary : (summary.headline || summary.action || '');
+    if (!summaryStr) return null;
 
-    const inMatch = summary.match(/\[IN\]\s*([A-Za-z0-9_.\-\s]+?)(?=\s*\||\s*\[OUT\]|$)/i);
-    const outMatch = summary.match(/\[OUT\]\s*([A-Za-z0-9_.\-\s]+?)(?=\s*\||$)/i);
+    const inMatch = summaryStr.match(/\[IN\]\s*([A-Za-z0-9_.\-\s]+?)(?=\s*\||\s*\[OUT\]|$)/i);
+    const outMatch = summaryStr.match(/\[OUT\]\s*([A-Za-z0-9_.\-\s]+?)(?=\s*\||$)/i);
 
     if (inMatch && outMatch) {
       const inName = inMatch[1].trim();
@@ -118,9 +120,9 @@ export default function TacticalPitch({
       );
     }
 
-    const cleanMsg = summary.includes('LOCKED') || summary.includes('INITIAL')
-      ? 'Optimal 15-man squad locked · 1 Free Transfer saved for GW3 · 0 hits taken'
-      : summary.replace(/EXECUTE\s*\d*\s*FREE\s*TRANSFER\(S\):\s*/i, '');
+    const cleanMsg = summaryStr.includes('LOCKED') || summaryStr.includes('INITIAL') || summaryStr.includes('BENCHMARK')
+      ? (summaryStr.includes('BENCHMARK') ? 'Unconstrained 3-5-2 Optimal Benchmark Template' : 'Optimal 15-man squad locked · 1 Free Transfer saved · 0 hits taken')
+      : summaryStr.replace(/EXECUTE\s*\d*\s*FREE\s*TRANSFER\(S\):\s*/i, '');
 
     return (
       <div className="rec-generic-text">
