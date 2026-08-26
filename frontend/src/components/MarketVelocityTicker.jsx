@@ -1,19 +1,19 @@
 import React from 'react';
-import { TrendUp, TrendDown, CalendarCheck } from '@phosphor-icons/react';
+import { TrendUp, TrendDown, CalendarCheck, Gauge } from '@phosphor-icons/react';
 
 export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer }) {
-  // Rising and falling assets
+  // Rising and falling assets with numeric progress (0-100+)
   const risingAssets = [
-    { web_name: 'Cherki', team: 'Man City', pos: 'MID', cost: 7.5, net_vel: 142050, trend: 'Rising Tonight', ratio: '124% of threshold' },
-    { web_name: 'B.Fernandes', team: 'Man Utd', pos: 'MID', cost: 12.0, net_vel: 98400, trend: 'Rising Soon', ratio: '88% of threshold' },
-    { web_name: 'Gabriel', team: 'Arsenal', pos: 'DEF', cost: 8.0, net_vel: 84200, trend: 'Rising Soon', ratio: '79% of threshold' },
-    { web_name: 'Raya', team: 'Arsenal', pos: 'GK', cost: 6.0, net_vel: 76500, trend: 'Rising Soon', ratio: '76% of threshold' },
+    { web_name: 'Cherki', team: 'Man City', pos: 'MID', cost: 7.5, net_vel: 142050, trend: 'Rising Tonight', ratio: '124% of threshold', progress: 124 },
+    { web_name: 'B.Fernandes', team: 'Man Utd', pos: 'MID', cost: 12.0, net_vel: 98400, trend: 'Rising Soon', ratio: '88% of threshold', progress: 88 },
+    { web_name: 'Gabriel', team: 'Arsenal', pos: 'DEF', cost: 8.0, net_vel: 84200, trend: 'Rising Soon', ratio: '79% of threshold', progress: 79 },
+    { web_name: 'Raya', team: 'Arsenal', pos: 'GK', cost: 6.0, net_vel: 76500, trend: 'Rising Soon', ratio: '76% of threshold', progress: 76 },
   ];
 
   const fallingAssets = [
-    { web_name: 'Palmer', team: 'Chelsea', pos: 'MID', cost: 10.5, net_vel: -118300, trend: 'Dropping Tonight', ratio: '108% of threshold' },
-    { web_name: 'Watkins', team: 'Aston Villa', pos: 'FWD', cost: 9.0, net_vel: -92400, trend: 'Dropping Soon', ratio: '84% of threshold' },
-    { web_name: 'Trippier', team: 'Newcastle', pos: 'DEF', cost: 5.5, net_vel: -81200, trend: 'Dropping Soon', ratio: '78% of threshold' },
+    { web_name: 'Palmer', team: 'Chelsea', pos: 'MID', cost: 10.5, net_vel: -118300, trend: 'Dropping Tonight', ratio: '108% of threshold', progress: 108 },
+    { web_name: 'Watkins', team: 'Aston Villa', pos: 'FWD', cost: 9.0, net_vel: -92400, trend: 'Dropping Soon', ratio: '84% of threshold', progress: 84 },
+    { web_name: 'Trippier', team: 'Newcastle', pos: 'DEF', cost: 5.5, net_vel: -81200, trend: 'Dropping Soon', ratio: '78% of threshold', progress: 78 },
   ];
 
   const chips = [
@@ -40,7 +40,9 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
         expected_points: 5.2
       });
     }
-  };  return (
+  };
+
+  return (
     <div>
       <div className="market-panels-grid">
         {/* Rising Assets Radar */}
@@ -60,19 +62,30 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
                 className="market-asset-row"
                 title="Click to view player stats"
               >
-                <div>
+                <div style={{ flex: 1 }}>
                   <div className="market-asset-identity">
                     <span className={`player-position-pill ${p.pos}`}>{p.pos}</span>
                     <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{p.web_name}</span>
                     <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>({p.team})</span>
                   </div>
-                  <div className="market-asset-meta">
+                  <div className="market-asset-meta" style={{ marginBottom: '6px' }}>
                     £{p.cost.toFixed(1)}m · +{p.net_vel.toLocaleString()} net transfers
+                  </div>
+                  {/* Thermometer Progress Bar */}
+                  <div style={{ width: '90%', height: '4px', background: 'rgba(255,255,255,0.08)', borderRadius: '2px', overflow: 'hidden' }}>
+                    <div
+                      style={{
+                        width: `${Math.min(100, p.progress)}%`,
+                        height: '100%',
+                        background: p.progress >= 100 ? 'var(--accent-emerald)' : 'rgba(16, 185, 129, 0.65)',
+                        boxShadow: p.progress >= 100 ? '0 0 6px rgba(16, 185, 129, 0.8)' : undefined
+                      }}
+                    />
                   </div>
                 </div>
                 <div className="market-asset-trend">
                   <span className="market-trend-badge rising">{p.trend}</span>
-                  <div className="market-trend-ratio">{p.ratio}</div>
+                  <div className="market-trend-ratio font-mono">{p.ratio}</div>
                 </div>
               </div>
             ))}
@@ -96,19 +109,30 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
                 className="market-asset-row"
                 title="Click to view player stats"
               >
-                <div>
+                <div style={{ flex: 1 }}>
                   <div className="market-asset-identity">
                     <span className={`player-position-pill ${p.pos}`}>{p.pos}</span>
                     <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{p.web_name}</span>
                     <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>({p.team})</span>
                   </div>
-                  <div className="market-asset-meta">
+                  <div className="market-asset-meta" style={{ marginBottom: '6px' }}>
                     £{p.cost.toFixed(1)}m · {p.net_vel.toLocaleString()} net transfers
+                  </div>
+                  {/* Thermometer Progress Bar */}
+                  <div style={{ width: '90%', height: '4px', background: 'rgba(255,255,255,0.08)', borderRadius: '2px', overflow: 'hidden' }}>
+                    <div
+                      style={{
+                        width: `${Math.min(100, p.progress)}%`,
+                        height: '100%',
+                        background: p.progress >= 100 ? 'var(--accent-crimson)' : 'rgba(239, 68, 68, 0.65)',
+                        boxShadow: p.progress >= 100 ? '0 0 6px rgba(239, 68, 68, 0.8)' : undefined
+                      }}
+                    />
                   </div>
                 </div>
                 <div className="market-asset-trend">
                   <span className="market-trend-badge falling">{p.trend}</span>
-                  <div className="market-trend-ratio">{p.ratio}</div>
+                  <div className="market-trend-ratio font-mono">{p.ratio}</div>
                 </div>
               </div>
             ))}
@@ -139,4 +163,3 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
     </div>
   );
 }
-

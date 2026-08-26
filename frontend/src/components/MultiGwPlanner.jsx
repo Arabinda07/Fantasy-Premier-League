@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import {
+  AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer
+} from 'recharts';
+import {
   ArrowsLeftRight,
   Sparkle,
   TrendUp,
@@ -8,7 +11,8 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   CheckCircle,
-  PlusCircle
+  PlusCircle,
+  ChartLine
 } from '@phosphor-icons/react';
 
 export default function MultiGwPlanner({
@@ -19,7 +23,20 @@ export default function MultiGwPlanner({
 }) {
   const [activeGwIndex, setActiveGwIndex] = useState(0);
 
-  // Compute multi-horizon totals
+  // Compute multi-horizon totals & cumulative trajectory
+  let runningTotal = 0;
+  const trajectoryData = roadmap.map(r => {
+    const weeklyXp = Number(r.net_xp || 0);
+    runningTotal += weeklyXp;
+    return {
+      gw: `GW${r.gw}`,
+      weeklyXp: Number(weeklyXp.toFixed(1)),
+      cumulativeXp: Number(runningTotal.toFixed(1)),
+      bank: Number(r.bank || 0.0).toFixed(1),
+      hits: r.hits_taken || 0
+    };
+  });
+
   const totalHorizonXp = roadmap.reduce((acc, r) => acc + (r.net_xp || 0), 0);
   const totalHits = roadmap.reduce((acc, r) => acc + (r.hits_taken || 0), 0);
 
@@ -65,6 +82,68 @@ export default function MultiGwPlanner({
         </div>
       </div>
 
+      {/* Cumulative Projected Points Trajectory Area Chart */}
+      <div className="data-table-container" style={{ marginBottom: '16px' }}>
+        <div className="studio-table-controls">
+          <div className="controls-left">
+            <span className="controls-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <ChartLine size={14} weight="bold" />
+              Cumulative Points Growth Trajectory
+            </span>
+            <span className="controls-count font-mono">Multi-Horizon LP Forecast</span>
+          </div>
+        </div>
+
+        <div style={{ padding: '14px 16px 6px 6px', height: '180px' }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={trajectoryData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
+              <defs>
+                <linearGradient id="xpAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#10B981" stopOpacity={0.35}/>
+                  <stop offset="95%" stopColor="#10B981" stopOpacity={0.0}/>
+                </linearGradient>
+              </defs>
+              <XAxis
+                dataKey="gw"
+                stroke="var(--text-muted)"
+                fontSize={11}
+                tickLine={false}
+                axisLine={{ stroke: 'var(--border-subtle)' }}
+              />
+              <YAxis
+                stroke="var(--text-muted)"
+                fontSize={11}
+                tickLine={false}
+                axisLine={{ stroke: 'var(--border-subtle)' }}
+                domain={['auto', 'auto']}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: 'var(--bg-surface-2)',
+                  border: '1px solid var(--border-medium)',
+                  borderRadius: '4px',
+                  fontSize: '12px',
+                  color: 'var(--text-primary)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
+                }}
+                formatter={(val, name) => [
+                  name === 'cumulativeXp' ? `${val} pts (Cumulative)` : `${val} pts (Gameweek)`,
+                  name === 'cumulativeXp' ? 'Total Haul' : 'Weekly Target'
+                ]}
+              />
+              <Area
+                type="monotone"
+                dataKey="cumulativeXp"
+                stroke="#10B981"
+                strokeWidth={2}
+                fillOpacity={1}
+                fill="url(#xpAreaGrad)"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
       {/* 5-Column Gameweek Roadmap Matrix */}
       <div className="multi-gw-matrix-grid">
         {roadmap.map((item, idx) => {
@@ -101,40 +180,35 @@ export default function MultiGwPlanner({
                 </div>
 
                 {hasTransfers ? (
-                  <div className="transfer-list">
+                  <div className="transfer-moves-list">
                     {item.transfers_in.map((inPlayer, tIdx) => {
-                      const outPlayer = item.transfers_out[tIdx] || 'Player';
+                      const outPlayer = item.transfers_out?.[tIdx] || 'Target Out';
                       return (
-                        <div key={inPlayer} className="transfer-action-row">
-                          <div className="rec-transfer-pill in">
-                            <ArrowUpRight size={12} weight="bold" />
-                            <span className="rec-tag">IN</span>
-                            <span className="rec-player-name">{inPlayer}</span>
+                        <div key={tIdx} className="transfer-move-item">
+                          <div className="move-tag in">
+                            <ArrowUpRight size={11} weight="bold" />
+                            <span>IN: {inPlayer}</span>
                           </div>
-                          <div className="rec-transfer-pill out" style={{ marginTop: '4px' }}>
-                            <ArrowDownRight size={12} weight="bold" />
-                            <span className="rec-tag">OUT</span>
-                            <span className="rec-player-name">{outPlayer}</span>
+                          <div className="move-tag out">
+                            <ArrowDownRight size={11} weight="bold" />
+                            <span>OUT: {outPlayer}</span>
                           </div>
                         </div>
                       );
                     })}
                   </div>
                 ) : (
-                  <div className="no-transfers-msg">
-                    <CheckCircle size={14} weight="fill" color="var(--accent-emerald)" />
-                    <span>Roll Free Transfer (Bank +1 FT)</span>
+                  <div className="no-transfers-label">
+                    <CheckCircle size={13} weight="fill" color="var(--accent-emerald)" />
+                    <span>Roll Free Transfer (Bank FT)</span>
                   </div>
                 )}
               </div>
 
-              {/* Strategic Horizon Annotation */}
-              <div className="gw-rationale-note">
-                {item.gw === 2 && "Lock the 15-man squad. Roll the free transfer into GW3."}
-                {item.gw === 3 && "Target Palace's home fixture: Ballard → Canvot (£5.0m)."}
-                {item.gw === 4 && "Roll the transfer. Bank 2 FTs ahead of Chelsea & Spurs fixture swings."}
-                {item.gw === 5 && "Hold the core premiums (Haaland, Fernandes)."}
-                {item.gw === 6 && "Use 2 banked FTs for a double move before the international break."}
+              {/* Free Transfers & Hits Status */}
+              <div className="gw-footer-meta font-mono">
+                <span>FT Available: {item.ft_available || 1}</span>
+                <span>Hits: {item.hits_taken ? `-${item.hits_taken * 4} pts` : '0'}</span>
               </div>
             </div>
           );

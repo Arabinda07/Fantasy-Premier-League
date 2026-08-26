@@ -1,10 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, ReferenceLine
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, ReferenceLine,
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend
 } from 'recharts';
-import { X, Lightning, ShieldCheck, Target, SoccerBall } from '@phosphor-icons/react';
+import {
+  X,
+  Lightning,
+  ShieldCheck,
+  Target,
+  SoccerBall,
+  ChartBar,
+  Polygon
+} from '@phosphor-icons/react';
 
 export default function PlayerDNAInspector({ player, onClose }) {
+  const [activeView, setActiveView] = useState('chart'); // 'chart' | 'radar'
+
   // Close on Escape key press
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -49,11 +60,45 @@ export default function PlayerDNAInspector({ player, onClose }) {
 
   const pMins60 = player.p_mins_60 != null ? Math.round(player.p_mins_60 * 100) : 92;
 
+  // 5-Axis Attribute Radar Data (Normalized 0-100 scale)
+  const radarData = [
+    {
+      subject: 'Goal Threat',
+      Player: Math.min(100, Math.round((xG90 / 0.60) * 100)),
+      Baseline: pos === 'FWD' ? 70 : pos === 'MID' ? 40 : 15,
+      fullMark: 100
+    },
+    {
+      subject: 'Creativity',
+      Player: Math.min(100, Math.round((xA90 / 0.40) * 100)),
+      Baseline: pos === 'MID' ? 60 : pos === 'FWD' ? 40 : 20,
+      fullMark: 100
+    },
+    {
+      subject: 'Minutes Security',
+      Player: Math.min(100, pMins60),
+      Baseline: 75,
+      fullMark: 100
+    },
+    {
+      subject: 'Set-Pieces',
+      Player: (player.sp_pk_order === 1 ? 50 : 0) + (player.sp_ck_order === 1 ? 30 : 0) + (player.sp_fk_order === 1 ? 20 : 0) || 15,
+      Baseline: 25,
+      fullMark: 100
+    },
+    {
+      subject: 'Fixture Ease',
+      Player: Math.min(100, Math.max(20, Math.round((5 - (player.fixture_fdr || 3)) * 25 + 25))),
+      Baseline: 50,
+      fullMark: 100
+    }
+  ];
+
   return (
     <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="dna-modal-title">
       <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '680px' }}>
         {/* Modal Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '14px', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '14px', marginBottom: '14px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span className={`player-position-pill ${pos}`}>{pos}</span>
@@ -74,13 +119,34 @@ export default function PlayerDNAInspector({ player, onClose }) {
           </button>
         </div>
 
-        {/* Projected Points Breakdown - Diverging Horizontal Bar Chart */}
-        <div style={{ marginBottom: '20px' }}>
-          <h4 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }}>
-            Projected Points Breakdown
-          </h4>
+        {/* View Mode Segmented Switcher */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            {activeView === 'chart' ? 'Point Contribution Breakdown' : '5-Axis Attribute Radar vs Baseline'}
+          </span>
+          <div className="segmented-chip-rail">
+            <button
+              type="button"
+              className={`segmented-chip-btn ${activeView === 'chart' ? 'active' : ''}`}
+              onClick={() => setActiveView('chart')}
+            >
+              <ChartBar size={12} weight="bold" />
+              <span>Point Ledger</span>
+            </button>
+            <button
+              type="button"
+              className={`segmented-chip-btn ${activeView === 'radar' ? 'active' : ''}`}
+              onClick={() => setActiveView('radar')}
+            >
+              <Polygon size={12} weight="bold" />
+              <span>5-Axis Radar</span>
+            </button>
+          </div>
+        </div>
 
-          <div style={{ width: '100%', height: '240px', background: 'rgba(0,0,0,0.2)', padding: '12px 10px 6px 0', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+        {/* Chart View: Diverging Horizontal Bar Chart */}
+        {activeView === 'chart' ? (
+          <div style={{ width: '100%', height: '240px', background: 'rgba(0,0,0,0.2)', padding: '12px 10px 6px 0', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)', marginBottom: '16px' }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={componentsData}
@@ -124,7 +190,30 @@ export default function PlayerDNAInspector({ player, onClose }) {
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        ) : (
+          /* Radar View: 5-Axis Attribute Radar Polygon */
+          <div style={{ width: '100%', height: '240px', background: 'rgba(0,0,0,0.2)', padding: '6px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)', marginBottom: '16px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart data={radarData} margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
+                <PolarGrid stroke="rgba(255,255,255,0.12)" />
+                <PolarAngleAxis dataKey="subject" stroke="var(--text-secondary)" fontSize={11} />
+                <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="var(--text-muted)" fontSize={9} />
+                <Tooltip
+                  contentStyle={{
+                    background: 'var(--bg-surface-2)',
+                    border: '1px solid var(--border-medium)',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    color: 'var(--text-primary)'
+                  }}
+                />
+                <Radar name={player.web_name} dataKey="Player" stroke="#10B981" fill="#10B981" fillOpacity={0.4} />
+                <Radar name="Positional Benchmark" dataKey="Baseline" stroke="#64748B" fill="#64748B" fillOpacity={0.15} strokeDasharray="3 3" />
+                <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '4px' }} />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
 
         {/* Underlying Match Stats Grid */}
         <h4 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }}>
