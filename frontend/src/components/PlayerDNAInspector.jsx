@@ -29,22 +29,60 @@ export default function PlayerDNAInspector({ player, onClose }) {
 
   if (!player) return null;
 
-  const xp = Number(player.expected_points || 4.5);
+  const xp = Number(player.dynamicXp || player.expected_points || 4.5);
   const pos = (player.position || 'MID').toUpperCase();
 
   // Extract or estimate granular component weights
-  const xG90 = Number(player.short_form_expected_goals_90 || player.expected_goals_per_90 || (pos === 'FWD' ? 0.45 : pos === 'MID' ? 0.22 : 0.05));
-  const xA90 = Number(player.short_form_expected_assists_90 || player.expected_assists_per_90 || (pos === 'MID' ? 0.25 : pos === 'FWD' ? 0.15 : 0.08));
-  
-  const c1_c2 = pos === 'GK' ? 2.0 : 1.95; // Appearance (2 pts)
-  const c8_goals = Number((xG90 * (pos === 'FWD' ? 4 : (pos === 'MID' ? 5 : 6)) * 0.85).toFixed(2));
-  const c7_assists = Number((xA90 * 3.0 * 0.85).toFixed(2));
-  const c9_cleansheet = Number(((pos === 'GK' || pos === 'DEF') ? 1.45 : (pos === 'MID' ? 0.35 : 0.0)).toFixed(2));
-  const c6_bonus = Number((Math.min(xp * 0.14, 1.25)).toFixed(2));
-  const c3_saves = pos === 'GK' ? 0.95 : 0.0;
-  const c11_dc = 0.20; // Defensive contribution
-  const c4_c5_cards = -0.10;
-  const c10_gc_penalty = (pos === 'GK' || pos === 'DEF') ? -0.45 : 0.0;
+  const xG90 = Number(
+    player.bayesXg != null ? player.bayesXg :
+    player.short_form_expected_goals_90 ??
+    player.expected_goals_per_90 ??
+    (pos === 'FWD' ? 0.45 : pos === 'MID' ? 0.22 : 0.05)
+  );
+
+  const xA90 = Number(
+    player.bayesXa != null ? player.bayesXa :
+    player.short_form_expected_assists_90 ??
+    player.expected_assists_per_90 ??
+    (pos === 'MID' ? 0.25 : pos === 'FWD' ? 0.15 : 0.08)
+  );
+
+  // Exact component extraction from model
+  const c1_c2 = (player.c1_app_1_60 != null && player.c2_app_60_plus != null)
+    ? Number((player.c1_app_1_60 + player.c2_app_60_plus).toFixed(2))
+    : (pos === 'GK' ? 2.0 : 1.95);
+
+  const c8_goals = player.c8_goals != null
+    ? Number(player.c8_goals.toFixed(2))
+    : Number((xG90 * (pos === 'FWD' ? 4 : (pos === 'MID' ? 5 : 6)) * 0.85).toFixed(2));
+
+  const c7_assists = player.c7_assists != null
+    ? Number(player.c7_assists.toFixed(2))
+    : Number((xA90 * 3.0 * 0.85).toFixed(2));
+
+  const c9_cleansheet = player.c9_clean_sheets != null
+    ? Number(player.c9_clean_sheets.toFixed(2))
+    : Number(((pos === 'GK' || pos === 'DEF') ? 1.45 : (pos === 'MID' ? 0.35 : 0.0)).toFixed(2));
+
+  const c6_bonus = player.c6_bonus != null
+    ? Number(player.c6_bonus.toFixed(2))
+    : Number((Math.min(xp * 0.14, 1.25)).toFixed(2));
+
+  const c3_saves = player.c3_saves != null
+    ? Number(player.c3_saves.toFixed(2))
+    : (pos === 'GK' ? 0.95 : 0.0);
+
+  const c11_dc = player.c11_defensive_contributions != null
+    ? Number(player.c11_defensive_contributions.toFixed(2))
+    : 0.20;
+
+  const c4_c5_cards = (player.c4_yellow_cards != null && player.c5_red_cards != null)
+    ? Number((player.c4_yellow_cards + player.c5_red_cards).toFixed(2))
+    : -0.10;
+
+  const c10_gc_penalty = player.c10_goals_conceded != null
+    ? Number(player.c10_goals_conceded.toFixed(2))
+    : ((pos === 'GK' || pos === 'DEF') ? -0.45 : 0.0);
 
   const componentsData = [
     { name: 'Appearance (60+m)', value: Number(c1_c2.toFixed(2)), color: '#3B82F6', desc: 'Guaranteed 2 pts for 60+ minutes' },
@@ -52,7 +90,7 @@ export default function PlayerDNAInspector({ player, onClose }) {
     { name: 'Assist Threat (xA)', value: c7_assists, color: '#06B6D4', desc: `Based on ${xA90.toFixed(2)} xA/90` },
     { name: 'Clean Sheet', value: c9_cleansheet, color: '#8B5CF6', desc: 'Defensive shutout probability' },
     { name: 'Bonus Points (BPS)', value: c6_bonus, color: '#F59E0B', desc: 'Simulated 3, 2, 1 BPS equity' },
-    ...(pos === 'GK' ? [{ name: 'Goalkeeper Saves', value: c3_saves, color: '#EC4899', desc: 'Save point baseline' }] : []),
+    ...(pos === 'GK' || c3_saves > 0 ? [{ name: 'Goalkeeper Saves', value: c3_saves, color: '#EC4899', desc: 'Save point baseline' }] : []),
     { name: 'Defensive Actions', value: c11_dc, color: '#14B8A6', desc: 'Ball recoveries & tackles' },
     { name: 'Discipline Risk', value: c4_c5_cards, color: '#EF4444', desc: 'Yellow / red card deductions' },
     ...(c10_gc_penalty !== 0 ? [{ name: 'Goals Conceded', value: c10_gc_penalty, color: '#DC2626', desc: 'Deductions for 2+ goals conceded' }] : [])

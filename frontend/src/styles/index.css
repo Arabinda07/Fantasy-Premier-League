@@ -3055,4 +3055,73 @@ h1, h2, h3, h4, h5, h6 {
   padding-top: 8px;
 }
 
+/* ==========================================================================
+   3-TIER PROBABILITY DISTRIBUTION RANGE BAR (FLR | MED | CEIL)
+   ========================================================================== */
+
+.prob-range-container {
+  margin-top: 6px;
+  padding: 4px 6px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.prob-range-container:hover {
+  border-color: var(--accent-emerald);
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.prob-range-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 9px;
+  font-weight: 700;
+  margin-bottom: 3px;
+  line-height: 1;
+}
+
+.prob-floor {
+  color: var(--accent-crimson);
+}
+
+.prob-median {
+  color: var(--text-primary);
+}
+
+.prob-ceiling {
+  color: var(--accent-emerald);
+}
+
+.prob-range-track {
+  position: relative;
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: visible;
+}
+
+.prob-range-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.6) 0%, rgba(16, 185, 129, 0.6) 100%);
+  border-radius: 2px;
+}
+
+.prob-median-dot {
+  position: absolute;
+  top: -2px;
+  width: 7px;
+  height: 7px;
+  background: #ffffff;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+}
+
 

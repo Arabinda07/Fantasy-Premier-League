@@ -15,7 +15,7 @@ export default function LiveTeamSyncModal({
   currentProfile
 }) {
   const [entryId, setEntryId] = useState(currentProfile?.entry_id || '9500404');
-  const [leagueId, setLeagueId] = useState('123456');
+  const [leagueId, setLeagueId] = useState(currentProfile?.league_id || '1305495');
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState(null);
 

@@ -4,69 +4,58 @@ import {
   Warning,
   Lightning,
   Sparkle,
-  Target,
-  ChartBar
+  TrendUp,
+  Target
 } from '@phosphor-icons/react';
 
 export default function PlayerCard({
   player,
-  isSelected,
-  onClick,
   onInspect,
-  onOpenMatchup
+  onOpenMatchup,
+  onSelectSub,
+  isSubTarget,
+  isCaptain,
+  isViceCaptain,
+  compact = false
 }) {
   if (!player) return null;
 
-  const isCaptain = player.is_captain;
-  const isVice = player.is_vice_captain;
+  // Extract quantitative risk / probability indicators
+  const pMins60 = player.p_mins_60 != null ? Math.round(player.p_mins_60 * 100) : 92;
+  const hookHazard = player.hook_hazard != null ? player.hook_hazard : 0.04;
+  const haulProb = player.haul_prob != null ? Math.round(player.haul_prob * 100) : null;
+  const p10 = player.floor_p10 != null ? Number(player.floor_p10).toFixed(1) : '1.5';
+  const p50 = player.median_p50 != null ? Number(player.median_p50).toFixed(1) : Number(player.expected_points || 4.5).toFixed(1);
+  const p90 = player.ceiling_p90 != null ? Number(player.ceiling_p90).toFixed(1) : (Number(player.expected_points || 4.5) * 2.2).toFixed(1);
 
   // Set-piece badges
   const setPieceTags = [];
-  if (player.sp_pk_order === 1) setPieceTags.push({ label: 'PK', title: 'Primary Penalty Taker' });
-  if (player.sp_ck_order === 1) setPieceTags.push({ label: 'CK', title: 'Corner Delivery Specialist' });
-  if (player.sp_fk_order === 1) setPieceTags.push({ label: 'FK', title: 'Direct Free-Kick Taker' });
-
-  // Probability percentiles
-  const p10 = player.floor_p10 != null ? player.floor_p10 : Math.max(1, (player.expected_points * 0.35)).toFixed(1);
-  const p50 = player.median_p50 != null ? player.median_p50 : (player.expected_points * 0.95).toFixed(1);
-  const p90 = player.ceiling_p90 != null ? player.ceiling_p90 : (player.expected_points * 1.8).toFixed(1);
-  const haulProb = player.haul_prob != null ? Math.round(player.haul_prob * 100) : null;
-
-  // Minutes security
-  const pMins60 = player.p_mins_60 != null ? Math.round(player.p_mins_60 * 100) : 90;
-  const hookHazard = player.hook_hazard != null ? player.hook_hazard : 0.02;
-
-  const handleClick = (e) => {
-    if (e.detail === 2 && onInspect) {
-      onInspect(player);
-    } else if (onClick) {
-      onClick();
-    }
-  };
+  if (player.sp_pk_order === 1) setPieceTags.push({ label: 'PK1', title: '1st Choice Penalty Taker' });
+  if (player.sp_ck_order === 1) setPieceTags.push({ label: 'CK1', title: '1st Choice Corner Taker' });
+  if (player.sp_fk_order === 1) setPieceTags.push({ label: 'FK1', title: '1st Choice Direct Free-Kick Taker' });
 
   return (
     <div
-      className={`player-card ${isCaptain ? 'is-captain' : ''} ${isVice ? 'is-vice' : ''} ${isSelected ? 'is-selected' : ''}`}
-      onClick={handleClick}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          if (onClick) onClick();
-        }
-      }}
-      tabIndex={0}
-      role="button"
-      aria-label={`${player.web_name}, ${player.position}, £${Number(player.cost || 0).toFixed(1)}M, ${Number(player.expected_points || 0).toFixed(1)} expected points`}
-      title="Click to swap · Click 'Stats' for points breakdown"
+      className={`player-pitch-card ${isSubTarget ? 'sub-target' : ''}`}
+      onClick={() => onSelectSub && onSelectSub(player)}
+      title="Click card to substitute or swap positions"
     >
-      {/* Role Badges */}
-      {isCaptain && <span className="player-role-badge captain" title="Captain (2x Points)">C</span>}
-      {isVice && !isCaptain && <span className="player-role-badge vice" title="Vice Captain">V</span>}
+      {/* Captain / Vice-Captain Flush Badge */}
+      {isCaptain && (
+        <div className="captain-badge" title="Active Team Captain (2x Points)">
+          C
+        </div>
+      )}
+      {isViceCaptain && !isCaptain && (
+        <div className="vice-captain-badge" title="Vice Captain (backup if Captain DNPs)">
+          V
+        </div>
+      )}
 
-      {/* Position Header & Price */}
-      <div className="player-card-header">
+      {/* Card Header: Position Squircle Tag + Price */}
+      <div className="player-card-top-row">
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <span className={`player-position-pill ${player.position}`}>
+          <span className={`player-pos-tag ${player.position}`}>
             {player.position}
           </span>
           {pMins60 >= 90 ? (
@@ -75,7 +64,7 @@ export default function PlayerCard({
             <Warning size={11} weight="fill" color="var(--accent-amber)" title="Early Hook Risk (sub-60 min substitution)" />
           ) : null}
         </div>
-        <span className="player-cost-val">
+        <span className="player-cost-val font-mono">
           £{Number(player.cost || 0).toFixed(1)}m
         </span>
       </div>
@@ -149,23 +138,23 @@ export default function PlayerCard({
         }}
         title={`Click for breakdown · Floor (Worst Case): ${p10} pts | Median (Expected): ${p50} pts | Ceiling (Haul): ${p90} pts`}
       >
-        <div className="prob-range-labels">
-          <span className="prob-floor">{p10}</span>
-          <span className="prob-median">{p50}</span>
-          <span className="prob-ceiling">{p90}</span>
+        <div className="prob-range-labels font-mono">
+          <span className="prob-floor" title="10th Percentile Floor (Worst Case)">FLR {p10}</span>
+          <span className="prob-median" title="50th Percentile Median (Expected)">MED {p50}</span>
+          <span className="prob-ceiling" title="90th Percentile Ceiling (Haul Outcome)">CEIL {p90}</span>
         </div>
         <div className="prob-range-track">
           <div
             className="prob-range-fill"
             style={{
-              left: `${Math.min(30, (p10 / 18) * 100)}%`,
-              right: `${Math.max(0, 100 - (p90 / 18) * 100)}%`
+              left: `${Math.min(30, (Number(p10) / 18) * 100)}%`,
+              right: `${Math.max(0, 100 - (Number(p90) / 18) * 100)}%`
             }}
           />
           <div
             className="prob-median-dot"
             style={{
-              left: `${Math.min(95, Math.max(5, (p50 / 18) * 100))}%`
+              left: `${Math.min(95, Math.max(5, (Number(p50) / 18) * 100))}%`
             }}
           />
         </div>

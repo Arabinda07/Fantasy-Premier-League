@@ -52,36 +52,47 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
         const pos = p.position || 'MID';
         const baseline = POSITIONAL_BASELINES[pos] || POSITIONAL_BASELINES.MID;
         
-        const observedMinutes = 360;
+        // Use player's actual minutes sample (short-form or season minutes)
+        const observedMinutes = Math.max(0, Number(p.short_form_minutes ?? p.season_minutes ?? p.minutes ?? (p.season_starts ? p.season_starts * 90 : 0)));
         const shrinkageWeight = observedMinutes / (observedMinutes + priorMinutes);
 
-        const rawXg = Number(p.expected_goals_per_90 || p.short_form_expected_goals_90 || 0.2);
-        const rawXa = Number(p.expected_assists_per_90 || p.short_form_expected_assists_90 || 0.15);
+        // Sanitize raw rates
+        let rawXg = Number(p.short_form_expected_goals_90 ?? p.expected_goals_per_90 ?? baseline.xG90);
+        let rawXa = Number(p.short_form_expected_assists_90 ?? p.expected_assists_per_90 ?? baseline.xA90);
 
-        // Blended expected metrics
+        if (isNaN(rawXg)) rawXg = baseline.xG90;
+        if (isNaN(rawXa)) rawXa = baseline.xA90;
+
+        // Blended expected metrics via empirical Bayesian shrinkage
         const bayesXg = (shrinkageWeight * rawXg) + ((1 - shrinkageWeight) * baseline.xG90);
         const bayesXa = (shrinkageWeight * rawXa) + ((1 - shrinkageWeight) * baseline.xA90);
 
+        // Minutes security / start probability scaling
+        const pApp = Number(p.p_app ?? (p.season_starts > 0 ? 0.95 : observedMinutes > 180 ? 0.85 : 0.40));
+        const p60Plus = Number(p.p_60_plus ?? (observedMinutes > 270 ? 0.90 : 0.30));
+
         // Component point calculation
         const goalPts = pos === 'FWD' ? 4 : (pos === 'MID' ? 5 : 6);
-        const c1_c2 = 1.95;
-        const c8_goals = bayesXg * goalPts * 0.85 * homeAdvantage;
-        const c7_assists = bayesXa * 3.0 * 0.85 * homeAdvantage;
-        const c9_cs = (pos === 'GK' || pos === 'DEF') ? baseline.cleanSheet * 4.0 * homeAdvantage : (pos === 'MID' ? 0.35 : 0.0);
-        const c3_saves = pos === 'GK' ? baseline.savePts90 : 0.0;
-        const c6_bonus = (bayesXg * 1.5 + bayesXa * 1.2 + baseline.bonus90) * 0.8;
-        const c10_penalty = (pos === 'GK' || pos === 'DEF') ? -0.4 : 0.0;
+        const c1_c2 = (1.0 * pApp + 1.0 * p60Plus);
+        const c8_goals = bayesXg * goalPts * 0.85 * homeAdvantage * pApp;
+        const c7_assists = bayesXa * 3.0 * 0.85 * homeAdvantage * pApp;
+        const c9_cs = (pos === 'GK' || pos === 'DEF') ? baseline.cleanSheet * 4.0 * homeAdvantage * p60Plus : (pos === 'MID' ? 0.35 * p60Plus : 0.0);
+        const c3_saves = pos === 'GK' ? baseline.savePts90 * pApp : 0.0;
+        const c6_bonus = (bayesXg * 1.5 + bayesXa * 1.2 + baseline.bonus90) * 0.8 * pApp;
+        const c10_penalty = (pos === 'GK' || pos === 'DEF') ? -0.4 * pApp : 0.0;
 
-        const dynamicXp = Math.max(1.0, c1_c2 + c8_goals + c7_assists + c9_cs + c3_saves + c6_bonus + c10_penalty);
+        const dynamicXp = Math.max(0.2, c1_c2 + c8_goals + c7_assists + c9_cs + c3_saves + c6_bonus + c10_penalty);
 
         return {
           ...p,
+          observedMinutes,
           rawXg,
           rawXa,
           bayesXg,
           bayesXa,
           shrinkageWeight,
-          dynamicXp
+          dynamicXp,
+          expected_points: dynamicXp // Sync with inspection modal
         };
       })
       .sort((a, b) => b.dynamicXp - a.dynamicXp);
@@ -148,8 +159,13 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
               className="studio-range-input"
               aria-label="Adjust historical baseline weighting sample in minutes"
             />
-            <div className="slider-subtext">
-              Higher minutes lean more heavily on proven long-term track records rather than early-season noise.
+            <div className="slider-ticks font-mono">
+              <span>100m (Rapid Form Reaction)</span>
+              <span>500m (Balanced)</span>
+              <span>1200m (Proven Track Record)</span>
+            </div>
+            <div className="slider-hint">
+              Controls how much weight is given to a player&apos;s recent minutes versus their long-term league baseline.
             </div>
           </div>
 
@@ -159,7 +175,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                 <Lightning size={14} weight="bold" />
                 Home Advantage Multiplier
               </span>
-              <span className="slider-value font-mono">+{( (homeAdvantage - 1.0) * 100 ).toFixed(0)}% boost</span>
+              <span className="slider-value font-mono">{homeAdvantage.toFixed(2)}x boost</span>
             </div>
             <input
               type="range"
@@ -169,39 +185,48 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
               value={homeAdvantage}
               onChange={e => setHomeAdvantage(Number(e.target.value))}
               className="studio-range-input"
-              aria-label="Adjust home venue expectation multiplier"
+              aria-label="Adjust home venue performance multiplier"
             />
-            <div className="slider-subtext">
-              Accounts for the real-world statistical boost players enjoy when playing in front of their home fans.
+            <div className="slider-ticks font-mono">
+              <span>0.90x (Neutral Ground)</span>
+              <span>1.10x (Average Home Boost)</span>
+              <span>1.30x (Fortress Venue)</span>
+            </div>
+            <div className="slider-hint">
+              Scales expected goals and clean sheet odds for players playing in their home stadium.
             </div>
           </div>
         </div>
       </div>
 
-      {/* Position Baselines Reference Cards */}
-      <div>
-        <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '10px' }}>
-          Premier League Positional Averages (Per 90 Mins)
-        </h4>
-        <div className="baseline-cards-grid">
-          {Object.entries(POSITIONAL_BASELINES).map(([pos, base]) => (
+      {/* Positional Baseline Rates Reference */}
+      <div className="studio-baselines-panel">
+        <h3 className="studio-section-title">
+          Premier League Positional Baselines (per 90 minutes)
+        </h3>
+        <div className="studio-baselines-grid">
+          {Object.entries(POSITIONAL_BASELINES).map(([pos, data]) => (
             <div key={pos} className="baseline-card">
               <div className="baseline-header">
                 <span className={`player-position-pill ${pos}`}>{pos}</span>
-                <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)' }}>{base.label}</span>
+                <span className="baseline-label">{data.label}</span>
               </div>
-              <div className="baseline-stats font-mono">
-                <div className="baseline-row">
-                  <span>Avg xG/90:</span>
-                  <span className="val">{base.xG90.toFixed(2)}</span>
+              <div className="baseline-metrics-list">
+                <div className="baseline-metric-row">
+                  <span className="metric-name">Expected Goals (xG/90)</span>
+                  <span className="metric-val font-mono">{data.xG90.toFixed(2)}</span>
                 </div>
-                <div className="baseline-row">
-                  <span>Avg xA/90:</span>
-                  <span className="val">{base.xA90.toFixed(2)}</span>
+                <div className="baseline-metric-row">
+                  <span className="metric-name">Expected Assists (xA/90)</span>
+                  <span className="metric-val font-mono">{data.xA90.toFixed(2)}</span>
                 </div>
-                <div className="baseline-row">
-                  <span>Clean Sheet Rate:</span>
-                  <span className="val">{(base.cleanSheet * 100).toFixed(0)}%</span>
+                <div className="baseline-metric-row">
+                  <span className="metric-name">Clean Sheet Rate</span>
+                  <span className="metric-val font-mono">{Math.round(data.cleanSheet * 100)}%</span>
+                </div>
+                <div className="baseline-metric-row">
+                  <span className="metric-name">Bonus Rate (BPS/90)</span>
+                  <span className="metric-val font-mono">{data.bonus90.toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -209,73 +234,90 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="data-table-container" style={{ marginTop: '20px' }}>
+      {/* Real-time Adjusted Predictions Table */}
+      <div className="data-table-container">
+        {/* Table Controls Header */}
         <div className="studio-table-controls">
           <div className="controls-left">
             <span className="controls-title">Adjusted Player Point Projections</span>
-            <span className="controls-count">({totalItems} players)</span>
+            <span className="controls-count font-mono">{totalItems} Total Players</span>
           </div>
 
           <div className="controls-right">
-            <input
-              type="text"
-              placeholder="Search player or team..."
-              value={searchQuery}
-              onChange={e => handleSearchChange(e.target.value)}
-              className="studio-search-input"
-              aria-label="Search players"
-            />
-
-            <div role="group" aria-label="Filter by position" className="pos-btn-group">
+            {/* Position Filter Buttons */}
+            <div className="studio-pos-filters">
               {['ALL', 'GK', 'DEF', 'MID', 'FWD'].map(pos => (
                 <button
                   key={pos}
+                  type="button"
+                  className={`studio-pos-btn ${selectedPos === pos ? 'active' : ''}`}
                   onClick={() => handlePosChange(pos)}
-                  aria-pressed={selectedPos === pos}
-                  className={`pos-filter-btn ${selectedPos === pos ? 'active' : ''}`}
                 >
                   {pos}
                 </button>
               ))}
             </div>
+
+            {/* Search Input */}
+            <div className="studio-search-wrapper">
+              <input
+                type="text"
+                placeholder="Search player or team..."
+                value={searchQuery}
+                onChange={e => handleSearchChange(e.target.value)}
+                className="studio-search-input"
+                aria-label="Filter players by name or club"
+              />
+            </div>
+
+            {/* Page Size Selector */}
+            <div className="page-size-selector">
+              <label htmlFor="studio-page-size" className="page-size-label">Show:</label>
+              <select
+                id="studio-page-size"
+                value={pageSize}
+                onChange={e => {
+                  setPageSize(Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+                className="studio-select-input font-mono"
+              >
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+                <option value={99999}>All ({totalItems})</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        <div className="table-scroll-wrapper" style={{ maxHeight: '600px', overflowY: 'auto' }}>
+        {/* Table Body */}
+        <div className="table-scroll-wrapper">
           <table className="data-table">
             <thead>
               <tr>
-                <th style={{ position: 'sticky', left: 0, top: 0, zIndex: 20 }}>Player</th>
-                <th style={{ position: 'sticky', top: 0, zIndex: 15 }}>Pos</th>
-                <th style={{ position: 'sticky', top: 0, zIndex: 15 }}>Club</th>
-                <th style={{ position: 'sticky', top: 0, zIndex: 15 }}>Price</th>
-                <th style={{ position: 'sticky', top: 0, zIndex: 15 }}>Expected Goals (xG90)</th>
-                <th style={{ position: 'sticky', top: 0, zIndex: 15 }}>Expected Assists (xA90)</th>
-                <th style={{ position: 'sticky', top: 0, zIndex: 15 }}>Form vs History Balance</th>
-                <th style={{ position: 'sticky', top: 0, zIndex: 15 }}>Projected Score</th>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Pos</th>
+                <th>Club</th>
+                <th>Price</th>
+                <th>Blended xG</th>
+                <th>Blended xA</th>
+                <th>Form Sample &amp; Baseline Split</th>
+                <th>Adjusted Points</th>
               </tr>
             </thead>
             <tbody>
-              {paginatedPlayers.map(p => (
+              {paginatedPlayers.map((p, idx) => (
                 <tr
-                  key={p.player_code || p.id}
+                  key={p.player_code || p.id || p.web_name}
                   onClick={() => onInspectPlayer && onInspectPlayer(p)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      if (onInspectPlayer) onInspectPlayer(p);
-                    }
-                  }}
-                  tabIndex={0}
-                  role="button"
-                  aria-label={`${p.web_name}, ${p.position}, £${Number(p.now_cost || p.cost || 0).toFixed(1)}M, projected score ${(p.dynamicXp || 0).toFixed(1)}`}
                   style={{ cursor: 'pointer' }}
-                  title="Click to view detailed point projections"
+                  title="Click to inspect points breakdown"
                 >
-                  <td style={{ position: 'sticky', left: 0, zIndex: 10, fontWeight: 700, color: 'var(--text-primary)', background: 'var(--bg-surface-1)' }}>
-                    {p.web_name}
-                  </td>
+                  <td className="font-mono">#{startItem + idx}</td>
+                  <td style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{p.web_name}</td>
                   <td>
                     <span className={`player-position-pill ${p.position}`}>{p.position}</span>
                   </td>
@@ -284,7 +326,9 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                   <td className="font-mono" style={{ color: 'var(--accent-emerald)', fontWeight: 600 }}>{p.bayesXg.toFixed(2)}</td>
                   <td className="font-mono" style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>{p.bayesXa.toFixed(2)}</td>
                   <td className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                    {(p.shrinkageWeight * 100).toFixed(0)}% Form · {((1 - p.shrinkageWeight) * 100).toFixed(0)}% Baseline
+                    <span style={{ color: 'var(--text-secondary)', fontWeight: 700 }}>
+                      {(p.shrinkageWeight * 100).toFixed(0)}% Form ({p.observedMinutes}m)
+                    </span> · {((1 - p.shrinkageWeight) * 100).toFixed(0)}% Baseline
                   </td>
                   <td className="font-mono" style={{ fontWeight: 800, color: 'var(--accent-emerald)', fontSize: '13px' }}>
                     {p.dynamicXp.toFixed(1)} pts
@@ -293,7 +337,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
               ))}
               {paginatedPlayers.length === 0 && (
                 <tr>
-                  <td colSpan={8} style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)' }}>
+                  <td colSpan={9} style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)' }}>
                     No players matching your search criteria.
                   </td>
                 </tr>
@@ -363,24 +407,6 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
             >
               <CaretDoubleRight size={14} />
             </button>
-          </div>
-
-          <div className="pagination-size">
-            <span>Per page:</span>
-            <select
-              value={pageSize}
-              onChange={e => {
-                setPageSize(Number(e.target.value));
-                setCurrentPage(1);
-              }}
-              className="page-size-select"
-              aria-label="Select players per page"
-            >
-              <option value={25}>25</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-              <option value={9999}>All ({totalItems})</option>
-            </select>
           </div>
         </div>
       </div>
