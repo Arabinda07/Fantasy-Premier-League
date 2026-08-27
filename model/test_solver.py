@@ -117,6 +117,16 @@ class TestSquadOptimizer:
         team_counts = pd.Series([p.team for p in sol.squad]).value_counts()
         assert (team_counts <= 3).all()
 
+    def test_max_promoted_players_constraint(self, sample_player_pool):
+        # Mark Southampton as promoted team
+        pool = sample_player_pool.copy()
+        pool['is_promoted'] = pool['team'] == 'Southampton'
+        sol = solve_initial_squad(pool, budget=100.0, max_team_players=3, max_promoted_players=1)
+        team_counts = pd.Series([p.team for p in sol.squad]).value_counts()
+        # Southampton should have at most 1 player selected
+        soton_count = team_counts.get('Southampton', 0)
+        assert soton_count <= 1
+
     def test_captaincy_and_vice_captaincy(self, sample_player_pool):
         sol = solve_initial_squad(sample_player_pool, budget=100.0)
         assert sol.captain is not None

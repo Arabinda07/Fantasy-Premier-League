@@ -269,6 +269,9 @@ def prepare_solver_dataframe(
     df['expected_points'] = pd.to_numeric(df['expected_points'], errors='coerce').fillna(0.0)
     df['cost'] = pd.to_numeric(df['cost'], errors='coerce').fillna(5.0)
 
+    if 'is_promoted' in df.columns:
+        df['is_promoted'] = df['is_promoted'].fillna(False).astype(bool)
+
     # Matchup Intelligence (H2H & Tactical Archetype)
     if 'h2h_mult' not in df.columns and 'fixture_opponent' in df.columns:
         df = enrich_predictions_with_matchup_intelligence(df, season=season, data_root=data_root)
@@ -345,6 +348,7 @@ def solve_initial_squad(
     df: pd.DataFrame,
     budget: float = 100.0,
     max_team_players: int = 3,
+    max_promoted_players: int = 2,
     chip: Optional[str] = None,
     season: str = '2026-27',
     data_root: str = 'data',
@@ -364,6 +368,7 @@ def solve_initial_squad(
         df: DataFrame with candidate players.
         budget: maximum squad cost in £M (default 100.0).
         max_team_players: maximum allowed players from any single club (default 3).
+        max_promoted_players: maximum allowed players from any single promoted club (default 2).
         chip: optional FPL chip ('bboost', '3xc', 'freehit', 'wildcard').
         season: season string for price resolution.
         data_root: root data directory.
@@ -439,10 +444,15 @@ def solve_initial_squad(
     # 3. Budget Constraint
     prob += pulp.lpSum(df.loc[i, 'cost'] * x[i] for i in indices) <= budget, "Total_Budget_Limit"
 
-    # 4. Club / Team Constraints
+    # 4. Club / Team Constraints (with Promoted Team Limits)
+    promoted_teams = set()
+    if 'is_promoted' in df.columns:
+        promoted_teams = set(df[df['is_promoted'] == True]['team'].dropna().unique())
+
     for team_name in df['team'].dropna().unique():
         team_indices = df[df['team'] == team_name].index
-        prob += pulp.lpSum(x[i] for i in team_indices) <= max_team_players, f"Team_Limit_{team_name}"
+        limit = min(max_team_players, max_promoted_players) if team_name in promoted_teams else max_team_players
+        prob += pulp.lpSum(x[i] for i in team_indices) <= limit, f"Team_Limit_{team_name}"
 
     # 5. Captaincy & Vice-Captaincy Constraints
     prob += pulp.lpSum(c[i] for i in indices) == 1, "Exactly_One_Captain"
@@ -624,6 +634,7 @@ def solve_weekly_transfers(
     max_transfers: int = 4,
     hit_cost: float = 4.0,
     max_team_players: int = 3,
+    max_promoted_players: int = 2,
     season: str = '2026-27',
     data_root: str = 'data',
     strategy: str = 'pure_xp',
@@ -727,9 +738,14 @@ def solve_weekly_transfers(
     # Budget constraint using true purchase / sell prices
     prob += pulp.lpSum(df.loc[i, 'cost'] * x[i] for i in indices) <= total_available_budget, "Budget_Limit"
 
+    promoted_teams = set()
+    if 'is_promoted' in df.columns:
+        promoted_teams = set(df[df['is_promoted'] == True]['team'].dropna().unique())
+
     for team_name in df['team'].dropna().unique():
         team_indices = df[df['team'] == team_name].index
-        prob += pulp.lpSum(x[i] for i in team_indices) <= max_team_players, f"Team_Limit_{team_name}"
+        limit = min(max_team_players, max_promoted_players) if team_name in promoted_teams else max_team_players
+        prob += pulp.lpSum(x[i] for i in team_indices) <= limit, f"Team_Limit_{team_name}"
 
     prob += pulp.lpSum(c[i] for i in indices) == 1, "One_Captain"
     prob += pulp.lpSum(v[i] for i in indices) == 1, "One_Vice"
@@ -890,6 +906,7 @@ def solve_multi_horizon_transfers(
     max_transfers_per_gw: int = 2,
     hit_cost: float = 4.0,
     max_team_players: int = 3,
+    max_promoted_players: int = 2,
     start_gw: int = 1,
     season: str = '2026-27',
     data_root: str = 'data',
@@ -916,6 +933,7 @@ def solve_multi_horizon_transfers(
         max_transfers_per_gw: maximum transfers allowed per gameweek.
         hit_cost: penalty per transfer exceeding available FTs (-4.0).
         max_team_players: club quota constraint (default 3).
+        max_promoted_players: promoted club quota constraint (default 2).
         start_gw: initial gameweek number.
         season: season string.
         data_root: root data directory.
@@ -953,15 +971,21 @@ def solve_multi_horizon_transfers(
     # Master player metadata mapping
     all_meta: Dict[int, Dict[str, Any]] = {}
     for p_df in pools:
-        for _, row in p_df.iterrows():
-            c = int(row['player_code'])
+        for _, r in p_df.iterrows():
+            c = int(r['player_code'])
             if c not in all_meta:
                 all_meta[c] = {
-                    'web_name': str(row['web_name']),
-                    'team': str(row['team']),
-                    'position': str(row['position']),
-                    'cost': float(row['cost']),
+                    'web_name': r.get('web_name', f"P_{c}"),
+                    'team': r.get('team', ''),
+                    'position': r.get('position', 'MID'),
+                    'cost': float(r.get('cost', 5.0)),
+                    'is_promoted': bool(r.get('is_promoted', False)),
                 }
+
+    # Ensure all owned players have metadata
+    for c in current_squad_codes:
+        if c not in all_meta:
+            all_meta[c] = {'web_name': f"P_{c}", 'team': '', 'position': 'MID', 'cost': 5.0, 'is_promoted': False}
 
     # Initial squad cost & initial binary vector
     initial_codes_set = set(current_squad_codes)
@@ -1037,11 +1061,19 @@ def solve_multi_horizon_transfers(
         prob += pulp.lpSum([x[(c, t)] for c in fwd_codes]) == 3, f"quota_fwd_{t}"
         prob += pulp.lpSum([x[(c, t)] for c in all_codes_set]) == 15, f"quota_total_{t}"
 
-        # 2. Club Quota Constraints
+        # 2. Club Quota Constraints (with Promoted Team Limits)
+        promoted_teams = set()
+        for c in all_codes_set:
+            meta = all_meta.get(c, {})
+            t_name = meta.get('team', '')
+            if t_name and meta.get('is_promoted', False):
+                promoted_teams.add(t_name)
+
         unique_teams = set(all_meta.get(c, {}).get('team', '') for c in all_codes_set if all_meta.get(c, {}).get('team'))
         for team_name in unique_teams:
             team_codes = [c for c in all_codes_set if all_meta.get(c, {}).get('team') == team_name]
-            prob += pulp.lpSum([x[(c, t)] for c in team_codes]) <= max_team_players, f"team_limit_{team_name}_{t}"
+            limit = min(max_team_players, max_promoted_players) if team_name in promoted_teams else max_team_players
+            prob += pulp.lpSum([x[(c, t)] for c in team_codes]) <= limit, f"team_limit_{team_name}_{t}"
 
         # 3. Starting XI Formation Constraints
         for c in all_codes_set:

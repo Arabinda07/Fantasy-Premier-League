@@ -97,5 +97,20 @@ $$xP_{\text{DGW}} = xP_{\text{Match 1}} + xP_{\text{Match 2}}$$
 
 All 11 component points ($C_1 \dots C_{11}$) are summed across both matches, while `fixture_attack_mult` and `fixture_xgc90` are averaged.
 
+---
+
+## 7. Promoted Team Calibration & Bias Remediation
+
+To prevent artificial over-projection and knapsack solver exploitation of newly promoted clubs (e.g. Coventry City, Hull City, Sunderland in 2026–27):
+
+1. **Attacking Translation Discount ($\gamma_{\text{prom}} = 0.80$)**:
+   Championship shot creation rates do not translate 1:1 against Premier League defenses. An explicit $0.80\times$ discount is applied to $xG90$ and $xA90$ for all players representing promoted sides.
+2. **Defensive Error Floor ($xGC_{\text{floor}} = 1.40$)**:
+   In symmetric matchups between promoted clubs (e.g. Coventry vs. Hull), defensive expectations are bounded from below by $xGC \ge 1.40$, capping clean sheet probability at a realistic ceiling ($P(CS) \le \exp(-1.40) \approx 24.6\%$).
+3. **Early-Season Playing Probability Shrinkage**:
+   When $N_{\text{squads}} < 4$ matches, starting probability is shrunken via Empirical Bayes toward position-specific baseline priors ($0.75$ for outfield, $0.90$ for GK with $M=3.0$ games weight) to prevent 1-match start overfitting.
+4. **Squad Solver Promoted Quota ($\le 2$ players per club)**:
+   The MILP squad solver enforces a maximum cap of 2 players per promoted club, preventing budget enabler over-concentration.
+
 [^phase3-spec]: `docs/superpowers/specs/2026-08-25-remediation-and-phase-3-design.md`
 [^fixture-engine-src]: `model/fixture_engine.py`

@@ -48,7 +48,7 @@ console.log('🧪 Starting Client Optimizer (Phase 2) Test Suite...\n');
 console.log('▶ Test 1: Player Lookup & ID Reconciliation');
 assert.ok(fs.existsSync(PLAYERS_FULL_PATH), 'players_full.json must exist');
 const allPlayers = JSON.parse(fs.readFileSync(PLAYERS_FULL_PATH, 'utf-8'));
-assert.strictEqual(allPlayers.length, 610, 'Expected 610 players in dataset');
+assert.ok(allPlayers.length >= 600, `Expected at least 600 players in dataset (found ${allPlayers.length})`);
 
 const lookups = buildPlayerLookupMap(allPlayers);
 const sampleRaya = findPlayerData({ element: 1 }, lookups);

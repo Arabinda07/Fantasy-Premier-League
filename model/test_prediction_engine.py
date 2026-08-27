@@ -94,6 +94,15 @@ class TestPlayingProbabilities:
         assert probs['p_app'] == 0.0
         assert probs['p_60_plus'] == 0.0
 
+    def test_small_sample_starter_shrinkage(self):
+        # 1 start in 1 GW (squads_made=1) should be shrunken towards 0.75 prior rather than 1.0
+        probs = estimate_playing_probabilities(
+            starts=1.0, subs=0.0, unused_subs=0.0, total_minutes=90.0, position='DEF'
+        )
+        # Expected: (1/4)*1.0 + (3/4)*0.75 = 0.8125
+        assert abs(probs['p_start'] - 0.8125) < 1e-3
+        assert probs['p_start'] < 1.0
+
 
 class TestPlayerPositionPredictions:
     """Verify point breakdown across FWD, MID, DEF, and GK."""

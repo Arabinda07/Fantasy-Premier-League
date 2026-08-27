@@ -98,6 +98,7 @@ export default function RivalThreatMatrix({
       : (liveData?.players || []);
 
   const [selectedRivalId, setSelectedRivalId] = useState(rivals[0]?.entry_id || 1198015);
+  const [h2hView, setH2hView] = useState('split'); // 'split' | 'yours' | 'danger'
 
   const selectedRival = rivals.find(r => r.entry_id === selectedRivalId) || rivals[0];
 
@@ -325,9 +326,12 @@ export default function RivalThreatMatrix({
 
         {/* Selected Rival Detail & Differential Matrix */}
         {selectedRival && (
-          <div className="sidebar-panel">
+          <div className="h2h-comparison-panel">
             <div className="panel-header">
-              <span className="panel-title">Head-to-Head Comparison</span>
+              <div className="panel-title-group">
+                <span className="panel-title">Head-to-Head Tactical Duel</span>
+                <span className="panel-subtitle">Differential edge analysis &amp; swing risk</span>
+              </div>
               <span className="panel-badge font-mono">vs {selectedRival.manager_name}</span>
             </div>
 
@@ -336,10 +340,10 @@ export default function RivalThreatMatrix({
               <div className="h2h-swing-header">
                 <span className="h2h-swing-title">
                   <Gauge size={14} weight="bold" />
-                  Your Points Advantage
+                  <span>Projected Matchup Swing</span>
                 </span>
                 <span className="h2h-swing-val font-mono" style={{ color: netDelta >= 0 ? 'var(--accent-emerald)' : 'var(--accent-crimson)' }}>
-                  {netDelta >= 0 ? `+${netDelta}` : netDelta} pts projected lead
+                  {netDelta >= 0 ? `+${netDelta.toFixed(1)} pts projected lead` : `${netDelta.toFixed(1)} pts projected deficit`}
                 </span>
               </div>
               <div className="h2h-swing-track">
@@ -354,84 +358,122 @@ export default function RivalThreatMatrix({
                 <div className="h2h-swing-center-mark" />
               </div>
               <div className="h2h-swing-labels font-mono">
-                <span>{selectedRival.manager_name}&apos;s Differentials (+{rivalUpside.toFixed(1)})</span>
+                <span>Rival Threats (+{rivalUpside.toFixed(1)})</span>
                 <span>Even (0)</span>
                 <span>Your Differentials (+{yourUpside.toFixed(1)})</span>
               </div>
             </div>
 
-            {/* Your Unique Differentials */}
-            <div className="diff-section">
-              <div className="diff-section-title green">
-                <ShieldCheck size={14} weight="bold" />
-                <span>Your Differentials (Players {selectedRival.manager_name} doesn&apos;t own)</span>
-              </div>
-              <div className="diff-cards-list">
-                {userDiffCards.map(p => (
-                  <div
-                    key={p.name}
-                    className="diff-ledger-row green"
-                    onClick={() => handleInspect(p.name, p)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        handleInspect(p.name, p);
-                      }
-                    }}
-                    style={{ cursor: 'pointer' }}
-                    title={`Click to view ${p.name} scouting report & stats`}
-                    role="button"
-                    tabIndex={0}
-                  >
-                    <div className="diff-player-left">
-                      <span className={`player-pos-tag ${p.pos || 'MID'}`}>{p.pos || 'MID'}</span>
-                      <span className="diff-player-name">{p.name}</span>
-                      {p.team && <span className="diff-team-tag font-mono">{p.team}</span>}
-                    </div>
-                    <div className="diff-player-right font-mono">
-                      <span className="diff-cost">£{Number(p.cost || 6.0).toFixed(1)}m</span>
-                      <span className="diff-xp">+{Number(p.xp || 4.5).toFixed(1)} pts</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            {/* View Mode Switcher */}
+            <div className="h2h-view-tabs" role="tablist">
+              <button
+                type="button"
+                className={`h2h-tab-btn ${h2hView === 'split' ? 'active' : ''}`}
+                onClick={() => setH2hView('split')}
+              >
+                <span>Split View</span>
+              </button>
+              <button
+                type="button"
+                className={`h2h-tab-btn ${h2hView === 'yours' ? 'active' : ''}`}
+                onClick={() => setH2hView('yours')}
+              >
+                <span>Your Differentials ({userDiffCards.length})</span>
+              </button>
+              <button
+                type="button"
+                className={`h2h-tab-btn ${h2hView === 'danger' ? 'active' : ''}`}
+                onClick={() => setH2hView('danger')}
+              >
+                <span>Danger Players ({rivalDiffCards.length})</span>
+              </button>
             </div>
 
-            {/* Rival's Danger Men */}
-            <div className="diff-section" style={{ marginTop: '16px' }}>
-              <div className="diff-section-title red">
-                <ShieldWarning size={14} weight="bold" />
-                <span>Danger Players (Players {selectedRival.manager_name} owns that you don&apos;t)</span>
-              </div>
-              <div className="diff-cards-list">
-                {rivalDiffCards.map(p => (
-                  <div
-                    key={p.name}
-                    className="diff-ledger-row red"
-                    onClick={() => handleInspect(p.name, p)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        handleInspect(p.name, p);
-                      }
-                    }}
-                    style={{ cursor: 'pointer' }}
-                    title={`Click to view ${p.name} scouting report & stats`}
-                    role="button"
-                    tabIndex={0}
-                  >
-                    <div className="diff-player-left">
-                      <span className={`player-pos-tag ${p.pos || 'MID'}`}>{p.pos || 'MID'}</span>
-                      <span className="diff-player-name">{p.name}</span>
-                      {p.team && <span className="diff-team-tag font-mono">{p.team}</span>}
+            {/* Content Container (Split or Single Column) */}
+            <div className={`h2h-diff-layout ${h2hView}`}>
+              {/* Your Unique Differentials */}
+              {(h2hView === 'split' || h2hView === 'yours') && (
+                <div className="h2h-diff-col green">
+                  <div className="h2h-col-header green">
+                    <div className="h2h-col-title">
+                      <ShieldCheck size={14} weight="bold" />
+                      <span>Your Differentials ({userDiffCards.length})</span>
                     </div>
-                    <div className="diff-player-right font-mono">
-                      <span className="diff-cost">£{Number(p.cost || 6.0).toFixed(1)}m</span>
-                      <span className="diff-xp" style={{ color: 'var(--accent-crimson)' }}>+{Number(p.xp || 4.5).toFixed(1)} pts</span>
-                    </div>
+                    <span className="h2h-upside-pill green font-mono">+{yourUpside.toFixed(1)} xP</span>
                   </div>
-                ))}
-              </div>
+                  <div className="h2h-cards-scroll">
+                    {userDiffCards.map(p => (
+                      <div
+                        key={p.name}
+                        className="h2h-compact-row green"
+                        onClick={() => handleInspect(p.name, p)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleInspect(p.name, p);
+                          }
+                        }}
+                        style={{ cursor: 'pointer' }}
+                        title={`Click to view ${p.name} scouting report`}
+                        role="button"
+                        tabIndex={0}
+                      >
+                        <div className="h2h-player-meta">
+                          <span className={`player-pos-tag ${p.pos || 'MID'}`}>{p.pos || 'MID'}</span>
+                          <span className="h2h-player-name">{p.name}</span>
+                          {p.team && <span className="h2h-team-tag font-mono">{p.team}</span>}
+                        </div>
+                        <div className="h2h-player-stats font-mono">
+                          <span className="h2h-cost">£{Number(p.cost || 6.0).toFixed(1)}m</span>
+                          <span className="h2h-xp green">+{Number(p.xp || 4.5).toFixed(1)}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Rival's Danger Men */}
+              {(h2hView === 'split' || h2hView === 'danger') && (
+                <div className="h2h-diff-col red">
+                  <div className="h2h-col-header red">
+                    <div className="h2h-col-title">
+                      <ShieldWarning size={14} weight="bold" />
+                      <span>Danger Players ({rivalDiffCards.length})</span>
+                    </div>
+                    <span className="h2h-upside-pill red font-mono">+{rivalUpside.toFixed(1)} xP</span>
+                  </div>
+                  <div className="h2h-cards-scroll">
+                    {rivalDiffCards.map(p => (
+                      <div
+                        key={p.name}
+                        className="h2h-compact-row red"
+                        onClick={() => handleInspect(p.name, p)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleInspect(p.name, p);
+                          }
+                        }}
+                        style={{ cursor: 'pointer' }}
+                        title={`Click to view ${p.name} scouting report`}
+                        role="button"
+                        tabIndex={0}
+                      >
+                        <div className="h2h-player-meta">
+                          <span className={`player-pos-tag ${p.pos || 'MID'}`}>{p.pos || 'MID'}</span>
+                          <span className="h2h-player-name">{p.name}</span>
+                          {p.team && <span className="h2h-team-tag font-mono">{p.team}</span>}
+                        </div>
+                        <div className="h2h-player-stats font-mono">
+                          <span className="h2h-cost">£{Number(p.cost || 6.0).toFixed(1)}m</span>
+                          <span className="h2h-xp red">+{Number(p.xp || 4.5).toFixed(1)}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -97,7 +97,7 @@ export default function MarketVelocityTicker({ allPlayers, allPlayersData, liveD
         { web_name: 'Trippier', team: 'Newcastle', pos: 'DEF', cost: 5.5, net_vel: -81200, trend: 'Dropping Soon', ratio: '78% of threshold', progress: 78 },
       ]
     };
-  }, [allPlayers]);
+  }, [playersList]);
 
   const chips = [
     { name: 'Triple Captain', target_gw: 'GW25 or GW34', value: '+14.2 pts expected boost', reason: 'Best used on heavy hitters like Haaland or Salah during a Double Gameweek with two easy fixtures.' },

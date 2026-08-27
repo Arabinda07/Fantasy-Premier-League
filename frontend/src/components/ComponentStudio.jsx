@@ -10,7 +10,10 @@ import {
   CaretRight,
   CaretDoubleLeft,
   CaretDoubleRight,
-  Target
+  Target,
+  MagnifyingGlass,
+  Funnel,
+  X
 } from '@phosphor-icons/react';
 import accuracyMetricsData from '../data/accuracy_metrics.json';
 
@@ -104,14 +107,19 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
         const pApp = Number(p.p_app ?? (p.season_starts > 0 ? 0.95 : observedMinutes > 180 ? 0.85 : 0.40));
         const p60Plus = Number(p.p_60_plus ?? (observedMinutes > 270 ? 0.90 : 0.30));
 
+        // Promoted team calibration discount
+        const isPromoted = Boolean(p.is_promoted);
+        const attackDiscount = isPromoted ? 0.80 : 1.0;
+        const csRate = isPromoted ? Math.min(baseline.cleanSheet, 0.24) : baseline.cleanSheet;
+
         // Component point calculation
         const goalPts = pos === 'FWD' ? 4 : (pos === 'MID' ? 5 : 6);
         const c1_c2 = (1.0 * pApp + 1.0 * p60Plus);
-        const c8_goals = bayesXg * goalPts * 0.85 * homeAdvantage * pApp;
-        const c7_assists = bayesXa * 3.0 * 0.85 * homeAdvantage * pApp;
-        const c9_cs = (pos === 'GK' || pos === 'DEF') ? baseline.cleanSheet * 4.0 * homeAdvantage * p60Plus : (pos === 'MID' ? 0.35 * p60Plus : 0.0);
+        const c8_goals = bayesXg * goalPts * 0.85 * attackDiscount * homeAdvantage * pApp;
+        const c7_assists = bayesXa * 3.0 * 0.85 * attackDiscount * homeAdvantage * pApp;
+        const c9_cs = (pos === 'GK' || pos === 'DEF') ? csRate * 4.0 * homeAdvantage * p60Plus : (pos === 'MID' ? 0.35 * p60Plus : 0.0);
         const c3_saves = pos === 'GK' ? baseline.savePts90 * pApp : 0.0;
-        const c6_bonus = (bayesXg * 1.5 + bayesXa * 1.2 + baseline.bonus90) * 0.8 * pApp;
+        const c6_bonus = (bayesXg * 1.5 + bayesXa * 1.2 + baseline.bonus90) * 0.8 * attackDiscount * pApp;
         const c10_penalty = (pos === 'GK' || pos === 'DEF') ? -0.4 * pApp : 0.0;
 
         const dynamicXp = Math.max(0.2, c1_c2 + c8_goals + c7_assists + c9_cs + c3_saves + c6_bonus + c10_penalty);
@@ -335,21 +343,23 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
 
           {/* Real-time Adjusted Predictions Table */}
           <div className="data-table-container">
-            {/* Table Controls Header */}
-            <div className="studio-table-controls">
-              <div className="controls-left">
-                <span className="controls-title">Adjusted Player Projections</span>
-                <span className="controls-count font-mono">{totalItems} Total Players</span>
+            {/* Institutional Control Deck (DESIGN.md Tokens) */}
+            <div className="studio-control-deck">
+              <div className="deck-left">
+                <div className="deck-title-group">
+                  <span className="deck-title">Adjusted Player Projections</span>
+                  <span className="deck-count-badge font-mono">{totalItems} Players</span>
+                </div>
               </div>
 
-              <div className="controls-right">
-                {/* Position Filter Buttons */}
-                <div className="studio-pos-filters">
+              <div className="deck-right">
+                {/* Segmented Position Filter Rail */}
+                <div className="deck-filter-rail" role="group" aria-label="Filter by position">
                   {['ALL', 'GK', 'DEF', 'MID', 'FWD'].map(pos => (
                     <button
                       key={pos}
                       type="button"
-                      className={`studio-pos-btn ${selectedPos === pos ? 'active' : ''}`}
+                      className={`deck-pos-btn ${selectedPos === pos ? 'active' : ''} ${pos !== 'ALL' ? `pos-${pos.toLowerCase()}` : ''}`}
                       onClick={() => handlePosChange(pos)}
                     >
                       {pos}
@@ -357,36 +367,57 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                   ))}
                 </div>
 
-                {/* Search Input */}
-                <div className="studio-search-wrapper">
+                {/* Search Input Box with Phosphor Icon */}
+                <div className="deck-search-box">
+                  <MagnifyingGlass size={13} weight="bold" className="deck-search-icon" />
                   <input
                     type="text"
                     placeholder="Search player or team..."
                     value={searchQuery}
                     onChange={e => handleSearchChange(e.target.value)}
-                    className="studio-search-input"
+                    className="deck-search-input font-sans"
                     aria-label="Filter players by name or club"
                   />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      className="deck-search-clear"
+                      onClick={() => handleSearchChange('')}
+                      aria-label="Clear search"
+                    >
+                      <X size={11} weight="bold" />
+                    </button>
+                  )}
                 </div>
 
-                {/* Page Size Selector */}
-                <div className="page-size-selector">
-                  <label htmlFor="studio-page-size" className="page-size-label">Show:</label>
-                  <select
-                    id="studio-page-size"
-                    value={pageSize}
-                    onChange={e => {
-                      setPageSize(Number(e.target.value));
-                      setCurrentPage(1);
-                    }}
-                    className="studio-select-input font-mono"
-                  >
-                    <option value={10}>10</option>
-                    <option value={25}>25</option>
-                    <option value={50}>50</option>
-                    <option value={100}>100</option>
-                    <option value={99999}>All ({totalItems})</option>
-                  </select>
+                {/* Page Size Segmented Button Rail */}
+                <div className="deck-page-size">
+                  <span className="deck-page-label font-mono">Show:</span>
+                  <div className="deck-size-rail">
+                    {[25, 50, 100].map(size => (
+                      <button
+                        key={size}
+                        type="button"
+                        className={`deck-size-btn font-mono ${pageSize === size ? 'active' : ''}`}
+                        onClick={() => {
+                          setPageSize(size);
+                          setCurrentPage(1);
+                        }}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      className={`deck-size-btn font-mono ${pageSize >= 9999 ? 'active' : ''}`}
+                      onClick={() => {
+                        setPageSize(99999);
+                        setCurrentPage(1);
+                      }}
+                    >
+                      All
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

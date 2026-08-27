@@ -535,7 +535,8 @@ export function solveOptimal15Squad(allPlayers = [], budget = 100.0, strategy = 
     if (!p) return false;
     const pCode = p.player_code || p.code;
     if (sel.some((s) => (s.player_code || s.code) === pCode)) return false;
-    if (p.team && (teamCounts[p.team] || 0) >= 3) return false;
+    const maxLimit = p.is_promoted ? 2 : 3;
+    if (p.team && (teamCounts[p.team] || 0) >= maxLimit) return false;
     return true;
   };
 

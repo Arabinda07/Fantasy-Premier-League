@@ -512,9 +512,39 @@ This document tracks the phased rebuild of the Fantasy Premier League (FPL) poin
 
 ---
 
+### 15. Promoted Clubs Calibration, Fixture Heatmap Legend & Institutional UI Redesigns
+- **Problem**:
+  1. Promoted teams (Coventry City, Hull City, Ipswich Town) entering the top flight lacked Premier League history in the evaluation window, causing baseline defensive expectations to default to league average ($1.35\text{ xGC}$) instead of promoted priors ($1.80\text{ xGC}$). When playing each other at home, uncalibrated clean sheet odds ($32.3\%$) gave £4.0M defenders inflated $3.29\text{ xP}$ ($0.82\text{ xP/£M}$), prompting knapsack solvers to over-pack promoted enablers.
+  2. The Fixture Ticker lacked a visual legend explaining the FDR 1–5 color spectrum (green, grey, orange, red) and the mathematical derivation of the "Avg Difficulty" index.
+  3. The Mini-League Head-to-Head comparison card rendered as a single vertical column of 12+ items, stretching $\approx 850\text{px}$ deep and creating an unbalanced vertical void beside the 6-row Mini-League table.
+  4. The Points Forecaster projection table controls rendered with unstyled raw square buttons and a native OS `<select>` dropdown.
+- **Implementation**:
+  - **Promoted Club Bayesian Calibration ([`model/fixture_engine.py`](file:///e:/Fantasy-Premier-League/model/fixture_engine.py), [`model/prediction_engine.py`](file:///e:/Fantasy-Premier-League/model/prediction_engine.py), [`model/solver.py`](file:///e:/Fantasy-Premier-League/model/solver.py), [`frontend/src/utils/clientOptimizer.js`](file:///e:/Fantasy-Premier-League/frontend/src/utils/clientOptimizer.js))**:
+    - Automatic dynamic detection for any newly promoted team entering without historical PL records.
+    - $1.80\text{ xGC/90}$ baseline team defensive prior ($xG = 1.05$).
+    - $xGC \ge 1.40$ defensive matchup floor capping clean sheet probability at $\le 24.6\%$.
+    - $0.80\times$ Championship attacking translation discount on historical $xG, xA$.
+    - Small-sample empirical Bayes shrinkage on starters with $< 4$ matches ($P(\text{Start}) = 0.8125$ for 1 start).
+    - Enforced hard solver quotas ($\le 2$ players per promoted club) in both Python MILP and JavaScript client solvers.
+  - **Fixture Heatmap Legend Bar ([`frontend/src/components/FixtureHeatmap.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/FixtureHeatmap.jsx), [`frontend/src/styles/index.css`](file:///e:/Fantasy-Premier-League/frontend/src/styles/index.css))**:
+    - Added high-contrast color chips for FDR 1 (Very Easy), FDR 2 (Easy), FDR 3 (Moderate), FDR 4 (Tough), FDR 5 (Very Tough), and Blank GW.
+    - Added formula explainer badge explicitly showing $\text{Avg Difficulty} = \frac{\sum \text{FDR}}{N}$ with ascending sort description.
+  - **Head-to-Head Tactical Duel Redesign ([`frontend/src/components/RivalThreatMatrix.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/RivalThreatMatrix.jsx))**:
+    - Replaced vertical tower with a balanced **2-column split layout** (Your Differentials on left, Danger Players on right).
+    - Added interactive view switcher tabs (`Split View`, `Your Differentials`, `Danger Players`) and clamped $230\text{px}$ custom scroll area, harmonizing panel height with the Mini-League table.
+  - **Points Forecaster Control Deck Redesign ([`frontend/src/components/ComponentStudio.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/ComponentStudio.jsx))**:
+    - Replaced raw inputs with an institutional control deck featuring role-colored positional filters (`GK` amber, `DEF` blue, `MID` emerald, `FWD` crimson), tokenized search with Phosphor `MagnifyingGlass`, and segmented page size rail (`[ 25 | 50 | 100 | All ]`).
+- **Verification**:
+  - `python -m pytest model/ -v`: **196 passed, 0 failed**.
+  - `node frontend/src/utils/clientOptimizer.test.js`: **11 / 11 test suites passed**.
+  - `python scripts/validate_okf.py`: **43 files scanned, 0 errors verified**.
+  - `npm run build`: Production bundle compiled in **1.05s** with 0 errors.
+
+---
+
 ## Current Status & Next Horizon
 
-All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit with Reactive 4-Chip Projections**, the **Autonomous Gameweek Transition Orchestrator**, the **100% Native FPL Opta Data Engine**, **Phases 1–4 of the Multi-User Live Platform Rebuild**, the **FPL Dugout Rebranding & Complete 6-Surface Fan-Friendly Copy Transformation**, and **Frontend Prop Alignment & Pipeline Unification** are **complete, robust, and production-verified**.
+All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit with Reactive 4-Chip Projections**, the **Autonomous Gameweek Transition Orchestrator**, the **100% Native FPL Opta Data Engine**, **Phases 1–4 of the Multi-User Live Platform Rebuild**, the **FPL Dugout Rebranding & Complete 6-Surface Fan-Friendly Copy Transformation**, **Frontend Prop Alignment & Pipeline Unification**, and **Promoted Clubs Calibration & Institutional UI Polish** are **complete, robust, and production-verified**.
 
 For complete operational playbooks and design standards:
 - 👉 **[DESIGN.md](file:///E:/Fantasy-Premier-League/DESIGN.md)**

@@ -57,6 +57,8 @@ PROMOTED_TEAM_PRIORS: Dict[str, float] = {
     'xg90': 1.05,
     'xgc90': 1.80,
 }
+PROMOTED_TEAM_ATTACK_DISCOUNT: float = 0.80  # 20% translation discount for promoted attackers
+PROMOTED_FIXTURE_XGC_FLOOR: float = 1.40      # Minimum defensive error floor for promoted teams
 
 
 # ---------------------------------------------------------------------------
@@ -153,8 +155,8 @@ def compute_fixture_multipliers(
         Dict with keys: 'attack_mult', 'fixture_xgc90', 'opp_xg90', 'is_home'
     """
     # Safe lookups with fallback to PROMOTED_TEAM_PRIORS if team has no match logs
-    team_stats = team_stats_map.get(team_name, PROMOTED_TEAM_PRIORS)
-    opp_stats = team_stats_map.get(opponent_name, PROMOTED_TEAM_PRIORS)
+    team_stats = team_stats_map.get(team_name, {**PROMOTED_TEAM_PRIORS, 'is_promoted': True})
+    opp_stats = team_stats_map.get(opponent_name, {**PROMOTED_TEAM_PRIORS, 'is_promoted': True})
 
     team_xgc90 = _safe_float(team_stats.get('xgc90'), default=PROMOTED_TEAM_PRIORS['xgc90'])
     opp_xg90 = _safe_float(opp_stats.get('xg90'), default=PROMOTED_TEAM_PRIORS['xg90'])
@@ -174,6 +176,10 @@ def compute_fixture_multipliers(
     # Combined multipliers
     attack_mult = opp_defense_ratio * venue_attack
     fixture_xgc90 = team_xgc90 * opp_attack_ratio * venue_defense
+
+    # Enforce defensive error floor for promoted teams to avoid artificial clean sheet inflation
+    if team_stats.get('is_promoted', False) or team_name not in team_stats_map:
+        fixture_xgc90 = max(PROMOTED_FIXTURE_XGC_FLOOR, fixture_xgc90)
 
     return {
         'attack_mult': round(attack_mult, 4),
@@ -323,9 +329,12 @@ def predict_player_fixture(
     opp_xg90 = mults['opp_xg90']
 
     # 4. Apply multipliers & dynamic component scaling
+    is_promoted = team_stats_map.get(team, {}).get('is_promoted', False) or (team not in team_stats_map)
+    attack_discount = PROMOTED_TEAM_ATTACK_DISCOUNT if is_promoted else 1.0
+
     fixture_player = dict(player)
-    fixture_player['long_form_expected_goals_90'] = adj_xg90 * attack_mult
-    fixture_player['long_form_expected_assists_90'] = adj_xa90 * attack_mult
+    fixture_player['long_form_expected_goals_90'] = adj_xg90 * attack_mult * attack_discount
+    fixture_player['long_form_expected_assists_90'] = adj_xa90 * attack_mult * attack_discount
     fixture_player['team_long_form_xgc90'] = fixture_xgc90
 
     # GK Save Scaling: facing harder attack increases shot volume and expected saves
@@ -401,24 +410,30 @@ def predict_gameweek_fixtures(
         return pd.DataFrame()
 
     # Build blended team stats map
-    team_stats_map: Dict[str, Dict[str, float]] = {}
+    team_stats_map: Dict[str, Dict[str, Any]] = {}
     for team_name in df['team'].dropna().unique():
         team_rows = df[df['team'] == team_name]
         if team_rows.empty:
             continue
         first_row = team_rows.iloc[0]
 
-        t_long_xg = _safe_float(first_row.get('team_long_form_xg90'), DEFAULT_LEAGUE_AVG_XG)
-        t_short_xg = _safe_float(first_row.get('team_short_form_xg90'), t_long_xg)
-        t_long_xgc = _safe_float(first_row.get('team_long_form_xgc90'), DEFAULT_LEAGUE_AVG_XGC)
-        t_short_xgc = _safe_float(first_row.get('team_short_form_xgc90'), t_long_xgc)
+        has_long_xg = pd.notnull(first_row.get('team_long_form_xg90')) and _safe_float(first_row.get('team_long_form_xg90')) > 0
+        is_promoted = not has_long_xg or bool(first_row.get('is_promoted', False))
+
+        default_xg = PROMOTED_TEAM_PRIORS['xg90'] if is_promoted else DEFAULT_LEAGUE_AVG_XG
+        default_xgc = PROMOTED_TEAM_PRIORS['xgc90'] if is_promoted else DEFAULT_LEAGUE_AVG_XGC
+
+        t_long_xg = _safe_float(first_row.get('team_long_form_xg90'), default=default_xg)
+        t_short_xg = _safe_float(first_row.get('team_short_form_xg90'), default=t_long_xg)
+        t_long_xgc = _safe_float(first_row.get('team_long_form_xgc90'), default=default_xgc)
+        t_short_xgc = _safe_float(first_row.get('team_short_form_xgc90'), default=t_long_xgc)
 
         # Use actual team short-form minutes for sample-size weighted blending
-        # (F-07 fix: was hardcoded to 1.0, which made short-form contribute ~0.08%)
         team_short_mins = _safe_float(first_row.get('team_short_form_minutes'), default=540.0)
         team_stats_map[team_name] = {
             'xg90': blend_form_rates(t_short_xg, t_long_xg, alpha, team_short_mins),
             'xgc90': blend_form_rates(t_short_xgc, t_long_xgc, alpha, team_short_mins),
+            'is_promoted': is_promoted,
         }
 
     league_avg_xg, league_avg_xgc = compute_team_league_averages(team_stats_map)
@@ -465,6 +480,7 @@ def predict_gameweek_fixtures(
                 'p_start': 0.0,
                 'p_app': 0.0,
                 'p_60_plus': 0.0,
+                'is_promoted': bool(team_stats_map.get(team, {}).get('is_promoted', False)),
             }
         elif len(scheduled) == 1:
             # Standard single match
@@ -495,6 +511,7 @@ def predict_gameweek_fixtures(
                 'p_start': pred['p_start'],
                 'p_app': pred['p_app'],
                 'p_60_plus': pred['p_60_plus'],
+                'is_promoted': bool(team_stats_map.get(team, {}).get('is_promoted', False)),
             }
         else:
             # Double Gameweek (DGW): sum expected points and component breakdowns
@@ -547,6 +564,7 @@ def predict_gameweek_fixtures(
                 'p_start': round(total_p_start, 4),
                 'p_app': round(total_p_app, 4),
                 'p_60_plus': round(total_p_60, 4),
+                'is_promoted': bool(team_stats_map.get(team, {}).get('is_promoted', False)),
             }
             for c in comp_names:
                 rec[c] = round(comp_totals[c], 4)

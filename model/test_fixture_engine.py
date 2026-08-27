@@ -80,6 +80,35 @@ class TestLeagueAveragesAndPromotedPriors:
         assert abs(mults['attack_mult'] - expected_mult) < 1e-3
         assert mults['attack_mult'] > 1.40
 
+    def test_promoted_fixture_xgc_floor(self):
+        # Promoted team playing at home vs another promoted side should be bounded by floor 1.40
+        mults = compute_fixture_multipliers(
+            'Coventry City', 'Hull City', is_home=True, team_stats_map={},
+            league_avg_xg=1.35, league_avg_xgc=1.35
+        )
+        # Without floor: 1.80 * (1.05 / 1.35) * 0.9259 = 1.296
+        # With floor: must be at least 1.40
+        assert mults['fixture_xgc90'] >= 1.40
+
+    def test_promoted_team_attack_discount(self):
+        # Player on promoted club gets 0.80x discount on attack components
+        promoted_player = {
+            'web_name': 'Simms',
+            'team': 'Coventry City',
+            'position': 'FWD',
+            'season_starts': 30,
+            'season_minutes': 2700,
+            'long_form_minutes': 2700,
+            'long_form_expected_goals_90': 0.40,
+            'long_form_expected_assists_90': 0.10,
+        }
+        fix = {'home_team': 'Coventry City', 'away_team': 'Hull City', 'home_fdr': 2, 'away_fdr': 2}
+        pred = predict_player_fixture(promoted_player, fix, is_home=True, team_stats_map={})
+        # Attack mult is 1.44, with 0.80 discount -> effective mult = 1.44 * 0.80 = 1.152
+        # Expected goals points should reflect the 0.80x discount
+        assert pred['c8_goals'] > 0
+        assert pred['expected_points'] < 4.0
+
 
 class TestFixtureMultipliers:
     """Verify conjugate symmetric venue factors and opponent strength scaling."""

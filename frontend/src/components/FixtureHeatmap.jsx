@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { GridNine } from '@phosphor-icons/react';
+import { GridNine, Info, Sparkle } from '@phosphor-icons/react';
 
 export default function FixtureHeatmap({
   fixtures,
@@ -11,6 +11,7 @@ export default function FixtureHeatmap({
   onOpenMatchup
 }) {
   const [gwWindow, setGwWindow] = useState(6);
+  const [showFormulaTooltip, setShowFormulaTooltip] = useState(false);
 
   const activeFixtures = fixtures || fixturesData || [];
   const activeTeams = teams || teamsData || [];
@@ -139,6 +140,53 @@ export default function FixtureHeatmap({
         </div>
       </div>
 
+      {/* Institutional FDR Legend & Calculation Explainer */}
+      <div className="fixture-legend-bar">
+        <div className="legend-scale-group">
+          <span className="legend-label font-mono">FDR DIFFICULTY:</span>
+          <div className="legend-items">
+            <div className="legend-chip legend-fdr-1">
+              <span className="legend-dot" style={{ background: '#1B5E20' }} />
+              <span className="legend-fdr-num font-mono">1</span>
+              <span className="legend-text">Very Easy (Home vs Promoted)</span>
+            </div>
+            <div className="legend-chip legend-fdr-2">
+              <span className="legend-dot" style={{ background: '#00796B' }} />
+              <span className="legend-fdr-num font-mono">2</span>
+              <span className="legend-text">Easy (Home vs Lower Half)</span>
+            </div>
+            <div className="legend-chip legend-fdr-3">
+              <span className="legend-dot" style={{ background: '#455A64' }} />
+              <span className="legend-fdr-num font-mono">3</span>
+              <span className="legend-text">Moderate (Mid-table)</span>
+            </div>
+            <div className="legend-chip legend-fdr-4">
+              <span className="legend-dot" style={{ background: '#E65100' }} />
+              <span className="legend-fdr-num font-mono">4</span>
+              <span className="legend-text">Tough (Away vs Top 6)</span>
+            </div>
+            <div className="legend-chip legend-fdr-5">
+              <span className="legend-dot" style={{ background: '#B71C1C' }} />
+              <span className="legend-fdr-num font-mono">5</span>
+              <span className="legend-text">Very Tough (Away vs Title Contenders)</span>
+            </div>
+            <div className="legend-chip legend-fdr-blank">
+              <span className="legend-dot" style={{ background: 'var(--border-subtle)' }} />
+              <span className="legend-fdr-num font-mono">—</span>
+              <span className="legend-text">Blank GW</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="legend-formula-group font-mono">
+          <span className="formula-tag">
+            <Info size={13} weight="bold" />
+            <span>Avg Difficulty = (Σ FDR over {gwWindow} GWs) / {gwWindow}</span>
+          </span>
+          <span className="formula-subtext">Sorted ascending: lower score = easier run</span>
+        </div>
+      </div>
+
       {/* Heatmap Matrix Table */}
       <div className="data-table-container">
         <div className="table-scroll-wrapper">
@@ -146,7 +194,9 @@ export default function FixtureHeatmap({
             <thead>
               <tr>
                 <th className="sticky-col team-col">Team</th>
-                <th className="avg-col font-mono">Avg Difficulty</th>
+                <th className="avg-col font-mono" title={`Mathematical average of FDR ratings over the next ${gwWindow} gameweeks. Lower score indicates an easier schedule.`}>
+                  Avg Difficulty ({gwWindow} GWs)
+                </th>
                 {Array.from({ length: 38 }, (_, i) => i + 1).map(gw => (
                   <th key={gw} className={`gw-col font-mono ${gw === Number(selectedGw) ? 'current-gw-header' : ''}`}>
                     GW{gw}

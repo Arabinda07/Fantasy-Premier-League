@@ -202,8 +202,19 @@ def estimate_playing_probabilities(
     squads_made = starts + subs + unused_subs
 
     if squads_made > 0:
-        p_start = starts / squads_made
-        p_sub = subs / squads_made
+        raw_p_start = starts / squads_made
+        raw_p_sub = subs / squads_made
+        if squads_made < 4.0:
+            # Shrink toward conservative baseline prior for early-season stability
+            # GKs have higher starting stability (0.90), outfield players (0.75)
+            start_prior = 0.90 if position == 'GK' else 0.75
+            sub_prior = 0.05 if position == 'GK' else 0.15
+            m_squads = 3.0
+            p_start = (squads_made / (squads_made + m_squads)) * raw_p_start + (m_squads / (squads_made + m_squads)) * start_prior
+            p_sub = (squads_made / (squads_made + m_squads)) * raw_p_sub + (m_squads / (squads_made + m_squads)) * sub_prior
+        else:
+            p_start = raw_p_start
+            p_sub = raw_p_sub
     elif total_minutes > 0:
         est_starts = min(38.0, total_minutes / 75.0)
         p_start = min(1.0, est_starts / 38.0)

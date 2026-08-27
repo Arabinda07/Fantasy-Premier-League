@@ -164,7 +164,6 @@ def manage_gameweek(
             for p in prev_paths:
                 if p and os.path.exists(p):
                     try:
-                        import json
                         with open(p, 'r', encoding='utf-8') as f:
                             saved_data = json.load(f)
                             # Extract all 15 players (starters + bench)
