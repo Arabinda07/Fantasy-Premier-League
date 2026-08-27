@@ -6,7 +6,8 @@ import {
   TrendUp,
   Flask,
   UsersThree,
-  ArrowsClockwise
+  ArrowsClockwise,
+  User
 } from '@phosphor-icons/react';
 
 export default function Header({
@@ -30,12 +31,6 @@ export default function Header({
   ];
 
   const manager = liveData?.manager_profile;
-
-  const strategyLabels = {
-    pure_xp: 'Pure xP',
-    rank_protect: 'Rank Shield',
-    differential_chase: 'Diff Chase'
-  };
 
   return (
     <header className="top-nav">
@@ -103,16 +98,20 @@ export default function Header({
           </nav>
         </div>
 
-        {/* Right Action: Sync Team Button */}
+        {/* Right Action: Manager Badge & Sync Switcher */}
         <div className="nav-controls">
           <button
-            className="sync-team-nav-btn"
+            className="live-manager-chip font-mono"
             onClick={onOpenSyncModal}
-            title="Sync Official FPL Team ID & Mini-League"
+            title="Configure FPL Team ID & Mini-League Tracker"
+            aria-label="Manager Settings"
           >
-            <ArrowsClockwise size={14} weight="bold" />
-            <span className="sync-nav-text font-mono">
-              {manager?.manager_name ? `${manager.manager_name.split(' ')[0]} (#${manager.entry_id || '9500404'})` : 'Sync My Team'}
+            <span className="live-sync-indicator" />
+            <User size={13} weight="bold" />
+            <span>
+              {manager?.manager_name
+                ? `${manager.manager_name.split(' ')[0]} (#${manager.entry_id || '9500404'})`
+                : 'Sync Team'}
             </span>
           </button>
         </div>

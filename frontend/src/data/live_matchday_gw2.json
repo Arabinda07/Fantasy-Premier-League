@@ -868,6 +868,199 @@
         "overlap_pct": 40.0
       },
       {
+        "entry_id": 633687,
+        "manager_name": "Nikhil Sudheer",
+        "team_name": "BluxXI",
+        "overall_rank": 5,
+        "rank": 5,
+        "overall_points": 76,
+        "total_points": 76,
+        "event_points": 76,
+        "captain_name": "B.Fernandes",
+        "captain_code": 141746,
+        "shared_players": [
+          "B.Fernandes",
+          "Raya",
+          "Calafiori",
+          "Mbeumo",
+          "Calvert-Lewin"
+        ],
+        "differentials": [
+          "Gvardiol",
+          "Mosquera",
+          "Palmer",
+          "Wirtz",
+          "Jo\u00e3o Pedro",
+          "Brobbey",
+          "Roefs",
+          "James",
+          "Ndiaye",
+          "Shaw"
+        ],
+        "user_differentials": [
+          "White",
+          "Ballard",
+          "Szoboszlai",
+          "Tavernier",
+          "Stach",
+          "Haaland",
+          "Leno",
+          "Amenda",
+          "Dasilva",
+          "Thomas-Asante"
+        ],
+        "user_differential_cards": [
+          {
+            "name": "White",
+            "pos": "DEF",
+            "team": "ARS",
+            "cost": 5.5,
+            "xp": 4.4
+          },
+          {
+            "name": "Ballard",
+            "pos": "DEF",
+            "team": "SUN",
+            "cost": 5.0,
+            "xp": 4.4
+          },
+          {
+            "name": "Szoboszlai",
+            "pos": "MID",
+            "team": "LIV",
+            "cost": 7.0,
+            "xp": 4.6
+          },
+          {
+            "name": "Tavernier",
+            "pos": "MID",
+            "team": "BOU",
+            "cost": 6.0,
+            "xp": 5.0
+          },
+          {
+            "name": "Stach",
+            "pos": "MID",
+            "team": "LEE",
+            "cost": 6.0,
+            "xp": 4.4
+          },
+          {
+            "name": "Haaland",
+            "pos": "FWD",
+            "team": "MCI",
+            "cost": 15.5,
+            "xp": 6.2
+          },
+          {
+            "name": "Leno",
+            "pos": "GK",
+            "team": "FUL",
+            "cost": 4.5,
+            "xp": 4.1
+          },
+          {
+            "name": "Amenda",
+            "pos": "DEF",
+            "team": "COV",
+            "cost": 4.0,
+            "xp": 3.3
+          },
+          {
+            "name": "Dasilva",
+            "pos": "DEF",
+            "team": "COV",
+            "cost": 4.0,
+            "xp": 3.3
+          },
+          {
+            "name": "Thomas-Asante",
+            "pos": "FWD",
+            "team": "COV",
+            "cost": 5.0,
+            "xp": 2.8
+          }
+        ],
+        "rival_differential_cards": [
+          {
+            "name": "Gvardiol",
+            "pos": "DEF",
+            "team": "MCI",
+            "cost": 5.5,
+            "xp": 3.5
+          },
+          {
+            "name": "Mosquera",
+            "pos": "DEF",
+            "team": "ARS",
+            "cost": 5.5,
+            "xp": 4.1
+          },
+          {
+            "name": "Palmer",
+            "pos": "MID",
+            "team": "CHE",
+            "cost": 9.5,
+            "xp": 4.7
+          },
+          {
+            "name": "Wirtz",
+            "pos": "MID",
+            "team": "LIV",
+            "cost": 7.5,
+            "xp": 3.7
+          },
+          {
+            "name": "Jo\u00e3o Pedro",
+            "pos": "FWD",
+            "team": "CHE",
+            "cost": 7.6,
+            "xp": 5.0
+          },
+          {
+            "name": "Brobbey",
+            "pos": "FWD",
+            "team": "SUN",
+            "cost": 6.0,
+            "xp": 3.1
+          },
+          {
+            "name": "Roefs",
+            "pos": "GK",
+            "team": "SUN",
+            "cost": 5.0,
+            "xp": 4.0
+          },
+          {
+            "name": "James",
+            "pos": "DEF",
+            "team": "CHE",
+            "cost": 5.5,
+            "xp": 3.5
+          },
+          {
+            "name": "Ndiaye",
+            "pos": "MID",
+            "team": "EVE",
+            "cost": 6.0,
+            "xp": 3.9
+          },
+          {
+            "name": "Shaw",
+            "pos": "DEF",
+            "team": "MUN",
+            "cost": 4.5,
+            "xp": 3.5
+          }
+        ],
+        "your_upside": 42.5,
+        "rival_upside": 39.0,
+        "net_delta": 3.5,
+        "threat_level": "MEDIUM",
+        "overlap_count": 5,
+        "overlap_pct": 33.3
+      },
+      {
         "entry_id": 309117,
         "manager_name": "DEBJIT CHATTERJEE",
         "team_name": "GunnerForever",
@@ -1089,199 +1282,6 @@
         "threat_level": "MEDIUM",
         "overlap_count": 3,
         "overlap_pct": 20.0
-      },
-      {
-        "entry_id": 633687,
-        "manager_name": "Nikhil Sudheer",
-        "team_name": "BluxXI",
-        "overall_rank": 5,
-        "rank": 5,
-        "overall_points": 76,
-        "total_points": 76,
-        "event_points": 76,
-        "captain_name": "B.Fernandes",
-        "captain_code": 141746,
-        "shared_players": [
-          "B.Fernandes",
-          "Raya",
-          "Calafiori",
-          "Mbeumo",
-          "Calvert-Lewin"
-        ],
-        "differentials": [
-          "Gvardiol",
-          "Mosquera",
-          "Palmer",
-          "Wirtz",
-          "Jo\u00e3o Pedro",
-          "Brobbey",
-          "Roefs",
-          "James",
-          "Ndiaye",
-          "Shaw"
-        ],
-        "user_differentials": [
-          "White",
-          "Ballard",
-          "Szoboszlai",
-          "Tavernier",
-          "Stach",
-          "Haaland",
-          "Leno",
-          "Amenda",
-          "Dasilva",
-          "Thomas-Asante"
-        ],
-        "user_differential_cards": [
-          {
-            "name": "White",
-            "pos": "DEF",
-            "team": "ARS",
-            "cost": 5.5,
-            "xp": 4.4
-          },
-          {
-            "name": "Ballard",
-            "pos": "DEF",
-            "team": "SUN",
-            "cost": 5.0,
-            "xp": 4.4
-          },
-          {
-            "name": "Szoboszlai",
-            "pos": "MID",
-            "team": "LIV",
-            "cost": 7.0,
-            "xp": 4.6
-          },
-          {
-            "name": "Tavernier",
-            "pos": "MID",
-            "team": "BOU",
-            "cost": 6.0,
-            "xp": 5.0
-          },
-          {
-            "name": "Stach",
-            "pos": "MID",
-            "team": "LEE",
-            "cost": 6.0,
-            "xp": 4.4
-          },
-          {
-            "name": "Haaland",
-            "pos": "FWD",
-            "team": "MCI",
-            "cost": 15.5,
-            "xp": 6.2
-          },
-          {
-            "name": "Leno",
-            "pos": "GK",
-            "team": "FUL",
-            "cost": 4.5,
-            "xp": 4.1
-          },
-          {
-            "name": "Amenda",
-            "pos": "DEF",
-            "team": "COV",
-            "cost": 4.0,
-            "xp": 3.3
-          },
-          {
-            "name": "Dasilva",
-            "pos": "DEF",
-            "team": "COV",
-            "cost": 4.0,
-            "xp": 3.3
-          },
-          {
-            "name": "Thomas-Asante",
-            "pos": "FWD",
-            "team": "COV",
-            "cost": 5.0,
-            "xp": 2.8
-          }
-        ],
-        "rival_differential_cards": [
-          {
-            "name": "Gvardiol",
-            "pos": "DEF",
-            "team": "MCI",
-            "cost": 5.5,
-            "xp": 3.5
-          },
-          {
-            "name": "Mosquera",
-            "pos": "DEF",
-            "team": "ARS",
-            "cost": 5.5,
-            "xp": 4.1
-          },
-          {
-            "name": "Palmer",
-            "pos": "MID",
-            "team": "CHE",
-            "cost": 9.5,
-            "xp": 4.7
-          },
-          {
-            "name": "Wirtz",
-            "pos": "MID",
-            "team": "LIV",
-            "cost": 7.5,
-            "xp": 3.7
-          },
-          {
-            "name": "Jo\u00e3o Pedro",
-            "pos": "FWD",
-            "team": "CHE",
-            "cost": 7.6,
-            "xp": 5.0
-          },
-          {
-            "name": "Brobbey",
-            "pos": "FWD",
-            "team": "SUN",
-            "cost": 6.0,
-            "xp": 3.1
-          },
-          {
-            "name": "Roefs",
-            "pos": "GK",
-            "team": "SUN",
-            "cost": 5.0,
-            "xp": 4.0
-          },
-          {
-            "name": "James",
-            "pos": "DEF",
-            "team": "CHE",
-            "cost": 5.5,
-            "xp": 3.5
-          },
-          {
-            "name": "Ndiaye",
-            "pos": "MID",
-            "team": "EVE",
-            "cost": 6.0,
-            "xp": 3.9
-          },
-          {
-            "name": "Shaw",
-            "pos": "DEF",
-            "team": "MUN",
-            "cost": 4.5,
-            "xp": 3.5
-          }
-        ],
-        "your_upside": 42.5,
-        "rival_upside": 39.0,
-        "net_delta": 3.5,
-        "threat_level": "MEDIUM",
-        "overlap_count": 5,
-        "overlap_pct": 33.3
       }
     ],
     "league_id": 1305495,
@@ -2574,8 +2574,8 @@
           }
         },
         {
-          "player_code": 461102,
-          "web_name": "Thomas",
+          "player_code": 451284,
+          "web_name": "van Ewijk",
           "team": "Coventry City",
           "position": "DEF",
           "cost": 4.0,
@@ -2584,8 +2584,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": 3,
-          "ownership_pct": 0.079,
-          "eo": 0.1128,
+          "ownership_pct": 0.132,
+          "eo": 0.1884,
           "floor_p10": 1.2,
           "median_p50": 3.1,
           "ceiling_p90": 5.6,
@@ -4061,8 +4061,8 @@
           }
         },
         {
-          "player_code": 461102,
-          "web_name": "Thomas",
+          "player_code": 451284,
+          "web_name": "van Ewijk",
           "team": "Coventry City",
           "position": "DEF",
           "cost": 4.0,
@@ -4071,8 +4071,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": 3,
-          "ownership_pct": 0.079,
-          "eo": 0.1128,
+          "ownership_pct": 0.132,
+          "eo": 0.1884,
           "floor_p10": 1.2,
           "median_p50": 3.1,
           "ceiling_p90": 5.6,

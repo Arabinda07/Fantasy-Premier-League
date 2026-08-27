@@ -8,6 +8,7 @@ import FixtureHeatmap from './components/FixtureHeatmap';
 import MarketVelocityTicker from './components/MarketVelocityTicker';
 import ComponentStudio from './components/ComponentStudio';
 import LiveTeamSyncModal from './components/LiveTeamSyncModal';
+import OnboardingModal from './components/OnboardingModal';
 import FixtureProbabilityDrawer from './components/FixtureProbabilityDrawer';
 import ErrorBoundary from './components/ErrorBoundary';
 import Footer from './components/Footer';
@@ -22,6 +23,7 @@ import {
   availableGameweeks
 } from './utils/loadLatestMatchday';
 import useDataLoader from './utils/useDataLoader';
+import { buildLiveMatchdayPayload } from './utils/clientOptimizer';
 
 // Helper to map tab IDs to hash routes
 const TAB_TO_HASH = {
@@ -51,7 +53,6 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('pitch');
   const [inspectedPlayer, setInspectedPlayer] = useState(null);
   const [activeChip, setActiveChip] = useState('none');
-  const [compareSubItem, setCompareSubItem] = useState(null);
 
   // F-12: Asynchronous Lazy-Load for massive static JSON databases
   const {
@@ -62,6 +63,7 @@ export default function App() {
   } = useDataLoader();
 
   // Modals & Drawers
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
   const [isFixtureDrawerOpen, setIsFixtureDrawerOpen] = useState(false);
   const [activeDrawerFixture, setActiveDrawerFixture] = useState(null);
@@ -74,6 +76,53 @@ export default function App() {
   const [bench, setBench] = useState(initialMatchday.data?.bench || []);
   const [selectedSwapPlayer, setSelectedSwapPlayer] = useState(null);
   const [activeStrategy, setActiveStrategy] = useState(initialMatchday.data?.strategy || 'pure_xp');
+
+  // Check first-time onboarding on initial mount
+  useEffect(() => {
+    try {
+      const hasOnboarded = localStorage.getItem('fpl_has_onboarded');
+      const savedEntryId = localStorage.getItem('fpl_synced_entry_id');
+      if (!hasOnboarded && !savedEntryId) {
+        setIsOnboardingOpen(true);
+      }
+    } catch (e) {
+      console.warn('LocalStorage check error:', e);
+    }
+  }, []);
+
+  // Handle live squad sync from /api/sync
+  const handleLiveSyncSuccess = (syncedData) => {
+    if (!syncedData) return;
+
+    if (!allPlayersData || allPlayersData.length === 0) {
+      if (syncedData.manager) {
+        setLiveData(prev => ({
+          ...prev,
+          manager_profile: {
+            ...prev.manager_profile,
+            ...syncedData.manager
+          }
+        }));
+      }
+      return;
+    }
+
+    const fullPayload = buildLiveMatchdayPayload(
+      syncedData,
+      allPlayersData,
+      activeStrategy,
+      liveData.dixon_coles_fixtures || []
+    );
+
+    setLiveData(fullPayload);
+    setStarters(fullPayload.starters || []);
+    setBench(fullPayload.bench || []);
+    setSelectedSwapPlayer(null);
+  };
+
+  const handleExploreDemo = () => {
+    setIsOnboardingOpen(false);
+  };
 
   // Switch Gameweek Dataset handler
   const handleSelectGw = (gw) => {
@@ -124,7 +173,6 @@ export default function App() {
   // Sync state changes to URL Hash
   const handleTabChange = (newTab) => {
     setActiveTab(newTab);
-    setCompareSubItem(null);
     const hashRoute = TAB_TO_HASH[newTab] || 'lineup';
     const chipQuery = activeChip !== 'none' ? `?chip=${activeChip}` : '';
     window.location.hash = `${hashRoute}${chipQuery}`;
@@ -138,26 +186,13 @@ export default function App() {
   };
 
   const handleInspectPlayer = (player) => {
-    if (!player) {
-      setInspectedPlayer(null);
-      return;
-    }
-
-    // Lookup full mathematical profile from database
-    const detailed = allPlayersData?.find(
-      p => (p.player_code === player.player_code) ||
-           (p.code === player.player_code) ||
-           (p.web_name && player.web_name && p.web_name.toLowerCase() === player.web_name.toLowerCase())
-    );
-
-    const merged = detailed ? { ...detailed, ...player } : player;
-    setInspectedPlayer(merged);
-
-    if (player.web_name) {
-      const hashRoute = TAB_TO_HASH[activeTab] || 'lineup';
-      const chipQuery = activeChip !== 'none' ? `chip=${activeChip}&` : '';
-      window.location.hash = `${hashRoute}?${chipQuery}player=${encodeURIComponent(player.web_name)}`;
-    }
+    if (!player) return;
+    setInspectedPlayer(player);
+    const hashRoute = TAB_TO_HASH[activeTab] || 'lineup';
+    const chipQuery = activeChip !== 'none' ? `chip=${activeChip}` : '';
+    const playerQuery = `player=${encodeURIComponent(player.web_name || '')}`;
+    const fullQuery = [chipQuery, playerQuery].filter(Boolean).join('&');
+    window.location.hash = `${hashRoute}${fullQuery ? `?${fullQuery}` : ''}`;
   };
 
   const handleCloseInspect = () => {
@@ -167,9 +202,8 @@ export default function App() {
     window.location.hash = `${hashRoute}${chipQuery}`;
   };
 
-  // Fixture Drawer Handlers
-  const handleOpenFixtureDrawer = (fixtureDetails) => {
-    setActiveDrawerFixture(fixtureDetails);
+  const handleOpenFixtureDrawer = (fixture) => {
+    setActiveDrawerFixture(fixture);
     setIsFixtureDrawerOpen(true);
   };
 
@@ -178,83 +212,61 @@ export default function App() {
     setActiveDrawerFixture(null);
   };
 
-  // Interactive starter / bench swap handler
-  const handleSelectPlayer = (player) => {
-    if (!selectedSwapPlayer) {
-      setSelectedSwapPlayer(player);
-      return;
-    }
-
-    // If clicking same player, deselect
-    if (selectedSwapPlayer.player_code === player.player_code) {
+  // Strategy Mode change handler
+  const handleStrategyChange = (newStrategy) => {
+    setActiveStrategy(newStrategy);
+    if (liveData?.strategies && liveData.strategies[newStrategy]) {
+      const s = liveData.strategies[newStrategy];
+      setStarters(s.starters || []);
+      setBench(s.bench || []);
       setSelectedSwapPlayer(null);
-      return;
-    }
-
-    const isFirstStarter = starters.some(p => p.player_code === selectedSwapPlayer.player_code);
-    const isSecondStarter = starters.some(p => p.player_code === player.player_code);
-
-    // If swapping between Starter and Bench
-    if (isFirstStarter !== isSecondStarter) {
-      const starterPlayer = isFirstStarter ? selectedSwapPlayer : player;
-      const benchPlayer = isFirstStarter ? player : selectedSwapPlayer;
-
-      // F-13 fix: Validate that the resulting formation is legal before committing
-      const newStarterPositions = starters
-        .filter(p => p.player_code !== starterPlayer.player_code)
-        .concat({ ...benchPlayer, is_starter: true })
-        .reduce((acc, p) => { acc[p.position] = (acc[p.position] || 0) + 1; return acc; }, {});
-
-      const isValidFormation = (
-        (newStarterPositions['GK'] || 0) === 1 &&
-        (newStarterPositions['DEF'] || 0) >= 3 &&
-        (newStarterPositions['MID'] || 0) >= 2 &&
-        (newStarterPositions['FWD'] || 0) >= 1
-      );
-
-      if (!isValidFormation) {
-        // Invalid formation — reject swap silently
-        setSelectedSwapPlayer(null);
-        return;
-      }
-
-      const newStarters = starters.map(p =>
-        p.player_code === starterPlayer.player_code
-          ? { ...benchPlayer, is_starter: true }
-          : p
-      );
-      const newBench = bench.map(p =>
-        p.player_code === benchPlayer.player_code
-          ? { ...starterPlayer, is_starter: false }
-          : p
-      );
-
-      setStarters(newStarters);
-      setBench(newBench);
-      setSelectedSwapPlayer(null);
-    } else {
-      setSelectedSwapPlayer(player);
     }
   };
 
-  // Recalculate dynamic starting XI xP
-  const startingXp = starters.reduce((acc, p) => acc + Number(p.expected_points || 0), 0);
-  const capt = starters.find(p => p.is_captain);
-  const captBonus = capt ? capt.expected_points : 0;
+  // Formation Legality Validator
+  const validateFormation = (currentStarters) => {
+    const counts = { GK: 0, DEF: 0, MID: 0, FWD: 0 };
+    currentStarters.forEach(p => {
+      if (p && p.position) counts[p.position] = (counts[p.position] || 0) + 1;
+    });
+    return counts.GK === 1 && counts.DEF >= 3 && counts.DEF <= 5 && counts.MID >= 2 && counts.MID <= 5 && counts.FWD >= 1 && counts.FWD <= 3;
+  };
 
-  // Active breadcrumb sub-item label
-  const breadcrumbSubItem = inspectedPlayer
-    ? `${inspectedPlayer.web_name} (${inspectedPlayer.team})`
-    : compareSubItem;
+  // Pitch Starter <-> Bench Swap Handler
+  const handleSwapPlayers = (p1, p2) => {
+    const isP1Starter = starters.some(s => (s.player_code || s.code) === (p1.player_code || p1.code));
+    const isP2Starter = starters.some(s => (s.player_code || s.code) === (p2.player_code || p2.code));
+
+    if (isP1Starter && !isP2Starter) {
+      const newStarters = starters.map(s => (s.player_code || s.code) === (p1.player_code || p1.code) ? p2 : s);
+      const newBench = bench.map(b => (b.player_code || b.code) === (p2.player_code || p2.code) ? p1 : b);
+      if (validateFormation(newStarters)) {
+        setStarters(newStarters);
+        setBench(newBench);
+        setSelectedSwapPlayer(null);
+      } else {
+        alert('Invalid Formation: Must have 1 GK, 3-5 DEFs, 2-5 MIDs, 1-3 FWDs.');
+        setSelectedSwapPlayer(null);
+      }
+    } else if (!isP1Starter && isP2Starter) {
+      const newStarters = starters.map(s => (s.player_code || s.code) === (p2.player_code || p2.code) ? p1 : s);
+      const newBench = bench.map(b => (b.player_code || b.code) === (p1.player_code || p1.code) ? p2 : b);
+      if (validateFormation(newStarters)) {
+        setStarters(newStarters);
+        setBench(newBench);
+        setSelectedSwapPlayer(null);
+      } else {
+        alert('Invalid Formation: Must have 1 GK, 3-5 DEFs, 2-5 MIDs, 1-3 FWDs.');
+        setSelectedSwapPlayer(null);
+      }
+    } else {
+      setSelectedSwapPlayer(null);
+    }
+  };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      {/* Skip-to-Content Accessibility Link (WCAG 2.4.1) */}
-      <a href="#main-content" className="skip-to-content">
-        Skip to main content
-      </a>
-
-      {/* Top Navigation */}
+    <div className="app-layout">
+      {/* Institutional Top Navigation */}
       <Header
         activeTab={activeTab}
         setActiveTab={handleTabChange}
@@ -264,77 +276,76 @@ export default function App() {
         onSelectGw={handleSelectGw}
         onOpenSyncModal={() => setIsSyncModalOpen(true)}
         strategy={activeStrategy}
-        onSelectStrategy={setActiveStrategy}
+        onSelectStrategy={handleStrategyChange}
       />
 
-      {/* 3-Level Breadcrumb Trail */}
+      {/* Semantic Breadcrumbs Navigation Bar */}
       <Breadcrumbs
         activeTab={activeTab}
+        activeChip={activeChip}
+        inspectedPlayer={inspectedPlayer}
+        activeFixture={activeDrawerFixture}
+        selectedGw={selectedGw}
         onNavigateTab={handleTabChange}
-        subItem={breadcrumbSubItem}
-        onClearSubItem={() => {
-          setInspectedPlayer(null);
-          setCompareSubItem(null);
-        }}
+        onClearChip={() => handleChipChange('none')}
+        onClearPlayer={handleCloseInspect}
+        onClearFixture={handleCloseFixtureDrawer}
       />
 
-      <main id="main-content" className="app-container" style={{ flex: '1 0 auto' }}>
-        {isDataLoading ? (
-          <div className="fpl-loader-skeleton-container" role="status">
-            <div className="fpl-loader-spinner"></div>
-            <div className="fpl-loader-text font-mono">HYDRATING FPL MATCHDAY DATA ENGINE...</div>
+      {/* Main Analytical Viewports */}
+      <main className="main-content">
+        {isDataLoading && (!allPlayersData || allPlayersData.length === 0) ? (
+          <div style={{ padding: '32px', textAlign: 'center' }}>
+            <div className="skeleton" style={{ height: '300px', maxWidth: '1200px', margin: '0 auto' }}></div>
           </div>
         ) : (
           <>
-            {/* View 1: Tactical Pitch & Lineup Visualizer */}
+            {/* View 1: Tactical Pitch & Matchday Projections */}
             {activeTab === 'pitch' && (
               <ErrorBoundary componentName="Tactical Pitch">
                 <div className="surface-scope-pitch">
                   <TacticalPitch
+                    liveData={liveData}
                     starters={starters}
                     bench={bench}
-                    allPlayers={allPlayersData}
-                    selectedPlayer={selectedSwapPlayer}
-                    onSelectPlayer={handleSelectPlayer}
+                    allPlayersData={allPlayersData}
+                    selectedSwapPlayer={selectedSwapPlayer}
+                    setSelectedSwapPlayer={setSelectedSwapPlayer}
+                    onSwapPlayers={handleSwapPlayers}
                     onInspectPlayer={handleInspectPlayer}
-                    onOpenMatchup={handleOpenFixtureDrawer}
-                    actionSummary={liveData.action_summary}
-                    startingXp={startingXp + Number(captBonus)}
-                    totalXp={liveData.total_xp}
-                    strategies={liveData.strategies || {}}
-                    chipSimulations={liveData.chip_simulations || {}}
+                    onOpenFixture={handleOpenFixtureDrawer}
                     activeChip={activeChip}
                     onSelectChip={handleChipChange}
                     strategy={activeStrategy}
-                    onSelectStrategy={setActiveStrategy}
+                    onSelectStrategy={handleStrategyChange}
                   />
                 </div>
               </ErrorBoundary>
             )}
 
-            {/* View 2: Multi-Horizon 5-GW Strategy Canvas & Transfer Workbench */}
+            {/* View 2: Unified Transfer Studio & 5-Week Strategic Planner */}
             {activeTab === 'transfers' && (
-              <ErrorBoundary componentName="Transfer Workbench">
+              <ErrorBoundary componentName="Multi-GW Planner">
                 <div className="surface-scope-planner">
                   <MultiGwPlanner
-                    roadmap={liveData.multi_horizon_roadmap}
-                    squadPlayers={[...starters, ...bench]}
-                    allPlayers={allPlayersData}
+                    liveData={liveData}
+                    allPlayersData={allPlayersData}
+                    fixturesData={fixturesData}
                     onInspectPlayer={handleInspectPlayer}
-                    onCompareChange={setCompareSubItem}
+                    onOpenFixture={handleOpenFixtureDrawer}
+                    activeChip={activeChip}
+                    onSelectChip={handleChipChange}
                   />
                 </div>
               </ErrorBoundary>
             )}
 
-            {/* View 3: Mini-League Rival Threat Matrix */}
+            {/* View 3: Rival Threat Matrix & Game Theory View */}
             {activeTab === 'rivals' && (
-              <ErrorBoundary componentName="Rival Threat Matrix">
+              <ErrorBoundary componentName="Rival Radar">
                 <div className="surface-scope-rivals">
                   <RivalThreatMatrix
-                    managerProfile={liveData.manager_profile}
-                    starters={starters}
-                    bench={bench}
+                    liveData={liveData}
                     allPlayers={allPlayersData}
                     onInspectPlayer={handleInspectPlayer}
                   />
@@ -342,27 +353,28 @@ export default function App() {
               </ErrorBoundary>
             )}
 
-            {/* View 4: 38-Gameweek Fixture Heatmap */}
+            {/* View 4: Fixture Heatmap & Schedule Dynamics */}
             {activeTab === 'fixtures' && (
               <ErrorBoundary componentName="Fixture Heatmap">
                 <div className="surface-scope-fixtures">
                   <FixtureHeatmap
-                    fixtures={fixturesData}
-                    teams={teamsData}
+                    fixturesData={fixturesData}
+                    teamsData={teamsData}
+                    onOpenFixture={handleOpenFixtureDrawer}
                     selectedGw={selectedGw}
-                    onOpenMatchup={handleOpenFixtureDrawer}
                   />
                 </div>
               </ErrorBoundary>
             )}
 
-            {/* View 5: Market Velocity & Price Trends */}
+            {/* View 5: Market Price Velocity Ticker */}
             {activeTab === 'market' && (
               <ErrorBoundary componentName="Market Velocity Ticker">
                 <div className="surface-scope-market">
                   <MarketVelocityTicker
-                    allPlayers={allPlayersData}
+                    allPlayersData={allPlayersData}
                     onInspectPlayer={handleInspectPlayer}
+                    liveData={liveData}
                   />
                 </div>
               </ErrorBoundary>
@@ -383,20 +395,20 @@ export default function App() {
         )}
       </main>
 
+      {/* Onboarding Gateway Modal for First-Time Visitors */}
+      <OnboardingModal
+        isOpen={isOnboardingOpen}
+        onClose={() => setIsOnboardingOpen(false)}
+        onSyncSuccess={handleLiveSyncSuccess}
+        onExploreDemo={handleExploreDemo}
+      />
+
       {/* 1-Click Live Team Sync Modal */}
       <LiveTeamSyncModal
         isOpen={isSyncModalOpen}
         onClose={() => setIsSyncModalOpen(false)}
         currentProfile={liveData.manager_profile}
-        onSyncSuccess={(newProfile) => {
-          setLiveData(prev => ({
-            ...prev,
-            manager_profile: {
-              ...prev.manager_profile,
-              ...newProfile
-            }
-          }));
-        }}
+        onSyncSuccess={handleLiveSyncSuccess}
       />
 
       {/* Dixon-Coles Fixture Probability Drawer */}

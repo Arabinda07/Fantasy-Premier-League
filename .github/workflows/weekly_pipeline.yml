@@ -1,0 +1,114 @@
+name: Weekly FPL Predictions Pipeline & Vercel Data Refresh
+
+on:
+  schedule:
+    # Runs every Tuesday at 04:00 UTC (after Monday night PL fixtures)
+    - cron: '0 4 * * 2'
+  # Allows manual 1-click trigger from GitHub Actions UI:
+  workflow_dispatch:
+    inputs:
+      gameweek:
+        description: 'Target Gameweek (leave empty for auto-detect)'
+        required: false
+        default: ''
+      mode:
+        description: 'Pipeline Mode (sync / full / solver_only)'
+        required: false
+        default: 'sync'
+        type: choice
+        options:
+          - sync
+          - full
+          - solver_only
+
+permissions:
+  contents: write
+
+jobs:
+  weekly_refresh:
+    runs-on: ubuntu-latest
+    name: Weekly ML Pipeline, Solver Validation & Deployment
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm ci || npm install
+
+      - name: Execute FPL Pipeline Automation & Predictions
+        run: |
+          GW_ARG=""
+          if [ -n "${{ github.event.inputs.gameweek }}" ]; then
+            GW_ARG="--gw ${{ github.event.inputs.gameweek }}"
+          fi
+          
+          MODE="${{ github.event.inputs.mode || 'sync' }}"
+          echo "Running pipeline in mode: $MODE $GW_ARG"
+          python -m model.pipeline_automation --season 2026-27 --mode "$MODE" --team-id 9500404 --league-id 1305495 $GW_ARG
+
+      - name: Enrich Frontend Player Costs & Element IDs
+        run: |
+          python scripts/enrich_player_costs.py 2026-27
+
+      - name: Enrich Frontend Cockpit Payloads
+        run: |
+          GW_ARG=""
+          if [ -n "${{ github.event.inputs.gameweek }}" ]; then
+            GW_ARG="--gw ${{ github.event.inputs.gameweek }}"
+          fi
+          python -m model.enrich_frontend_data $GW_ARG || true
+
+      - name: Validate OKF Knowledge Catalog Conformance
+        run: |
+          python scripts/validate_okf.py
+
+      - name: Run Client Optimizer Contract Tests
+        run: |
+          node frontend/src/utils/clientOptimizer.test.js
+
+      - name: Run Serverless API Contract Tests
+        run: |
+          node tests/test_api_sync.js
+
+      - name: Verify Frontend Production Build
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Commit & Push Refreshed Datasets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ frontend/src/data/ knowledge/
+          
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No data changes detected. Skipping commit."
+          else
+            TODAY=$(date -u +"%Y-%m-%d")
+            git commit -m "chore(data): automated weekly FPL predictions & matchday sync ($TODAY) [skip ci]"
+            git push origin HEAD:master
+          fi

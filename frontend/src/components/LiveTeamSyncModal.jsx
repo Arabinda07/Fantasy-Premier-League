@@ -3,19 +3,11 @@ import {
   ArrowsClockwise,
   X,
   CheckCircle,
-  Info,
+  WarningCircle,
   SoccerBall,
-  UsersThree
+  UsersThree,
+  ArrowSquareOut
 } from '@phosphor-icons/react';
-
-// WHY real-time sync doesn't work from the browser:
-// The official FPL API (fantasy.premierleague.com/api/*) blocks browser
-// requests with CORS headers — it only serves responses to its own origin.
-// A proper sync would require a backend proxy / cloud function.
-// For now the modal:
-//   1. Shows the pre-loaded squad from live_matchday_gw2.json (accurate GW2 data)
-//   2. Lets the user update their stored Entry ID / League ID (persisted to localStorage)
-//   3. Explains honestly that a backend proxy would be needed for live sync
 
 export default function LiveTeamSyncModal({
   isOpen,
@@ -29,32 +21,68 @@ export default function LiveTeamSyncModal({
   const [leagueId, setLeagueId] = useState(
     () => localStorage.getItem('fpl_synced_league_id') || String(currentProfile?.league_id || '1305495')
   );
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState('');
+  const [error, setError] = useState(null);
   const [saved, setSaved] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSave = (e) => {
-    e.preventDefault();
-    if (!entryId) return;
+  const handleSync = async (e) => {
+    if (e) e.preventDefault();
+    setError(null);
+    setSaved(false);
+
+    const cleanEntryId = String(entryId).trim();
+    if (!cleanEntryId || isNaN(Number(cleanEntryId))) {
+      setError('Please enter a valid numeric FPL Team ID.');
+      return;
+    }
+
+    setIsLoading(true);
+    setLoadingStep('Connecting to official FPL servers...');
 
     try {
-      localStorage.setItem('fpl_synced_entry_id', entryId);
-      localStorage.setItem('fpl_synced_league_id', leagueId);
+      const params = new URLSearchParams({ entry_id: cleanEntryId });
+      if (leagueId && String(leagueId).trim()) {
+        params.append('league_id', String(leagueId).trim());
+      }
+
+      setLoadingStep('Fetching picks & transfer history...');
+      const response = await fetch(`/api/sync?${params.toString()}`);
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        if (data.error === 'ENTRY_NOT_FOUND') {
+          throw new Error(`FPL Team ID ${cleanEntryId} was not found on FPL servers.`);
+        } else if (data.error === 'FPL_MAINTENANCE') {
+          throw new Error('Official FPL API is currently updating gameweek data.');
+        } else {
+          throw new Error(data.message || 'Failed to fetch squad data.');
+        }
+      }
+
+      // Save to localStorage
+      try {
+        localStorage.setItem('fpl_synced_entry_id', cleanEntryId);
+        if (leagueId) localStorage.setItem('fpl_synced_league_id', String(leagueId).trim());
+      } catch (err) {
+        console.warn('LocalStorage write failed:', err);
+      }
+
+      if (onSyncSuccess) {
+        onSyncSuccess(data);
+      }
+
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
     } catch (err) {
-      console.error('LocalStorage write error:', err);
+      console.error('[Sync Modal Error]:', err);
+      setError(err.message || 'Unable to sync live data. Please check your connection or ID.');
+    } finally {
+      setIsLoading(false);
+      setLoadingStep('');
     }
-
-    if (onSyncSuccess) {
-      onSyncSuccess({
-        entry_id: parseInt(entryId, 10),
-        manager_name: currentProfile?.manager_name || 'Arabinda Saha',
-        team_name: currentProfile?.team_name || 'Fuljhore Giants',
-        league_id: leagueId
-      });
-    }
-
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
   };
 
   const manager = currentProfile;
@@ -75,9 +103,9 @@ export default function LiveTeamSyncModal({
               <SoccerBall size={18} weight="fill" />
             </div>
             <div>
-              <h2 id="sync-modal-title" className="modal-title">Squad Configuration</h2>
+              <h2 id="sync-modal-title" className="modal-title">Squad Configuration & Sync</h2>
               <p className="modal-subtitle">
-                Pre-loaded GW2 squad · update IDs for reference tracking
+                Official FPL Team ID & Classic Mini-League Tracker
               </p>
             </div>
           </div>
@@ -86,72 +114,102 @@ export default function LiveTeamSyncModal({
           </button>
         </div>
 
-        {/* Info Notice — honest about what works */}
-        <div className="sync-notice-banner">
-          <Info size={15} weight="bold" style={{ flexShrink: 0, marginTop: '1px' }} />
-          <span>
-            Live API sync requires a backend proxy (the FPL API blocks browser requests via CORS).
-            Your squad data is pre-loaded from the GW2 LP solver output and is accurate.
-            Saving your IDs here stores them locally for display purposes.
-          </span>
-        </div>
+        {/* Error Alert */}
+        {error && (
+          <div className="sync-error-banner" role="alert">
+            <WarningCircle size={18} weight="bold" style={{ flexShrink: 0, marginTop: '1px' }} />
+            <div>
+              <div style={{ fontWeight: 700 }}>Sync Notice</div>
+              <div>{error}</div>
+            </div>
+          </div>
+        )}
 
-        {/* ID Config Form */}
-        <form onSubmit={handleSave} className="sync-form">
+        {/* Form */}
+        <form onSubmit={handleSync} className="sync-form">
           <div className="form-group">
             <label htmlFor="fpl-entry-id" className="form-label">
-              FPL Entry ID
+              FPL Team ID (Entry ID)
             </label>
             <div className="input-with-button">
               <input
                 id="fpl-entry-id"
-                type="number"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 value={entryId}
                 onChange={(e) => setEntryId(e.target.value)}
                 placeholder="e.g. 9500404"
                 required
                 className="sync-input font-mono"
+                disabled={isLoading}
               />
               <button
                 type="submit"
                 className="sync-submit-btn"
+                disabled={isLoading}
               >
-                {saved ? <CheckCircle size={15} weight="fill" /> : <ArrowsClockwise size={15} />}
-                <span>{saved ? 'Saved!' : 'Save IDs'}</span>
+                {isLoading ? (
+                  <>
+                    <ArrowsClockwise size={15} className="spin-animation" />
+                    <span>Syncing...</span>
+                  </>
+                ) : saved ? (
+                  <>
+                    <CheckCircle size={15} weight="fill" />
+                    <span>Synced!</span>
+                  </>
+                ) : (
+                  <>
+                    <ArrowsClockwise size={15} />
+                    <span>Sync Live Data</span>
+                  </>
+                )}
               </button>
             </div>
             <span className="input-help">
-              Found at: fantasy.premierleague.com/entry/<strong>{entryId}</strong>/history
+              Found at: fantasy.premierleague.com/entry/<strong>{entryId || '9500404'}</strong>/history
             </span>
           </div>
 
           <div className="form-group">
             <label htmlFor="fpl-league-id" className="form-label">
-              Classic Mini-League ID
+              Classic Mini-League ID (Optional)
             </label>
             <input
               id="fpl-league-id"
               type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               value={leagueId}
               onChange={(e) => setLeagueId(e.target.value)}
               placeholder="e.g. 1305495"
               className="sync-input font-mono"
+              disabled={isLoading}
             />
             <span className="input-help">
               Used to populate the Rival Radar tab with your mini-league standings.
             </span>
           </div>
 
-          {/* Live Squad Preview (from pre-loaded JSON) */}
+          {/* Kinetic Loading Status */}
+          {isLoading && (
+            <div className="sync-ticker-box">
+              <ArrowsClockwise size={15} className="spin-animation" />
+              <span>{loadingStep}</span>
+            </div>
+          )}
+
+          {/* Live Squad Preview Card */}
           <div className="profile-preview-card">
             <div className="profile-header">
               <span className="profile-tag">
                 <UsersThree size={12} weight="bold" style={{ display: 'inline', marginRight: '4px' }} />
-                PRE-LOADED GW2 SQUAD
+                ACTIVE SQUAD ROSTER
               </span>
               <span className="profile-status">
-                <span className="status-dot" />
-                DATA CURRENT
+                <span className="live-sync-indicator" />
+                <span>LIVE SYNC ACTIVE</span>
               </span>
             </div>
             <div className="profile-grid">

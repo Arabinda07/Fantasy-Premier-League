@@ -61,7 +61,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 1,
+    "element_id": 1,
+    "code": 154561
   },
   {
     "player_code": 109745,
@@ -125,7 +128,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 2,
+    "element_id": 2,
+    "code": 109745
   },
   {
     "player_code": 437495,
@@ -189,7 +195,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 3,
+    "element_id": 3,
+    "code": 437495
   },
   {
     "player_code": 226597,
@@ -253,7 +262,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 8.0
+    "now_cost": 8.0,
+    "id": 4,
+    "element_id": 4,
+    "code": 226597
   },
   {
     "player_code": 445122,
@@ -317,7 +329,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 5,
+    "element_id": 5,
+    "code": 445122
   },
   {
     "player_code": 462424,
@@ -381,7 +396,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 6,
+    "element_id": 6,
+    "code": 462424
   },
   {
     "player_code": 499169,
@@ -445,7 +463,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 7,
+    "element_id": 7,
+    "code": 499169
   },
   {
     "player_code": 466075,
@@ -509,7 +530,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.6,
+    "id": 8,
+    "element_id": 8,
+    "code": 466075
   },
   {
     "player_code": 448104,
@@ -573,7 +597,10 @@
     "p_start": 0.0032,
     "p_app": 0.0032,
     "p_60_plus": 0.0021,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 9,
+    "element_id": 9,
+    "code": 448104
   },
   {
     "player_code": 198869,
@@ -637,7 +664,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 10,
+    "element_id": 10,
+    "code": 198869
   },
   {
     "player_code": 500040,
@@ -701,7 +731,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 11,
+    "element_id": 11,
+    "code": 500040
   },
   {
     "player_code": 223340,
@@ -765,7 +798,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.8222,
-    "now_cost": 9.5
+    "now_cost": 9.5,
+    "id": 12,
+    "element_id": 12,
+    "code": 223340
   },
   {
     "player_code": 204480,
@@ -829,7 +865,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.8222,
-    "now_cost": 7.5
+    "now_cost": 7.5,
+    "id": 13,
+    "element_id": 13,
+    "code": 204480
   },
   {
     "player_code": 232413,
@@ -893,7 +932,10 @@
     "p_start": 0.0049,
     "p_app": 0.0049,
     "p_60_plus": 0.0033,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 14,
+    "element_id": 14,
+    "code": 232413
   },
   {
     "player_code": 184029,
@@ -957,7 +999,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 15,
+    "element_id": 15,
+    "code": 184029
   },
   {
     "player_code": 248857,
@@ -1021,7 +1066,10 @@
     "p_start": 0.0077,
     "p_app": 0.0077,
     "p_60_plus": 0.0051,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 16,
+    "element_id": 16,
+    "code": 248857
   },
   {
     "player_code": 195384,
@@ -1085,7 +1133,10 @@
     "p_start": 0.0049,
     "p_app": 0.0049,
     "p_60_plus": 0.0033,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 17,
+    "element_id": 17,
+    "code": 195384
   },
   {
     "player_code": 444145,
@@ -1149,7 +1200,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.5
+    "now_cost": 6.4,
+    "id": 18,
+    "element_id": 18,
+    "code": 444145
   },
   {
     "player_code": 481655,
@@ -1213,7 +1267,10 @@
     "p_start": 0.0077,
     "p_app": 0.0077,
     "p_60_plus": 0.0051,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 19,
+    "element_id": 19,
+    "code": 481655
   },
   {
     "player_code": 616077,
@@ -1277,7 +1334,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.4,
+    "id": 20,
+    "element_id": 20,
+    "code": 616077
   },
   {
     "player_code": 499175,
@@ -1341,7 +1401,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 22,
+    "element_id": 22,
+    "code": 499175
   },
   {
     "player_code": 438098,
@@ -1405,7 +1468,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 23,
+    "element_id": 23,
+    "code": 438098
   },
   {
     "player_code": 200641,
@@ -1469,7 +1535,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 24,
+    "element_id": 24,
+    "code": 200641
   },
   {
     "player_code": 224117,
@@ -1533,7 +1602,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 7.5
+    "now_cost": 7.4,
+    "id": 25,
+    "element_id": 25,
+    "code": 224117
   },
   {
     "player_code": 219847,
@@ -1597,7 +1669,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 7.5
+    "now_cost": 7.5,
+    "id": 26,
+    "element_id": 26,
+    "code": 219847
   },
   {
     "player_code": 205651,
@@ -1661,7 +1736,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 27,
+    "element_id": 27,
+    "code": 205651
   },
   {
     "player_code": 199798,
@@ -1725,7 +1803,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 31,
+    "element_id": 31,
+    "code": 199798
   },
   {
     "player_code": 208706,
@@ -1789,7 +1870,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 7.0
+    "now_cost": 7.0,
+    "id": 452,
+    "element_id": 452,
+    "code": 208706
   },
   {
     "player_code": 439509,
@@ -1853,7 +1937,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 557,
+    "element_id": 557,
+    "code": 439509
   },
   {
     "player_code": 98980,
@@ -1917,7 +2004,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 28,
+    "element_id": 28,
+    "code": 98980
   },
   {
     "player_code": 72147,
@@ -1981,7 +2071,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 29,
+    "element_id": 29,
+    "code": 72147
   },
   {
     "player_code": 101188,
@@ -2045,7 +2138,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 30,
+    "element_id": 30,
+    "code": 101188
   },
   {
     "player_code": 199796,
@@ -2109,7 +2205,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 32,
+    "element_id": 32,
+    "code": 199796
   },
   {
     "player_code": 149484,
@@ -2173,7 +2272,10 @@
     "p_start": 0.0056,
     "p_app": 0.0056,
     "p_60_plus": 0.0037,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 33,
+    "element_id": 33,
+    "code": 149484
   },
   {
     "player_code": 244954,
@@ -2237,7 +2339,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.9556,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 34,
+    "element_id": 34,
+    "code": 244954
   },
   {
     "player_code": 515597,
@@ -2301,7 +2406,10 @@
     "p_start": 0.0056,
     "p_app": 0.0056,
     "p_60_plus": 0.0037,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 35,
+    "element_id": 35,
+    "code": 515597
   },
   {
     "player_code": 441302,
@@ -2365,7 +2473,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 36,
+    "element_id": 36,
+    "code": 441302
   },
   {
     "player_code": 184667,
@@ -2429,7 +2540,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 37,
+    "element_id": 37,
+    "code": 184667
   },
   {
     "player_code": 606798,
@@ -2493,7 +2607,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 38,
+    "element_id": 38,
+    "code": 606798
   },
   {
     "player_code": 578545,
@@ -2557,7 +2674,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 39,
+    "element_id": 39,
+    "code": 578545
   },
   {
     "player_code": 195546,
@@ -2621,7 +2741,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 41,
+    "element_id": 41,
+    "code": 195546
   },
   {
     "player_code": 215711,
@@ -2685,7 +2808,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 44,
+    "element_id": 44,
+    "code": 215711
   },
   {
     "player_code": 122806,
@@ -2749,7 +2875,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 45,
+    "element_id": 45,
+    "code": 122806
   },
   {
     "player_code": 88894,
@@ -2813,7 +2942,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.9556,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 46,
+    "element_id": 46,
+    "code": 88894
   },
   {
     "player_code": 226944,
@@ -2877,7 +3009,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 47,
+    "element_id": 47,
+    "code": 226944
   },
   {
     "player_code": 449871,
@@ -2941,7 +3076,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 48,
+    "element_id": 48,
+    "code": 449871
   },
   {
     "player_code": 469247,
@@ -3005,7 +3143,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 49,
+    "element_id": 49,
+    "code": 469247
   },
   {
     "player_code": 645618,
@@ -3069,7 +3210,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 50,
+    "element_id": 50,
+    "code": 645618
   },
   {
     "player_code": 577285,
@@ -3133,7 +3277,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 51,
+    "element_id": 51,
+    "code": 577285
   },
   {
     "player_code": 653481,
@@ -3197,7 +3344,10 @@
     "p_start": 0.0028,
     "p_app": 0.0028,
     "p_60_plus": 0.0019,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 52,
+    "element_id": 52,
+    "code": 653481
   },
   {
     "player_code": 614071,
@@ -3261,7 +3411,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 53,
+    "element_id": 53,
+    "code": 614071
   },
   {
     "player_code": 448089,
@@ -3325,7 +3478,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.3333,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 54,
+    "element_id": 54,
+    "code": 448089
   },
   {
     "player_code": 178301,
@@ -3389,7 +3545,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 8.0
+    "now_cost": 7.9,
+    "id": 55,
+    "element_id": 55,
+    "code": 178301
   },
   {
     "player_code": 173879,
@@ -3453,7 +3612,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 56,
+    "element_id": 56,
+    "code": 173879
   },
   {
     "player_code": 493105,
@@ -3517,7 +3679,10 @@
     "p_start": 0.0014,
     "p_app": 0.0014,
     "p_60_plus": 0.0009,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 160,
+    "element_id": 160,
+    "code": 493105
   },
   {
     "player_code": 690838,
@@ -3581,7 +3746,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 582,
+    "element_id": 582,
+    "code": 690838
   },
   {
     "player_code": 487992,
@@ -3645,7 +3813,10 @@
     "p_start": 0.0028,
     "p_app": 0.0028,
     "p_60_plus": 0.0019,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 596,
+    "element_id": 596,
+    "code": 487992
   },
   {
     "player_code": 433969,
@@ -3709,7 +3880,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 597,
+    "element_id": 597,
+    "code": 433969
   },
   {
     "player_code": 569577,
@@ -3773,7 +3947,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 606,
+    "element_id": 606,
+    "code": 569577
   },
   {
     "player_code": 571380,
@@ -3837,7 +4014,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 607,
+    "element_id": 607,
+    "code": 571380
   },
   {
     "player_code": 457569,
@@ -3901,7 +4081,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 57,
+    "element_id": 57,
+    "code": 457569
   },
   {
     "player_code": 40383,
@@ -3965,7 +4148,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 58,
+    "element_id": 58,
+    "code": 40383
   },
   {
     "player_code": 444172,
@@ -4029,7 +4215,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 59,
+    "element_id": 59,
+    "code": 444172
   },
   {
     "player_code": 463981,
@@ -4093,7 +4282,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 60,
+    "element_id": 60,
+    "code": 463981
   },
   {
     "player_code": 494521,
@@ -4157,7 +4349,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 61,
+    "element_id": 61,
+    "code": 494521
   },
   {
     "player_code": 242882,
@@ -4221,7 +4416,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 62,
+    "element_id": 62,
+    "code": 242882
   },
   {
     "player_code": 620487,
@@ -4285,7 +4483,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 63,
+    "element_id": 63,
+    "code": 620487
   },
   {
     "player_code": 54469,
@@ -4349,7 +4550,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 64,
+    "element_id": 64,
+    "code": 54469
   },
   {
     "player_code": 436893,
@@ -4413,7 +4617,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 65,
+    "element_id": 65,
+    "code": 436893
   },
   {
     "player_code": 575901,
@@ -4477,7 +4684,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 66,
+    "element_id": 66,
+    "code": 575901
   },
   {
     "player_code": 499604,
@@ -4541,7 +4751,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 67,
+    "element_id": 67,
+    "code": 499604
   },
   {
     "player_code": 201658,
@@ -4605,7 +4818,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 68,
+    "element_id": 68,
+    "code": 201658
   },
   {
     "player_code": 503139,
@@ -4669,7 +4885,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 69,
+    "element_id": 69,
+    "code": 503139
   },
   {
     "player_code": 222683,
@@ -4733,7 +4952,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.9778,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 70,
+    "element_id": 70,
+    "code": 222683
   },
   {
     "player_code": 155408,
@@ -4797,7 +5019,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 71,
+    "element_id": 71,
+    "code": 155408
   },
   {
     "player_code": 496208,
@@ -4861,7 +5086,10 @@
     "p_start": 0.0004,
     "p_app": 0.0004,
     "p_60_plus": 0.0002,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 72,
+    "element_id": 72,
+    "code": 496208
   },
   {
     "player_code": 200785,
@@ -4925,7 +5153,10 @@
     "p_start": 0.0053,
     "p_app": 0.0053,
     "p_60_plus": 0.0035,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 73,
+    "element_id": 73,
+    "code": 200785
   },
   {
     "player_code": 111317,
@@ -4989,7 +5220,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 74,
+    "element_id": 74,
+    "code": 111317
   },
   {
     "player_code": 158499,
@@ -5053,7 +5287,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 75,
+    "element_id": 75,
+    "code": 158499
   },
   {
     "player_code": 614574,
@@ -5117,7 +5354,10 @@
     "p_start": 0.0053,
     "p_app": 0.0053,
     "p_60_plus": 0.0035,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 76,
+    "element_id": 76,
+    "code": 614574
   },
   {
     "player_code": 489888,
@@ -5181,7 +5421,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 77,
+    "element_id": 77,
+    "code": 489888
   },
   {
     "player_code": 560262,
@@ -5245,7 +5488,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 7.5
+    "now_cost": 7.5,
+    "id": 78,
+    "element_id": 78,
+    "code": 560262
   },
   {
     "player_code": 444102,
@@ -5309,7 +5555,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.9778,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 79,
+    "element_id": 79,
+    "code": 444102
   },
   {
     "player_code": 168636,
@@ -5373,7 +5622,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 80,
+    "element_id": 80,
+    "code": 168636
   },
   {
     "player_code": 561245,
@@ -5437,7 +5689,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 81,
+    "element_id": 81,
+    "code": 561245
   },
   {
     "player_code": 483067,
@@ -5501,7 +5756,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 566,
+    "element_id": 566,
+    "code": 483067
   },
   {
     "player_code": 494928,
@@ -5565,7 +5823,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 573,
+    "element_id": 573,
+    "code": 494928
   },
   {
     "player_code": 523700,
@@ -5629,7 +5890,10 @@
     "p_start": 0.0053,
     "p_app": 0.0053,
     "p_60_plus": 0.0035,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 608,
+    "element_id": 608,
+    "code": 523700
   },
   {
     "player_code": 200720,
@@ -5693,7 +5957,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 82,
+    "element_id": 82,
+    "code": 200720
   },
   {
     "player_code": 507433,
@@ -5757,7 +6024,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 83,
+    "element_id": 83,
+    "code": 507433
   },
   {
     "player_code": 432830,
@@ -5821,7 +6091,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 84,
+    "element_id": 84,
+    "code": 432830
   },
   {
     "player_code": 444765,
@@ -5885,7 +6158,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 85,
+    "element_id": 85,
+    "code": 444765
   },
   {
     "player_code": 249231,
@@ -5949,7 +6225,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 86,
+    "element_id": 86,
+    "code": 249231
   },
   {
     "player_code": 191866,
@@ -6013,7 +6292,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 87,
+    "element_id": 87,
+    "code": 191866
   },
   {
     "player_code": 607464,
@@ -6077,7 +6359,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.6,
+    "id": 88,
+    "element_id": 88,
+    "code": 607464
   },
   {
     "player_code": 194010,
@@ -6141,7 +6426,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 89,
+    "element_id": 89,
+    "code": 194010
   },
   {
     "player_code": 472713,
@@ -6205,7 +6493,10 @@
     "p_start": 0.0049,
     "p_app": 0.0049,
     "p_60_plus": 0.0033,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 90,
+    "element_id": 90,
+    "code": 472713
   },
   {
     "player_code": 231065,
@@ -6269,7 +6560,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 91,
+    "element_id": 91,
+    "code": 231065
   },
   {
     "player_code": 570241,
@@ -6333,7 +6627,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 92,
+    "element_id": 92,
+    "code": 570241
   },
   {
     "player_code": 513086,
@@ -6397,7 +6694,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 93,
+    "element_id": 93,
+    "code": 513086
   },
   {
     "player_code": 513418,
@@ -6461,7 +6761,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 94,
+    "element_id": 94,
+    "code": 513418
   },
   {
     "player_code": 533463,
@@ -6525,7 +6828,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.8,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 95,
+    "element_id": 95,
+    "code": 533463
   },
   {
     "player_code": 440089,
@@ -6589,7 +6895,10 @@
     "p_start": 0.0049,
     "p_app": 0.0049,
     "p_60_plus": 0.0033,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 96,
+    "element_id": 96,
+    "code": 440089
   },
   {
     "player_code": 207283,
@@ -6653,7 +6962,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.8,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 97,
+    "element_id": 97,
+    "code": 207283
   },
   {
     "player_code": 204580,
@@ -6717,7 +7029,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 98,
+    "element_id": 98,
+    "code": 204580
   },
   {
     "player_code": 543295,
@@ -6781,7 +7096,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 99,
+    "element_id": 99,
+    "code": 543295
   },
   {
     "player_code": 244858,
@@ -6845,7 +7163,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 100,
+    "element_id": 100,
+    "code": 244858
   },
   {
     "player_code": 508395,
@@ -6909,7 +7230,10 @@
     "p_start": 0.0081,
     "p_app": 0.0081,
     "p_60_plus": 0.0054,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 102,
+    "element_id": 102,
+    "code": 508395
   },
   {
     "player_code": 183656,
@@ -6973,7 +7297,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 103,
+    "element_id": 103,
+    "code": 183656
   },
   {
     "player_code": 444180,
@@ -7037,7 +7364,10 @@
     "p_start": 0.0081,
     "p_app": 0.0081,
     "p_60_plus": 0.0054,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 105,
+    "element_id": 105,
+    "code": 444180
   },
   {
     "player_code": 502500,
@@ -7101,7 +7431,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 8.0
+    "now_cost": 8.0,
+    "id": 106,
+    "element_id": 106,
+    "code": 502500
   },
   {
     "player_code": 593174,
@@ -7165,7 +7498,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 107,
+    "element_id": 107,
+    "code": 593174
   },
   {
     "player_code": 75115,
@@ -7229,7 +7565,10 @@
     "p_start": 0.0025,
     "p_app": 0.0025,
     "p_60_plus": 0.0016,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 108,
+    "element_id": 108,
+    "code": 75115
   },
   {
     "player_code": 513545,
@@ -7293,7 +7632,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.6,
+    "id": 565,
+    "element_id": 565,
+    "code": 513545
   },
   {
     "player_code": 489639,
@@ -7357,7 +7699,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 109,
+    "element_id": 109,
+    "code": 489639
   },
   {
     "player_code": 49262,
@@ -7421,7 +7766,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 111,
+    "element_id": 111,
+    "code": 49262
   },
   {
     "player_code": 231416,
@@ -7485,7 +7833,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 113,
+    "element_id": 113,
+    "code": 231416
   },
   {
     "player_code": 204120,
@@ -7549,7 +7900,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 114,
+    "element_id": 114,
+    "code": 204120
   },
   {
     "player_code": 465730,
@@ -7613,7 +7967,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.6,
+    "id": 115,
+    "element_id": 115,
+    "code": 465730
   },
   {
     "player_code": 83299,
@@ -7677,7 +8034,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 116,
+    "element_id": 116,
+    "code": 83299
   },
   {
     "player_code": 550090,
@@ -7741,7 +8101,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 117,
+    "element_id": 117,
+    "code": 550090
   },
   {
     "player_code": 223434,
@@ -7805,7 +8168,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 118,
+    "element_id": 118,
+    "code": 223434
   },
   {
     "player_code": 451490,
@@ -7869,7 +8235,10 @@
     "p_start": 0.0091,
     "p_app": 0.0091,
     "p_60_plus": 0.0061,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 119,
+    "element_id": 119,
+    "code": 451490
   },
   {
     "player_code": 454490,
@@ -7933,7 +8302,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 120,
+    "element_id": 120,
+    "code": 454490
   },
   {
     "player_code": 451340,
@@ -7997,7 +8369,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 121,
+    "element_id": 121,
+    "code": 451340
   },
   {
     "player_code": 592031,
@@ -8061,7 +8436,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 122,
+    "element_id": 122,
+    "code": 592031
   },
   {
     "player_code": 532529,
@@ -8125,7 +8503,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.7333,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 123,
+    "element_id": 123,
+    "code": 532529
   },
   {
     "player_code": 60307,
@@ -8189,7 +8570,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 124,
+    "element_id": 124,
+    "code": 60307
   },
   {
     "player_code": 463067,
@@ -8253,7 +8637,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 125,
+    "element_id": 125,
+    "code": 463067
   },
   {
     "player_code": 219249,
@@ -8317,7 +8704,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 126,
+    "element_id": 126,
+    "code": 219249
   },
   {
     "player_code": 514254,
@@ -8381,7 +8771,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 127,
+    "element_id": 127,
+    "code": 514254
   },
   {
     "player_code": 536916,
@@ -8445,7 +8838,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 128,
+    "element_id": 128,
+    "code": 536916
   },
   {
     "player_code": 509416,
@@ -8509,7 +8905,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.7333,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 129,
+    "element_id": 129,
+    "code": 509416
   },
   {
     "player_code": 467779,
@@ -8573,7 +8972,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 130,
+    "element_id": 130,
+    "code": 467779
   },
   {
     "player_code": 535301,
@@ -8637,7 +9039,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 131,
+    "element_id": 131,
+    "code": 535301
   },
   {
     "player_code": 597320,
@@ -8701,7 +9106,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 132,
+    "element_id": 132,
+    "code": 597320
   },
   {
     "player_code": 549074,
@@ -8765,7 +9173,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 133,
+    "element_id": 133,
+    "code": 549074
   },
   {
     "player_code": 556637,
@@ -8829,7 +9240,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 134,
+    "element_id": 134,
+    "code": 556637
   },
   {
     "player_code": 700308,
@@ -8893,7 +9307,10 @@
     "p_start": 0.0042,
     "p_app": 0.0042,
     "p_60_plus": 0.0028,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 135,
+    "element_id": 135,
+    "code": 700308
   },
   {
     "player_code": 608181,
@@ -8957,7 +9374,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 137,
+    "element_id": 137,
+    "code": 608181
   },
   {
     "player_code": 647850,
@@ -9021,7 +9441,10 @@
     "p_start": 0.0091,
     "p_app": 0.0091,
     "p_60_plus": 0.0061,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 138,
+    "element_id": 138,
+    "code": 647850
   },
   {
     "player_code": 487117,
@@ -9085,7 +9508,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 139,
+    "element_id": 139,
+    "code": 487117
   },
   {
     "player_code": 222694,
@@ -9149,7 +9575,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 328,
+    "element_id": 328,
+    "code": 222694
   },
   {
     "player_code": 610799,
@@ -9213,7 +9642,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 504,
+    "element_id": 504,
+    "code": 610799
   },
   {
     "player_code": 538007,
@@ -9277,7 +9709,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 594,
+    "element_id": 594,
+    "code": 538007
   },
   {
     "player_code": 612855,
@@ -9341,7 +9776,10 @@
     "p_start": 0.0042,
     "p_app": 0.0042,
     "p_60_plus": 0.0028,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 600,
+    "element_id": 600,
+    "code": 612855
   },
   {
     "player_code": 611695,
@@ -9405,7 +9843,10 @@
     "p_start": 0.0014,
     "p_app": 0.0014,
     "p_60_plus": 0.0009,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 605,
+    "element_id": 605,
+    "code": 611695
   },
   {
     "player_code": 244850,
@@ -9469,7 +9910,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 7.5
+    "now_cost": 7.5,
+    "id": 40,
+    "element_id": 40,
+    "code": 244850
   },
   {
     "player_code": 56979,
@@ -9533,7 +9977,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 101,
+    "element_id": 101,
+    "code": 56979
   },
   {
     "player_code": 50175,
@@ -9597,7 +10044,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 136,
+    "element_id": 136,
+    "code": 50175
   },
   {
     "player_code": 215059,
@@ -9661,7 +10111,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 140,
+    "element_id": 140,
+    "code": 215059
   },
   {
     "player_code": 508479,
@@ -9725,7 +10178,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 141,
+    "element_id": 141,
+    "code": 508479
   },
   {
     "player_code": 225796,
@@ -9789,7 +10245,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 142,
+    "element_id": 142,
+    "code": 225796
   },
   {
     "player_code": 180736,
@@ -9853,7 +10312,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 143,
+    "element_id": 143,
+    "code": 180736
   },
   {
     "player_code": 482609,
@@ -9917,7 +10379,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 144,
+    "element_id": 144,
+    "code": 482609
   },
   {
     "player_code": 444463,
@@ -9981,7 +10446,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 145,
+    "element_id": 145,
+    "code": 444463
   },
   {
     "player_code": 242880,
@@ -10045,7 +10513,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 146,
+    "element_id": 146,
+    "code": 242880
   },
   {
     "player_code": 109646,
@@ -10109,7 +10580,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 147,
+    "element_id": 147,
+    "code": 109646
   },
   {
     "player_code": 551210,
@@ -10173,7 +10647,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.7556,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 148,
+    "element_id": 148,
+    "code": 551210
   },
   {
     "player_code": 460028,
@@ -10237,7 +10714,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 149,
+    "element_id": 149,
+    "code": 460028
   },
   {
     "player_code": 574458,
@@ -10301,7 +10781,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 150,
+    "element_id": 150,
+    "code": 574458
   },
   {
     "player_code": 577016,
@@ -10365,7 +10848,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 151,
+    "element_id": 151,
+    "code": 577016
   },
   {
     "player_code": 620109,
@@ -10429,7 +10915,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 152,
+    "element_id": 152,
+    "code": 620109
   },
   {
     "player_code": 220362,
@@ -10493,7 +10982,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 153,
+    "element_id": 153,
+    "code": 220362
   },
   {
     "player_code": 244851,
@@ -10557,7 +11049,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 9.5
+    "now_cost": 9.5,
+    "id": 154,
+    "element_id": 154,
+    "code": 244851
   },
   {
     "player_code": 448047,
@@ -10621,7 +11116,10 @@
     "p_start": 0.0088,
     "p_app": 0.0088,
     "p_60_plus": 0.0058,
-    "now_cost": 7.0
+    "now_cost": 7.0,
+    "id": 155,
+    "element_id": 155,
+    "code": 448047
   },
   {
     "player_code": 247632,
@@ -10685,7 +11183,10 @@
     "p_start": 0.0049,
     "p_app": 0.0049,
     "p_60_plus": 0.0033,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 156,
+    "element_id": 156,
+    "code": 247632
   },
   {
     "player_code": 624773,
@@ -10749,7 +11250,10 @@
     "p_start": 0.0025,
     "p_app": 0.0025,
     "p_60_plus": 0.0016,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 157,
+    "element_id": 157,
+    "code": 624773
   },
   {
     "player_code": 463936,
@@ -10813,7 +11317,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 158,
+    "element_id": 158,
+    "code": 463936
   },
   {
     "player_code": 486672,
@@ -10877,7 +11384,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 159,
+    "element_id": 159,
+    "code": 486672
   },
   {
     "player_code": 514356,
@@ -10941,7 +11451,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.7556,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 161,
+    "element_id": 161,
+    "code": 514356
   },
   {
     "player_code": 491007,
@@ -11005,7 +11518,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 163,
+    "element_id": 163,
+    "code": 491007
   },
   {
     "player_code": 593117,
@@ -11069,7 +11585,10 @@
     "p_start": 0.0028,
     "p_app": 0.0028,
     "p_60_plus": 0.0019,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 164,
+    "element_id": 164,
+    "code": 593117
   },
   {
     "player_code": 475168,
@@ -11133,7 +11652,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 7.5
+    "now_cost": 7.6,
+    "id": 165,
+    "element_id": 165,
+    "code": 475168
   },
   {
     "player_code": 517052,
@@ -11197,7 +11719,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 166,
+    "element_id": 166,
+    "code": 517052
   },
   {
     "player_code": 463034,
@@ -11261,7 +11786,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 167,
+    "element_id": 167,
+    "code": 463034
   },
   {
     "player_code": 499309,
@@ -11325,7 +11853,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 168,
+    "element_id": 168,
+    "code": 499309
   },
   {
     "player_code": 567119,
@@ -11389,7 +11920,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 169,
+    "element_id": 169,
+    "code": 567119
   },
   {
     "player_code": 503037,
@@ -11453,7 +11987,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 170,
+    "element_id": 170,
+    "code": 503037
   },
   {
     "player_code": 437499,
@@ -11517,7 +12054,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 200,
+    "element_id": 200,
+    "code": 437499
   },
   {
     "player_code": 549939,
@@ -11581,7 +12121,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 560,
+    "element_id": 560,
+    "code": 549939
   },
   {
     "player_code": 622758,
@@ -11645,7 +12188,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 561,
+    "element_id": 561,
+    "code": 622758
   },
   {
     "player_code": 543158,
@@ -11709,7 +12255,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 568,
+    "element_id": 568,
+    "code": 543158
   },
   {
     "player_code": 465920,
@@ -11773,7 +12322,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 578,
+    "element_id": 578,
+    "code": 465920
   },
   {
     "player_code": 498444,
@@ -11837,7 +12389,10 @@
     "p_start": 0.0088,
     "p_app": 0.0088,
     "p_60_plus": 0.0058,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 583,
+    "element_id": 583,
+    "code": 498444
   },
   {
     "player_code": 428580,
@@ -11901,7 +12456,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 104,
+    "element_id": 104,
+    "code": 428580
   },
   {
     "player_code": 472739,
@@ -11965,7 +12523,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 110,
+    "element_id": 110,
+    "code": 472739
   },
   {
     "player_code": 484389,
@@ -12029,7 +12590,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 171,
+    "element_id": 171,
+    "code": 484389
   },
   {
     "player_code": 110690,
@@ -12093,7 +12657,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 172,
+    "element_id": 172,
+    "code": 110690
   },
   {
     "player_code": 461102,
@@ -12157,7 +12724,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 173,
+    "element_id": 173,
+    "code": 461102
   },
   {
     "player_code": 436761,
@@ -12221,7 +12791,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 174,
+    "element_id": 174,
+    "code": 436761
   },
   {
     "player_code": 451284,
@@ -12285,7 +12858,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 175,
+    "element_id": 175,
+    "code": 451284
   },
   {
     "player_code": 173878,
@@ -12349,7 +12925,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 176,
+    "element_id": 176,
+    "code": 173878
   },
   {
     "player_code": 465390,
@@ -12413,7 +12992,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 177,
+    "element_id": 177,
+    "code": 465390
   },
   {
     "player_code": 80178,
@@ -12477,7 +13059,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 178,
+    "element_id": 178,
+    "code": 80178
   },
   {
     "player_code": 204813,
@@ -12541,7 +13126,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 179,
+    "element_id": 179,
+    "code": 204813
   },
   {
     "player_code": 220583,
@@ -12605,7 +13193,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 180,
+    "element_id": 180,
+    "code": 220583
   },
   {
     "player_code": 577411,
@@ -12669,7 +13260,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 181,
+    "element_id": 181,
+    "code": 577411
   },
   {
     "player_code": 539142,
@@ -12733,7 +13327,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 182,
+    "element_id": 182,
+    "code": 539142
   },
   {
     "player_code": 480457,
@@ -12797,7 +13394,10 @@
     "p_start": 0.007,
     "p_app": 0.007,
     "p_60_plus": 0.0047,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 183,
+    "element_id": 183,
+    "code": 480457
   },
   {
     "player_code": 168144,
@@ -12861,7 +13461,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 184,
+    "element_id": 184,
+    "code": 168144
   },
   {
     "player_code": 501459,
@@ -12925,7 +13528,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 185,
+    "element_id": 185,
+    "code": 501459
   },
   {
     "player_code": 241293,
@@ -12989,7 +13595,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 186,
+    "element_id": 186,
+    "code": 241293
   },
   {
     "player_code": 439668,
@@ -13053,7 +13662,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 187,
+    "element_id": 187,
+    "code": 439668
   },
   {
     "player_code": 226965,
@@ -13117,7 +13729,10 @@
     "p_start": 0.0098,
     "p_app": 0.0098,
     "p_60_plus": 0.0065,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 188,
+    "element_id": 188,
+    "code": 226965
   },
   {
     "player_code": 684268,
@@ -13181,7 +13796,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 189,
+    "element_id": 189,
+    "code": 684268
   },
   {
     "player_code": 469272,
@@ -13245,7 +13863,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 190,
+    "element_id": 190,
+    "code": 469272
   },
   {
     "player_code": 492498,
@@ -13309,7 +13930,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 191,
+    "element_id": 191,
+    "code": 492498
   },
   {
     "player_code": 629397,
@@ -13373,7 +13997,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 192,
+    "element_id": 192,
+    "code": 629397
   },
   {
     "player_code": 176412,
@@ -13437,7 +14064,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 193,
+    "element_id": 193,
+    "code": 176412
   },
   {
     "player_code": 230730,
@@ -13501,7 +14131,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.8667,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 194,
+    "element_id": 194,
+    "code": 230730
   },
   {
     "player_code": 218997,
@@ -13565,7 +14198,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.8667,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 195,
+    "element_id": 195,
+    "code": 218997
   },
   {
     "player_code": 551262,
@@ -13629,7 +14265,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 196,
+    "element_id": 196,
+    "code": 551262
   },
   {
     "player_code": 549653,
@@ -13693,7 +14332,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 197,
+    "element_id": 197,
+    "code": 549653
   },
   {
     "player_code": 210156,
@@ -13757,7 +14399,10 @@
     "p_start": 0.007,
     "p_app": 0.007,
     "p_60_plus": 0.0047,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 492,
+    "element_id": 492,
+    "code": 210156
   },
   {
     "player_code": 661888,
@@ -13821,7 +14466,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.6889,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 575,
+    "element_id": 575,
+    "code": 661888
   },
   {
     "player_code": 196100,
@@ -13885,7 +14533,10 @@
     "p_start": 0.0028,
     "p_app": 0.0028,
     "p_60_plus": 0.0019,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 584,
+    "element_id": 584,
+    "code": 196100
   },
   {
     "player_code": 627221,
@@ -13949,7 +14600,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 599,
+    "element_id": 599,
+    "code": 627221
   },
   {
     "player_code": 485337,
@@ -14013,7 +14667,10 @@
     "p_start": 0.0095,
     "p_app": 0.0095,
     "p_60_plus": 0.0063,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 42,
+    "element_id": 42,
+    "code": 485337
   },
   {
     "player_code": 172649,
@@ -14077,7 +14734,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 198,
+    "element_id": 198,
+    "code": 172649
   },
   {
     "player_code": 121709,
@@ -14141,7 +14801,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 199,
+    "element_id": 199,
+    "code": 121709
   },
   {
     "player_code": 247348,
@@ -14205,7 +14868,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.5333,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 201,
+    "element_id": 201,
+    "code": 247348
   },
   {
     "player_code": 427623,
@@ -14269,7 +14935,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 202,
+    "element_id": 202,
+    "code": 427623
   },
   {
     "player_code": 651426,
@@ -14333,7 +15002,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 203,
+    "element_id": 203,
+    "code": 651426
   },
   {
     "player_code": 244723,
@@ -14397,7 +15069,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 204,
+    "element_id": 204,
+    "code": 244723
   },
   {
     "player_code": 218364,
@@ -14461,7 +15136,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 205,
+    "element_id": 205,
+    "code": 218364
   },
   {
     "player_code": 515621,
@@ -14525,7 +15203,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.9333,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 206,
+    "element_id": 206,
+    "code": 515621
   },
   {
     "player_code": 242313,
@@ -14589,7 +15270,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 207,
+    "element_id": 207,
+    "code": 242313
   },
   {
     "player_code": 232185,
@@ -14653,7 +15337,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 208,
+    "element_id": 208,
+    "code": 232185
   },
   {
     "player_code": 496221,
@@ -14717,7 +15404,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 210,
+    "element_id": 210,
+    "code": 496221
   },
   {
     "player_code": 488024,
@@ -14781,7 +15471,10 @@
     "p_start": 0.0123,
     "p_app": 0.0123,
     "p_60_plus": 0.0082,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 211,
+    "element_id": 211,
+    "code": 488024
   },
   {
     "player_code": 108413,
@@ -14845,7 +15538,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 212,
+    "element_id": 212,
+    "code": 108413
   },
   {
     "player_code": 152551,
@@ -14909,7 +15605,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 213,
+    "element_id": 213,
+    "code": 152551
   },
   {
     "player_code": 209400,
@@ -14973,7 +15672,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 214,
+    "element_id": 214,
+    "code": 209400
   },
   {
     "player_code": 489706,
@@ -15037,7 +15739,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 215,
+    "element_id": 215,
+    "code": 489706
   },
   {
     "player_code": 606921,
@@ -15101,7 +15806,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 216,
+    "element_id": 216,
+    "code": 606921
   },
   {
     "player_code": 536694,
@@ -15165,7 +15873,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 217,
+    "element_id": 217,
+    "code": 536694
   },
   {
     "player_code": 438464,
@@ -15229,7 +15940,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 218,
+    "element_id": 218,
+    "code": 438464
   },
   {
     "player_code": 450542,
@@ -15293,7 +16007,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 219,
+    "element_id": 219,
+    "code": 450542
   },
   {
     "player_code": 590014,
@@ -15357,7 +16074,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 220,
+    "element_id": 220,
+    "code": 590014
   },
   {
     "player_code": 672492,
@@ -15421,7 +16141,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 221,
+    "element_id": 221,
+    "code": 672492
   },
   {
     "player_code": 247412,
@@ -15485,7 +16208,10 @@
     "p_start": 0.0095,
     "p_app": 0.0095,
     "p_60_plus": 0.0063,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 222,
+    "element_id": 222,
+    "code": 247412
   },
   {
     "player_code": 231747,
@@ -15549,7 +16275,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.7111,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 223,
+    "element_id": 223,
+    "code": 231747
   },
   {
     "player_code": 205533,
@@ -15613,7 +16342,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.5556,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 224,
+    "element_id": 224,
+    "code": 205533
   },
   {
     "player_code": 660392,
@@ -15677,7 +16409,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 225,
+    "element_id": 225,
+    "code": 660392
   },
   {
     "player_code": 433154,
@@ -15741,7 +16476,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.7111,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 241,
+    "element_id": 241,
+    "code": 433154
   },
   {
     "player_code": 169593,
@@ -15805,7 +16543,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 555,
+    "element_id": 555,
+    "code": 169593
   },
   {
     "player_code": 223723,
@@ -15869,7 +16610,10 @@
     "p_start": 0.0063,
     "p_app": 0.0063,
     "p_60_plus": 0.0042,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 577,
+    "element_id": 577,
+    "code": 223723
   },
   {
     "player_code": 570794,
@@ -15933,7 +16677,10 @@
     "p_start": 0.0123,
     "p_app": 0.0123,
     "p_60_plus": 0.0082,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 588,
+    "element_id": 588,
+    "code": 570794
   },
   {
     "player_code": 559152,
@@ -15997,7 +16744,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 595,
+    "element_id": 595,
+    "code": 559152
   },
   {
     "player_code": 128295,
@@ -16061,7 +16811,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 21,
+    "element_id": 21,
+    "code": 128295
   },
   {
     "player_code": 242898,
@@ -16125,7 +16878,10 @@
     "p_start": 0.0021,
     "p_app": 0.0021,
     "p_60_plus": 0.0014,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 209,
+    "element_id": 209,
+    "code": 242898
   },
   {
     "player_code": 111234,
@@ -16189,7 +16945,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 226,
+    "element_id": 226,
+    "code": 111234
   },
   {
     "player_code": 229600,
@@ -16253,7 +17012,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 227,
+    "element_id": 227,
+    "code": 229600
   },
   {
     "player_code": 138001,
@@ -16317,7 +17079,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 228,
+    "element_id": 228,
+    "code": 138001
   },
   {
     "player_code": 17761,
@@ -16381,7 +17146,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 229,
+    "element_id": 229,
+    "code": 17761
   },
   {
     "player_code": 480455,
@@ -16445,7 +17213,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 230,
+    "element_id": 230,
+    "code": 480455
   },
   {
     "player_code": 106611,
@@ -16509,7 +17280,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 231,
+    "element_id": 231,
+    "code": 106611
   },
   {
     "player_code": 512462,
@@ -16573,7 +17347,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 232,
+    "element_id": 232,
+    "code": 512462
   },
   {
     "player_code": 224967,
@@ -16637,7 +17414,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 233,
+    "element_id": 233,
+    "code": 224967
   },
   {
     "player_code": 243571,
@@ -16701,7 +17481,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 234,
+    "element_id": 234,
+    "code": 243571
   },
   {
     "player_code": 499300,
@@ -16765,7 +17548,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 235,
+    "element_id": 235,
+    "code": 499300
   },
   {
     "player_code": 215413,
@@ -16829,7 +17615,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 236,
+    "element_id": 236,
+    "code": 215413
   },
   {
     "player_code": 440993,
@@ -16893,7 +17682,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 237,
+    "element_id": 237,
+    "code": 440993
   },
   {
     "player_code": 232928,
@@ -16957,7 +17749,10 @@
     "p_start": 0.0039,
     "p_app": 0.0039,
     "p_60_plus": 0.0026,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 239,
+    "element_id": 239,
+    "code": 232928
   },
   {
     "player_code": 490094,
@@ -17021,7 +17816,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 240,
+    "element_id": 240,
+    "code": 490094
   },
   {
     "player_code": 550615,
@@ -17085,7 +17883,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 242,
+    "element_id": 242,
+    "code": 550615
   },
   {
     "player_code": 502697,
@@ -17149,7 +17950,10 @@
     "p_start": 0.0004,
     "p_app": 0.0004,
     "p_60_plus": 0.0002,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 243,
+    "element_id": 243,
+    "code": 502697
   },
   {
     "player_code": 609873,
@@ -17213,7 +18017,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 244,
+    "element_id": 244,
+    "code": 609873
   },
   {
     "player_code": 496661,
@@ -17277,7 +18084,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 245,
+    "element_id": 245,
+    "code": 496661
   },
   {
     "player_code": 513466,
@@ -17341,7 +18151,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 246,
+    "element_id": 246,
+    "code": 513466
   },
   {
     "player_code": 244860,
@@ -17405,7 +18218,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 247,
+    "element_id": 247,
+    "code": 244860
   },
   {
     "player_code": 486385,
@@ -17469,7 +18285,10 @@
     "p_start": 0.0039,
     "p_app": 0.0039,
     "p_60_plus": 0.0026,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 248,
+    "element_id": 248,
+    "code": 486385
   },
   {
     "player_code": 586309,
@@ -17533,7 +18352,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 249,
+    "element_id": 249,
+    "code": 586309
   },
   {
     "player_code": 80201,
@@ -17597,7 +18419,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 250,
+    "element_id": 250,
+    "code": 80201
   },
   {
     "player_code": 86873,
@@ -17661,7 +18486,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 251,
+    "element_id": 251,
+    "code": 86873
   },
   {
     "player_code": 505079,
@@ -17725,7 +18553,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 252,
+    "element_id": 252,
+    "code": 505079
   },
   {
     "player_code": 174874,
@@ -17789,7 +18620,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 253,
+    "element_id": 253,
+    "code": 174874
   },
   {
     "player_code": 169528,
@@ -17853,7 +18687,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 254,
+    "element_id": 254,
+    "code": 169528
   },
   {
     "player_code": 246301,
@@ -17917,7 +18754,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 255,
+    "element_id": 255,
+    "code": 246301
   },
   {
     "player_code": 167074,
@@ -17981,7 +18821,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 256,
+    "element_id": 256,
+    "code": 167074
   },
   {
     "player_code": 232892,
@@ -18045,7 +18888,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 257,
+    "element_id": 257,
+    "code": 232892
   },
   {
     "player_code": 166477,
@@ -18109,7 +18955,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 258,
+    "element_id": 258,
+    "code": 166477
   },
   {
     "player_code": 153133,
@@ -18173,7 +19022,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 261,
+    "element_id": 261,
+    "code": 153133
   },
   {
     "player_code": 209289,
@@ -18237,7 +19089,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 262,
+    "element_id": 262,
+    "code": 209289
   },
   {
     "player_code": 560552,
@@ -18301,7 +19156,10 @@
     "p_start": 0.006,
     "p_app": 0.006,
     "p_60_plus": 0.004,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 263,
+    "element_id": 263,
+    "code": 560552
   },
   {
     "player_code": 477555,
@@ -18365,7 +19223,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.8,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 264,
+    "element_id": 264,
+    "code": 477555
   },
   {
     "player_code": 207189,
@@ -18429,7 +19290,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.9333,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 265,
+    "element_id": 265,
+    "code": 207189
   },
   {
     "player_code": 76357,
@@ -18493,7 +19357,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 266,
+    "element_id": 266,
+    "code": 76357
   },
   {
     "player_code": 577725,
@@ -18557,7 +19424,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 268,
+    "element_id": 268,
+    "code": 577725
   },
   {
     "player_code": 184349,
@@ -18621,7 +19491,10 @@
     "p_start": 0.006,
     "p_app": 0.006,
     "p_60_plus": 0.004,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 269,
+    "element_id": 269,
+    "code": 184349
   },
   {
     "player_code": 153366,
@@ -18685,7 +19558,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 270,
+    "element_id": 270,
+    "code": 153366
   },
   {
     "player_code": 244042,
@@ -18749,7 +19625,10 @@
     "p_start": 0.0028,
     "p_app": 0.0028,
     "p_60_plus": 0.0019,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 271,
+    "element_id": 271,
+    "code": 244042
   },
   {
     "player_code": 631786,
@@ -18813,7 +19692,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 272,
+    "element_id": 272,
+    "code": 631786
   },
   {
     "player_code": 551466,
@@ -18877,7 +19759,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 569,
+    "element_id": 569,
+    "code": 551466
   },
   {
     "player_code": 571779,
@@ -18941,7 +19826,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.9333,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 570,
+    "element_id": 570,
+    "code": 571779
   },
   {
     "player_code": 463210,
@@ -19005,7 +19893,10 @@
     "p_start": 0.0081,
     "p_app": 0.0081,
     "p_60_plus": 0.0054,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 580,
+    "element_id": 580,
+    "code": 463210
   },
   {
     "player_code": 547686,
@@ -19069,7 +19960,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 610,
+    "element_id": 610,
+    "code": 547686
   },
   {
     "player_code": 167825,
@@ -19133,7 +20027,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 273,
+    "element_id": 273,
+    "code": 167825
   },
   {
     "player_code": 105666,
@@ -19197,7 +20094,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 274,
+    "element_id": 274,
+    "code": 105666
   },
   {
     "player_code": 494950,
@@ -19261,7 +20161,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 275,
+    "element_id": 275,
+    "code": 494950
   },
   {
     "player_code": 444307,
@@ -19325,7 +20228,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 276,
+    "element_id": 276,
+    "code": 444307
   },
   {
     "player_code": 108416,
@@ -19389,7 +20295,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 277,
+    "element_id": 277,
+    "code": 108416
   },
   {
     "player_code": 501902,
@@ -19453,7 +20362,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 278,
+    "element_id": 278,
+    "code": 501902
   },
   {
     "player_code": 146426,
@@ -19517,7 +20429,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.7333,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 279,
+    "element_id": 279,
+    "code": 146426
   },
   {
     "player_code": 193278,
@@ -19581,7 +20496,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.8667,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 280,
+    "element_id": 280,
+    "code": 193278
   },
   {
     "player_code": 433590,
@@ -19645,7 +20563,10 @@
     "p_start": 0.007,
     "p_app": 0.007,
     "p_60_plus": 0.0047,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 281,
+    "element_id": 281,
+    "code": 433590
   },
   {
     "player_code": 232351,
@@ -19709,7 +20630,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 282,
+    "element_id": 282,
+    "code": 232351
   },
   {
     "player_code": 449428,
@@ -19773,7 +20697,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 283,
+    "element_id": 283,
+    "code": 449428
   },
   {
     "player_code": 661800,
@@ -19837,7 +20764,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 284,
+    "element_id": 284,
+    "code": 661800
   },
   {
     "player_code": 160817,
@@ -19901,7 +20831,10 @@
     "p_start": 0.0091,
     "p_app": 0.0091,
     "p_60_plus": 0.0061,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 285,
+    "element_id": 285,
+    "code": 160817
   },
   {
     "player_code": 540324,
@@ -19965,7 +20898,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 286,
+    "element_id": 286,
+    "code": 540324
   },
   {
     "player_code": 232905,
@@ -20029,7 +20965,10 @@
     "p_start": 0.0067,
     "p_app": 0.0067,
     "p_60_plus": 0.0044,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 287,
+    "element_id": 287,
+    "code": 232905
   },
   {
     "player_code": 171270,
@@ -20093,7 +21032,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 288,
+    "element_id": 288,
+    "code": 171270
   },
   {
     "player_code": 101282,
@@ -20157,7 +21099,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 289,
+    "element_id": 289,
+    "code": 101282
   },
   {
     "player_code": 243413,
@@ -20221,7 +21166,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 290,
+    "element_id": 290,
+    "code": 243413
   },
   {
     "player_code": 465525,
@@ -20285,7 +21233,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 291,
+    "element_id": 291,
+    "code": 465525
   },
   {
     "player_code": 208481,
@@ -20349,7 +21300,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 292,
+    "element_id": 292,
+    "code": 208481
   },
   {
     "player_code": 490161,
@@ -20413,7 +21367,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 293,
+    "element_id": 293,
+    "code": 490161
   },
   {
     "player_code": 553783,
@@ -20477,7 +21434,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 294,
+    "element_id": 294,
+    "code": 553783
   },
   {
     "player_code": 169432,
@@ -20541,7 +21501,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 295,
+    "element_id": 295,
+    "code": 169432
   },
   {
     "player_code": 213292,
@@ -20605,7 +21568,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 296,
+    "element_id": 296,
+    "code": 213292
   },
   {
     "player_code": 470294,
@@ -20669,7 +21635,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 297,
+    "element_id": 297,
+    "code": 470294
   },
   {
     "player_code": 500957,
@@ -20733,7 +21702,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 298,
+    "element_id": 298,
+    "code": 500957
   },
   {
     "player_code": 534392,
@@ -20797,7 +21769,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 299,
+    "element_id": 299,
+    "code": 534392
   },
   {
     "player_code": 462635,
@@ -20861,7 +21836,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 340,
+    "element_id": 340,
+    "code": 462635
   },
   {
     "player_code": 169359,
@@ -20925,7 +21903,10 @@
     "p_start": 0.0018,
     "p_app": 0.0018,
     "p_60_plus": 0.0012,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 556,
+    "element_id": 556,
+    "code": 169359
   },
   {
     "player_code": 445028,
@@ -20989,7 +21970,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 563,
+    "element_id": 563,
+    "code": 445028
   },
   {
     "player_code": 473284,
@@ -21053,7 +22037,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 572,
+    "element_id": 572,
+    "code": 473284
   },
   {
     "player_code": 552946,
@@ -21117,7 +22104,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 574,
+    "element_id": 574,
+    "code": 552946
   },
   {
     "player_code": 608227,
@@ -21181,7 +22171,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.8889,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 576,
+    "element_id": 576,
+    "code": 608227
   },
   {
     "player_code": 597462,
@@ -21245,7 +22238,10 @@
     "p_start": 0.0091,
     "p_app": 0.0091,
     "p_60_plus": 0.0061,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 585,
+    "element_id": 585,
+    "code": 597462
   },
   {
     "player_code": 606930,
@@ -21309,7 +22305,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.7333,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 586,
+    "element_id": 586,
+    "code": 606930
   },
   {
     "player_code": 469266,
@@ -21373,7 +22372,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 589,
+    "element_id": 589,
+    "code": 469266
   },
   {
     "player_code": 219924,
@@ -21437,7 +22439,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 259,
+    "element_id": 259,
+    "code": 219924
   },
   {
     "player_code": 212314,
@@ -21501,7 +22506,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 267,
+    "element_id": 267,
+    "code": 212314
   },
   {
     "player_code": 108813,
@@ -21565,7 +22573,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 300,
+    "element_id": 300,
+    "code": 108813
   },
   {
     "player_code": 112520,
@@ -21629,7 +22640,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 301,
+    "element_id": 301,
+    "code": 112520
   },
   {
     "player_code": 50093,
@@ -21693,7 +22707,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 302,
+    "element_id": 302,
+    "code": 50093
   },
   {
     "player_code": 183015,
@@ -21757,7 +22774,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 303,
+    "element_id": 303,
+    "code": 183015
   },
   {
     "player_code": 216616,
@@ -21821,7 +22841,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 304,
+    "element_id": 304,
+    "code": 216616
   },
   {
     "player_code": 455084,
@@ -21885,7 +22908,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 305,
+    "element_id": 305,
+    "code": 455084
   },
   {
     "player_code": 449429,
@@ -21949,7 +22975,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 306,
+    "element_id": 306,
+    "code": 449429
   },
   {
     "player_code": 222018,
@@ -22013,7 +23042,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 307,
+    "element_id": 307,
+    "code": 222018
   },
   {
     "player_code": 176420,
@@ -22077,7 +23109,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 308,
+    "element_id": 308,
+    "code": 176420
   },
   {
     "player_code": 501390,
@@ -22141,7 +23176,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 309,
+    "element_id": 309,
+    "code": 501390
   },
   {
     "player_code": 241117,
@@ -22205,7 +23243,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 310,
+    "element_id": 310,
+    "code": 241117
   },
   {
     "player_code": 149929,
@@ -22269,7 +23310,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 311,
+    "element_id": 311,
+    "code": 149929
   },
   {
     "player_code": 231899,
@@ -22333,7 +23377,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 312,
+    "element_id": 312,
+    "code": 231899
   },
   {
     "player_code": 443261,
@@ -22397,7 +23444,10 @@
     "p_start": 0.0067,
     "p_app": 0.0067,
     "p_60_plus": 0.0044,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 313,
+    "element_id": 313,
+    "code": 443261
   },
   {
     "player_code": 229164,
@@ -22461,7 +23511,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 314,
+    "element_id": 314,
+    "code": 229164
   },
   {
     "player_code": 531442,
@@ -22525,7 +23578,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.7778,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 315,
+    "element_id": 315,
+    "code": 531442
   },
   {
     "player_code": 543968,
@@ -22589,7 +23645,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.7778,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 316,
+    "element_id": 316,
+    "code": 543968
   },
   {
     "player_code": 222625,
@@ -22653,7 +23712,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 317,
+    "element_id": 317,
+    "code": 222625
   },
   {
     "player_code": 481624,
@@ -22717,7 +23779,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 318,
+    "element_id": 318,
+    "code": 481624
   },
   {
     "player_code": 172453,
@@ -22781,7 +23846,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 319,
+    "element_id": 319,
+    "code": 172453
   },
   {
     "player_code": 147675,
@@ -22845,7 +23913,10 @@
     "p_start": 0.0084,
     "p_app": 0.0084,
     "p_60_plus": 0.0056,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 320,
+    "element_id": 320,
+    "code": 147675
   },
   {
     "player_code": 557012,
@@ -22909,7 +23980,10 @@
     "p_start": 0.0035,
     "p_app": 0.0035,
     "p_60_plus": 0.0023,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 321,
+    "element_id": 321,
+    "code": 557012
   },
   {
     "player_code": 462387,
@@ -22973,7 +24047,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 322,
+    "element_id": 322,
+    "code": 462387
   },
   {
     "player_code": 461587,
@@ -23037,7 +24114,10 @@
     "p_start": 0.0084,
     "p_app": 0.0084,
     "p_60_plus": 0.0056,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 323,
+    "element_id": 323,
+    "code": 461587
   },
   {
     "player_code": 232457,
@@ -23101,7 +24181,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 324,
+    "element_id": 324,
+    "code": 232457
   },
   {
     "player_code": 546600,
@@ -23165,7 +24248,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 554,
+    "element_id": 554,
+    "code": 546600
   },
   {
     "player_code": 442967,
@@ -23229,7 +24315,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 562,
+    "element_id": 562,
+    "code": 442967
   },
   {
     "player_code": 240514,
@@ -23293,7 +24382,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 564,
+    "element_id": 564,
+    "code": 240514
   },
   {
     "player_code": 216055,
@@ -23357,7 +24449,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 571,
+    "element_id": 571,
+    "code": 216055
   },
   {
     "player_code": 474120,
@@ -23421,7 +24516,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.8889,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 591,
+    "element_id": 591,
+    "code": 474120
   },
   {
     "player_code": 572584,
@@ -23485,7 +24583,10 @@
     "p_start": 0.0035,
     "p_app": 0.0035,
     "p_60_plus": 0.0023,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 592,
+    "element_id": 592,
+    "code": 572584
   },
   {
     "player_code": 524180,
@@ -23549,7 +24650,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 602,
+    "element_id": 602,
+    "code": 524180
   },
   {
     "player_code": 153682,
@@ -23613,7 +24717,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.7778,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 260,
+    "element_id": 260,
+    "code": 153682
   },
   {
     "player_code": 201595,
@@ -23677,7 +24784,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 326,
+    "element_id": 326,
+    "code": 201595
   },
   {
     "player_code": 434752,
@@ -23741,7 +24851,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 327,
+    "element_id": 327,
+    "code": 434752
   },
   {
     "player_code": 214225,
@@ -23805,7 +24918,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 329,
+    "element_id": 329,
+    "code": 214225
   },
   {
     "player_code": 226182,
@@ -23869,7 +24985,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 330,
+    "element_id": 330,
+    "code": 226182
   },
   {
     "player_code": 243526,
@@ -23933,7 +25052,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 331,
+    "element_id": 331,
+    "code": 243526
   },
   {
     "player_code": 220627,
@@ -23997,7 +25119,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 332,
+    "element_id": 332,
+    "code": 220627
   },
   {
     "player_code": 437738,
@@ -24061,7 +25186,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 333,
+    "element_id": 333,
+    "code": 437738
   },
   {
     "player_code": 522047,
@@ -24125,7 +25253,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 334,
+    "element_id": 334,
+    "code": 522047
   },
   {
     "player_code": 466525,
@@ -24189,7 +25320,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 335,
+    "element_id": 335,
+    "code": 466525
   },
   {
     "player_code": 435997,
@@ -24253,7 +25387,10 @@
     "p_start": 0.0084,
     "p_app": 0.0084,
     "p_60_plus": 0.0056,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 336,
+    "element_id": 336,
+    "code": 435997
   },
   {
     "player_code": 427637,
@@ -24317,7 +25454,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 337,
+    "element_id": 337,
+    "code": 427637
   },
   {
     "player_code": 199598,
@@ -24381,7 +25521,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 338,
+    "element_id": 338,
+    "code": 199598
   },
   {
     "player_code": 180135,
@@ -24445,7 +25588,10 @@
     "p_start": 0.0028,
     "p_app": 0.0028,
     "p_60_plus": 0.0019,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 339,
+    "element_id": 339,
+    "code": 180135
   },
   {
     "player_code": 492859,
@@ -24509,7 +25655,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 341,
+    "element_id": 341,
+    "code": 492859
   },
   {
     "player_code": 221399,
@@ -24573,7 +25722,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 342,
+    "element_id": 342,
+    "code": 221399
   },
   {
     "player_code": 200617,
@@ -24637,7 +25789,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 343,
+    "element_id": 343,
+    "code": 200617
   },
   {
     "player_code": 486520,
@@ -24701,7 +25856,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 344,
+    "element_id": 344,
+    "code": 486520
   },
   {
     "player_code": 248056,
@@ -24765,7 +25923,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 345,
+    "element_id": 345,
+    "code": 248056
   },
   {
     "player_code": 177815,
@@ -24829,7 +25990,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 346,
+    "element_id": 346,
+    "code": 177815
   },
   {
     "player_code": 174594,
@@ -24893,7 +26057,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 347,
+    "element_id": 347,
+    "code": 174594
   },
   {
     "player_code": 235826,
@@ -24957,7 +26124,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 348,
+    "element_id": 348,
+    "code": 235826
   },
   {
     "player_code": 565297,
@@ -25021,7 +26191,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 349,
+    "element_id": 349,
+    "code": 565297
   },
   {
     "player_code": 432720,
@@ -25085,7 +26258,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 385,
+    "element_id": 385,
+    "code": 432720
   },
   {
     "player_code": 173774,
@@ -25149,7 +26325,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 598,
+    "element_id": 598,
+    "code": 173774
   },
   {
     "player_code": 643970,
@@ -25213,7 +26392,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 603,
+    "element_id": 603,
+    "code": 643970
   },
   {
     "player_code": 592740,
@@ -25277,7 +26459,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 604,
+    "element_id": 604,
+    "code": 592740
   },
   {
     "player_code": 116535,
@@ -25341,7 +26526,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 350,
+    "element_id": 350,
+    "code": 116535
   },
   {
     "player_code": 449027,
@@ -25405,7 +26593,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 351,
+    "element_id": 351,
+    "code": 449027
   },
   {
     "player_code": 155503,
@@ -25469,7 +26660,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 352,
+    "element_id": 352,
+    "code": 155503
   },
   {
     "player_code": 586268,
@@ -25533,7 +26727,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 353,
+    "element_id": 353,
+    "code": 586268
   },
   {
     "player_code": 432987,
@@ -25597,7 +26794,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 354,
+    "element_id": 354,
+    "code": 432987
   },
   {
     "player_code": 464353,
@@ -25661,7 +26861,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 355,
+    "element_id": 355,
+    "code": 464353
   },
   {
     "player_code": 97032,
@@ -25725,7 +26928,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 356,
+    "element_id": 356,
+    "code": 97032
   },
   {
     "player_code": 216094,
@@ -25789,7 +26995,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 357,
+    "element_id": 357,
+    "code": 216094
   },
   {
     "player_code": 544877,
@@ -25853,7 +27062,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 358,
+    "element_id": 358,
+    "code": 544877
   },
   {
     "player_code": 171287,
@@ -25917,7 +27129,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 359,
+    "element_id": 359,
+    "code": 171287
   },
   {
     "player_code": 492777,
@@ -25981,7 +27196,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 360,
+    "element_id": 360,
+    "code": 492777
   },
   {
     "player_code": 519440,
@@ -26045,7 +27263,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 361,
+    "element_id": 361,
+    "code": 519440
   },
   {
     "player_code": 606702,
@@ -26109,7 +27330,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.8667,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 362,
+    "element_id": 362,
+    "code": 606702
   },
   {
     "player_code": 647681,
@@ -26173,7 +27397,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 363,
+    "element_id": 363,
+    "code": 647681
   },
   {
     "player_code": 214285,
@@ -26237,7 +27464,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 364,
+    "element_id": 364,
+    "code": 214285
   },
   {
     "player_code": 489580,
@@ -26301,7 +27531,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 365,
+    "element_id": 365,
+    "code": 489580
   },
   {
     "player_code": 494595,
@@ -26365,7 +27598,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.7111,
-    "now_cost": 7.5
+    "now_cost": 7.5,
+    "id": 366,
+    "element_id": 366,
+    "code": 494595
   },
   {
     "player_code": 243298,
@@ -26429,7 +27665,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 7.0
+    "now_cost": 7.0,
+    "id": 367,
+    "element_id": 367,
+    "code": 243298
   },
   {
     "player_code": 424876,
@@ -26493,7 +27732,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 7.0
+    "now_cost": 7.0,
+    "id": 368,
+    "element_id": 368,
+    "code": 424876
   },
   {
     "player_code": 611922,
@@ -26557,7 +27799,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.7111,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 369,
+    "element_id": 369,
+    "code": 611922
   },
   {
     "player_code": 223541,
@@ -26621,7 +27866,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 370,
+    "element_id": 370,
+    "code": 223541
   },
   {
     "player_code": 441266,
@@ -26685,7 +27933,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 371,
+    "element_id": 371,
+    "code": 441266
   },
   {
     "player_code": 243016,
@@ -26749,7 +28000,10 @@
     "p_start": 0.0095,
     "p_app": 0.0095,
     "p_60_plus": 0.0063,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 372,
+    "element_id": 372,
+    "code": 243016
   },
   {
     "player_code": 206915,
@@ -26813,7 +28067,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 373,
+    "element_id": 373,
+    "code": 206915
   },
   {
     "player_code": 158983,
@@ -26877,7 +28134,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 374,
+    "element_id": 374,
+    "code": 158983
   },
   {
     "player_code": 591386,
@@ -26941,7 +28201,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 375,
+    "element_id": 375,
+    "code": 591386
   },
   {
     "player_code": 535928,
@@ -27005,7 +28268,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 376,
+    "element_id": 376,
+    "code": 535928
   },
   {
     "player_code": 551499,
@@ -27069,7 +28335,10 @@
     "p_start": 0.0095,
     "p_app": 0.0095,
     "p_60_plus": 0.0063,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 377,
+    "element_id": 377,
+    "code": 551499
   },
   {
     "player_code": 491501,
@@ -27133,7 +28402,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 378,
+    "element_id": 378,
+    "code": 491501
   },
   {
     "player_code": 219168,
@@ -27197,7 +28469,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 9.0
+    "now_cost": 9.0,
+    "id": 379,
+    "element_id": 379,
+    "code": 219168
   },
   {
     "player_code": 510663,
@@ -27261,7 +28536,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 7.5
+    "now_cost": 7.5,
+    "id": 380,
+    "element_id": 380,
+    "code": 510663
   },
   {
     "player_code": 514514,
@@ -27325,7 +28603,10 @@
     "p_start": 0.0042,
     "p_app": 0.0042,
     "p_60_plus": 0.0028,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 381,
+    "element_id": 381,
+    "code": 514514
   },
   {
     "player_code": 500058,
@@ -27389,7 +28670,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 382,
+    "element_id": 382,
+    "code": 500058
   },
   {
     "player_code": 444884,
@@ -27453,7 +28737,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 383,
+    "element_id": 383,
+    "code": 444884
   },
   {
     "player_code": 445087,
@@ -27517,7 +28804,10 @@
     "p_start": 0.007,
     "p_app": 0.007,
     "p_60_plus": 0.0047,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 579,
+    "element_id": 579,
+    "code": 445087
   },
   {
     "player_code": 114283,
@@ -27581,7 +28871,10 @@
     "p_start": 0.0028,
     "p_app": 0.0028,
     "p_60_plus": 0.0019,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 238,
+    "element_id": 238,
+    "code": 114283
   },
   {
     "player_code": 204936,
@@ -27645,7 +28938,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 384,
+    "element_id": 384,
+    "code": 204936
   },
   {
     "player_code": 122074,
@@ -27709,7 +29005,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 386,
+    "element_id": 386,
+    "code": 122074
   },
   {
     "player_code": 472769,
@@ -27773,7 +29072,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.7111,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 387,
+    "element_id": 387,
+    "code": 472769
   },
   {
     "player_code": 209036,
@@ -27837,7 +29139,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 388,
+    "element_id": 388,
+    "code": 209036
   },
   {
     "player_code": 465351,
@@ -27901,7 +29206,10 @@
     "p_start": 0.0116,
     "p_app": 0.0116,
     "p_60_plus": 0.0077,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 389,
+    "element_id": 389,
+    "code": 465351
   },
   {
     "player_code": 171314,
@@ -27965,7 +29273,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 390,
+    "element_id": 390,
+    "code": 171314
   },
   {
     "player_code": 477424,
@@ -28029,7 +29340,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 391,
+    "element_id": 391,
+    "code": 477424
   },
   {
     "player_code": 448514,
@@ -28093,7 +29407,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 392,
+    "element_id": 392,
+    "code": 448514
   },
   {
     "player_code": 578153,
@@ -28157,7 +29474,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 393,
+    "element_id": 393,
+    "code": 578153
   },
   {
     "player_code": 494307,
@@ -28221,7 +29541,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 394,
+    "element_id": 394,
+    "code": 494307
   },
   {
     "player_code": 477064,
@@ -28285,7 +29608,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.5778,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 395,
+    "element_id": 395,
+    "code": 477064
   },
   {
     "player_code": 616222,
@@ -28349,7 +29675,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 396,
+    "element_id": 396,
+    "code": 616222
   },
   {
     "player_code": 437730,
@@ -28413,7 +29742,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 8.5
+    "now_cost": 8.5,
+    "id": 397,
+    "element_id": 397,
+    "code": 437730
   },
   {
     "player_code": 209244,
@@ -28477,7 +29809,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 7.0
+    "now_cost": 7.0,
+    "id": 398,
+    "element_id": 398,
+    "code": 209244
   },
   {
     "player_code": 466052,
@@ -28541,7 +29876,10 @@
     "p_start": 0.0095,
     "p_app": 0.0095,
     "p_60_plus": 0.0063,
-    "now_cost": 7.5
+    "now_cost": 7.5,
+    "id": 399,
+    "element_id": 399,
+    "code": 466052
   },
   {
     "player_code": 248875,
@@ -28605,7 +29943,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 7.5
+    "now_cost": 7.5,
+    "id": 400,
+    "element_id": 400,
+    "code": 248875
   },
   {
     "player_code": 438234,
@@ -28669,7 +30010,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 7.0
+    "now_cost": 7.0,
+    "id": 401,
+    "element_id": 401,
+    "code": 438234
   },
   {
     "player_code": 220566,
@@ -28733,7 +30077,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 402,
+    "element_id": 402,
+    "code": 220566
   },
   {
     "player_code": 510281,
@@ -28797,7 +30144,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 403,
+    "element_id": 403,
+    "code": 510281
   },
   {
     "player_code": 433036,
@@ -28861,7 +30211,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 404,
+    "element_id": 404,
+    "code": 433036
   },
   {
     "player_code": 465694,
@@ -28925,7 +30278,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 405,
+    "element_id": 405,
+    "code": 465694
   },
   {
     "player_code": 91651,
@@ -28989,7 +30345,10 @@
     "p_start": 0.0095,
     "p_app": 0.0095,
     "p_60_plus": 0.0063,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 406,
+    "element_id": 406,
+    "code": 91651
   },
   {
     "player_code": 575204,
@@ -29053,7 +30412,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 407,
+    "element_id": 407,
+    "code": 575204
   },
   {
     "player_code": 155405,
@@ -29117,7 +30479,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 408,
+    "element_id": 408,
+    "code": 155405
   },
   {
     "player_code": 590039,
@@ -29181,7 +30546,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 409,
+    "element_id": 409,
+    "code": 590039
   },
   {
     "player_code": 649208,
@@ -29245,7 +30613,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 410,
+    "element_id": 410,
+    "code": 649208
   },
   {
     "player_code": 223094,
@@ -29309,7 +30680,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 15.5
+    "now_cost": 15.5,
+    "id": 411,
+    "element_id": 411,
+    "code": 223094
   },
   {
     "player_code": 215379,
@@ -29373,7 +30747,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.7111,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 481,
+    "element_id": 481,
+    "code": 215379
   },
   {
     "player_code": 106921,
@@ -29437,7 +30814,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 587,
+    "element_id": 587,
+    "code": 106921
   },
   {
     "player_code": 166989,
@@ -29501,7 +30881,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.8,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 43,
+    "element_id": 43,
+    "code": 166989
   },
   {
     "player_code": 532605,
@@ -29565,7 +30948,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.8,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 162,
+    "element_id": 162,
+    "code": 532605
   },
   {
     "player_code": 59735,
@@ -29629,7 +31015,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 325,
+    "element_id": 325,
+    "code": 59735
   },
   {
     "player_code": 465247,
@@ -29693,7 +31082,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 412,
+    "element_id": 412,
+    "code": 465247
   },
   {
     "player_code": 451302,
@@ -29757,7 +31149,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 413,
+    "element_id": 413,
+    "code": 451302
   },
   {
     "player_code": 21205,
@@ -29821,7 +31216,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 414,
+    "element_id": 414,
+    "code": 21205
   },
   {
     "player_code": 596777,
@@ -29885,7 +31283,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.3333,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 415,
+    "element_id": 415,
+    "code": 596777
   },
   {
     "player_code": 209365,
@@ -29949,7 +31350,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 416,
+    "element_id": 416,
+    "code": 209365
   },
   {
     "player_code": 216051,
@@ -30013,7 +31417,10 @@
     "p_start": 0.0035,
     "p_app": 0.0035,
     "p_60_plus": 0.0023,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 417,
+    "element_id": 417,
+    "code": 216051
   },
   {
     "player_code": 95658,
@@ -30077,7 +31484,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 418,
+    "element_id": 418,
+    "code": 95658
   },
   {
     "player_code": 221820,
@@ -30141,7 +31551,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 419,
+    "element_id": 419,
+    "code": 221820
   },
   {
     "player_code": 550864,
@@ -30205,7 +31618,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 420,
+    "element_id": 420,
+    "code": 550864
   },
   {
     "player_code": 606745,
@@ -30269,7 +31685,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 421,
+    "element_id": 421,
+    "code": 606745
   },
   {
     "player_code": 230001,
@@ -30333,7 +31752,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 422,
+    "element_id": 422,
+    "code": 230001
   },
   {
     "player_code": 106760,
@@ -30397,7 +31819,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 423,
+    "element_id": 423,
+    "code": 106760
   },
   {
     "player_code": 577974,
@@ -30461,7 +31886,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 424,
+    "element_id": 424,
+    "code": 577974
   },
   {
     "player_code": 547676,
@@ -30525,7 +31953,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 425,
+    "element_id": 425,
+    "code": 547676
   },
   {
     "player_code": 141746,
@@ -30589,7 +32020,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 12.0
+    "now_cost": 12.0,
+    "id": 426,
+    "element_id": 426,
+    "code": 141746
   },
   {
     "player_code": 446008,
@@ -30653,7 +32087,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 8.0
+    "now_cost": 8.0,
+    "id": 427,
+    "element_id": 427,
+    "code": 446008
   },
   {
     "player_code": 430871,
@@ -30717,7 +32154,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 8.0
+    "now_cost": 8.0,
+    "id": 428,
+    "element_id": 428,
+    "code": 430871
   },
   {
     "player_code": 176297,
@@ -30781,7 +32221,10 @@
     "p_start": 0.0158,
     "p_app": 0.0158,
     "p_60_plus": 0.0105,
-    "now_cost": 7.0
+    "now_cost": 7.0,
+    "id": 429,
+    "element_id": 429,
+    "code": 176297
   },
   {
     "player_code": 184341,
@@ -30845,7 +32288,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 430,
+    "element_id": 430,
+    "code": 184341
   },
   {
     "player_code": 493250,
@@ -30909,7 +32355,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.0
+    "now_cost": 5.9,
+    "id": 431,
+    "element_id": 431,
+    "code": 493250
   },
   {
     "player_code": 516895,
@@ -30973,7 +32422,10 @@
     "p_start": 0.0081,
     "p_app": 0.0081,
     "p_60_plus": 0.0054,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 432,
+    "element_id": 432,
+    "code": 516895
   },
   {
     "player_code": 232112,
@@ -31037,7 +32489,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 433,
+    "element_id": 433,
+    "code": 232112
   },
   {
     "player_code": 547037,
@@ -31101,7 +32556,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 434,
+    "element_id": 434,
+    "code": 547037
   },
   {
     "player_code": 576628,
@@ -31165,7 +32623,10 @@
     "p_start": 0.0035,
     "p_app": 0.0035,
     "p_60_plus": 0.0023,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 435,
+    "element_id": 435,
+    "code": 576628
   },
   {
     "player_code": 490881,
@@ -31229,7 +32690,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 436,
+    "element_id": 436,
+    "code": 490881
   },
   {
     "player_code": 576620,
@@ -31293,7 +32757,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 437,
+    "element_id": 437,
+    "code": 576620
   },
   {
     "player_code": 519913,
@@ -31357,7 +32824,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 438,
+    "element_id": 438,
+    "code": 519913
   },
   {
     "player_code": 485711,
@@ -31421,7 +32891,10 @@
     "p_start": 0.0081,
     "p_app": 0.0081,
     "p_60_plus": 0.0054,
-    "now_cost": 7.0
+    "now_cost": 7.0,
+    "id": 439,
+    "element_id": 439,
+    "code": 485711
   },
   {
     "player_code": 458249,
@@ -31485,7 +32958,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 440,
+    "element_id": 440,
+    "code": 458249
   },
   {
     "player_code": 596047,
@@ -31549,7 +33025,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 441,
+    "element_id": 441,
+    "code": 596047
   },
   {
     "player_code": 98747,
@@ -31613,7 +33092,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 442,
+    "element_id": 442,
+    "code": 98747
   },
   {
     "player_code": 81441,
@@ -31677,7 +33159,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 443,
+    "element_id": 443,
+    "code": 81441
   },
   {
     "player_code": 554578,
@@ -31741,7 +33226,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 444,
+    "element_id": 444,
+    "code": 554578
   },
   {
     "player_code": 465642,
@@ -31805,7 +33293,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 445,
+    "element_id": 445,
+    "code": 465642
   },
   {
     "player_code": 119471,
@@ -31869,7 +33360,10 @@
     "p_start": 0.0004,
     "p_app": 0.0004,
     "p_60_plus": 0.0002,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 446,
+    "element_id": 446,
+    "code": 119471
   },
   {
     "player_code": 220237,
@@ -31933,7 +33427,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 447,
+    "element_id": 447,
+    "code": 220237
   },
   {
     "player_code": 78916,
@@ -31997,7 +33494,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 448,
+    "element_id": 448,
+    "code": 78916
   },
   {
     "player_code": 487838,
@@ -32061,7 +33561,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 449,
+    "element_id": 449,
+    "code": 487838
   },
   {
     "player_code": 441191,
@@ -32125,7 +33628,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 450,
+    "element_id": 450,
+    "code": 441191
   },
   {
     "player_code": 545477,
@@ -32189,7 +33695,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 451,
+    "element_id": 451,
+    "code": 545477
   },
   {
     "player_code": 201666,
@@ -32253,7 +33762,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 453,
+    "element_id": 453,
+    "code": 201666
   },
   {
     "player_code": 449434,
@@ -32317,7 +33829,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 454,
+    "element_id": 454,
+    "code": 449434
   },
   {
     "player_code": 232653,
@@ -32381,7 +33896,10 @@
     "p_start": 0.0119,
     "p_app": 0.0119,
     "p_60_plus": 0.008,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 456,
+    "element_id": 456,
+    "code": 232653
   },
   {
     "player_code": 114243,
@@ -32445,7 +33963,10 @@
     "p_start": 0.0049,
     "p_app": 0.0049,
     "p_60_plus": 0.0033,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 457,
+    "element_id": 457,
+    "code": 114243
   },
   {
     "player_code": 180974,
@@ -32509,7 +34030,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 458,
+    "element_id": 458,
+    "code": 180974
   },
   {
     "player_code": 547719,
@@ -32573,7 +34097,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 459,
+    "element_id": 459,
+    "code": 547719
   },
   {
     "player_code": 200089,
@@ -32637,7 +34164,10 @@
     "p_start": 0.0119,
     "p_app": 0.0119,
     "p_60_plus": 0.008,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 460,
+    "element_id": 460,
+    "code": 200089
   },
   {
     "player_code": 611665,
@@ -32701,7 +34231,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 461,
+    "element_id": 461,
+    "code": 611665
   },
   {
     "player_code": 636852,
@@ -32765,7 +34298,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.5556,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 462,
+    "element_id": 462,
+    "code": 636852
   },
   {
     "player_code": 470313,
@@ -32829,7 +34365,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 463,
+    "element_id": 463,
+    "code": 470313
   },
   {
     "player_code": 216646,
@@ -32893,7 +34432,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 464,
+    "element_id": 464,
+    "code": 216646
   },
   {
     "player_code": 538207,
@@ -32957,7 +34499,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.5556,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 465,
+    "element_id": 465,
+    "code": 538207
   },
   {
     "player_code": 599303,
@@ -33021,7 +34566,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 466,
+    "element_id": 466,
+    "code": 599303
   },
   {
     "player_code": 632794,
@@ -33085,7 +34633,10 @@
     "p_start": 0.0049,
     "p_app": 0.0049,
     "p_60_plus": 0.0033,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 559,
+    "element_id": 559,
+    "code": 632794
   },
   {
     "player_code": 470551,
@@ -33149,7 +34700,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 567,
+    "element_id": 567,
+    "code": 470551
   },
   {
     "player_code": 463726,
@@ -33213,7 +34767,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 593,
+    "element_id": 593,
+    "code": 463726
   },
   {
     "player_code": 553746,
@@ -33277,7 +34834,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 609,
+    "element_id": 609,
+    "code": 553746
   },
   {
     "player_code": 85633,
@@ -33341,7 +34901,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 467,
+    "element_id": 467,
+    "code": 85633
   },
   {
     "player_code": 221389,
@@ -33405,7 +34968,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 468,
+    "element_id": 468,
+    "code": 221389
   },
   {
     "player_code": 215136,
@@ -33469,7 +35035,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 469,
+    "element_id": 469,
+    "code": 215136
   },
   {
     "player_code": 485047,
@@ -33533,7 +35102,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 470,
+    "element_id": 470,
+    "code": 485047
   },
   {
     "player_code": 227444,
@@ -33597,7 +35169,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 471,
+    "element_id": 471,
+    "code": 227444
   },
   {
     "player_code": 575476,
@@ -33661,7 +35236,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 472,
+    "element_id": 472,
+    "code": 575476
   },
   {
     "player_code": 159506,
@@ -33725,7 +35303,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.9556,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 473,
+    "element_id": 473,
+    "code": 159506
   },
   {
     "player_code": 575458,
@@ -33789,7 +35370,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 474,
+    "element_id": 474,
+    "code": 575458
   },
   {
     "player_code": 500151,
@@ -33853,7 +35437,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 475,
+    "element_id": 475,
+    "code": 500151
   },
   {
     "player_code": 204822,
@@ -33917,7 +35504,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 476,
+    "element_id": 476,
+    "code": 204822
   },
   {
     "player_code": 549067,
@@ -33981,7 +35571,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 477,
+    "element_id": 477,
+    "code": 549067
   },
   {
     "player_code": 470315,
@@ -34045,7 +35638,10 @@
     "p_start": 0.0056,
     "p_app": 0.0056,
     "p_60_plus": 0.0037,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 478,
+    "element_id": 478,
+    "code": 470315
   },
   {
     "player_code": 538638,
@@ -34109,7 +35705,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 479,
+    "element_id": 479,
+    "code": 538638
   },
   {
     "player_code": 222531,
@@ -34173,7 +35772,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 8.0
+    "now_cost": 8.0,
+    "id": 480,
+    "element_id": 480,
+    "code": 222531
   },
   {
     "player_code": 209046,
@@ -34237,7 +35839,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 482,
+    "element_id": 482,
+    "code": 209046
   },
   {
     "player_code": 456512,
@@ -34301,7 +35906,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.6889,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 483,
+    "element_id": 483,
+    "code": 456512
   },
   {
     "player_code": 503301,
@@ -34365,7 +35973,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 484,
+    "element_id": 484,
+    "code": 503301
   },
   {
     "player_code": 476887,
@@ -34429,7 +36040,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 485,
+    "element_id": 485,
+    "code": 476887
   },
   {
     "player_code": 432714,
@@ -34493,7 +36107,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.9556,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 486,
+    "element_id": 486,
+    "code": 432714
   },
   {
     "player_code": 250199,
@@ -34557,7 +36174,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 487,
+    "element_id": 487,
+    "code": 250199
   },
   {
     "player_code": 210462,
@@ -34621,7 +36241,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 488,
+    "element_id": 488,
+    "code": 210462
   },
   {
     "player_code": 204968,
@@ -34685,7 +36308,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 489,
+    "element_id": 489,
+    "code": 204968
   },
   {
     "player_code": 60689,
@@ -34749,7 +36375,10 @@
     "p_start": 0.0098,
     "p_app": 0.0098,
     "p_60_plus": 0.0065,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 490,
+    "element_id": 490,
+    "code": 60689
   },
   {
     "player_code": 482973,
@@ -34813,7 +36442,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 491,
+    "element_id": 491,
+    "code": 482973
   },
   {
     "player_code": 465680,
@@ -34877,7 +36509,10 @@
     "p_start": 0.0004,
     "p_app": 0.0004,
     "p_60_plus": 0.0002,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 493,
+    "element_id": 493,
+    "code": 465680
   },
   {
     "player_code": 204561,
@@ -34941,7 +36576,10 @@
     "p_start": 0.0056,
     "p_app": 0.0056,
     "p_60_plus": 0.0037,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 558,
+    "element_id": 558,
+    "code": 204561
   },
   {
     "player_code": 568420,
@@ -35005,7 +36643,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 581,
+    "element_id": 581,
+    "code": 568420
   },
   {
     "player_code": 428971,
@@ -35069,7 +36710,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 590,
+    "element_id": 590,
+    "code": 428971
   },
   {
     "player_code": 469142,
@@ -35133,7 +36777,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 112,
+    "element_id": 112,
+    "code": 469142
   },
   {
     "player_code": 432422,
@@ -35197,7 +36844,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 455,
+    "element_id": 455,
+    "code": 432422
   },
   {
     "player_code": 184254,
@@ -35261,7 +36911,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 494,
+    "element_id": 494,
+    "code": 184254
   },
   {
     "player_code": 214572,
@@ -35325,7 +36978,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 495,
+    "element_id": 495,
+    "code": 214572
   },
   {
     "player_code": 485055,
@@ -35389,7 +37045,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 496,
+    "element_id": 496,
+    "code": 485055
   },
   {
     "player_code": 67089,
@@ -35453,7 +37112,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 497,
+    "element_id": 497,
+    "code": 67089
   },
   {
     "player_code": 221466,
@@ -35517,7 +37179,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 498,
+    "element_id": 498,
+    "code": 221466
   },
   {
     "player_code": 441164,
@@ -35581,7 +37246,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 499,
+    "element_id": 499,
+    "code": 441164
   },
   {
     "player_code": 221632,
@@ -35645,7 +37313,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 500,
+    "element_id": 500,
+    "code": 221632
   },
   {
     "player_code": 135720,
@@ -35709,7 +37380,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 501,
+    "element_id": 501,
+    "code": 135720
   },
   {
     "player_code": 122798,
@@ -35773,7 +37447,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 502,
+    "element_id": 502,
+    "code": 122798
   },
   {
     "player_code": 491279,
@@ -35837,7 +37514,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 503,
+    "element_id": 503,
+    "code": 491279
   },
   {
     "player_code": 232859,
@@ -35901,7 +37581,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 505,
+    "element_id": 505,
+    "code": 232859
   },
   {
     "player_code": 487053,
@@ -35965,7 +37648,10 @@
     "p_start": 0.0014,
     "p_app": 0.0014,
     "p_60_plus": 0.0009,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 506,
+    "element_id": 506,
+    "code": 487053
   },
   {
     "player_code": 548308,
@@ -36029,7 +37715,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 507,
+    "element_id": 507,
+    "code": 548308
   },
   {
     "player_code": 115556,
@@ -36093,7 +37782,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 508,
+    "element_id": 508,
+    "code": 115556
   },
   {
     "player_code": 640419,
@@ -36157,7 +37849,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 509,
+    "element_id": 509,
+    "code": 640419
   },
   {
     "player_code": 499716,
@@ -36221,7 +37916,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 510,
+    "element_id": 510,
+    "code": 499716
   },
   {
     "player_code": 616221,
@@ -36285,7 +37983,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 511,
+    "element_id": 511,
+    "code": 616221
   },
   {
     "player_code": 460842,
@@ -36349,7 +38050,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 512,
+    "element_id": 512,
+    "code": 460842
   },
   {
     "player_code": 493362,
@@ -36413,7 +38117,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 513,
+    "element_id": 513,
+    "code": 493362
   },
   {
     "player_code": 511499,
@@ -36477,7 +38184,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 514,
+    "element_id": 514,
+    "code": 511499
   },
   {
     "player_code": 172780,
@@ -36541,7 +38251,10 @@
     "p_start": 0.0077,
     "p_app": 0.0077,
     "p_60_plus": 0.0051,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 515,
+    "element_id": 515,
+    "code": 172780
   },
   {
     "player_code": 202993,
@@ -36605,7 +38318,10 @@
     "p_start": 0.0158,
     "p_app": 0.0158,
     "p_60_plus": 0.0105,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 516,
+    "element_id": 516,
+    "code": 202993
   },
   {
     "player_code": 550839,
@@ -36669,7 +38385,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 517,
+    "element_id": 517,
+    "code": 550839
   },
   {
     "player_code": 482442,
@@ -36733,7 +38452,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 518,
+    "element_id": 518,
+    "code": 482442
   },
   {
     "player_code": 232787,
@@ -36797,7 +38519,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.3333,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 519,
+    "element_id": 519,
+    "code": 232787
   },
   {
     "player_code": 570526,
@@ -36861,7 +38586,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.3333,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 520,
+    "element_id": 520,
+    "code": 570526
   },
   {
     "player_code": 445044,
@@ -36925,7 +38653,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 6.5
+    "now_cost": 6.5,
+    "id": 521,
+    "element_id": 521,
+    "code": 445044
   },
   {
     "player_code": 547701,
@@ -36989,7 +38720,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 522,
+    "element_id": 522,
+    "code": 547701
   },
   {
     "player_code": 499721,
@@ -37053,7 +38787,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.8222,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 523,
+    "element_id": 523,
+    "code": 499721
   },
   {
     "player_code": 499726,
@@ -37117,7 +38854,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 524,
+    "element_id": 524,
+    "code": 499726
   },
   {
     "player_code": 551226,
@@ -37181,7 +38921,10 @@
     "p_start": 0.0158,
     "p_app": 0.0158,
     "p_60_plus": 0.0105,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 525,
+    "element_id": 525,
+    "code": 551226
   },
   {
     "player_code": 154566,
@@ -37245,7 +38988,10 @@
     "p_start": 0.0077,
     "p_app": 0.0077,
     "p_60_plus": 0.0051,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 526,
+    "element_id": 526,
+    "code": 154566
   },
   {
     "player_code": 212319,
@@ -37309,7 +39055,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.8222,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 527,
+    "element_id": 527,
+    "code": 212319
   },
   {
     "player_code": 490145,
@@ -37373,7 +39122,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 528,
+    "element_id": 528,
+    "code": 490145
   },
   {
     "player_code": 611917,
@@ -37437,7 +39189,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 601,
+    "element_id": 601,
+    "code": 611917
   },
   {
     "player_code": 498016,
@@ -37501,7 +39256,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.99,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 529,
+    "element_id": 529,
+    "code": 498016
   },
   {
     "player_code": 232571,
@@ -37565,7 +39323,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 530,
+    "element_id": 530,
+    "code": 232571
   },
   {
     "player_code": 515046,
@@ -37629,7 +39390,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 531,
+    "element_id": 531,
+    "code": 515046
   },
   {
     "player_code": 223827,
@@ -37693,7 +39457,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 532,
+    "element_id": 532,
+    "code": 223827
   },
   {
     "player_code": 200834,
@@ -37757,7 +39524,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 533,
+    "element_id": 533,
+    "code": 200834
   },
   {
     "player_code": 487676,
@@ -37821,7 +39591,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 534,
+    "element_id": 534,
+    "code": 487676
   },
   {
     "player_code": 201895,
@@ -37885,7 +39658,10 @@
     "p_start": 0.0081,
     "p_app": 0.0081,
     "p_60_plus": 0.0054,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 535,
+    "element_id": 535,
+    "code": 201895
   },
   {
     "player_code": 434399,
@@ -37949,7 +39725,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 536,
+    "element_id": 536,
+    "code": 434399
   },
   {
     "player_code": 519634,
@@ -38013,7 +39792,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 537,
+    "element_id": 537,
+    "code": 519634
   },
   {
     "player_code": 477547,
@@ -38077,7 +39859,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 538,
+    "element_id": 538,
+    "code": 477547
   },
   {
     "player_code": 167512,
@@ -38141,7 +39926,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.8,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 539,
+    "element_id": 539,
+    "code": 167512
   },
   {
     "player_code": 105717,
@@ -38205,7 +39993,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 4.0
+    "now_cost": 4.0,
+    "id": 540,
+    "element_id": 540,
+    "code": 105717
   },
   {
     "player_code": 93605,
@@ -38269,7 +40060,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 4.5
+    "now_cost": 4.5,
+    "id": 541,
+    "element_id": 541,
+    "code": 93605
   },
   {
     "player_code": 484420,
@@ -38333,7 +40127,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 542,
+    "element_id": 542,
+    "code": 484420
   },
   {
     "player_code": 547027,
@@ -38397,7 +40194,10 @@
     "p_start": 0.0035,
     "p_app": 0.0035,
     "p_60_plus": 0.0023,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 543,
+    "element_id": 543,
+    "code": 547027
   },
   {
     "player_code": 84450,
@@ -38461,7 +40261,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 544,
+    "element_id": 544,
+    "code": 84450
   },
   {
     "player_code": 577669,
@@ -38525,7 +40328,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 1.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 545,
+    "element_id": 545,
+    "code": 577669
   },
   {
     "player_code": 535818,
@@ -38589,7 +40395,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 546,
+    "element_id": 546,
+    "code": 535818
   },
   {
     "player_code": 461199,
@@ -38653,7 +40462,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 547,
+    "element_id": 547,
+    "code": 461199
   },
   {
     "player_code": 554197,
@@ -38717,7 +40529,10 @@
     "p_start": 0.0035,
     "p_app": 0.0035,
     "p_60_plus": 0.0023,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 548,
+    "element_id": 548,
+    "code": 554197
   },
   {
     "player_code": 549912,
@@ -38781,7 +40596,10 @@
     "p_start": 0.0109,
     "p_app": 0.0109,
     "p_60_plus": 0.0073,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 549,
+    "element_id": 549,
+    "code": 549912
   },
   {
     "player_code": 699989,
@@ -38845,7 +40663,10 @@
     "p_start": 0.0,
     "p_app": 0.0,
     "p_60_plus": 0.0,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 550,
+    "element_id": 550,
+    "code": 699989
   },
   {
     "player_code": 536661,
@@ -38909,7 +40730,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.6222,
-    "now_cost": 5.0
+    "now_cost": 5.0,
+    "id": 551,
+    "element_id": 551,
+    "code": 536661
   },
   {
     "player_code": 441264,
@@ -38973,7 +40797,10 @@
     "p_start": 1.0,
     "p_app": 1.0,
     "p_60_plus": 0.8,
-    "now_cost": 6.0
+    "now_cost": 6.0,
+    "id": 552,
+    "element_id": 552,
+    "code": 441264
   },
   {
     "player_code": 437505,
@@ -39037,6 +40864,9 @@
     "p_start": 0.0081,
     "p_app": 0.0081,
     "p_60_plus": 0.0054,
-    "now_cost": 5.5
+    "now_cost": 5.5,
+    "id": 553,
+    "element_id": 553,
+    "code": 437505
   }
 ]
