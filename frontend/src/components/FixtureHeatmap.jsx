@@ -3,37 +3,52 @@ import { GridNine } from '@phosphor-icons/react';
 
 export default function FixtureHeatmap({
   fixtures,
+  fixturesData,
   teams,
+  teamsData,
   selectedGw = 2,
+  onOpenFixture,
   onOpenMatchup
 }) {
   const [gwWindow, setGwWindow] = useState(6);
 
+  const activeFixtures = fixtures || fixturesData || [];
+  const activeTeams = teams || teamsData || [];
+  const handleOpen = onOpenFixture || onOpenMatchup;
+
   // Build matrix: team_name -> [GW1, GW2, ... GW38]
   const matrix = useMemo(() => {
-    if (!fixtures || !teams) return [];
+    if (!activeFixtures || activeFixtures.length === 0 || !activeTeams || activeTeams.length === 0) {
+      return [];
+    }
 
-    const teamList = teams.map(t => ({
-      id: t.id,
+    const teamList = activeTeams.map(t => ({
+      id: Number(t.id),
       name: t.name,
       short_name: t.short_name
     }));
 
-    const teamIdToName = Object.fromEntries(teams.map(t => [t.id, t.name]));
+    const teamIdToName = Object.fromEntries(activeTeams.map(t => [Number(t.id), t.name]));
+    const teamIdToShort = Object.fromEntries(activeTeams.map(t => [Number(t.id), t.short_name]));
 
     const result = teamList.map(team => {
       const teamFixtures = [];
       for (let gw = 1; gw <= 38; gw++) {
-        const match = fixtures.find(
-          f => f.event === gw && (f.team_h === team.id || f.team_a === team.id)
+        const match = activeFixtures.find(
+          f => Number(f.event) === gw && (Number(f.team_h) === team.id || Number(f.team_a) === team.id)
         );
 
         if (match) {
-          const isHome = match.team_h === team.id;
-          const oppId = isHome ? match.team_a : match.team_h;
-          const oppName = teamIdToName[oppId] || (isHome ? match.away_short : match.home_short);
-          const oppShort = isHome ? match.away_short : match.home_short;
-          const diff = isHome ? match.team_h_difficulty : match.team_a_difficulty;
+          const isHome = Number(match.team_h) === team.id;
+          const oppId = isHome ? Number(match.team_a) : Number(match.team_h);
+          const oppName = match.home_team && match.away_team
+            ? (isHome ? match.away_team : match.home_team)
+            : (teamIdToName[oppId] || `Team ${oppId}`);
+          const oppShort = match.home_short && match.away_short
+            ? (isHome ? match.away_short : match.home_short)
+            : (teamIdToShort[oppId] || oppName.slice(0, 3).toUpperCase());
+          const diff = isHome ? Number(match.team_h_difficulty || 3) : Number(match.team_a_difficulty || 3);
+
           teamFixtures.push({
             gw,
             isHome,
@@ -70,7 +85,7 @@ export default function FixtureHeatmap({
 
     // Sort by easiest upcoming run
     return result.sort((a, b) => a.avgDiff - b.avgDiff);
-  }, [fixtures, teams, gwWindow, selectedGw]);
+  }, [activeFixtures, activeTeams, gwWindow, selectedGw]);
 
   const fdrClass = (diff) => {
     if (diff === 1) return 'fdr-1';
@@ -82,8 +97,8 @@ export default function FixtureHeatmap({
   };
 
   const handleCellClick = (f) => {
-    if (f.oppShort === 'BLANK' || !onOpenMatchup) return;
-    onOpenMatchup({
+    if (f.oppShort === 'BLANK' || !handleOpen) return;
+    handleOpen({
       home_team: f.home_team,
       away_team: f.away_team,
       fixture_id: f.fixture_id,
@@ -140,44 +155,52 @@ export default function FixtureHeatmap({
               </tr>
             </thead>
             <tbody>
-              {matrix.map((team, idx) => (
-                <tr key={team.id || team.name}>
-                  <td className="sticky-col team-cell">
-                    <span className="rank-num font-mono">{idx + 1}</span>
-                    <span className="team-name">{team.name}</span>
+              {matrix.length === 0 ? (
+                <tr>
+                  <td colSpan={40} style={{ padding: '24px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                    Loading fixture schedule &amp; difficulty data...
                   </td>
-                  <td className="avg-cell font-mono">
-                    <span className="avg-badge" style={{ color: team.avgDiff <= 2.6 ? 'var(--accent-emerald)' : team.avgDiff >= 3.6 ? 'var(--accent-crimson)' : 'var(--text-primary)' }}>
-                      {team.avgDiff.toFixed(2)}
-                    </span>
-                  </td>
-                  {team.fixtures.map(f => {
-                    const isInteractive = f.oppShort !== 'BLANK' && Boolean(onOpenMatchup);
-                    return (
-                      <td
-                        key={f.gw}
-                        className={`fdr-cell ${fdrClass(f.diff)} ${f.gw === Number(selectedGw) ? 'current-gw-col' : ''}`}
-                        onClick={() => handleCellClick(f)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            handleCellClick(f);
-                          }
-                        }}
-                        tabIndex={isInteractive ? 0 : undefined}
-                        role={isInteractive ? 'button' : undefined}
-                        style={{ cursor: isInteractive ? 'pointer' : 'default' }}
-                        title={isInteractive ? `Click to view ${f.home_team} vs ${f.away_team} Dixon-Coles odds (GW${f.gw})` : undefined}
-                      >
-                        <div className="fdr-cell-content">
-                          <span className="opp-name font-mono">{f.oppShort}</span>
-                          <span className="venue-tag font-mono">{f.isHome ? 'H' : 'A'}</span>
-                        </div>
-                      </td>
-                    );
-                  })}
                 </tr>
-              ))}
+              ) : (
+                matrix.map((team, idx) => (
+                  <tr key={team.id || team.name}>
+                    <td className="sticky-col team-cell">
+                      <span className="rank-num font-mono">{idx + 1}</span>
+                      <span className="team-name">{team.name}</span>
+                    </td>
+                    <td className="avg-cell font-mono">
+                      <span className="avg-badge" style={{ color: team.avgDiff <= 2.6 ? 'var(--accent-emerald)' : team.avgDiff >= 3.6 ? 'var(--accent-crimson)' : 'var(--text-primary)' }}>
+                        {team.avgDiff.toFixed(2)}
+                      </span>
+                    </td>
+                    {team.fixtures.map(f => {
+                      const isInteractive = f.oppShort !== 'BLANK' && Boolean(handleOpen);
+                      return (
+                        <td
+                          key={f.gw}
+                          className={`fdr-cell ${fdrClass(f.diff)} ${f.gw === Number(selectedGw) ? 'current-gw-col' : ''}`}
+                          onClick={() => handleCellClick(f)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              handleCellClick(f);
+                            }
+                          }}
+                          tabIndex={isInteractive ? 0 : undefined}
+                          role={isInteractive ? 'button' : undefined}
+                          style={{ cursor: isInteractive ? 'pointer' : 'default' }}
+                          title={isInteractive ? `Click to view ${f.home_team} vs ${f.away_team} Dixon-Coles odds (GW${f.gw})` : undefined}
+                        >
+                          <div className="fdr-cell-content">
+                            <span className="opp-name font-mono">{f.oppShort}</span>
+                            <span className="venue-tag font-mono">{f.isHome ? 'H' : 'A'}</span>
+                          </div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

@@ -50,7 +50,14 @@ export default function LiveTeamSyncModal({
 
       setLoadingStep('Fetching picks & transfer history...');
       const response = await fetch(`/api/sync?${params.toString()}`);
-      const data = await response.json();
+      
+      const contentType = response.headers.get('content-type') || '';
+      let data;
+      if (contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        throw new Error('Sync endpoint returned non-JSON data. If running locally, ensure the dev server is active.');
+      }
 
       if (!response.ok || !data.success) {
         if (data.error === 'ENTRY_NOT_FOUND') {
