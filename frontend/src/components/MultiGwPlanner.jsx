@@ -57,7 +57,7 @@ export default function MultiGwPlanner({
       {/* Sub-View Switcher Rail */}
       <div className="chip-switcher-bar" style={{ marginBottom: '16px' }}>
         <div className="chip-switcher-left">
-          <span className="chip-switcher-label font-mono">PLANNER WORKSPACE:</span>
+          <span className="chip-switcher-label font-mono">Workspace</span>
           <div className="segmented-chip-rail">
             <button
               type="button"
@@ -65,7 +65,7 @@ export default function MultiGwPlanner({
               onClick={() => setViewMode('roadmap')}
             >
               <CalendarCheck size={14} weight={viewMode === 'roadmap' ? 'fill' : 'bold'} />
-              <span>5-Week Strategy Roadmap</span>
+              <span>5-Week Roadmap</span>
             </button>
             <button
               type="button"
@@ -73,7 +73,7 @@ export default function MultiGwPlanner({
               onClick={() => setViewMode('workbench')}
             >
               <Scales size={14} weight={viewMode === 'workbench' ? 'fill' : 'bold'} />
-              <span>Interactive Transfer Scout &amp; H2H Bench</span>
+              <span>Transfer Scout &amp; Compare</span>
             </button>
             <button
               type="button"
@@ -85,8 +85,8 @@ export default function MultiGwPlanner({
             </button>
           </div>
         </div>
-        <div className="chip-switcher-right font-mono" style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-          {viewMode === 'roadmap' ? 'LP Horizon Engine' : viewMode === 'workbench' ? 'Live Scout & Comparison' : 'Full Strategy Suite'}
+        <div className="chip-switcher-right font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+          {viewMode === 'roadmap' ? 'LP Horizon Engine' : viewMode === 'workbench' ? 'H2H Scout' : 'Full Strategy Suite'}
         </div>
       </div>
 
@@ -95,15 +95,11 @@ export default function MultiGwPlanner({
           {/* Hero Header */}
           <div className="studio-hero-panel">
             <div className="studio-hero-header">
-              <div className="studio-badge">
-                <CalendarCheck size={14} weight="fill" />
-                <span>5-WEEK TRANSFER ROADMAP</span>
-              </div>
               <span className="studio-version font-mono">HORIZON: GW2 → GW6</span>
             </div>
-            <h1 className="studio-title">5-Week Transfer Roadmap &amp; Bank Strategy</h1>
+            <h2 className="studio-title">5-Week Transfer Roadmap &amp; Bank Strategy</h2>
             <p className="studio-description">
-              Plan your moves ahead: roll free transfers to build flexibility, avoid unnecessary minus-4 hits, and save cash for the big fixture swings.
+              Multi-horizon optimization: roll free transfers to build flexibility, eliminate point hit deductions, and capitalize on fixture swings.
             </p>
 
             {/* Horizon Metric Strip */}

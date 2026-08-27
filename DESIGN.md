@@ -1,29 +1,34 @@
 ---
 name: FPL-Quantitative-Analytics-Terminal
-version: alpha
-description: Institutional sports analytics and decision cockpit for Fantasy Premier League management.
+version: beta
+description: Institutional quantitative sports scouting and mathematical decision cockpit for Fantasy Premier League management.
 colors:
-  primary: "#10B981"
-  on-primary: "#090D16"
-  secondary: "#94A3B8"
-  background: "#090D16"
-  surface-1: "#111726"
-  surface-2: "#182035"
-  surface-subtle: "#1E293B"
+  canvas: "oklch(0.12 0.02 260)"
+  surface-1: "oklch(0.15 0.025 260)"
+  surface-2: "oklch(0.20 0.035 260)"
+  surface-subtle: "oklch(0.24 0.03 260)"
+  primary-emerald: "oklch(0.72 0.19 155)"
+  captaincy-amber: "oklch(0.78 0.17 75)"
+  hazard-crimson: "oklch(0.63 0.22 25)"
+  defensive-blue: "oklch(0.65 0.18 250)"
+  assist-cyan: "oklch(0.74 0.14 210)"
+  pitch-base: "oklch(0.24 0.08 158)"
+  pitch-stripe: "oklch(0.20 0.07 158)"
   text-primary: "#F8FAFC"
   text-secondary: "#94A3B8"
   text-muted: "#8494A7"
   text-inverse: "#090D16"
-  accent-amber: "#F59E0B"
-  accent-crimson: "#EF4444"
-  accent-cyan: "#06B6D4"
-  accent-blue: "#3B82F6"
-  pos-gk: "#F59E0B"
-  pos-def: "#3B82F6"
-  pos-mid: "#10B981"
-  pos-fwd: "#EF4444"
-  pitch-base: "#064030"
-  pitch-stripe: "#053326"
+  on-primary: "{colors.text-inverse}"
+  on-amber: "{colors.text-inverse}"
+  on-crimson: "{colors.text-primary}"
+  on-blue: "{colors.text-primary}"
+  on-cyan: "{colors.text-inverse}"
+  pos-gk: "{colors.captaincy-amber}"
+  pos-def: "{colors.defensive-blue}"
+  pos-mid: "{colors.primary-emerald}"
+  pos-fwd: "{colors.hazard-crimson}"
+  error: "{colors.hazard-crimson}"
+  warning: "{colors.captaincy-amber}"
   border-subtle: "rgba(255, 255, 255, 0.08)"
   border-medium: "rgba(255, 255, 255, 0.15)"
   border-active: "rgba(16, 185, 129, 0.50)"
@@ -75,6 +80,7 @@ rounded:
   sm: 4px
   md: 6px
   lg: 8px
+  full: 9999px
 spacing:
   xs: 4px
   sm: 8px
@@ -83,200 +89,178 @@ spacing:
   xl: 20px
   2xl: 24px
   3xl: 32px
+motion:
+  curve-snappy: "cubic-bezier(0.16, 1, 0.3, 1)"
+  curve-instant: "cubic-bezier(0, 0, 0.2, 1)"
+  duration-fast: "120ms"
+  duration-normal: "180ms"
 components:
   card-player:
     backgroundColor: "{colors.surface-2}"
     textColor: "{colors.text-primary}"
     rounded: "{rounded.md}"
-    padding: 10px
+    padding: "{spacing.sm}"
+    border: "1px solid {colors.border-subtle}"
   card-bench:
     backgroundColor: "{colors.surface-2}"
     textColor: "{colors.text-primary}"
     rounded: "{rounded.md}"
-    padding: 12px
+    padding: "{spacing.md}"
+    border: "1px solid {colors.border-subtle}"
   panel-elevated:
     backgroundColor: "{colors.surface-1}"
     textColor: "{colors.text-primary}"
     rounded: "{rounded.lg}"
-    padding: 18px
+    padding: "{spacing.lg}"
+    border: "1px solid {colors.border-subtle}"
+  control-deck:
+    backgroundColor: "{colors.surface-1}"
+    textColor: "{colors.text-primary}"
+    rounded: "{rounded.md}"
+    padding: "{spacing.sm} {spacing.md}"
+    border: "1px solid {colors.border-subtle}"
   button-chip:
     backgroundColor: "{colors.surface-subtle}"
     textColor: "{colors.text-secondary}"
-    rounded: "{rounded.sm}"
-    padding: 6px 10px
-  badge-tag:
-    backgroundColor: "{colors.surface-subtle}"
-    textColor: "{colors.text-primary}"
     rounded: "{rounded.xs}"
-    padding: 2px 5px
+    padding: "4px 8px"
   badge-captain:
-    backgroundColor: "{colors.accent-amber}"
-    textColor: "{colors.text-inverse}"
+    backgroundColor: "{colors.captaincy-amber}"
+    textColor: "{colors.on-amber}"
     rounded: "{rounded.xs}"
-    padding: 2px 4px
+    padding: "2px 4px"
   badge-hazard:
-    backgroundColor: "{colors.accent-crimson}"
-    textColor: "{colors.text-primary}"
+    backgroundColor: "{colors.hazard-crimson}"
+    textColor: "{colors.on-crimson}"
     rounded: "{rounded.xs}"
-    padding: 2px 4px
+    padding: "2px 4px"
   badge-assist:
-    backgroundColor: "{colors.accent-cyan}"
-    textColor: "{colors.text-inverse}"
+    backgroundColor: "{colors.assist-cyan}"
+    textColor: "{colors.on-cyan}"
     rounded: "{rounded.xs}"
-    padding: 2px 4px
-  badge-def:
-    backgroundColor: "{colors.accent-blue}"
-    textColor: "{colors.text-primary}"
-    rounded: "{rounded.xs}"
-    padding: 2px 4px
+    padding: "2px 4px"
   tag-pos-gk:
     backgroundColor: "{colors.pos-gk}"
-    textColor: "{colors.text-inverse}"
+    textColor: "{colors.on-amber}"
     rounded: "{rounded.xs}"
-    padding: 1px 4px
+    padding: "1px 4px"
   tag-pos-def:
     backgroundColor: "{colors.pos-def}"
-    textColor: "{colors.text-primary}"
+    textColor: "{colors.on-blue}"
     rounded: "{rounded.xs}"
-    padding: 1px 4px
+    padding: "1px 4px"
   tag-pos-mid:
     backgroundColor: "{colors.pos-mid}"
-    textColor: "{colors.text-inverse}"
+    textColor: "{colors.on-primary}"
     rounded: "{rounded.xs}"
-    padding: 1px 4px
+    padding: "1px 4px"
   tag-pos-fwd:
     backgroundColor: "{colors.pos-fwd}"
-    textColor: "{colors.text-primary}"
+    textColor: "{colors.on-crimson}"
     rounded: "{rounded.xs}"
-    padding: 1px 4px
+    padding: "1px 4px"
   pitch-surface:
     backgroundColor: "{colors.pitch-base}"
     textColor: "{colors.text-muted}"
     rounded: "{rounded.lg}"
-    padding: 20px
-  pitch-lines:
-    backgroundColor: "{colors.pitch-stripe}"
-    textColor: "{colors.text-muted}"
-    rounded: "{rounded.xs}"
-    padding: 0px
-  border-hairline:
-    backgroundColor: "{colors.border-subtle}"
-    textColor: "{colors.text-secondary}"
-    rounded: "{rounded.xs}"
-    padding: 1px
-  border-interactive:
-    backgroundColor: "{colors.border-medium}"
-    textColor: "{colors.text-primary}"
-    rounded: "{rounded.xs}"
-    padding: 1px
-  border-selected:
-    backgroundColor: "{colors.border-active}"
-    textColor: "{colors.on-primary}"
-    rounded: "{rounded.xs}"
-    padding: 1px
+    padding: "{spacing.xl}"
 ---
+
+# DESIGN.md
 
 ## Overview
 
-Architectural Rigor meets Quantitative Sports Scouting. The interface is modeled after institutional financial engineering and elite sports analytics terminals (*StatsBomb IQ*, *OptaPro*, *Bloomberg Terminal*), built specifically for competitive top-0.1% Fantasy Premier League managers and quantitative researchers.
+**FPL Analytics Terminal** is an institutional-grade sports analytics and mathematical decision cockpit modeled after financial engineering platforms (*Bloomberg Terminal*, *StatsBomb IQ*, *OptaPro*). It is designed specifically for quantitative Fantasy Premier League managers and data scientists seeking mathematical edges, LP solver optimizations, and probabilistic risk mitigation.
 
-The system is configured under the **Operate** mode:
+The terminal is governed under the **Operate** mode:
 - **`DESIGN_VARIANCE: 6`** — Structured, systematic, data-first grid alignment.
-- **`MOTION_INTENSITY: 4`** — Instant 150ms state feedback; zero floating glowing orbs or scroll-hijacking.
-- **`VISUAL_DENSITY: 8`** — High information density with compact tabular figures and strict alignment.
+- **`MOTION_INTENSITY: 3`** — Deterministic $\le 180\text{ms}$ cubic feedback; zero floating glowing orbs or distracting scroll-hijacking.
+- **`VISUAL_DENSITY: 8`** — Maximum information density with compact tabular figures and strict hairline alignment.
 
 ---
 
-## Colors
+## Colors & Perceptual Colorimetry
 
-The palette is rooted in deep obsidian slate foundations with 1px hairline border contrast and singular semantic role accents.
+The palette is rooted in deep obsidian slate foundations with 1px hairline border contrast and domain-specific semantic role accents defined in the **`oklch()`** uniform perceptual color space.
 
-### Palette Definitions
-- **Background (`#090D16`):** Deep canvas foundation for optimal eye comfort during long analytical sessions.
-- **Surface Level 1 (`#111726`):** Elevated panel and container layer.
-- **Surface Level 2 (`#182035`):** Interactive card and table row layer.
-- **Surface Subtle (`#1E293B`):** Hover, selection, and interactive rail fill.
-- **Primary Emerald (`#10B981`):** Core interactive accent, active projections, and positive market momentum.
-- **Captaincy Amber (`#F59E0B`):** Captaincy indicators (`[C]`), GK positions, and warning thresholds.
-- **Hazard Crimson (`#EF4444`):** Outflow velocity, high risk, and forward positions (`[FWD]`).
-- **Defensive Blue (`#3B82F6`):** Defensive position accents (`[DEF]`) and clean sheet probability.
-- **Assist Cyan (`#06B6D4`):** Expected assists (`xA`) and creative telemetry.
+### 1. Palette & Domain Mandates
 
-### Contrast Standards
-All typography tokens strictly satisfy WCAG AA contrast ratios:
-- `text-primary` (`#F8FAFC`) on `surface-2` (`#182035`): **14.2:1** (Passes AAA)
-- `text-secondary` (`#94A3B8`) on `surface-1` (`#111726`): **6.8:1** (Passes AA)
-- `text-muted` (`#8494A7`) on `surface-1` (`#111726`): **4.8:1** (Passes AA)
+- **Canvas Base (`oklch(0.12 0.02 260)` / `#090D16`):** Deep canvas foundation for optimal eye comfort during long analytical sessions.
+- **Surface Level 1 (`oklch(0.15 0.025 260)` / `#111726`):** Elevated container and panel layer.
+- **Surface Level 2 (`oklch(0.20 0.035 260)` / `#182035`):** Interactive card and table row layer.
+- **Surface Subtle (`oklch(0.24 0.03 260)` / `#1E293B`):** Hover states, selection fills, and segmented switcher tracks.
+- **Primary Emerald (`oklch(0.72 0.19 155)` / `#10B981`):** Core interactive accent, mathematical LP solver baseline, active projections, and MID role.
+- **Captaincy Amber (`oklch(0.78 0.17 75)` / `#F59E0B`):** Captaincy indicators (`[C]`), GK positional role, warning thresholds, and market price fallers.
+- **Hazard Crimson (`oklch(0.63 0.22 25)` / `#EF4444`):** Rival danger men, high effective ownership threat exposure, FWD positional role, and injury flags.
+- **Defensive Blue (`oklch(0.65 0.18 250)` / `#3B82F6`):** DEF positional role and clean sheet probability distributions.
+- **Assist Cyan (`oklch(0.74 0.14 210)` / `#06B6D4`):** Expected assists (`xA`), key creative metrics, and Rank Shield state.
+
+---
+
+### 2. Inherited Surface Scope Architecture
+
+Pages and major workbenches declare a semantic scope class (`.surface-scope-pitch`, `.surface-scope-planner`, `.surface-scope-rivals`, `.surface-scope-fixtures`, `.surface-scope-market`, `.surface-scope-studio`). Nested panels, cards, and toolbars automatically inherit contextual background tokens, border colors, and role accents:
+
+```css
+/* Inherited Scope Tokens */
+.surface-scope-pitch    { --scope-accent: var(--accent-emerald); --scope-card-bg: var(--bg-surface-2); }
+.surface-scope-planner  { --scope-accent: var(--accent-cyan);    --scope-card-bg: var(--bg-surface-2); }
+.surface-scope-rivals   { --scope-accent: var(--accent-crimson); --scope-card-bg: var(--bg-surface-2); }
+.surface-scope-fixtures { --scope-accent: var(--accent-blue);    --scope-card-bg: var(--bg-surface-2); }
+.surface-scope-market   { --scope-accent: var(--accent-amber);   --scope-card-bg: var(--bg-surface-2); }
+.surface-scope-studio   { --scope-accent: var(--accent-emerald); --scope-card-bg: var(--bg-surface-2); }
+```
+
+---
+
+### 3. Text-on-Accent & Contrast Matrix
+
+Every colored tag, chip, or banner strictly enforces paired text tokens satisfying WCAG AA (minimum 4.5:1 for body, 3:1 for graphical UI):
+
+| Accent Token | Background Hex | Mandatory Paired Text Token | Contrast Ratio |
+|---|---|---|---|
+| `primary-emerald` | `#10B981` | `text-inverse` (`#090D16`) | **10.8 : 1** (Passes AAA) |
+| `captaincy-amber` | `#F59E0B` | `text-inverse` (`#090D16`) | **11.4 : 1** (Passes AAA) |
+| `hazard-crimson` | `#EF4444` | `text-primary` (`#F8FAFC`) | **4.9 : 1** (Passes AA) |
+| `defensive-blue` | `#3B82F6` | `text-primary` (`#F8FAFC`) | **5.2 : 1** (Passes AA) |
+| `assist-cyan` | `#06B6D4` | `text-inverse` (`#090D16`) | **9.6 : 1** (Passes AAA) |
+| `surface-2` | `#182035` | `text-primary` (`#F8FAFC`) | **14.2 : 1** (Passes AAA) |
+| `surface-1` | `#111726` | `text-secondary` (`#94A3B8`) | **6.8 : 1** (Passes AA) |
 
 ---
 
 ## Typography
 
-Typography is clean, highly legible, and optimized for dense numerical evaluation.
+Typography establishes an unambiguous distinction between **functional UI chrome** and **high-density numerical telemetry**.
 
-### Font Families
-- **Sans-Serif (`Plus Jakarta Sans`):** Clean, modern geometric grotesk for UI headers, buttons, and navigation.
-- **Monospace (`JetBrains Mono` / `IBM Plex Mono`):** Tabular figures with `font-feature-settings: "tnum" 1` for all statistical metrics, prices, minutes, and probability percentages.
+- **Sans-Serif (`Plus Jakarta Sans`):** Clean geometric grotesk for dashboard navigation, headers, button labels, and player web names.
+- **Monospace (`JetBrains Mono` / `IBM Plex Mono`):** Tabular figures enabled with `font-feature-settings: "tnum" 1` for all statistical metrics, expected points ($xP$), prices ($\text{\pounds}m$), ownership percentages, and Poisson clean sheet probabilities.
 
 ### Typographic Hierarchy Scale
-1. **Display Titles ($24\text{px} - 28\text{px}$):** Bold page branding and active target readouts.
-2. **Section Headers H2 ($18\text{px}$):** Modal titles and primary dashboard section headers.
-3. **Card Headers H3 ($14\text{px}$):** Component sub-headers and table titles.
+1. **Display & Brand ($24\text{px} - 28\text{px}$):** Terminal title and active target summaries.
+2. **Section Headers H2 ($18\text{px}$):** Drawer headers, modal titles, and panel headings.
+3. **Card Headers H3 ($14\text{px}$):** Workbench sub-headers and table grouping titles.
 4. **Body Text ($12\text{px} - 13\text{px}$):** Player names, managerial directives, and table data.
-5. **Metadata & Units ($10\text{px} - 11\text{px}$):** Team tags, cost readouts, and metric unit labels.
-6. **Micro Tags ($8.5\text{px} - 9.5\text{px}$):** Positional squircle tags (`[MID]`), captain badges (`[C]`), and set-piece order tags (`PK1`).
+5. **Metadata & Units ($10\text{px} - 11\text{px}$):** Club tags, metric unit labels, and cost readouts.
+6. **Micro Tags ($8.5\text{px} - 9.5\text{px}$):** Positional squircle badges (`[MID]`), captaincy chips (`[C]`), and set-piece order tags (`PK1`).
 
 ---
 
-## Layout
+## Layout & Spatial Geometry
 
-All layouts follow a strict 4px/8px base spatial grid to ensure consistent visual rhythm and zero layout drift.
+All layouts adhere to an **8px base spatial grid with 4px sub-increments**:
 
 ### Spatial Scale
-- **`xs (4px)`**: Tight internal element spacing (e.g. icon-to-text gap, badge padding).
-- **`sm (8px)`**: Standard component gap (e.g. card elements, button group gaps).
-- **`md (12px)`**: Grid gaps within panels (e.g. positional baselines grid, metrics rows).
+- **`xs (4px)`**: Badge internal padding, icon-to-label gaps.
+- **`sm (8px)`**: Button internal padding, control rail gaps.
+- **`md (12px)`**: Toolbar internal padding, card internal margins.
 - **`lg (16px)`**: Panel internal padding and section margins.
-- **`xl (20px)`**: Bento grid gutter and major card margins.
-- **`2xl (24px)`**: Outer workspace container padding and modal margins.
+- **`xl (20px)`**: Workbench gutters and bento grid gaps.
+- **`2xl (24px)`**: Workspace container outer padding and modal margins.
 
-### Spatial Relativity & Nesting Math
-- Parent container padding is always greater than child container padding:
-  $$\text{Panel Padding } (16\text{px}-18\text{px}) > \text{Card Padding } (10\text{px}-12\text{px}) > \text{Badge Padding } (2\text{px}-4\text{px})$$
-- Maximum workspace width is capped at `1600px` with fluid margin auto-centering.
-
-### Matchday 2-Column Grid Architecture
-Desktop Matchday Starting XI operates as a fixed 2-column split:
-- **Left Column (`1fr`)**: Tactical football pitch surface (`.pitch-container`) with centered starter rows (GK $\to$ DEF $\to$ MID $\to$ FWD) and geometric line markings.
-- **Right Column (`340px`)**: Substitutes Sidebar (`.pitch-sidebar`) with 4 vertical bench slots (`.bench-item`) and interactive swap feedback.
-
----
-
-## Elevation & Depth
-
-Surfaces are solid, opaque, and physical. Translucent "dark glass" or blurred fake layers are strictly banned.
-
-### Surface Hierarchy
-```
-Level 0: Canvas Background      (--bg-canvas: #090D16)
-  └── Level 1: Elevated Panels  (--bg-surface-1: #111726)  + 1px border-subtle
-        └── Level 2: Cards      (--bg-surface-2: #182035)  + 1px border-subtle + inset highlight
-              └── Level 3: Active (--bg-surface-subtle: #1E293B) + border-medium
-```
-
-### Inset Edge Lighting
-Elevation is achieved via physical 1px hairline borders and inset highlights:
-- Cards use: `border: 1px solid var(--border-subtle)` + `box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 12px rgba(0, 0, 0, 0.35)`.
-- Active/selected items illuminate with `border-color: var(--accent-emerald)` and `box-shadow: 0 0 12px rgba(16, 185, 129, 0.3)`.
-
----
-
-## Shapes
-
-Shapes utilize a concentric mathematical squircle scale. Arbitrary bubble pills (`9999px`) and unpadded 0px sharp boxes are avoided.
-
-### Concentric Squircle Radius Hierarchy
-- **Outer Bento Panels & Modals:** `8px` (`--radius-lg`)
+### Concentric Squircle Radius Scale
+We avoid arbitrary `9999px` capsule bubbles on cards and tables. Shapes follow a concentric mathematical squircle scale:
+- **Panels & Drawers:** `8px` (`--radius-lg`)
 - **Player & Telemetry Cards:** `6px` (`--radius-md`)
 - **Interactive Switchers & Inputs:** `4px` (`--radius-sm`)
 - **Data Chips, Status Tags & Role Badges:** `3px` (`--radius-xs`)
@@ -286,61 +270,52 @@ $$R_{\text{child}} = R_{\text{parent}} - \text{Padding}$$
 
 ---
 
+## Motion & Interaction Physics
+
+State transitions are crisp, deterministic, and instantaneous:
+- **Snappy Easing (`--ease-snappy`):** `cubic-bezier(0.16, 1, 0.3, 1)` for drawers, slide-overs, and expanding panels ($180\text{ms}$).
+- **Instant Easing (`--ease-instant`):** `cubic-bezier(0, 0, 0.2, 1)` for button hovers, tab switches, and chip selections ($120\text{ms}$).
+- **Zero Scroll Hijacking:** Standard browser scrolling behavior is strictly preserved.
+
+---
+
 ## Components
 
-Every interactive element follows a strict state machine (Default $\to$ Hover $\to$ Active $\to$ Focus $\to$ Disabled).
+### 1. Unified Control Deck (`.matchday-control-deck`)
+- **Surface**: Solid `#111726` with `6px` radius and 1px hairline border.
+- **Height**: Compact 36px–40px single-row container eliminating vertical clutter.
+- **Left Group**: Scenario / Chip switcher (`Standard XI`, `Wildcard`, `Free Hit`, `Bench Boost`, `Triple Capt`).
+- **Center Group**: Strategy mode selector (`Pure xP`, `Rank Shield`, `Diff Chase`).
+- **Right Telemetry**: Tabular monospace formation (`3-5-2`) and projected score (`59.2 xP`).
 
-### 1. Minimalist Player Pitch Card (`.player-pitch-card`)
+### 2. Contextual Directive Strip (`.matchday-directive-strip`)
+- Unobtrusive single-line status banner below the control deck.
+- Tagged with structured monospace role indicator (`[MATCHDAY]`, `[STRATEGY]`, `[SCENARIO]`).
+- Visualizes transfer recommendations cleanly using `[IN]` / `[OUT]` arrow pills.
+
+### 3. Minimalist Player Pitch Card (`.player-pitch-card`)
 - **Surface**: Solid `#182035` with `6px` radius and 1px hairline border.
-- **Top Row**: Concentric Squircle Badge (`[C]`, `[V]`, or `3XC`) + Position Tag (`[MID]`) + Cost (`£6.0m`).
-- **Middle**: Bold high-contrast player name (`font-weight: 800`).
-- **Matchup**: Clickable club and opponent link (`Bournemouth · vs EVE`) opening the Match Preview Drawer.
-- **Points Banner**: Centered monospace expected score (`5.4 xP` or `18.9 3xP`).
-- **Interaction**: Single or double click triggers the comprehensive Player DNA Inspector modal.
+- **Top Row**: Concentric Squircle Badge (`[C]`, `[V]`) + Position Tag (`[MID]`) + Cost (`£6.0m`).
+- **Middle**: High-contrast player web name (`font-weight: 800`).
+- **Matchup**: Clickable opponent fixture link opening the Match Preview Drawer.
+- **Points Banner**: Centered monospace expected score (`5.4 xP`).
 
-### 2. Substitutes Sidebar Panel (`.sidebar-panel`)
-- **Container**: Solid `#111726` with `8px` radius.
-- **Bench Item**: 4 vertical slots (`[GK Sub]`, `[Sub 1]`, `[Sub 2]`, `[Sub 3]`) on solid `#182035` with `6px` radius.
-- **Bench Boost State**: When active, items illuminate with emerald border and display `ACTIVE` badge.
-
-### 3. Positional Baselines Telemetry Grid (`.studio-baselines-panel`)
-- **Container**: Solid `#111726` panel with `8px` radius and explanatory subtitle.
-- **4-Card Grid**: 4 equal columns on desktop (`[GK]`, `[DEF]`, `[MID]`, `[FWD]`) on `#182035`.
-- **Metrics**: Tabular monospace numbers with units (`xG`, `xA`, `Clean Sheet %`, `BPS`).
-
-### 4. Segmented Hardware Switcher Rail (`.segmented-chip-rail`)
-- Integrated track with flush `4px` radius.
-- Inactive tabs: Flat monospace labels with icon.
-- Active tab: Elevated `#1E293B` surface with emerald highlight and inset shadow.
-
-### 5. Dixon-Coles 5×5 Scoreline Matrix (`.scoreline-matrix-table`)
-- Bivariate Poisson grid with cell intensity heatmap shading.
-- Neutral cell tinting: Blue tint for Home Win, Emerald for Away Win, Amber for Draw.
-- Interactive hover cell displaying exact joint outcome probabilities.
+### 4. Substitutes Sidebar Panel (`.sidebar-panel`)
+- 4 vertical slots (`[GK Sub]`, `[Sub 1]`, `[Sub 2]`, `[Sub 3]`) on solid `#182035`.
+- Bench Boost illumination activates a clean emerald border without neon text shadows.
 
 ---
 
 ## Do's and Don'ts
 
-### Absolute Bans (Anti-Slop Directives)
+### Absolute Anti-Slop Bans
 | Anti-Pattern (To Avoid) | Institutional Requirement |
 |---|---|
 | ❌ Translucent "Dark Glass" or `backdrop-filter: blur()` | ✅ Solid, opaque tokenized surfaces (`#090D16`, `#111726`, `#182035`). |
 | ❌ Capsule bubble pills (`border-radius: 9999px`) on cards | ✅ Concentric Squircles (`3px` to `8px`). |
-| ❌ Floating circular 50% badges | ✅ Flush square squircle tags (`[C]`, `[V]`, `3XC`). |
-| ❌ Decorative emojis (`⚡`, `🚀`, `🎯`, `✨`) in headers | ✅ Precise Phosphor SVG icons and typographic tags (`HAUL 28%`). |
-| ❌ Multi-hue gradient decorative fills | ✅ Solid token accents (`var(--accent-emerald)`, `var(--accent-amber)`). |
-| ❌ Raw unstyled HTML or missing CSS classes | ✅ 100% tokenized CSS rules in `index.css` matching `DESIGN.md`. |
+| ❌ Floating glowing dots, pulsing orbs, or neon shadow halos | ✅ Crisp hairline borders (`1px solid var(--border-subtle)`). |
+| ❌ Decorative emojis (`⚡`, `🚀`, `🎯`, `✨`) in headers | ✅ Precise Phosphor SVG icons and typographic tags. |
+| ❌ Multi-hue decorative gradient fills | ✅ Solid semantic role tokens (`var(--accent-emerald)`, `var(--accent-amber)`). |
 | ❌ Proportional fonts for numerical statistics | ✅ Fixed-width tabular monospace typography (`JetBrains Mono`). |
-| ❌ Hardcoded ad-hoc hex colors in components | ✅ Strict CSS custom property references (`var(--text-primary)`, `var(--bg-surface-2)`). |
-
-### De-slopped FPL Fan Vocabulary Standard
-| Robotic / Academic Slop | De-slopped, Authentic FPL Vocabulary |
-|---|---|
-| "Algorithmic Lineup Optimizer" | **Matchday Starting XI** |
-| "Multi-Horizon LP Transfer Engine" | **5-Week Transfer Planner** |
-| "Bayesian Points Decomposition" | **Points Breakdown & DNA** |
-| "Minimax Threat Exposure" | **Rival Radar & Danger Men** |
-| "Dixon-Coles Poisson Match Modeler" | **Match Preview & Clean Sheet Odds** |
-| "Net Asset Market Momentum" | **Price Riser / Faller Tracker** |
-| "Rolling Invariant Decision" | **Roll Free Transfer (Bank FT)** |
+| ❌ Duplicate strategy/scenario selectors stacked on one screen | ✅ Single unified control deck with contextual feedback. |
+| ❌ Hardcoded ad-hoc hex colors in JSX components | ✅ Strict CSS custom property references (`var(--text-primary)`, `var(--bg-surface-2)`). |

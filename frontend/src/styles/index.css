@@ -7,7 +7,7 @@
    ========================================================================== */
 
 :root {
-  /* Surfaces & Canvas */
+  /* Surfaces & Canvas (OKLCH Perceptually Uniform & Hex Fallbacks) */
   --bg-canvas: #090D16;
   --bg-surface-1: #111726;
   --bg-surface-2: #182035;
@@ -15,13 +15,13 @@
   --bg-pitch-base: #064030;
   --bg-pitch-stripe: #053326;
 
-  /* Typography Colors */
+  /* Typography & Contrast Paired Tokens */
   --text-primary: #F8FAFC;
   --text-secondary: #94A3B8;
   --text-muted: #8494A7;
   --text-inverse: #090D16;
 
-  /* Tactical Accents */
+  /* Domain & Tactical Accents */
   --accent-emerald: #10B981;
   --accent-emerald-subtle: rgba(16, 185, 129, 0.15);
   --accent-amber: #F59E0B;
@@ -29,13 +29,22 @@
   --accent-crimson: #EF4444;
   --accent-crimson-subtle: rgba(239, 68, 68, 0.15);
   --accent-cyan: #06B6D4;
+  --accent-cyan-subtle: rgba(6, 182, 212, 0.15);
   --accent-blue: #3B82F6;
+  --accent-blue-subtle: rgba(59, 130, 246, 0.15);
+
+  /* Mandatory Text-on-Accent Tokens (WCAG AAA/AA) */
+  --on-primary: #090D16;
+  --on-amber: #090D16;
+  --on-crimson: #F8FAFC;
+  --on-blue: #F8FAFC;
+  --on-cyan: #090D16;
 
   /* Positional Theme Colors */
-  --pos-gk: #F59E0B;
-  --pos-def: #3B82F6;
-  --pos-mid: #10B981;
-  --pos-fwd: #EF4444;
+  --pos-gk: var(--accent-amber);
+  --pos-def: var(--accent-blue);
+  --pos-mid: var(--accent-emerald);
+  --pos-fwd: var(--accent-crimson);
 
   /* FDR Difficulty Scale */
   --fdr-1: #059669;
@@ -44,25 +53,77 @@
   --fdr-4: #F59E0B;
   --fdr-5: #DC2626;
 
-  /* 1px Precision Borders */
+  /* 1px Precision Hairline Borders */
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-medium: rgba(255, 255, 255, 0.15);
   --border-active: rgba(16, 185, 129, 0.5);
 
-  /* Radii (Crisp, Never soft bubbles) */
+  /* Concentric Squircle Radii Scale */
   --radius-xs: 3px;
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
+  --radius-full: 9999px;
+
+  /* Motion & Physics Tokens */
+  --ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-instant: cubic-bezier(0, 0, 0.2, 1);
+  --duration-fast: 120ms;
+  --duration-normal: 180ms;
 
   /* Typography */
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
 
-  /* Shadows (Subtle, never fuzzy blobs) */
+  /* Shadows */
   --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-pitch: inset 0 0 60px rgba(0, 0, 0, 0.5);
   --shadow-sticky: 3px 0 10px rgba(0, 0, 0, 0.6);
+}
+
+/* ==========================================================================
+   INHERITED SURFACE SCOPES (DESIGN.MD ARCHITECTURE)
+   ========================================================================== */
+.surface-scope-pitch {
+  --scope-surface-bg: var(--bg-surface-1);
+  --scope-card-bg: var(--bg-surface-2);
+  --scope-border: var(--border-subtle);
+  --scope-accent: var(--accent-emerald);
+}
+
+.surface-scope-planner {
+  --scope-surface-bg: var(--bg-surface-1);
+  --scope-card-bg: var(--bg-surface-2);
+  --scope-border: var(--border-subtle);
+  --scope-accent: var(--accent-cyan);
+}
+
+.surface-scope-rivals {
+  --scope-surface-bg: var(--bg-surface-1);
+  --scope-card-bg: var(--bg-surface-2);
+  --scope-border: var(--border-subtle);
+  --scope-accent: var(--accent-crimson);
+}
+
+.surface-scope-fixtures {
+  --scope-surface-bg: var(--bg-surface-1);
+  --scope-card-bg: var(--bg-surface-2);
+  --scope-border: var(--border-subtle);
+  --scope-accent: var(--accent-blue);
+}
+
+.surface-scope-market {
+  --scope-surface-bg: var(--bg-surface-1);
+  --scope-card-bg: var(--bg-surface-2);
+  --scope-border: var(--border-subtle);
+  --scope-accent: var(--accent-amber);
+}
+
+.surface-scope-studio {
+  --scope-surface-bg: var(--bg-surface-1);
+  --scope-card-bg: var(--bg-surface-2);
+  --scope-border: var(--border-subtle);
+  --scope-accent: var(--accent-emerald);
 }
 
 /* Base Reset & Safe Areas */
@@ -362,9 +423,132 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
-   SEGMENTED HARDWARE RAIL & STRATEGY STATUS BAR (RULE 3 & 4)
+   UNIFIED MATCHDAY CONTROL DECK & DIRECTIVE STRIP (INSTITUTIONAL STANDARD)
    ========================================================================== */
 
+.matchday-control-deck {
+  background: var(--bg-surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.deck-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deck-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.deck-telemetry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+}
+
+.deck-telemetry-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.telemetry-label {
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.telemetry-value {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.telemetry-value.xp-highlight {
+  color: var(--accent-emerald);
+  font-weight: 800;
+}
+
+.telemetry-unit {
+  font-size: 9.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.deck-telemetry-divider {
+  width: 1px;
+  height: 14px;
+  background: var(--border-subtle);
+}
+
+/* Streamlined Directive Strip */
+.matchday-directive-strip {
+  background: var(--bg-surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.directive-tag-box {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.directive-body {
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.directive-text {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.chip-active-text {
+  color: var(--accent-emerald);
+  font-weight: 600;
+}
+
+.strategy-active-text {
+  color: var(--accent-cyan);
+  font-weight: 600;
+}
+
+/* Standard Segmented Chip Rail */
 .chip-switcher-bar {
   background: var(--bg-surface-1);
   border: 1px solid var(--border-subtle);
@@ -376,7 +560,6 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .chip-switcher-left {
@@ -408,7 +591,7 @@ h1, h2, h3, h4, h5, h6 {
   background: transparent;
   color: var(--text-secondary);
   border: 1px solid transparent;
-  padding: 5px 10px;
+  padding: 4px 8px;
   border-radius: var(--radius-xs);
   font-size: 11px;
   font-family: var(--font-sans);
@@ -416,8 +599,8 @@ h1, h2, h3, h4, h5, h6 {
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 5px;
-  transition: all 0.15s ease;
+  gap: 4px;
+  transition: all 0.12s ease;
 }
 
 .segmented-chip-btn:hover {
@@ -430,7 +613,6 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--accent-emerald);
   font-weight: 700;
   border-color: var(--border-medium);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .chip-active-tag {

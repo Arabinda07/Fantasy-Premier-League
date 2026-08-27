@@ -106,7 +106,7 @@ export default function FixtureHeatmap({
         </div>
 
         <div className="ticker-window-controls" role="group" aria-label="Select fixture run lookahead">
-          <span className="ticker-window-label font-mono">LOOKAHEAD:</span>
+          <span className="ticker-window-label font-mono">Lookahead</span>
           <div className="segmented-chip-rail">
             {[3, 5, 8, 12].map(w => (
               <button

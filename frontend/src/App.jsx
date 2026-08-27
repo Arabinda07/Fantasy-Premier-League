@@ -289,82 +289,94 @@ export default function App() {
             {/* View 1: Tactical Pitch & Lineup Visualizer */}
             {activeTab === 'pitch' && (
               <ErrorBoundary componentName="Tactical Pitch">
-                <TacticalPitch
-                  starters={starters}
-                  bench={bench}
-                  allPlayers={allPlayersData}
-                  selectedPlayer={selectedSwapPlayer}
-                  onSelectPlayer={handleSelectPlayer}
-                  onInspectPlayer={handleInspectPlayer}
-                  onOpenMatchup={handleOpenFixtureDrawer}
-                  actionSummary={liveData.action_summary}
-                  startingXp={startingXp + Number(captBonus)}
-                  totalXp={liveData.total_xp}
-                  strategies={liveData.strategies || {}}
-                  chipSimulations={liveData.chip_simulations || {}}
-                  activeChip={activeChip}
-                  onSelectChip={handleChipChange}
-                  strategy={activeStrategy}
-                  onSelectStrategy={setActiveStrategy}
-                />
+                <div className="surface-scope-pitch">
+                  <TacticalPitch
+                    starters={starters}
+                    bench={bench}
+                    allPlayers={allPlayersData}
+                    selectedPlayer={selectedSwapPlayer}
+                    onSelectPlayer={handleSelectPlayer}
+                    onInspectPlayer={handleInspectPlayer}
+                    onOpenMatchup={handleOpenFixtureDrawer}
+                    actionSummary={liveData.action_summary}
+                    startingXp={startingXp + Number(captBonus)}
+                    totalXp={liveData.total_xp}
+                    strategies={liveData.strategies || {}}
+                    chipSimulations={liveData.chip_simulations || {}}
+                    activeChip={activeChip}
+                    onSelectChip={handleChipChange}
+                    strategy={activeStrategy}
+                    onSelectStrategy={setActiveStrategy}
+                  />
+                </div>
               </ErrorBoundary>
             )}
 
             {/* View 2: Multi-Horizon 5-GW Strategy Canvas & Transfer Workbench */}
             {activeTab === 'transfers' && (
               <ErrorBoundary componentName="Transfer Workbench">
-                <MultiGwPlanner
-                  roadmap={liveData.multi_horizon_roadmap}
-                  squadPlayers={[...starters, ...bench]}
-                  allPlayers={allPlayersData}
-                  onInspectPlayer={handleInspectPlayer}
-                  onCompareChange={setCompareSubItem}
-                />
+                <div className="surface-scope-planner">
+                  <MultiGwPlanner
+                    roadmap={liveData.multi_horizon_roadmap}
+                    squadPlayers={[...starters, ...bench]}
+                    allPlayers={allPlayersData}
+                    onInspectPlayer={handleInspectPlayer}
+                    onCompareChange={setCompareSubItem}
+                  />
+                </div>
               </ErrorBoundary>
             )}
 
             {/* View 3: Mini-League Rival Threat Matrix */}
             {activeTab === 'rivals' && (
               <ErrorBoundary componentName="Rival Threat Matrix">
-                <RivalThreatMatrix
-                  managerProfile={liveData.manager_profile}
-                  starters={starters}
-                  bench={bench}
-                  allPlayers={allPlayersData}
-                  onInspectPlayer={handleInspectPlayer}
-                />
+                <div className="surface-scope-rivals">
+                  <RivalThreatMatrix
+                    managerProfile={liveData.manager_profile}
+                    starters={starters}
+                    bench={bench}
+                    allPlayers={allPlayersData}
+                    onInspectPlayer={handleInspectPlayer}
+                  />
+                </div>
               </ErrorBoundary>
             )}
 
             {/* View 4: 38-Gameweek Fixture Heatmap */}
             {activeTab === 'fixtures' && (
               <ErrorBoundary componentName="Fixture Heatmap">
-                <FixtureHeatmap
-                  fixtures={fixturesData}
-                  teams={teamsData}
-                  selectedGw={selectedGw}
-                  onOpenMatchup={handleOpenFixtureDrawer}
-                />
+                <div className="surface-scope-fixtures">
+                  <FixtureHeatmap
+                    fixtures={fixturesData}
+                    teams={teamsData}
+                    selectedGw={selectedGw}
+                    onOpenMatchup={handleOpenFixtureDrawer}
+                  />
+                </div>
               </ErrorBoundary>
             )}
 
             {/* View 5: Market Velocity & Price Trends */}
             {activeTab === 'market' && (
               <ErrorBoundary componentName="Market Velocity Ticker">
-                <MarketVelocityTicker
-                  allPlayers={allPlayersData}
-                  onInspectPlayer={handleInspectPlayer}
-                />
+                <div className="surface-scope-market">
+                  <MarketVelocityTicker
+                    allPlayers={allPlayersData}
+                    onInspectPlayer={handleInspectPlayer}
+                  />
+                </div>
               </ErrorBoundary>
             )}
 
             {/* View 6: 11-Component Mathematical Studio */}
             {activeTab === 'math' && (
               <ErrorBoundary componentName="Mathematical Studio">
-                <ComponentStudio
-                  players={allPlayersData}
-                  onInspectPlayer={handleInspectPlayer}
-                />
+                <div className="surface-scope-studio">
+                  <ComponentStudio
+                    players={allPlayersData}
+                    onInspectPlayer={handleInspectPlayer}
+                  />
+                </div>
               </ErrorBoundary>
             )}
           </>

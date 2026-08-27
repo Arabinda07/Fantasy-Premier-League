@@ -111,16 +111,16 @@ export default function TacticalPitch({
 
   const chipOptions = [
     { id: 'none', label: 'Standard XI', icon: ShieldCheck },
-    { id: 'wildcard', label: 'Wildcard (£100m)', icon: Cards },
+    { id: 'wildcard', label: 'Wildcard', icon: Cards },
     { id: 'freehit', label: 'Free Hit', icon: Lightning },
     { id: 'bboost', label: 'Bench Boost', icon: RocketLaunch },
-    { id: '3xc', label: 'Triple Captain', icon: Crown }
+    { id: '3xc', label: 'Triple Capt', icon: Crown }
   ];
 
   const strategyOptions = [
-    { id: 'pure_xp', label: 'Pure xP Maximizer', icon: Target, desc: 'Unbiased mathematical expectation (baseline LP solver)' },
-    { id: 'rank_protect', label: 'Rank Shield', icon: ShieldCheck, desc: 'Effective Ownership weighting to protect lead against template hauls' },
-    { id: 'differential_chase', label: 'Differential Chase', icon: Lightning, desc: 'Rewards low-EO assets (<20%) to accelerate rank climb' }
+    { id: 'pure_xp', label: 'Pure xP', icon: Target, desc: 'Mathematical baseline LP solver' },
+    { id: 'rank_protect', label: 'Rank Shield', icon: ShieldCheck, desc: 'Effective Ownership weighting to protect lead' },
+    { id: 'differential_chase', label: 'Diff Chase', icon: Lightning, desc: 'Rewards low-EO assets to accelerate rank climb' }
   ];
 
   // Helper to parse transfer actions into clean icon-driven pills
@@ -154,7 +154,7 @@ export default function TacticalPitch({
     }
 
     const cleanMsg = summaryStr.includes('LOCKED') || summaryStr.includes('INITIAL') || summaryStr.includes('BENCHMARK')
-      ? (summaryStr.includes('BENCHMARK') ? 'Unconstrained 3-5-2 Optimal Benchmark Template' : 'Optimal 15-man squad locked · 1 Free Transfer saved · 0 hits taken')
+      ? (summaryStr.includes('BENCHMARK') ? 'Optimal Starting XI template locked · 0 transfers needed' : 'Optimal 15-man squad locked · 1 Free Transfer saved · 0 hits taken')
       : summaryStr.replace(/EXECUTE\s*\d*\s*FREE\s*TRANSFER\(S\):\s*/i, '');
 
     return (
@@ -166,12 +166,32 @@ export default function TacticalPitch({
 
   return (
     <div>
-      {/* Game Theory Strategy Selector Bar */}
-      <div className="chip-switcher-bar" style={{ marginBottom: '12px', background: 'var(--bg-surface-1)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', padding: '8px 12px' }}>
-        <div className="chip-switcher-left">
-          <span className="chip-switcher-label font-mono">
-            GAME THEORY STRATEGY:
-          </span>
+      {/* Streamlined Matchday Control Deck */}
+      <div className="matchday-control-deck">
+        <div className="deck-group">
+          <span className="deck-label font-mono">Scenario</span>
+          <div className="segmented-chip-rail">
+            {chipOptions.map(chip => {
+              const Icon = chip.icon;
+              const isSelected = activeChip === chip.id;
+              return (
+                <button
+                  key={chip.id}
+                  type="button"
+                  className={`segmented-chip-btn ${isSelected ? 'active' : ''}`}
+                  onClick={() => onSelectChip(chip.id)}
+                  title={`Switch to ${chip.label} scenario`}
+                >
+                  <Icon size={13} weight={isSelected ? 'fill' : 'bold'} />
+                  <span>{chip.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="deck-group">
+          <span className="deck-label font-mono">Strategy</span>
           <div className="segmented-chip-rail">
             {strategyOptions.map(opt => {
               const Icon = opt.icon;
@@ -184,7 +204,7 @@ export default function TacticalPitch({
                   onClick={() => onSelectStrategy(opt.id)}
                   title={opt.desc}
                 >
-                  <Icon size={14} weight={isSelected ? 'fill' : 'bold'} />
+                  <Icon size={13} weight={isSelected ? 'fill' : 'bold'} />
                   <span>{opt.label}</span>
                 </button>
               );
@@ -192,79 +212,36 @@ export default function TacticalPitch({
           </div>
         </div>
 
-        <div className="chip-switcher-right font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-          {strategy === 'pure_xp' ? 'LP Baseline Maximizer' : strategy === 'rank_protect' ? 'EO Shielding Active' : 'Low-EO Alpha Hunting'}
+        <div className="deck-telemetry">
+          <div className="deck-telemetry-item font-mono">
+            <span className="telemetry-label">Formation</span>
+            <span className="telemetry-value">{formation}</span>
+          </div>
+          <div className="deck-telemetry-divider" />
+          <div className="deck-telemetry-item font-mono">
+            <span className="telemetry-label">Projected</span>
+            <span className="telemetry-value xp-highlight">{displayStartingXp} <span className="telemetry-unit">xP</span></span>
+          </div>
         </div>
       </div>
 
-      {/* Chip Simulation Segmented Switcher */}
-      <div className="chip-switcher-bar">
-        <div className="chip-switcher-left">
-          <span className="chip-switcher-label font-mono">
-            ACTIVE SCENARIO:
-          </span>
-          <div className="segmented-chip-rail">
-            {chipOptions.map(chip => {
-              const Icon = chip.icon;
-              const isSelected = activeChip === chip.id;
-              return (
-                <button
-                  key={chip.id}
-                  type="button"
-                  className={`segmented-chip-btn ${isSelected ? 'active' : ''}`}
-                  onClick={() => onSelectChip(chip.id)}
-                  title={`Switch to ${chip.label} projection scenario`}
-                >
-                  <Icon size={14} weight={isSelected ? 'fill' : 'bold'} />
-                  <span>{chip.label}</span>
-                </button>
-              );
-            })}
-          </div>
+      {/* Streamlined Contextual Directive Strip */}
+      <div className="matchday-directive-strip">
+        <div className="directive-tag-box font-mono">
+          {isChipActive ? 'SCENARIO' : strategy !== 'pure_xp' ? 'STRATEGY' : 'MATCHDAY'}
         </div>
-
-        {/* Formation & Scenario Target Score */}
-        <div className="chip-switcher-right">
-          <span className="formation-badge font-mono">
-            FORMATION: {formation}
-          </span>
-          <span className="font-mono" style={{ fontSize: '13px', fontWeight: 800, color: 'var(--accent-emerald)' }}>
-            {displayStartingXp} <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>xP Target</span>
-          </span>
-        </div>
-      </div>
-
-      {/* Integrated Strategy Status Bar */}
-      <div className="strategy-status-bar">
-        <div className="status-bar-inner">
-          <div className="status-indicator-dot" style={{
-            background: isChipActive
-              ? 'var(--accent-purple, #A855F7)'
-              : strategy === 'differential_chase'
-              ? 'var(--accent-amber, #F59E0B)'
-              : strategy === 'rank_protect'
-              ? 'var(--accent-cyan, #06B6D4)'
-              : 'var(--accent-emerald, #10B981)'
-          }} />
-          <span className="status-bar-title font-mono">
-            {isChipActive ? 'ACTIVE SCENARIO:' : strategy !== 'pure_xp' ? 'STRATEGY DIRECTIVE:' : 'MATCHDAY DIRECTIVE:'}
-          </span>
-          <div className="status-bar-content">
-            {isChipActive ? (
-              <span className="rec-generic-text" style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>
-                {currentChipData.label || currentChipData.description || 'Active Scenario Projection'}
-              </span>
-            ) : currentStrategyData && strategy !== 'pure_xp' ? (
-              <span className="rec-generic-text" style={{
-                color: strategy === 'differential_chase' ? 'var(--accent-amber, #F59E0B)' : 'var(--accent-cyan, #06B6D4)',
-                fontWeight: 700
-              }}>
-                {currentStrategyData.label} ({currentStrategyData.subtitle || 'Tactical Optimization Active'}) · Formation {currentStrategyData.formation}
-              </span>
-            ) : (
-              renderTransferPills(actionSummary)
-            )}
-          </div>
+        <div className="directive-body">
+          {isChipActive ? (
+            <span className="directive-text chip-active-text">
+              {currentChipData.label || currentChipData.description || 'Active Scenario Projection'}
+            </span>
+          ) : currentStrategyData && strategy !== 'pure_xp' ? (
+            <span className="directive-text strategy-active-text">
+              {currentStrategyData.label} ({currentStrategyData.subtitle || 'Tactical Optimization Active'}) · Formation {currentStrategyData.formation}
+            </span>
+          ) : (
+            renderTransferPills(actionSummary)
+          )}
         </div>
       </div>
 

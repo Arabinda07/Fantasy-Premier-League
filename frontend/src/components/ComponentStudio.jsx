@@ -159,7 +159,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
       {/* Sub-View Switcher Rail */}
       <div className="chip-switcher-bar" style={{ marginBottom: '16px' }}>
         <div className="chip-switcher-left">
-          <span className="chip-switcher-label font-mono">STUDIO MODULE:</span>
+          <span className="chip-switcher-label font-mono">Module</span>
           <div className="segmented-chip-rail">
             <button
               type="button"
@@ -167,7 +167,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
               onClick={() => setSubView('sandbox')}
             >
               <SlidersHorizontal size={14} weight={subView === 'sandbox' ? 'fill' : 'bold'} />
-              <span>11-Component Formula Sandbox</span>
+              <span>Formula Sandbox</span>
             </button>
             <button
               type="button"
@@ -175,12 +175,12 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
               onClick={() => setSubView('scorecard')}
             >
               <ChartLine size={14} weight={subView === 'scorecard' ? 'fill' : 'bold'} />
-              <span>Model Calibration &amp; Accuracy Scorecard</span>
+              <span>Accuracy Scorecard</span>
             </button>
           </div>
         </div>
-        <div className="chip-switcher-right font-mono" style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-          {subView === 'sandbox' ? 'Bayesian Shrinkage Engine' : 'Historical Empirical Evaluation'}
+        <div className="chip-switcher-right font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+          {subView === 'sandbox' ? 'Bayesian Shrinkage' : 'Empirical Evaluation'}
         </div>
       </div>
 
