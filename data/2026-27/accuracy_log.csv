@@ -1,2 +1,2 @@
 gameweek,evaluated_at,total_players,active_players,overall_mae,overall_rmse,active_mae,active_rmse,rank_correlation,gk_mae,def_mae,mid_mae,fwd_mae,gk_bias,def_bias,mid_bias,fwd_bias
-1,2026-08-26T13:17:41.478095+00:00,612,310,1.055,2.142,1.886,2.949,0.579,0.701,1.207,1.028,1.053,0.06,-0.11,-0.18,0.39
+1,2026-08-27T05:45:43.070424+00:00,614,310,1.047,2.145,1.884,2.962,0.571,0.701,1.206,1.013,1.043,0.05,-0.14,-0.2,0.37

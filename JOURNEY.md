@@ -486,22 +486,41 @@ This document tracks the phased rebuild of the Fantasy Premier League (FPL) poin
     - *Surface 4 (Fixture Ticker & Matchups)*: `Fixture Difficulty & Schedule Ticker`, `Avg Difficulty`, `MATCH PREVIEW & PROBABILITY FORECAST`, `Win / Draw / Loss Chances`, `Most Likely Match Scorelines (Probability Grid)`, and clean sheet chances.
     - *Surface 5 (Price Trends)*: `Players Set to Rise Tonight (+£0.1m)`, `Players Set to Fall Tonight (-£0.1m)`, and `Season Chip Strategy & Double Gameweek Guide`.
     - *Surface 6 (Points Forecaster)*: `How Points Projections Work`, `Recent Form vs Long-Term Track Record`, `League Averages by Position`, and `How Accurate Are Our Points Projections?`.
-  - **Mobile Responsive Polish**:
-    - Fixed hero padding, chip switcher touch scroll, slider card typography, and table scrollers for mobile devices.
+### 14. Frontend Prop Alignment, Operational Pipeline Unification & Live Accuracy Calibration
+- **Problem**:
+  1. Prop name mismatches in `frontend/src/App.jsx` caused `MarketVelocityTicker` (expecting `allPlayers`), `RivalThreatMatrix` (expecting `managerProfile`), and `MultiGwPlanner` (expecting `roadmap`, `squadPlayers`, `allPlayers`) to silently fall back to static mock arrays instead of rendering live dynamic data from the backend.
+  2. The daily sync pipeline (`scripts/run_daily_sync.bat`, `.github/workflows/daily_fpl_sync.yml`, and `model/pipeline_automation.py`) skipped post-gameweek accuracy evaluation (`model/accuracy_tracker.py`) and player cost enrichment (`scripts/enrich_player_costs.py`), leaving model calibration records and market prices stale in local runs.
+  3. `ComponentStudio.jsx` used hardcoded accuracy numbers rather than consuming the empirical post-gameweek calibration data.
+- **Implementation**:
+  - **Frontend Prop Alignments ([`App.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/App.jsx), [`MarketVelocityTicker.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/MarketVelocityTicker.jsx), [`RivalThreatMatrix.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/RivalThreatMatrix.jsx), [`MultiGwPlanner.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/MultiGwPlanner.jsx))**:
+    - Hardened all 3 components to accept both direct props and container payloads (`allPlayers`, `allPlayersData`, `managerProfile`, `liveData`, `roadmap`).
+    - Dynamicized the multi-GW roadmap header span (`NEXT ${N} GAMEWEEKS · GW${start} TO GW${end}`).
+    - Enabled live dynamic transfer velocities and rival threat radar immediately upon squad sync.
+  - **Operational Pipeline Unification ([`model/pipeline_automation.py`](file:///e:/Fantasy-Premier-League/model/pipeline_automation.py), [`scripts/run_daily_sync.bat`](file:///e:/Fantasy-Premier-League/scripts/run_daily_sync.bat), [`.github/workflows/daily_fpl_sync.yml`](file:///e:/Fantasy-Premier-League/.github/workflows/daily_fpl_sync.yml))**:
+    - Integrated **Stage 1c: Completed Gameweek Accuracy Tracking** and **Stage 7: Player Cost Enrichment** directly into `pipeline_automation.py`.
+    - Updated `run_daily_sync.bat` and `daily_fpl_sync.yml` to automatically execute accuracy tracking and player cost reconciliation on every run.
+  - **Dynamic Accuracy Export & Scorecard Wiring ([`model/accuracy_tracker.py`](file:///e:/Fantasy-Premier-League/model/accuracy_tracker.py), [`ComponentStudio.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/ComponentStudio.jsx))**:
+    - Added `export_accuracy_metrics_json()` exporting `accuracy_metrics.json` to both `data/<season>/` and `frontend/src/data/`.
+    - Connected `ComponentStudio.jsx` to dynamically import `accuracy_metrics.json` and display empirical post-GW calibration statistics (MAE, RMSE, Spearman rank correlation $r_s = 0.571$, positional breakdowns, and outlier surprises).
 - **Verification**:
-  - `npm run build`: Production bundle compiled in **662ms** with **0 errors**.
-  - Automated browser test suite verified all 6 main tabs, interactive matchup drawer, and live state modals.
+  - `python -m pytest model/ -v`: **192 passed, 0 failed** in 72.52s.
+  - `node frontend/src/utils/clientOptimizer.test.js`: **11 / 11 test suites passed**.
+  - `node tests/test_api_sync.js`: **3 / 3 serverless contract tests passed**.
+  - `python scripts/validate_okf.py`: **43 files scanned, 0 errors verified**.
+  - `npm run build`: Production bundle compiled in **1.06s** with 0 errors.
+  - `python scripts/run_pipeline_local.py --skip-pipeline`: **All 7 local quality gates passed cleanly**.
 
 ---
 
 ## Current Status & Next Horizon
 
-All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit with Reactive 4-Chip Projections**, the **Autonomous Gameweek Transition Orchestrator**, the **100% Native FPL Opta Data Engine**, **Phases 1–4 of the Multi-User Live Platform Rebuild**, and the **FPL Dugout Rebranding & Complete 6-Surface Fan-Friendly Copy Transformation** are **complete, robust, and production-verified**.
+All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit with Reactive 4-Chip Projections**, the **Autonomous Gameweek Transition Orchestrator**, the **100% Native FPL Opta Data Engine**, **Phases 1–4 of the Multi-User Live Platform Rebuild**, the **FPL Dugout Rebranding & Complete 6-Surface Fan-Friendly Copy Transformation**, and **Frontend Prop Alignment & Pipeline Unification** are **complete, robust, and production-verified**.
 
 For complete operational playbooks and design standards:
 - 👉 **[DESIGN.md](file:///E:/Fantasy-Premier-League/DESIGN.md)**
 - 👉 **[docs/voice-and-tone-guide.md](file:///E:/Fantasy-Premier-League/docs/voice-and-tone-guide.md)**
 - 👉 **[docs/HANDOVER_AND_ROADMAP.md](file:///E:/Fantasy-Premier-League/docs/HANDOVER_AND_ROADMAP.md)**
+
 
 
 

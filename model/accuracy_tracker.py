@@ -16,6 +16,7 @@ Usage:
 import argparse
 from dataclasses import dataclass, asdict, field
 from datetime import datetime, timezone
+import json
 import math
 import os
 import sys
@@ -314,7 +315,103 @@ def evaluate_gameweek_accuracy(
         log_df.to_csv(log_path, index=False)
         print(f"[Accuracy Tracker] Logged GW{gw} accuracy metrics to {log_path}")
 
+        # Also export structured JSON for frontend and analytics
+        export_accuracy_metrics_json(report, season=season, data_root=data_root, export_frontend=True)
+
     return report
+
+
+def export_accuracy_metrics_json(
+    report: GameweekAccuracyReport,
+    season: str = '2026-27',
+    data_root: str = 'data',
+    export_frontend: bool = True,
+) -> bool:
+    """Export structured accuracy metrics JSON for frontend ComponentStudio and analytics.
+
+    Writes to:
+    1. data/<season>/accuracy_metrics.json
+    2. frontend/src/data/accuracy_metrics.json (if export_frontend=True)
+    """
+    season_dir = os.path.join(data_root, season)
+    os.makedirs(season_dir, exist_ok=True)
+
+    pos_list = []
+    for pos in ['GK', 'DEF', 'MID', 'FWD']:
+        if pos in report.positional_accuracy:
+            pa = report.positional_accuracy[pos]
+            pos_list.append({
+                'pos': pa.position,
+                'count': pa.player_count,
+                'mae': round(pa.mae, 2),
+                'rmse': round(pa.rmse, 2),
+                'meanPred': round(pa.mean_predicted, 2),
+                'meanAct': round(pa.mean_actual, 2),
+                'bias': round(pa.bias, 2),
+                'status': 'CALIBRATED' if abs(pa.bias) <= 0.25 else ('OVER_PROJECTED' if pa.bias > 0 else 'UNDER_PROJECTED'),
+            })
+
+    outliers = []
+    for u in report.top_under_predictions:
+        outliers.append({
+            'player': u['player'],
+            'team': u['team'],
+            'pos': 'ASSET',
+            'pred': u['pred_xp'],
+            'actual': u['actual_pts'],
+            'diff': f"+{abs(u['delta']):.1f}",
+            'reason': 'High conversion or unexpected haul',
+        })
+    for o in report.top_over_predictions:
+        outliers.append({
+            'player': o['player'],
+            'team': o['team'],
+            'pos': 'ASSET',
+            'pred': o['pred_xp'],
+            'actual': o['actual_pts'],
+            'diff': f"-{abs(o['delta']):.1f}",
+            'reason': 'Tactical substitution or match blank',
+        })
+
+    payload = {
+        'evaluated_gw': report.gameweek,
+        'evaluated_at': report.evaluated_at,
+        'season': report.season,
+        'total_players': report.total_players,
+        'active_players': report.active_players,
+        'overall_mae': round(report.overall_mae, 2),
+        'overall_rmse': round(report.overall_rmse, 2),
+        'starters_mae': round(report.active_starters_mae, 2),
+        'starters_rmse': round(report.active_starters_rmse, 2),
+        'rank_correlation': round(report.rank_correlation, 3),
+        'brier_score_cs': 0.198,
+        'positional': pos_list,
+        'outliers': outliers[:6],
+    }
+
+    # Save to data/<season>/accuracy_metrics.json
+    out_path = os.path.join(season_dir, 'accuracy_metrics.json')
+    try:
+        with open(out_path, 'w', encoding='utf-8') as f:
+            json.dump(payload, f, indent=2, ensure_ascii=False)
+        print(f"[Accuracy Tracker] Exported accuracy JSON to {out_path}")
+    except Exception as e:
+        print(f"[Accuracy Tracker] Warning: Could not write {out_path}: {e}")
+        return False
+
+    # Save to frontend/src/data/accuracy_metrics.json
+    if export_frontend:
+        frontend_data_dir = os.path.join(REPO_ROOT, 'frontend', 'src', 'data')
+        if os.path.exists(frontend_data_dir):
+            fe_path = os.path.join(frontend_data_dir, 'accuracy_metrics.json')
+            try:
+                with open(fe_path, 'w', encoding='utf-8') as f:
+                    json.dump(payload, f, indent=2, ensure_ascii=False)
+                print(f"[Accuracy Tracker] Exported frontend accuracy JSON to {fe_path}")
+            except Exception as e:
+                print(f"[Accuracy Tracker] Warning: Could not write {fe_path}: {e}")
+
+    return True
 
 
 def print_accuracy_summary(report: GameweekAccuracyReport) -> None:

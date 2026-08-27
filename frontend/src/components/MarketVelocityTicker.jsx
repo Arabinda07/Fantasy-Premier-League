@@ -1,10 +1,16 @@
 import React, { useMemo } from 'react';
 import { TrendUp, TrendDown, CalendarCheck } from '@phosphor-icons/react';
 
-export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer }) {
+export default function MarketVelocityTicker({ allPlayers, allPlayersData, liveData, onInspectPlayer }) {
+  const playersList = (allPlayers && allPlayers.length > 0)
+    ? allPlayers
+    : (allPlayersData && allPlayersData.length > 0)
+      ? allPlayersData
+      : (liveData?.players || []);
+
   // Dynamically derive rising and falling assets with threshold progress
   const { risingAssets, fallingAssets } = useMemo(() => {
-    if (!allPlayers || allPlayers.length === 0) {
+    if (!playersList || playersList.length === 0) {
       return {
         risingAssets: [
           { web_name: 'Cherki', team: 'Man City', pos: 'MID', cost: 7.5, net_vel: 142050, trend: 'Rising Tonight', ratio: '124% of threshold', progress: 124 },
@@ -23,7 +29,7 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
     const BASE_THRESHOLD = 100000;
 
     // Filter players with positive transfer velocity
-    const sortedRising = allPlayers
+    const sortedRising = playersList
       .filter(p => {
         const vel = p.price_net_velocity !== undefined ? Number(p.price_net_velocity) : (Number(p.transfers_in_event || 0) - Number(p.transfers_out_event || 0));
         return vel > 0;
@@ -51,7 +57,7 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
       });
 
     // Filter players with negative transfer velocity
-    const sortedFalling = allPlayers
+    const sortedFalling = playersList
       .filter(p => {
         const vel = p.price_net_velocity !== undefined ? Number(p.price_net_velocity) : (Number(p.transfers_in_event || 0) - Number(p.transfers_out_event || 0));
         return vel < 0;

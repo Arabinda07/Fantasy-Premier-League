@@ -25,10 +25,38 @@ export default function MultiGwPlanner({
   roadmap = [],
   squadPlayers = [],
   allPlayers = [],
+  allPlayersData = [],
+  fixturesData,
+  liveData,
+  activeChip,
+  onSelectChip,
   onInspectPlayer,
-  onCompareChange
+  onCompareChange,
+  onOpenFixture,
 }) {
-  const activeRoadmap = (roadmap && roadmap.length >= 5) ? roadmap : DEFAULT_5GW_ROADMAP;
+  const activeRoadmap = (roadmap && roadmap.length > 0)
+    ? roadmap
+    : (liveData?.multi_horizon_plan && liveData.multi_horizon_plan.length > 0)
+      ? liveData.multi_horizon_plan
+      : (liveData?.transfer_roadmap && liveData.transfer_roadmap.length > 0)
+        ? liveData.transfer_roadmap
+        : DEFAULT_5GW_ROADMAP;
+
+  const activeAllPlayers = (allPlayers && allPlayers.length > 0)
+    ? allPlayers
+    : (allPlayersData && allPlayersData.length > 0)
+      ? allPlayersData
+      : (liveData?.players || []);
+
+  const activeSquadPlayers = (squadPlayers && squadPlayers.length > 0)
+    ? squadPlayers
+    : (liveData?.starters || liveData?.bench)
+      ? [...(liveData?.starters || []), ...(liveData?.bench || [])]
+      : [];
+
+  const startGw = activeRoadmap[0]?.gw || 2;
+  const endGw = activeRoadmap[activeRoadmap.length - 1]?.gw || (startGw + Math.max(0, activeRoadmap.length - 1));
+
   const [activeGwIndex, setActiveGwIndex] = useState(0);
   const [viewMode, setViewMode] = useState('roadmap'); // 'roadmap' | 'workbench' | 'both'
 
@@ -95,7 +123,7 @@ export default function MultiGwPlanner({
           {/* Hero Header */}
           <div className="studio-hero-panel">
             <div className="studio-hero-header">
-              <span className="studio-version font-mono">NEXT 5 GAMEWEEKS · GW2 TO GW6</span>
+              <span className="studio-version font-mono">{`NEXT ${activeRoadmap.length} GAMEWEEKS · GW${startGw} TO GW${endGw}`}</span>
             </div>
             <h2 className="studio-title">5-Gameweek Transfer Planner &amp; Bank Strategy</h2>
             <p className="studio-description">
@@ -267,8 +295,8 @@ export default function MultiGwPlanner({
     <div style={{ marginTop: viewMode === 'both' ? '32px' : '0' }}>
       <TransferWorkbench
         roadmap={activeRoadmap}
-        allPlayers={allPlayers}
-        squadPlayers={squadPlayers}
+        allPlayers={activeAllPlayers}
+        squadPlayers={activeSquadPlayers}
         onInspectPlayer={onInspectPlayer}
         onCompareChange={onCompareChange}
       />

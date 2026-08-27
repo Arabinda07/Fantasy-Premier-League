@@ -46,7 +46,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run FPL Live Pipeline & Model Optimization
+      - name: Run FPL Live Pipeline, Model Optimization & Accuracy Evaluation
         run: |
           GW_ARG=""
           if [ -n "${{ github.event.inputs.gameweek }}" ]; then
@@ -55,8 +55,17 @@ jobs:
           
           MODE="${{ github.event.inputs.mode || 'sync' }}"
           python -m model.pipeline_automation --season 2026-27 --mode "$MODE" --team-id 9500404 --league-id 1305495 $GW_ARG
-          
-          # Enrich frontend cockpit payloads with Dixon-Coles & Minutes Hazard metrics
+
+      - name: Enrich Frontend Player Costs & Seasonal IDs
+        run: |
+          python scripts/enrich_player_costs.py 2026-27
+
+      - name: Enrich Frontend Cockpit Payloads
+        run: |
+          GW_ARG=""
+          if [ -n "${{ github.event.inputs.gameweek }}" ]; then
+            GW_ARG="--gw ${{ github.event.inputs.gameweek }}"
+          fi
           python -m model.enrich_frontend_data $GW_ARG || true
 
       - name: Commit & Push Live Matchday Reports

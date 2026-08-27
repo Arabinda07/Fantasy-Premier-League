@@ -74,25 +74,41 @@ export default function RivalThreatMatrix({
   managerProfile,
   starters = [],
   _bench = [],
+  bench = [],
   allPlayers = [],
+  allPlayersData = [],
+  liveData,
   onInspectPlayer
 }) {
-  const rivals = (managerProfile?.rivals && managerProfile.rivals.length > 0)
-    ? managerProfile.rivals
-    : DEFAULT_RIVALS;
+  const profile = managerProfile || liveData?.manager_profile || liveData?.manager;
+  const rivals = (profile?.rivals && profile.rivals.length > 0)
+    ? profile.rivals
+    : (liveData?.rival_radar?.competitors && liveData.rival_radar.competitors.length > 0)
+      ? liveData.rival_radar.competitors
+      : DEFAULT_RIVALS;
+
+  const activeStarters = (starters && starters.length > 0)
+    ? starters
+    : (liveData?.starters || []);
+
+  const activeAllPlayers = (allPlayers && allPlayers.length > 0)
+    ? allPlayers
+    : (allPlayersData && allPlayersData.length > 0)
+      ? allPlayersData
+      : (liveData?.players || []);
 
   const [selectedRivalId, setSelectedRivalId] = useState(rivals[0]?.entry_id || 1198015);
 
   const selectedRival = rivals.find(r => r.entry_id === selectedRivalId) || rivals[0];
 
-  const leagueName = managerProfile?.league_name || 'Arsenal Bengal FPL 2026-27';
-  const leagueId = managerProfile?.league_id || '1305495';
-  const myCaptain = starters.find(p => p.is_captain)?.web_name || 'Haaland';
+  const leagueName = profile?.league_name || liveData?.league_name || 'Arsenal Bengal FPL 2026-27';
+  const leagueId = profile?.league_id || liveData?.league_id || '1305495';
+  const myCaptain = activeStarters.find(p => p.is_captain)?.web_name || 'Haaland';
 
   const handleInspect = (playerName, fallback = {}) => {
     if (!onInspectPlayer) return;
     const clean = (playerName || '').toLowerCase().trim();
-    const matched = allPlayers?.find(
+    const matched = activeAllPlayers?.find(
       p => (p.web_name || '').toLowerCase() === clean ||
            (p.name || '').toLowerCase() === clean ||
            (p.second_name || '').toLowerCase() === clean

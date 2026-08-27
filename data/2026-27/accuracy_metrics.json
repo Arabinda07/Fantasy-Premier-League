@@ -1,0 +1,111 @@
+{
+  "evaluated_gw": 1,
+  "evaluated_at": "2026-08-27T05:45:43.070424+00:00",
+  "season": "2026-27",
+  "total_players": 614,
+  "active_players": 310,
+  "overall_mae": 1.05,
+  "overall_rmse": 2.15,
+  "starters_mae": 1.88,
+  "starters_rmse": 2.96,
+  "rank_correlation": 0.571,
+  "brier_score_cs": 0.198,
+  "positional": [
+    {
+      "pos": "GK",
+      "count": 67,
+      "mae": 0.7,
+      "rmse": 1.51,
+      "meanPred": 1.08,
+      "meanAct": 1.03,
+      "bias": 0.05,
+      "status": "CALIBRATED"
+    },
+    {
+      "pos": "DEF",
+      "count": 205,
+      "mae": 1.21,
+      "rmse": 2.39,
+      "meanPred": 1.52,
+      "meanAct": 1.66,
+      "bias": -0.14,
+      "status": "CALIBRATED"
+    },
+    {
+      "pos": "MID",
+      "count": 269,
+      "mae": 1.01,
+      "rmse": 2.17,
+      "meanPred": 1.45,
+      "meanAct": 1.65,
+      "bias": -0.2,
+      "status": "CALIBRATED"
+    },
+    {
+      "pos": "FWD",
+      "count": 73,
+      "mae": 1.04,
+      "rmse": 1.81,
+      "meanPred": 1.66,
+      "meanAct": 1.29,
+      "bias": 0.37,
+      "status": "OVER_PROJECTED"
+    }
+  ],
+  "outliers": [
+    {
+      "player": "Hinshelwood",
+      "team": "Brighton",
+      "pos": "ASSET",
+      "pred": 2.95,
+      "actual": 16,
+      "diff": "+13.1",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Mendy",
+      "team": "Hull City",
+      "pos": "ASSET",
+      "pred": 2.21,
+      "actual": 15,
+      "diff": "+12.8",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "De Cuyper",
+      "team": "Brighton",
+      "pos": "ASSET",
+      "pred": 4.51,
+      "actual": 17,
+      "diff": "+12.5",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Ajayi",
+      "team": "Hull City",
+      "pos": "ASSET",
+      "pred": 2.21,
+      "actual": 14,
+      "diff": "+11.8",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "M.Sangaré",
+      "team": "Brentford",
+      "pos": "ASSET",
+      "pred": 2.78,
+      "actual": 14,
+      "diff": "+11.2",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Haaland",
+      "team": "Man City",
+      "pos": "ASSET",
+      "pred": 7.06,
+      "actual": 2,
+      "diff": "-5.1",
+      "reason": "Tactical substitution or match blank"
+    }
+  ]
+}

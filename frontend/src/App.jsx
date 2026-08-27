@@ -328,9 +328,12 @@ export default function App() {
               <ErrorBoundary componentName="Multi-GW Planner">
                 <div className="surface-scope-planner">
                   <MultiGwPlanner
-                    liveData={liveData}
+                    roadmap={liveData?.multi_horizon_plan || liveData?.transfer_roadmap || []}
+                    squadPlayers={[...(starters || []), ...(bench || [])]}
+                    allPlayers={allPlayersData}
                     allPlayersData={allPlayersData}
                     fixturesData={fixturesData}
+                    liveData={liveData}
                     onInspectPlayer={handleInspectPlayer}
                     onOpenFixture={handleOpenFixtureDrawer}
                     activeChip={activeChip}
@@ -345,8 +348,13 @@ export default function App() {
               <ErrorBoundary componentName="Rival Radar">
                 <div className="surface-scope-rivals">
                   <RivalThreatMatrix
-                    liveData={liveData}
+                    managerProfile={liveData?.manager_profile || liveData?.manager}
+                    starters={starters.length ? starters : (liveData?.starters || [])}
+                    _bench={bench.length ? bench : (liveData?.bench || [])}
+                    bench={bench.length ? bench : (liveData?.bench || [])}
                     allPlayers={allPlayersData}
+                    allPlayersData={allPlayersData}
+                    liveData={liveData}
                     onInspectPlayer={handleInspectPlayer}
                   />
                 </div>
@@ -372,6 +380,7 @@ export default function App() {
               <ErrorBoundary componentName="Market Velocity Ticker">
                 <div className="surface-scope-market">
                   <MarketVelocityTicker
+                    allPlayers={allPlayersData}
                     allPlayersData={allPlayersData}
                     onInspectPlayer={handleInspectPlayer}
                     liveData={liveData}

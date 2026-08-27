@@ -616,6 +616,75 @@ def enrich_frontend_stage(
 
 
 # ---------------------------------------------------------------------------
+# Stage 7 & Post-GW Calibration: Player Costs & Accuracy Evaluation
+# ---------------------------------------------------------------------------
+
+def run_accuracy_tracking_stage(
+    season: str = '2026-27',
+    completed_gw: int = 1,
+    data_root: str = 'data',
+) -> StageResult:
+    """Evaluate and record model accuracy for completed gameweeks."""
+    stage_start = time.time()
+    try:
+        from model.accuracy_tracker import evaluate_gameweek_accuracy
+        print(f"[Pipeline] Post-GW Calibration: Evaluating accuracy for completed GW{completed_gw}...")
+        report = evaluate_gameweek_accuracy(
+            season=season,
+            gw=completed_gw,
+            data_root=data_root,
+            save_log=True,
+        )
+        if report:
+            return StageResult(
+                stage='accuracy_tracking',
+                success=True,
+                duration_seconds=time.time() - stage_start,
+                message=f'Evaluated GW{completed_gw}: Overall MAE {report.overall_mae:.2f} pts, Active MAE {report.active_starters_mae:.2f} pts, Rank Corr {report.rank_correlation:.3f}.',
+            )
+        else:
+            return StageResult(
+                stage='accuracy_tracking',
+                success=True,
+                duration_seconds=time.time() - stage_start,
+                message=f'No historical prediction artifact found for completed GW{completed_gw} to evaluate.',
+            )
+    except Exception as e:
+        return StageResult(
+            stage='accuracy_tracking',
+            success=False,
+            duration_seconds=time.time() - stage_start,
+            message=f'Accuracy evaluation failed: {e}',
+            error=str(e),
+        )
+
+
+def run_player_cost_enrichment_stage(
+    season: str = '2026-27',
+) -> StageResult:
+    """Enrich players_full.json with seasonal Opta codes, element IDs, and now_costs."""
+    stage_start = time.time()
+    try:
+        from scripts.enrich_player_costs import enrich_player_costs
+        print("[Pipeline] Enriching frontend players_full.json with latest costs and element IDs...")
+        success = enrich_player_costs(season=season)
+        return StageResult(
+            stage='player_cost_enrichment',
+            success=success,
+            duration_seconds=time.time() - stage_start,
+            message='Enriched players_full.json with latest market costs and Opta element IDs.' if success else 'Player cost enrichment incomplete.',
+        )
+    except Exception as e:
+        return StageResult(
+            stage='player_cost_enrichment',
+            success=False,
+            duration_seconds=time.time() - stage_start,
+            message=f'Player cost enrichment failed: {e}',
+            error=str(e),
+        )
+
+
+# ---------------------------------------------------------------------------
 # Master Pipeline Orchestrator
 # ---------------------------------------------------------------------------
 
@@ -703,6 +772,14 @@ def run_live_pipeline(
         stages.append(price_result)
         price_alerts = int(price_result.message.split(', ')[-1].split(' ')[0]) if price_result.success else 0
 
+        # 1c. Completed Gameweek Accuracy Tracking & Calibration
+        completed_gw = active_gw if (active_gw and active_gw < resolved_gw) else (resolved_gw - 1 if resolved_gw > 1 else None)
+        if completed_gw:
+            acc_result = run_accuracy_tracking_stage(
+                season=season, completed_gw=completed_gw, data_root=data_root,
+            )
+            stages.append(acc_result)
+
     # ------------------------------------------------------------------
     # Stage 2: Historical Ingest (full mode only)
     # ------------------------------------------------------------------
@@ -764,6 +841,13 @@ def run_live_pipeline(
             season=season, gw=resolved_gw, data_root=data_root,
         )
         stages.append(enrich_result)
+
+    # ------------------------------------------------------------------
+    # Stage 7: Player Cost & ID Enrichment (sync + full modes)
+    # ------------------------------------------------------------------
+    if mode in ('sync', 'full'):
+        cost_result = run_player_cost_enrichment_stage(season=season)
+        stages.append(cost_result)
 
     # ------------------------------------------------------------------
     # Pipeline Summary

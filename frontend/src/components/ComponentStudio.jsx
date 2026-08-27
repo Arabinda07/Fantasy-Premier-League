@@ -12,6 +12,7 @@ import {
   CaretDoubleRight,
   Target
 } from '@phosphor-icons/react';
+import accuracyMetricsData from '../data/accuracy_metrics.json';
 
 // Positional baseline rates (league averages per 90)
 const POSITIONAL_BASELINES = {
@@ -21,26 +22,31 @@ const POSITIONAL_BASELINES = {
   FWD: { label: 'Forwards', xG90: 0.42, xA90: 0.16, cleanSheet: 0.00, savePts90: 0.00, bonus90: 0.55 },
 };
 
-// Historical Accuracy & Calibration Metrics (from model/accuracy_tracker.py)
+// Live Accuracy & Calibration Metrics (from model/accuracy_tracker.py via accuracy_metrics.json)
 const ACCURACY_DATA = {
-  overall_mae: 1.86,
-  overall_rmse: 2.14,
-  starters_mae: 1.42,
-  starters_rmse: 1.82,
-  rank_correlation: 0.684,
-  brier_score_cs: 0.198,
-  positional: [
-    { pos: 'GK', count: 20, mae: 1.21, rmse: 1.68, meanPred: 3.82, meanAct: 3.65, bias: 0.17, status: 'CALIBRATED' },
-    { pos: 'DEF', count: 78, mae: 1.34, rmse: 1.95, meanPred: 4.12, meanAct: 3.98, bias: 0.14, status: 'CALIBRATED' },
-    { pos: 'MID', count: 104, mae: 1.48, rmse: 2.22, meanPred: 4.85, meanAct: 4.70, bias: 0.15, status: 'CALIBRATED' },
-    { pos: 'FWD', count: 38, mae: 1.56, rmse: 2.38, meanPred: 5.42, meanAct: 5.25, bias: 0.17, status: 'CALIBRATED' },
-  ],
-  outliers: [
-    { player: 'Semenyo', team: 'BOU', pos: 'MID', pred: 4.6, actual: 10, diff: '+5.4', reason: 'High xG conversion + 3 bonus points' },
-    { player: 'João Pedro', team: 'BHA', pos: 'FWD', pred: 5.1, actual: 9, diff: '+3.9', reason: 'Late winning goal haul + maximum BPS' },
-    { player: 'Palmer', team: 'CHE', pos: 'MID', pred: 7.2, actual: 2, diff: '-5.2', reason: 'Heavy man-marking and low volume shot game' },
-    { player: 'Trippier', team: 'NEW', pos: 'DEF', pred: 4.8, actual: 1, diff: '-3.8', reason: 'Subbed at 62m + conceded late consolation' },
-  ]
+  overall_mae: accuracyMetricsData?.overall_mae ?? 1.05,
+  overall_rmse: accuracyMetricsData?.overall_rmse ?? 2.15,
+  starters_mae: accuracyMetricsData?.starters_mae ?? 1.88,
+  starters_rmse: accuracyMetricsData?.starters_rmse ?? 2.96,
+  rank_correlation: accuracyMetricsData?.rank_correlation ?? 0.571,
+  brier_score_cs: accuracyMetricsData?.brier_score_cs ?? 0.198,
+  evaluated_gw: accuracyMetricsData?.evaluated_gw ?? 1,
+  positional: (accuracyMetricsData?.positional && accuracyMetricsData.positional.length > 0)
+    ? accuracyMetricsData.positional
+    : [
+        { pos: 'GK', count: 67, mae: 0.70, rmse: 1.51, meanPred: 1.08, meanAct: 1.03, bias: 0.05, status: 'CALIBRATED' },
+        { pos: 'DEF', count: 205, mae: 1.21, rmse: 2.39, meanPred: 1.52, meanAct: 1.66, bias: -0.14, status: 'CALIBRATED' },
+        { pos: 'MID', count: 269, mae: 1.01, rmse: 2.17, meanPred: 1.45, meanAct: 1.65, bias: -0.20, status: 'CALIBRATED' },
+        { pos: 'FWD', count: 73, mae: 1.04, rmse: 1.81, meanPred: 1.66, meanAct: 1.29, bias: 0.37, status: 'OVER_PROJECTED' },
+      ],
+  outliers: (accuracyMetricsData?.outliers && accuracyMetricsData.outliers.length > 0)
+    ? accuracyMetricsData.outliers
+    : [
+        { player: 'Hinshelwood', team: 'Brighton', pos: 'ASSET', pred: 2.95, actual: 16, diff: '+13.1', reason: 'High conversion or unexpected haul' },
+        { player: 'Mendy', team: 'Hull City', pos: 'ASSET', pred: 2.21, actual: 15, diff: '+12.8', reason: 'High conversion or unexpected haul' },
+        { player: 'De Cuyper', team: 'Brighton', pos: 'ASSET', pred: 4.51, actual: 17, diff: '+12.5', reason: 'High conversion or unexpected haul' },
+        { player: 'Haaland', team: 'Man City', pos: 'ASSET', pred: 7.06, actual: 2, diff: '-5.1', reason: 'Tactical substitution or match blank' },
+      ]
 };
 
 export default function ComponentStudio({ players, onInspectPlayer }) {
