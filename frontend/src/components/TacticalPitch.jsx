@@ -178,7 +178,6 @@ export default function TacticalPitch({
     { id: 'differential_chase', label: 'Climb Rank', icon: Lightning, desc: 'Back low-ownership punts to gain ground on your mini-league rivals' }
   ];
 
-  // Helper to parse transfer actions into clean icon-driven pills
   const renderTransferPills = (summary) => {
     if (!summary) return null;
     const summaryStr = typeof summary === 'string' ? summary : (summary.headline || summary.action || '');
@@ -195,26 +194,33 @@ export default function TacticalPitch({
         <div className="rec-transfer-group">
           <div className="rec-transfer-pill in">
             <ArrowUpRight size={13} weight="bold" />
-            <span className="rec-tag">BUY</span>
+            <span className="rec-tag font-mono">BUY</span>
             <span className="rec-player-name">{inName}</span>
           </div>
           <CaretRight size={13} className="rec-arrow" />
           <div className="rec-transfer-pill out">
             <ArrowDownRight size={13} weight="bold" />
-            <span className="rec-tag">SELL</span>
+            <span className="rec-tag font-mono">SELL</span>
             <span className="rec-player-name">{outName}</span>
           </div>
         </div>
       );
     }
 
-    const cleanMsg = summaryStr.includes('LOCKED') || summaryStr.includes('INITIAL') || summaryStr.includes('BENCHMARK')
-      ? (summaryStr.includes('BENCHMARK') ? 'Starting XI looks solid · No transfers needed this week' : 'Squad in good shape · Save free transfer to bank 2 FTs next week')
-      : summaryStr.replace(/EXECUTE\s*\d*\s*FREE\s*TRANSFER\(S\):\s*/i, '');
+    if (summaryStr.toLowerCase().includes('roll transfer') || summaryStr.toLowerCase().includes('save free transfer') || summaryStr.includes('LOCKED') || summaryStr.includes('INITIAL')) {
+      return (
+        <div className="directive-structured-text">
+          <span className="directive-action">Save Free Transfer (Roll FT)</span>
+          <span className="directive-separator font-mono">·</span>
+          <span className="directive-detail">Bank 1 FT to have 2 free transfers available next week</span>
+        </div>
+      );
+    }
 
+    const cleanMsg = summaryStr.replace(/EXECUTE\s*\d*\s*FREE\s*TRANSFER\(S\):\s*/i, '');
     return (
-      <div className="rec-generic-text">
-        <span>{cleanMsg}</span>
+      <div className="directive-structured-text">
+        <span className="directive-action">{cleanMsg}</span>
       </div>
     );
   };
@@ -286,26 +292,53 @@ export default function TacticalPitch({
           </div>
           <div className="deck-telemetry-divider" />
           <div className="deck-telemetry-item font-mono">
-            <span className="telemetry-label">Expected</span>
+            <span className="telemetry-label">Starting</span>
             <span className="telemetry-value xp-highlight">{displayStartingXp} <span className="telemetry-unit">pts</span></span>
           </div>
         </div>
       </div>
 
       {/* Streamlined Contextual Directive Strip */}
-      <div className="matchday-directive-strip">
+      <div className={`matchday-directive-strip ${isChipActive ? 'chip-mode' : strategy !== 'pure_xp' ? 'strategy-mode' : 'move-mode'}`}>
         <div className="directive-tag-box font-mono">
-          {isChipActive ? 'CHIP' : strategy !== 'pure_xp' ? 'TACTIC' : 'NEXT MOVE'}
+          {isChipActive ? (
+            <>
+              <RocketLaunch size={13} weight="fill" />
+              <span>ACTIVE CHIP</span>
+            </>
+          ) : strategy !== 'pure_xp' ? (
+            <>
+              <Target size={13} weight="fill" />
+              <span>TACTIC</span>
+            </>
+          ) : (
+            <>
+              <Lightning size={13} weight="fill" />
+              <span>NEXT MOVE</span>
+            </>
+          )}
         </div>
         <div className="directive-body">
           {isChipActive ? (
-            <span className="directive-text chip-active-text">
-              {currentChipData.label || currentChipData.description || 'Active Chip Projection'}
-            </span>
+            <div className="directive-structured-text">
+              <span className="directive-action chip-action-text">
+                {currentChipData.label || 'Chip Active'}
+              </span>
+              <span className="directive-separator font-mono">·</span>
+              <span className="directive-detail">
+                {currentChipData.description || 'Active matchday chip projection'}
+              </span>
+            </div>
           ) : currentStrategyData && strategy !== 'pure_xp' ? (
-            <span className="directive-text strategy-active-text">
-              {currentStrategyData.label} ({currentStrategyData.subtitle || 'Tactical Goal Active'}) · Formation {currentStrategyData.formation}
-            </span>
+            <div className="directive-structured-text">
+              <span className="directive-action strategy-action-text">
+                {currentStrategyData.label}
+              </span>
+              <span className="directive-separator font-mono">·</span>
+              <span className="directive-detail">
+                {currentStrategyData.subtitle || 'Tactical Goal Active'} · Formation {currentStrategyData.formation}
+              </span>
+            </div>
           ) : (
             renderTransferPills(effectiveActionSummary)
           )}

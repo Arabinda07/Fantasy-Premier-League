@@ -226,25 +226,27 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
               <div className="studio-slider-card">
                 <div className="slider-header">
                   <span className="slider-label">
-                    <SlidersHorizontal size={14} weight="bold" />
-                    Recent Form vs Long-Term Track Record
+                    <SlidersHorizontal size={15} weight="bold" />
+                    <span>Recent Form vs Long-Term Track Record</span>
                   </span>
-                  <span className="slider-value font-mono">{priorMinutes} min sample</span>
+                  <span className="slider-value-capsule font-mono">{priorMinutes} mins sample</span>
                 </div>
-                <input
-                  type="range"
-                  min="100"
-                  max="1200"
-                  step="50"
-                  value={priorMinutes}
-                  onChange={e => setPriorMinutes(Number(e.target.value))}
-                  className="studio-range-input"
-                  aria-label="Adjust historical baseline weighting sample in minutes"
-                />
+                <div className="slider-input-wrapper">
+                  <input
+                    type="range"
+                    min="100"
+                    max="1200"
+                    step="50"
+                    value={priorMinutes}
+                    onChange={e => setPriorMinutes(Number(e.target.value))}
+                    className="studio-range-input"
+                    aria-label="Adjust historical baseline weighting sample in minutes"
+                  />
+                </div>
                 <div className="slider-ticks font-mono">
-                  <span>100m (Hot Form)</span>
-                  <span>500m (Balanced)</span>
-                  <span>1200m (Career Record)</span>
+                  <span className="slider-tick-item left">100m (Hot Form)</span>
+                  <span className="slider-tick-item center">500m (Balanced)</span>
+                  <span className="slider-tick-item right">1200m (Career Record)</span>
                 </div>
                 <div className="slider-hint">
                   Balances how much we weigh recent match form versus the player&apos;s career record in the Premier League.
@@ -254,25 +256,27 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
               <div className="studio-slider-card">
                 <div className="slider-header">
                   <span className="slider-label">
-                    <Lightning size={14} weight="bold" />
-                    Home Ground Advantage
+                    <Lightning size={15} weight="bold" />
+                    <span>Home Ground Advantage</span>
                   </span>
-                  <span className="slider-value font-mono">{homeAdvantage.toFixed(2)}x boost</span>
+                  <span className="slider-value-capsule font-mono">{homeAdvantage.toFixed(2)}x boost</span>
                 </div>
-                <input
-                  type="range"
-                  min="0.90"
-                  max="1.30"
-                  step="0.02"
-                  value={homeAdvantage}
-                  onChange={e => setHomeAdvantage(Number(e.target.value))}
-                  className="studio-range-input"
-                  aria-label="Adjust home venue performance multiplier"
-                />
+                <div className="slider-input-wrapper">
+                  <input
+                    type="range"
+                    min="0.90"
+                    max="1.30"
+                    step="0.02"
+                    value={homeAdvantage}
+                    onChange={e => setHomeAdvantage(Number(e.target.value))}
+                    className="studio-range-input"
+                    aria-label="Adjust home venue performance multiplier"
+                  />
+                </div>
                 <div className="slider-ticks font-mono">
-                  <span>0.90x (Neutral Ground)</span>
-                  <span>1.10x (Average Home Boost)</span>
-                  <span>1.30x (Fortress Stadium)</span>
+                  <span className="slider-tick-item left">0.90x (Neutral Ground)</span>
+                  <span className="slider-tick-item center">1.10x (Avg Home Boost)</span>
+                  <span className="slider-tick-item right">1.30x (Fortress Stadium)</span>
                 </div>
                 <div className="slider-hint">
                   Gives a realistic boost to goal threat and clean sheet chances when playing at home.
