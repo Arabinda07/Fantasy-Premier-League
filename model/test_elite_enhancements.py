@@ -30,6 +30,7 @@ from model.ownership_engine import (
     estimate_captaincy_share,
     rank_adjusted_utility,
     RANK_PROTECT_SHIELD_WEIGHT,
+    RANK_PROTECT_THRESHOLD,
     DIFFERENTIAL_REWARD_WEIGHT,
     DIFFERENTIAL_THRESHOLD,
 )
@@ -206,12 +207,12 @@ class TestOwnershipEngine:
         """rank_protect should reward holding high-EO assets (utility > xP)."""
         util = rank_adjusted_utility(6.5, eo=1.50, strategy='rank_protect')
         assert util > 6.5
-        expected_phi = RANK_PROTECT_SHIELD_WEIGHT * (1.50 - 1.0)
+        expected_phi = RANK_PROTECT_SHIELD_WEIGHT * (1.50 - RANK_PROTECT_THRESHOLD)
         assert abs(util - (6.5 + expected_phi)) < 1e-6
 
     def test_rank_protect_no_effect_below_threshold(self):
-        """rank_protect should have no effect for players with EO < 1.0."""
-        util = rank_adjusted_utility(4.0, eo=0.50, strategy='rank_protect')
+        """rank_protect should have no effect for players with EO below threshold."""
+        util = rank_adjusted_utility(4.0, eo=0.10, strategy='rank_protect')
         assert abs(util - 4.0) < 1e-6
 
     def test_differential_chase_rewards_low_eo(self):

@@ -8,7 +8,7 @@ import {
 } from '@phosphor-icons/react';
 
 export default function TransferWorkbench({
-  _roadmap,
+  roadmap: _roadmap,
   allPlayers,
   squadPlayers = [],
   onInspectPlayer,
@@ -38,9 +38,13 @@ export default function TransferWorkbench({
         return matchesSearch && matchesPos && matchesPrice;
       })
       .sort((a, b) => {
-        if (sortBy === 'xP') return Number(b.expected_points || 0) - Number(a.expected_points || 0);
-        if (sortBy === 'cost_desc') return Number(b.now_cost || 0) - Number(a.now_cost || 0);
-        if (sortBy === 'cost_asc') return Number(a.now_cost || 0) - Number(b.now_cost || 0);
+        if (sortBy === 'xP') {
+          const xpB = Number(b.expected_points ?? b.xp ?? b.xP ?? 0);
+          const xpA = Number(a.expected_points ?? a.xp ?? a.xP ?? 0);
+          return xpB - xpA;
+        }
+        if (sortBy === 'cost_desc') return Number(b.now_cost || b.cost || 0) - Number(a.now_cost || a.cost || 0);
+        if (sortBy === 'cost_asc') return Number(a.now_cost || a.cost || 0) - Number(b.now_cost || b.cost || 0);
         return 0;
       })
       .slice(0, 50);
@@ -66,19 +70,19 @@ export default function TransferWorkbench({
   };
 
   // Compute Comparison Deltas
-  const xpOut = Number(playerOut?.expected_points || 0);
-  const xpIn = Number(playerIn?.expected_points || 0);
+  const xpOut = Number(playerOut?.expected_points ?? playerOut?.xp ?? playerOut?.xP ?? 0);
+  const xpIn = Number(playerIn?.expected_points ?? playerIn?.xp ?? playerIn?.xP ?? 0);
   const xpDelta = xpIn - xpOut;
 
-  const costOut = Number(playerOut?.now_cost || playerOut?.cost || 0);
-  const costIn = Number(playerIn?.now_cost || playerIn?.cost || 0);
+  const costOut = Number(playerOut?.now_cost ?? playerOut?.cost ?? 0);
+  const costIn = Number(playerIn?.now_cost ?? playerIn?.cost ?? 0);
   const costDelta = costIn - costOut;
 
-  const xgOut = Number(playerOut?.expected_goals_per_90 || playerOut?.short_form_expected_goals_90 || 0);
-  const xgIn = Number(playerIn?.expected_goals_per_90 || playerIn?.short_form_expected_goals_90 || 0);
+  const xgOut = Number(playerOut?.expected_goals_per_90 ?? playerOut?.short_form_expected_goals_90 ?? playerOut?.xg90 ?? 0);
+  const xgIn = Number(playerIn?.expected_goals_per_90 ?? playerIn?.short_form_expected_goals_90 ?? playerIn?.xg90 ?? 0);
 
-  const xaOut = Number(playerOut?.expected_assists_per_90 || playerOut?.short_form_expected_assists_90 || 0);
-  const xaIn = Number(playerIn?.expected_assists_per_90 || playerIn?.short_form_expected_assists_90 || 0);
+  const xaOut = Number(playerOut?.expected_assists_per_90 ?? playerOut?.short_form_expected_assists_90 ?? playerOut?.xa90 ?? 0);
+  const xaIn = Number(playerIn?.expected_assists_per_90 ?? playerIn?.short_form_expected_assists_90 ?? playerIn?.xa90 ?? 0);
 
   return (
     <div className="view-fluid">
@@ -306,7 +310,7 @@ export default function TransferWorkbench({
                   }}
                   tabIndex={0}
                   role="button"
-                  aria-label={`${p.web_name}, ${p.position}, £${Number(p.now_cost || p.cost || 0).toFixed(1)}M, ${Number(p.expected_points || 0).toFixed(1)} points`}
+                  aria-label={`${p.web_name}, ${p.position}, £${Number(p.now_cost || p.cost || 0).toFixed(1)}M, ${Number(p.expected_points ?? p.xp ?? p.xP ?? 0).toFixed(1)} points`}
                   style={{ cursor: 'pointer' }}
                   title="Click to view detailed point projections"
                 >
@@ -319,10 +323,10 @@ export default function TransferWorkbench({
                   <td>{p.team}</td>
                   <td className="font-mono">£{Number(p.now_cost || p.cost || 0).toFixed(1)}m</td>
                   <td className="font-mono" style={{ fontWeight: 700, color: 'var(--accent-emerald)' }}>
-                    {Number(p.expected_points || 0).toFixed(1)} pts
+                    {Number(p.expected_points ?? p.xp ?? p.xP ?? 0).toFixed(1)} pts
                   </td>
-                  <td className="font-mono">{Number(p.expected_goals_per_90 || p.short_form_expected_goals_90 || 0).toFixed(2)}</td>
-                  <td className="font-mono">{Number(p.expected_assists_per_90 || p.short_form_expected_assists_90 || 0).toFixed(2)}</td>
+                  <td className="font-mono">{Number(p.expected_goals_per_90 ?? p.short_form_expected_goals_90 ?? p.xg90 ?? 0).toFixed(2)}</td>
+                  <td className="font-mono">{Number(p.expected_assists_per_90 ?? p.short_form_expected_assists_90 ?? p.xa90 ?? 0).toFixed(2)}</td>
                   <td className="font-mono">{((p.p_start || 0.85) * 100).toFixed(0)}%</td>
                   <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                     <button

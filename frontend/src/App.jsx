@@ -300,6 +300,7 @@ export default function App() {
                   actionSummary={liveData.action_summary}
                   startingXp={startingXp + Number(captBonus)}
                   totalXp={liveData.total_xp}
+                  strategies={liveData.strategies || {}}
                   chipSimulations={liveData.chip_simulations || {}}
                   activeChip={activeChip}
                   onSelectChip={handleChipChange}

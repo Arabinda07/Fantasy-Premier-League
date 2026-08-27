@@ -15,7 +15,7 @@ import {
 export default function TacticalPitch({
   starters = [],
   bench = [],
-  allPlayers = [],
+  _allPlayers = [],
   selectedPlayer,
   onSelectPlayer,
   onInspectPlayer,
@@ -23,6 +23,7 @@ export default function TacticalPitch({
   actionSummary,
   startingXp = 64.7,
   _totalXp = 64.7,
+  strategies = {},
   chipSimulations = {},
   activeChip = 'none',
   onSelectChip = () => {},
@@ -63,70 +64,27 @@ export default function TacticalPitch({
     if (chipSimulations.freehit) result.freehit = chipSimulations.freehit;
     if (chipSimulations.wildcard) result.wildcard = chipSimulations.wildcard;
 
-    // Client-side heuristic fallback for Wildcard if solver payload is absent but allPlayers is loaded
-    if (!result.wildcard && allPlayers && allPlayers.length >= 15) {
-      try {
-        const sorted = [...allPlayers].sort((a, b) => Number(b.expected_points || 0) - Number(a.expected_points || 0));
-        const topGks = sorted.filter(p => (p.position || '').toUpperCase() === 'GK').slice(0, 2);
-        const topDefs = sorted.filter(p => (p.position || '').toUpperCase() === 'DEF').slice(0, 5);
-        const topMids = sorted.filter(p => (p.position || '').toUpperCase() === 'MID').slice(0, 5);
-        const topFwds = sorted.filter(p => (p.position || '').toUpperCase() === 'FWD').slice(0, 3);
-
-        const wcStarters = [
-          topGks[0],
-          ...topDefs.slice(0, 3),
-          ...topMids.slice(0, 5),
-          ...topFwds.slice(0, 2)
-        ].filter(Boolean).map((p, idx) => ({
-          ...p,
-          is_starter: 1,
-          is_captain: idx === 0 ? 0 : (idx === 4 ? 1 : 0),
-          is_vice_captain: idx === 0 ? 1 : 0,
-        }));
-
-        const wcBench = [
-          topGks[1],
-          topDefs[3],
-          topDefs[4],
-          topFwds[2]
-        ].filter(Boolean).map(p => ({ ...p, is_starter: 0, is_captain: 0, is_vice_captain: 0 }));
-
-        const wcStartingXp = wcStarters.reduce((acc, p) => acc + Number(p.expected_points || 0), 0);
-        result.wildcard = {
-          chip_name: 'Wildcard',
-          label: 'Wildcard Active (£100.0M Solved Optimal Template · Formation 3-5-2)',
-          description: 'Complete 15-man squad overhaul under £100.0M budget without hit penalties for long-term fixture runs.',
-          formation: '3-5-2',
-          starting_xp: Number(wcStartingXp.toFixed(1)),
-          total_xp: Number(wcStartingXp.toFixed(1)),
-          starters: wcStarters,
-          bench: wcBench,
-        };
-      } catch (e) {
-        console.warn('Wildcard heuristic fallback error', e);
-      }
-    }
-
-    // Client-side heuristic fallback for Free Hit if solver payload is absent
-    if (!result.freehit && result.wildcard) {
-      result.freehit = {
-        ...result.wildcard,
-        chip_name: 'Free Hit',
-        label: 'Free Hit Active (Optimal 1-Round Ceiling Squad · Formation 3-5-2)',
-        description: 'Temporary 1-week squad targeting maximum single-round ceiling with cheap £4.0M bench enablers.',
-      };
-    }
-
     return result;
-  }, [starters, bench, startingXp, chipSimulations, allPlayers]);
+  }, [starters, bench, startingXp, chipSimulations]);
 
-  // Determine active display data
+  // Determine active strategy squad if chip is none
+  const currentStrategyData = strategies && strategies[strategy] ? strategies[strategy] : null;
+
+  // Determine active display data: Priority: Active Chip > Active Strategy > Base Matchday Squad
   const currentChipData = activeChip !== 'none' ? (chipSimulations[activeChip] || resolvedChipData[activeChip]) : null;
   const isChipActive = activeChip !== 'none' && currentChipData != null;
 
-  const displayStarters = isChipActive ? currentChipData.starters : starters;
-  const displayBench = isChipActive ? currentChipData.bench : bench;
-  const displayStartingXp = isChipActive ? currentChipData.starting_xp : startingXp;
+  const displayStarters = isChipActive
+    ? currentChipData.starters
+    : (currentStrategyData ? currentStrategyData.starters : starters);
+
+  const displayBench = isChipActive
+    ? currentChipData.bench
+    : (currentStrategyData ? currentStrategyData.bench : bench);
+
+  const displayStartingXp = isChipActive
+    ? currentChipData.starting_xp
+    : (currentStrategyData ? currentStrategyData.starting_xp : startingXp);
 
   // Group starters by position
   const gks = displayStarters.filter(p => p.position === 'GK');
@@ -134,7 +92,22 @@ export default function TacticalPitch({
   const mids = displayStarters.filter(p => p.position === 'MID');
   const fwds = displayStarters.filter(p => p.position === 'FWD');
 
-  const formation = isChipActive ? (currentChipData.formation || `${defs.length}-${mids.length}-${fwds.length}`) : `${defs.length}-${mids.length}-${fwds.length}`;
+  const formation = isChipActive
+    ? (currentChipData.formation || `${defs.length}-${mids.length}-${fwds.length}`)
+    : (currentStrategyData?.formation || `${defs.length}-${mids.length}-${fwds.length}`);
+
+  // Helper for strategy badges on player cards
+  const getStrategyBadge = (p) => {
+    if (isChipActive) return null;
+    if (strategy === 'differential_chase') {
+      const own = Number(p.ownership_pct || (p.eo || 0.1));
+      if (own < 0.20) return 'DIFF';
+    } else if (strategy === 'rank_protect') {
+      const own = Number(p.ownership_pct || (p.eo || 0.5));
+      if (own > 0.25 || p.is_captain) return 'SHIELD';
+    }
+    return null;
+  };
 
   const chipOptions = [
     { id: 'none', label: 'Standard XI', icon: ShieldCheck },
@@ -264,14 +237,29 @@ export default function TacticalPitch({
       {/* Integrated Strategy Status Bar */}
       <div className="strategy-status-bar">
         <div className="status-bar-inner">
-          <div className="status-indicator-dot" />
+          <div className="status-indicator-dot" style={{
+            background: isChipActive
+              ? 'var(--accent-purple, #A855F7)'
+              : strategy === 'differential_chase'
+              ? 'var(--accent-amber, #F59E0B)'
+              : strategy === 'rank_protect'
+              ? 'var(--accent-cyan, #06B6D4)'
+              : 'var(--accent-emerald, #10B981)'
+          }} />
           <span className="status-bar-title font-mono">
-            {isChipActive ? 'ACTIVE SCENARIO:' : 'MATCHDAY DIRECTIVE:'}
+            {isChipActive ? 'ACTIVE SCENARIO:' : strategy !== 'pure_xp' ? 'STRATEGY DIRECTIVE:' : 'MATCHDAY DIRECTIVE:'}
           </span>
           <div className="status-bar-content">
             {isChipActive ? (
               <span className="rec-generic-text" style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>
                 {currentChipData.label || currentChipData.description || 'Active Scenario Projection'}
+              </span>
+            ) : currentStrategyData && strategy !== 'pure_xp' ? (
+              <span className="rec-generic-text" style={{
+                color: strategy === 'differential_chase' ? 'var(--accent-amber, #F59E0B)' : 'var(--accent-cyan, #06B6D4)',
+                fontWeight: 700
+              }}>
+                {currentStrategyData.label} ({currentStrategyData.subtitle || 'Tactical Optimization Active'}) · Formation {currentStrategyData.formation}
               </span>
             ) : (
               renderTransferPills(actionSummary)
@@ -299,6 +287,7 @@ export default function TacticalPitch({
                 isViceCaptain={Boolean(p.is_vice_captain)}
                 isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
                 isBoosted={activeChip === 'bboost'}
+                strategyBadge={getStrategyBadge(p)}
                 isSubTarget={selectedPlayer?.player_code === p.player_code}
                 onSelectSub={onSelectPlayer}
                 onInspect={onInspectPlayer}
@@ -317,6 +306,7 @@ export default function TacticalPitch({
                 isViceCaptain={Boolean(p.is_vice_captain)}
                 isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
                 isBoosted={activeChip === 'bboost'}
+                strategyBadge={getStrategyBadge(p)}
                 isSubTarget={selectedPlayer?.player_code === p.player_code}
                 onSelectSub={onSelectPlayer}
                 onInspect={onInspectPlayer}
@@ -335,6 +325,7 @@ export default function TacticalPitch({
                 isViceCaptain={Boolean(p.is_vice_captain)}
                 isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
                 isBoosted={activeChip === 'bboost'}
+                strategyBadge={getStrategyBadge(p)}
                 isSubTarget={selectedPlayer?.player_code === p.player_code}
                 onSelectSub={onSelectPlayer}
                 onInspect={onInspectPlayer}
@@ -353,10 +344,9 @@ export default function TacticalPitch({
                 isViceCaptain={Boolean(p.is_vice_captain)}
                 isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
                 isBoosted={activeChip === 'bboost'}
+                strategyBadge={getStrategyBadge(p)}
                 isSubTarget={selectedPlayer?.player_code === p.player_code}
                 onSelectSub={onSelectPlayer}
-                onInspect={onInspectPlayer}
-                onOpenMatchup={onOpenMatchup}
               />
             ))}
           </div>

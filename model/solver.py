@@ -391,15 +391,18 @@ def solve_initial_squad(
     # Chip modifiers
     is_bench_boost = (chip == 'bboost')
     is_triple_captain = (chip == '3xc')
+    is_free_hit = (chip == 'freehit')
 
     capt_multiplier = 2.0 if is_triple_captain else 1.0  # +2x bonus for 3xC, +1x for standard
-    bench_weight = 1.0 if is_bench_boost else 0.05
+    bench_weight = 1.0 if is_bench_boost else (0.0 if is_free_hit else 0.05)
+    bench_cost_penalty = 0.01 if is_free_hit else 0.0
 
     # Objective function
     prob += pulp.lpSum(
         df.loc[i, 'opt_points'] * s[i] +
         capt_multiplier * df.loc[i, 'captain_points'] * c[i] +
-        bench_weight * df.loc[i, 'opt_points'] * (x[i] - s[i])
+        bench_weight * df.loc[i, 'opt_points'] * (x[i] - s[i]) -
+        bench_cost_penalty * df.loc[i, 'cost'] * (x[i] - s[i])
         for i in indices
     )
 

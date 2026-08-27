@@ -268,6 +268,8 @@ def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data
     # 4. Compute & Enrich Strategic 4-Chip Simulations (Wildcard, Free Hit, Bench Boost, Triple Captain)
     try:
         from model.solver import solve_initial_squad
+        from model.ownership_engine import compute_eo, estimate_captaincy_share
+        from model.prediction_engine import _safe_float as _enrich_safe_float
         from dataclasses import asdict
 
         def sanitize_val(val):
@@ -284,6 +286,90 @@ def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data
         def sanitize_dict(d):
             return {k: sanitize_val(v) for k, v in d.items()}
 
+        # Build ownership lookup: player_code -> ownership_pct (fraction 0..1)
+        ownership_lookup = {}
+        if os.path.exists(raw_path):
+            for _, r in raw_df.iterrows():
+                code = r.get('code', r.get('player_code', 0))
+                if pd.notnull(code):
+                    sel_pct = _enrich_safe_float(r.get('selected_by_percent', 0.0))
+                    ownership_lookup[int(code)] = round(sel_pct / 100.0, 4)
+
+        # Find league max xP for captaincy estimation
+        league_max_xp = float(preds_df['expected_points'].max()) if 'expected_points' in preds_df.columns else 10.0
+        if math.isnan(league_max_xp) or league_max_xp <= 0:
+            league_max_xp = 10.0
+
+        def inject_ownership(player_dict):
+            """Inject ownership_pct and eo into a player dict from the ownership lookup."""
+            p_code = int(player_dict.get('player_code', 0))
+            own_pct = ownership_lookup.get(p_code, 0.0)
+            xp = float(player_dict.get('expected_points', 0.0))
+            cap_share = estimate_captaincy_share(own_pct, xp, league_max_xp)
+            eo = compute_eo(own_pct, cap_share)
+            player_dict['ownership_pct'] = round(own_pct, 4)
+            player_dict['eo'] = round(eo, 4)
+            return player_dict
+
+        def make_player_dicts(picks, boosted=False):
+            """Convert PlayerPick list to sanitized dicts with ownership injected."""
+            result = []
+            for p in picks:
+                d = sanitize_dict(asdict(p))
+                if boosted:
+                    d['is_boosted'] = True
+                inject_ownership(d)
+                result.append(d)
+            return result
+
+        # 4. Compute & Enrich Strategic 3-Strategy Solves (Pure xP, Rank Shield, Differential Chase)
+        pure_sol = solve_initial_squad(df=preds_df, budget=100.0, strategy='pure_xp')
+        rp_sol = solve_initial_squad(df=preds_df, budget=100.0, strategy='rank_protect')
+        diff_sol = solve_initial_squad(df=preds_df, budget=100.0, strategy='differential_chase')
+
+        data['strategies'] = {
+            'pure_xp': {
+                'strategy_id': 'pure_xp',
+                'label': 'Pure xP Maximizer',
+                'subtitle': 'Unbiased mathematical expectation (baseline LP solver)',
+                'formation': pure_sol.formation,
+                'starting_xp': round(pure_sol.starting_xp, 1),
+                'total_xp': round(pure_sol.total_xp, 1),
+                'captain': pure_sol.captain.web_name if pure_sol.captain else None,
+                'vice_captain': pure_sol.vice_captain.web_name if pure_sol.vice_captain else None,
+                'starters': enrich_player_list(make_player_dicts(pure_sol.starters), True),
+                'bench': enrich_player_list(make_player_dicts(pure_sol.bench), False),
+                'budget_used': round(pure_sol.total_cost, 1),
+            },
+            'rank_protect': {
+                'strategy_id': 'rank_protect',
+                'label': 'Rank Shield',
+                'subtitle': 'Effective Ownership weighting to protect lead against template hauls',
+                'formation': rp_sol.formation,
+                'starting_xp': round(rp_sol.starting_xp, 1),
+                'total_xp': round(rp_sol.total_xp, 1),
+                'captain': rp_sol.captain.web_name if rp_sol.captain else None,
+                'vice_captain': rp_sol.vice_captain.web_name if rp_sol.vice_captain else None,
+                'starters': enrich_player_list(make_player_dicts(rp_sol.starters), True),
+                'bench': enrich_player_list(make_player_dicts(rp_sol.bench), False),
+                'budget_used': round(rp_sol.total_cost, 1),
+            },
+            'differential_chase': {
+                'strategy_id': 'differential_chase',
+                'label': 'Differential Chase',
+                'subtitle': 'Rewards low-EO assets (<20%) to accelerate rank climb',
+                'formation': diff_sol.formation,
+                'starting_xp': round(diff_sol.starting_xp, 1),
+                'total_xp': round(diff_sol.total_xp, 1),
+                'captain': diff_sol.captain.web_name if diff_sol.captain else None,
+                'vice_captain': diff_sol.vice_captain.web_name if diff_sol.vice_captain else None,
+                'starters': enrich_player_list(make_player_dicts(diff_sol.starters), True),
+                'bench': enrich_player_list(make_player_dicts(diff_sol.bench), False),
+                'budget_used': round(diff_sol.total_cost, 1),
+            }
+        }
+
+        # 5. Compute & Enrich Strategic 4-Chip Simulations (Wildcard, Free Hit, Bench Boost, Triple Captain)
         wc_sol = solve_initial_squad(df=preds_df, budget=100.0, chip='wildcard')
         fh_sol = solve_initial_squad(df=preds_df, budget=100.0, chip='freehit')
         bb_sol = solve_initial_squad(df=preds_df, budget=100.0, chip='bboost')
@@ -301,21 +387,21 @@ def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data
                 'total_xp': round(wc_sol.total_xp, 1),
                 'captain': wc_sol.captain.web_name if wc_sol.captain else None,
                 'vice_captain': wc_sol.vice_captain.web_name if wc_sol.vice_captain else None,
-                'starters': enrich_player_list([sanitize_dict(asdict(p)) for p in wc_sol.starters], True),
-                'bench': enrich_player_list([sanitize_dict(asdict(p)) for p in wc_sol.bench], False),
+                'starters': enrich_player_list(make_player_dicts(wc_sol.starters), True),
+                'bench': enrich_player_list(make_player_dicts(wc_sol.bench), False),
                 'budget_used': round(wc_sol.total_cost, 1),
             },
             'freehit': {
                 'chip_name': 'Free Hit',
-                'label': f"Free Hit Active (Optimal GW{gw} 1-Round Ceiling Squad · Formation {fh_sol.formation})",
+                'label': f"Free Hit Active (Optimal GW{gw} 1-Round Ceiling Dream Team · Formation {fh_sol.formation})",
                 'description': 'Temporary 1-week squad targeting maximum single-round ceiling with cheap £4.0M bench enablers.',
                 'formation': fh_sol.formation,
                 'starting_xp': round(fh_sol.starting_xp, 1),
                 'total_xp': round(fh_sol.total_xp, 1),
                 'captain': fh_sol.captain.web_name if fh_sol.captain else None,
                 'vice_captain': fh_sol.vice_captain.web_name if fh_sol.vice_captain else None,
-                'starters': enrich_player_list([sanitize_dict(asdict(p)) for p in fh_sol.starters], True),
-                'bench': enrich_player_list([sanitize_dict(asdict(p)) for p in fh_sol.bench], False),
+                'starters': enrich_player_list(make_player_dicts(fh_sol.starters), True),
+                'bench': enrich_player_list(make_player_dicts(fh_sol.bench), False),
                 'budget_used': round(fh_sol.total_cost, 1),
             },
             'bboost': {
@@ -327,8 +413,8 @@ def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data
                 'total_xp': round(bb_sol.total_xp, 1),
                 'captain': bb_sol.captain.web_name if bb_sol.captain else None,
                 'vice_captain': bb_sol.vice_captain.web_name if bb_sol.vice_captain else None,
-                'starters': enrich_player_list([sanitize_dict(asdict(p)) for p in bb_sol.starters], True),
-                'bench': enrich_player_list([sanitize_dict({**asdict(p), 'is_boosted': True}) for p in bb_sol.bench], False),
+                'starters': enrich_player_list(make_player_dicts(bb_sol.starters), True),
+                'bench': enrich_player_list(make_player_dicts(bb_sol.bench, boosted=True), False),
                 'budget_used': round(bb_sol.total_cost, 1),
             },
             '3xc': {
@@ -340,14 +426,14 @@ def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data
                 'total_xp': round(tc_sol.total_xp, 1),
                 'captain': tc_sol.captain.web_name if tc_sol.captain else None,
                 'vice_captain': tc_sol.vice_captain.web_name if tc_sol.vice_captain else None,
-                'starters': enrich_player_list([sanitize_dict(asdict(p)) for p in tc_sol.starters], True),
-                'bench': enrich_player_list([sanitize_dict(asdict(p)) for p in tc_sol.bench], False),
+                'starters': enrich_player_list(make_player_dicts(tc_sol.starters), True),
+                'bench': enrich_player_list(make_player_dicts(tc_sol.bench), False),
                 'budget_used': round(tc_sol.total_cost, 1),
             }
         }
-        print(f"[Enrichment] Successfully computed & enriched 4 chip simulations for GW{gw}.")
+        print(f"[Enrichment] Successfully computed & enriched 3 strategy payloads and 4 chip simulations for GW{gw}.")
     except Exception as e:
-        print(f"[Enrichment] Warning: Could not compute chip simulations: {e}")
+        print(f"[Enrichment] Warning: Could not compute strategy/chip simulations: {e}")
 
     # Write to both frontend data and season data directories
     os.makedirs(os.path.dirname(frontend_json), exist_ok=True)

@@ -9,7 +9,8 @@ export default function PlayerCard({
   isCaptain,
   isViceCaptain,
   isTripleCaptain,
-  isBoosted
+  isBoosted,
+  strategyBadge
 }) {
   if (!player) return null;
 
@@ -60,6 +61,12 @@ export default function PlayerCard({
           ) : isViceCaptain ? (
             <span className="vice-captain-badge" title="Vice Captain">V</span>
           ) : null}
+          {strategyBadge === 'DIFF' && (
+            <span className="diff-badge" style={{ background: 'rgba(245, 158, 11, 0.2)', color: 'var(--accent-amber, #F59E0B)', border: '1px solid rgba(245, 158, 11, 0.4)', borderRadius: '3px', padding: '0 4px', fontSize: '9px', fontWeight: 800 }} title="Low-EO Alpha Differential">⚡ DIFF</span>
+          )}
+          {strategyBadge === 'SHIELD' && (
+            <span className="shield-badge" style={{ background: 'rgba(6, 182, 212, 0.2)', color: 'var(--accent-cyan, #06B6D4)', border: '1px solid rgba(6, 182, 212, 0.4)', borderRadius: '3px', padding: '0 4px', fontSize: '9px', fontWeight: 800 }} title="High-EO Rank Shield Anchor">🛡️ SHIELD</span>
+          )}
           <span className={`player-pos-tag ${pos}`}>{pos}</span>
           {isBgw && <span className="bgw-badge" title="Blank Gameweek: 0 fixtures scheduled">BLANK</span>}
           {isDgw && <span className="dgw-badge" title="Double Gameweek: 2 fixtures scheduled">DGW</span>}

@@ -37,13 +37,13 @@ DEFAULT_STRATEGY: str = 'pure_xp'
 VALID_STRATEGIES = ('pure_xp', 'rank_protect', 'differential_chase')
 
 # Strategy tuning parameters
-RANK_PROTECT_SHIELD_WEIGHT: float = 0.5   # Reward for holding high-EO assets
-RANK_PROTECT_THRESHOLD: float = 1.0        # EO above which shielding kicks in
+RANK_PROTECT_SHIELD_WEIGHT: float = 1.8   # Reward for holding high-EO assets
+RANK_PROTECT_THRESHOLD: float = 0.20        # EO above which shielding kicks in (20%+)
 
-DIFFERENTIAL_REWARD_WEIGHT: float = 1.2   # Reward for owning low-EO assets
+DIFFERENTIAL_REWARD_WEIGHT: float = 2.5   # Reward for owning low-EO assets (<20%)
 DIFFERENTIAL_THRESHOLD: float = 0.20       # EO below which differential bonus applies
-DIFFERENTIAL_PENALTY_WEIGHT: float = 0.5   # Penalty for high-EO assets in chase mode
-DIFFERENTIAL_PENALTY_THRESHOLD: float = 1.0
+DIFFERENTIAL_PENALTY_WEIGHT: float = 1.8   # Penalty for high-EO assets in chase mode (>25%)
+DIFFERENTIAL_PENALTY_THRESHOLD: float = 0.25
 
 # Strategy intensity multiplier (lambda)
 DEFAULT_STRATEGY_LAMBDA: float = 1.0
