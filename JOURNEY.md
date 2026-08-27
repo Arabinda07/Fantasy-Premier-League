@@ -470,15 +470,39 @@ This document tracks the phased rebuild of the Fantasy Premier League (FPL) poin
   - `python scripts/validate_okf.py`: 0 errors verified across 43 catalog documents.
   - `npm run build`: Production bundle compiled in **1.24s**.
 
+### 13. FPL Dugout Rebranding & Complete 6-Surface Indian English Language Transformation
+- **Problem**: The frontend UI suffered from technical AI slop, corporate finance terminology (*"assets"*, *"portfolios"*, *"capital allocation"*), and intimidating statistical formula notations (*"Dixon-Coles bivariate Poisson"*, *"Empirical Bayesian Shrinkage"*, *"Linear programming horizon"*). The app name *"FPL Analytics Terminal"* felt cold and unapproachable.
+- **Implementation**:
+  - **Rebranding**: Rebranded app to **FPL Dugout** *(Smart Squad & Matchday Planner)* with short mobile badge **Dugout**.
+  - **Voice & Tone Style Guide ([`docs/voice-and-tone-guide.md`](file:///e:/Fantasy-Premier-League/docs/voice-and-tone-guide.md))**:
+    - Defined brand persona (the sharpest manager in your WhatsApp group & local EPL fan club).
+    - Established 3-tier vocabulary filter (Keep sacred FPL slang, Translate stats to fan English, Ban corporate jargon).
+  - **Single Source of Truth Copy Tokens ([`frontend/src/constants/copyTokens.js`](file:///e:/Fantasy-Premier-League/frontend/src/constants/copyTokens.js))**:
+    - Centralized copy tokens for chip advice, tactical goals, strategy badges, metric labels, and validation messages.
+  - **Comprehensive 6-Surface Transformation**:
+    - *Surface 1 (My Lineup & Pitch)*: Direct chip tooltips, clear tactical directives (*"Max Points"*, *"Protect Lead"*, *"Climb Rank"*), friendly swap instructions, and plain English badges (`⚡ DIFF`, `🛡️ TEMPLATE`, `🚀 BB`).
+    - *Surface 2 (Transfer Planner & Scout)*: `5-Gameweek Transfer Planner & Bank Strategy`, `5-Week Expected Total`, `Point Hits Planned (-4 pts)`, H2H workbench cards (`SELLING (OUT)` vs `BUYING (IN)`), and `Goal Threat (xG / 90 mins)`.
+    - *Surface 3 (Mini-Leagues & Rivals)*: `Mini-League Head-to-Head`, `Your Captain`, `Your Differentials`, `Biggest Threat to Your Rank`, `Squad Overlap`, and `Your Points Advantage (+X pts projected lead)`.
+    - *Surface 4 (Fixture Ticker & Matchups)*: `Fixture Difficulty & Schedule Ticker`, `Avg Difficulty`, `MATCH PREVIEW & PROBABILITY FORECAST`, `Win / Draw / Loss Chances`, `Most Likely Match Scorelines (Probability Grid)`, and clean sheet chances.
+    - *Surface 5 (Price Trends)*: `Players Set to Rise Tonight (+£0.1m)`, `Players Set to Fall Tonight (-£0.1m)`, and `Season Chip Strategy & Double Gameweek Guide`.
+    - *Surface 6 (Points Forecaster)*: `How Points Projections Work`, `Recent Form vs Long-Term Track Record`, `League Averages by Position`, and `How Accurate Are Our Points Projections?`.
+  - **Mobile Responsive Polish**:
+    - Fixed hero padding, chip switcher touch scroll, slider card typography, and table scrollers for mobile devices.
+- **Verification**:
+  - `npm run build`: Production bundle compiled in **662ms** with **0 errors**.
+  - Automated browser test suite verified all 6 main tabs, interactive matchup drawer, and live state modals.
+
 ---
 
 ## Current Status & Next Horizon
 
-All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit with Reactive 4-Chip Projections**, the **Autonomous Gameweek Transition Orchestrator**, the **100% Native FPL Opta Data Engine**, and **Phases 1, 2, 3 & 4 of the Multi-User Live Platform Rebuild** are **complete, robust, and production-verified**.
+All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit with Reactive 4-Chip Projections**, the **Autonomous Gameweek Transition Orchestrator**, the **100% Native FPL Opta Data Engine**, **Phases 1–4 of the Multi-User Live Platform Rebuild**, and the **FPL Dugout Rebranding & Complete 6-Surface Fan-Friendly Copy Transformation** are **complete, robust, and production-verified**.
 
 For complete operational playbooks and design standards:
 - 👉 **[DESIGN.md](file:///E:/Fantasy-Premier-League/DESIGN.md)**
+- 👉 **[docs/voice-and-tone-guide.md](file:///E:/Fantasy-Premier-League/docs/voice-and-tone-guide.md)**
 - 👉 **[docs/HANDOVER_AND_ROADMAP.md](file:///E:/Fantasy-Premier-League/docs/HANDOVER_AND_ROADMAP.md)**
+
 
 
 

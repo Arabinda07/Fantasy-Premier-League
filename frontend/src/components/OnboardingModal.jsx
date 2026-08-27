@@ -70,7 +70,7 @@ export default function OnboardingModal({
         }
       }
 
-      setLoadingStep('Reconciling 11-component DNA & solving optimal XI...');
+      setLoadingStep('Finding your optimal starting XI and captain pick...');
 
       // Save to localStorage
       try {
@@ -122,16 +122,16 @@ export default function OnboardingModal({
         {/* Header Badge */}
         <div className="onboarding-badge">
           <SoccerBall size={14} weight="fill" />
-          <span>FPL INTELLIGENCE TERMINAL · 2026-27</span>
+          <span>FPL DUGOUT · 2026-27</span>
         </div>
 
         {/* Title and Subtitle */}
         <h2 id="onboarding-title" className="onboarding-title">
-          Deploy ML Predictions to Your Squad
+          Connect Your FPL Squad
         </h2>
         <p className="onboarding-desc">
-          Enter your FPL Team ID to simulate optimal starting formations, algorithm captaincy,
-          and budget-constrained transfer upgrades tailored to your exact 15 players.
+          Enter your FPL Team ID to get personalized starting XI recommendations, captain picks,
+          and transfer advice tailored to your 15 players.
         </p>
 
         {/* Error Alert */}
@@ -149,7 +149,7 @@ export default function OnboardingModal({
         <form onSubmit={handleSync} className="sync-form">
           <div className="form-group">
             <label htmlFor="onboarding-entry-id" className="form-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span>FPL Team ID (Entry ID)</span>
+              <span>FPL Team ID</span>
               <button
                 type="button"
                 className="id-finder-toggle"
@@ -157,7 +157,7 @@ export default function OnboardingModal({
                 aria-expanded={showGuide}
               >
                 <Question size={13} weight="bold" />
-                <span>{showGuide ? 'Hide Guide' : 'Where is my Team ID?'}</span>
+                <span>{showGuide ? 'Hide Guide' : 'Where do I find my ID?'}</span>
               </button>
             </label>
 
@@ -178,12 +178,12 @@ export default function OnboardingModal({
             {showGuide && (
               <div className="id-finder-card">
                 <div style={{ fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px' }}>
-                  How to find your 7-digit Team ID (10 seconds):
+                  How to find your Team ID (10 seconds):
                 </div>
                 <ol className="id-finder-steps">
                   <li>Log in at <strong>fantasy.premierleague.com</strong>.</li>
                   <li>Click on the <strong>'Points'</strong> or <strong>'Gameweek History'</strong> tab.</li>
-                  <li>Look at your browser address bar:</li>
+                  <li>Check your browser address bar:</li>
                 </ol>
                 <div className="id-finder-url-box">
                   <span>fantasy.premierleague.com/entry/<mark>9500404</mark>/history</span>
@@ -211,12 +211,12 @@ export default function OnboardingModal({
                 onClick={() => setShowLeagueInput(true)}
               >
                 <CaretRight size={12} weight="bold" />
-                <span>+ Add Classic Mini-League ID for Rival Radar (Optional)</span>
+                <span>+ Add Mini-League ID to Track Rivals (Optional)</span>
               </button>
             ) : (
               <div>
                 <label htmlFor="onboarding-league-id" className="form-label">
-                  Classic Mini-League ID (Optional)
+                  Mini-League ID (Optional)
                 </label>
                 <input
                   id="onboarding-league-id"
@@ -254,12 +254,12 @@ export default function OnboardingModal({
               {isLoading ? (
                 <>
                   <ArrowsClockwise size={16} className="spin-animation" />
-                  <span>Syncing Live Squad...</span>
+                  <span>Connecting Squad...</span>
                 </>
               ) : (
                 <>
                   <Lightning size={16} weight="fill" />
-                  <span>Sync My Squad & Optimize Lineup</span>
+                  <span>Connect Squad & View Lineup</span>
                 </>
               )}
             </button>
@@ -271,7 +271,7 @@ export default function OnboardingModal({
               disabled={isLoading}
             >
               <Eye size={15} weight="bold" />
-              <span>Explore Demo Squad (GW2 Top-10k Template)</span>
+              <span>Explore Demo Squad (Sample Team)</span>
             </button>
           </div>
         </form>

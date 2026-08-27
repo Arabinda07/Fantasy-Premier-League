@@ -156,7 +156,7 @@ export default function PlayerDNAInspector({ player, onClose }) {
         {/* View Mode Segmented Switcher */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
           <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            {activeView === 'chart' ? 'Point Contribution Breakdown' : '5-Axis Attribute Radar vs Baseline'}
+            {activeView === 'chart' ? 'Expected Points Breakdown' : 'Player Strengths vs League Average'}
           </span>
           <div className="segmented-chip-rail">
             <button
@@ -165,7 +165,7 @@ export default function PlayerDNAInspector({ player, onClose }) {
               onClick={() => setActiveView('chart')}
             >
               <ChartBar size={12} weight="bold" />
-              <span>Point Ledger</span>
+              <span>Points Breakdown</span>
             </button>
             <button
               type="button"
@@ -173,7 +173,7 @@ export default function PlayerDNAInspector({ player, onClose }) {
               onClick={() => setActiveView('radar')}
             >
               <Polygon size={12} weight="bold" />
-              <span>5-Axis Radar</span>
+              <span>Attribute Radar</span>
             </button>
           </div>
         </div>

@@ -191,34 +191,34 @@ export default function RivalThreatMatrix({
             LEAGUE ID #{leagueId}
           </span>
         </div>
-        <h1 className="studio-title">{leagueName} · Rival Radar & Differentials</h1>
+        <h1 className="studio-title">{leagueName} · Mini-League Head-to-Head</h1>
         <p className="studio-description">
-          Live head-to-head intelligence against top mini-league contenders. Spot key points weapons to gain rank and monitor dangerous differentials.
+          Track your mini-league rivals in real time. See who they are captaining, find your rank-climbing differentials, and watch out for danger players.
         </p>
 
         {/* Top Metric Strip */}
         <div className="kpi-strip">
           <div className="kpi-card">
-            <div className="kpi-label">Your Captain Pick</div>
+            <div className="kpi-label">Your Captain</div>
             <div className="kpi-value" style={{ color: 'var(--accent-amber)' }}>
               {myCaptain}
               <Crown size={16} weight="fill" />
             </div>
             <div className="kpi-subtext">
-              {captainBackingPct}% of rivals ({captainBackingCount}/{rivals.length}) backing the same pick
+              {captainBackingPct}% of rivals in your league ({captainBackingCount}/{rivals.length}) picked the same
             </div>
           </div>
           <div className="kpi-card">
-            <div className="kpi-label">Active Differentials</div>
+            <div className="kpi-label">Your Differentials</div>
             <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
-              {userDiffNames.length} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Unique Weapons</span>
+              {userDiffNames.length} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Unique Players</span>
             </div>
             <div className="kpi-subtext">
               {userDiffNames.slice(0, 5).join(', ')}{userDiffNames.length > 5 ? '...' : ''}
             </div>
           </div>
           <div className="kpi-card">
-            <div className="kpi-label">Biggest Rival Threat</div>
+            <div className="kpi-label">Biggest Threat to Your Rank</div>
             <div className="kpi-value" style={{ color: 'var(--accent-crimson)' }}>
               {topThreatPlayer}
             </div>
@@ -235,7 +235,7 @@ export default function RivalThreatMatrix({
         <div className="data-table-container">
           <div className="studio-table-controls">
             <div className="controls-left">
-              <span className="controls-title">Mini-League Contenders</span>
+              <span className="controls-title">Mini-League Table</span>
               <span className="controls-count font-mono">{rivals.length} Rivals Tracked</span>
             </div>
           </div>
@@ -245,10 +245,10 @@ export default function RivalThreatMatrix({
               <thead>
                 <tr>
                   <th style={{ width: '8%' }}>Rank</th>
-                  <th style={{ width: '28%' }}>Manager / Team</th>
+                  <th style={{ width: '28%' }}>Manager &amp; Team</th>
                   <th style={{ width: '12%' }}>Points</th>
                   <th style={{ width: '18%' }}>Captain</th>
-                  <th style={{ width: '14%' }}>Overlap</th>
+                  <th style={{ width: '14%' }}>Squad Overlap</th>
                   <th style={{ width: '10%' }}>Threat</th>
                   <th style={{ width: '10%' }}>Action</th>
                 </tr>
@@ -283,9 +283,9 @@ export default function RivalThreatMatrix({
                           <Crown size={12} weight="fill" color="var(--accent-amber)" />
                         </div>
                       </td>
-                      <td className="font-mono">{overlapCount}/15 ({overlapPctVal}%)</td>
+                      <td className="font-mono">{overlapCount}/15 shared ({overlapPctVal}%)</td>
                       <td>
-                        <span className={`threat-badge ${threatClass}`}>{r.threat_level || 'MEDIUM'}</span>
+                        <span className={`threat-badge ${threatClass}`}>{r.threat_level === 'HIGH' ? '🔥 HIGH' : r.threat_level === 'LOW' ? '🛡️ LOW' : '⚡ MEDIUM'}</span>
                       </td>
                       <td>
                         <button
@@ -311,7 +311,7 @@ export default function RivalThreatMatrix({
         {selectedRival && (
           <div className="sidebar-panel">
             <div className="panel-header">
-              <span className="panel-title">Head-to-Head Differential Matrix</span>
+              <span className="panel-title">Head-to-Head Comparison</span>
               <span className="panel-badge font-mono">vs {selectedRival.manager_name}</span>
             </div>
 
@@ -320,10 +320,10 @@ export default function RivalThreatMatrix({
               <div className="h2h-swing-header">
                 <span className="h2h-swing-title">
                   <Gauge size={14} weight="bold" />
-                  Net Head-to-Head Haul Advantage
+                  Your Points Advantage
                 </span>
                 <span className="h2h-swing-val font-mono" style={{ color: netDelta >= 0 ? 'var(--accent-emerald)' : 'var(--accent-crimson)' }}>
-                  {netDelta >= 0 ? `+${netDelta}` : netDelta} xP Edge
+                  {netDelta >= 0 ? `+${netDelta}` : netDelta} pts projected lead
                 </span>
               </div>
               <div className="h2h-swing-track">
@@ -338,9 +338,9 @@ export default function RivalThreatMatrix({
                 <div className="h2h-swing-center-mark" />
               </div>
               <div className="h2h-swing-labels font-mono">
-                <span>Rival Upside (+{rivalUpside.toFixed(1)})</span>
+                <span>{selectedRival.manager_name}&apos;s Differentials (+{rivalUpside.toFixed(1)})</span>
                 <span>Even (0)</span>
-                <span>Your Upside (+{yourUpside.toFixed(1)})</span>
+                <span>Your Differentials (+{yourUpside.toFixed(1)})</span>
               </div>
             </div>
 
@@ -348,7 +348,7 @@ export default function RivalThreatMatrix({
             <div className="diff-section">
               <div className="diff-section-title green">
                 <ShieldCheck size={14} weight="bold" />
-                <span>Your Points Weapons (Rival Doesn&apos;t Own)</span>
+                <span>Your Differentials (Players {selectedRival.manager_name} doesn&apos;t own)</span>
               </div>
               <div className="diff-cards-list">
                 {userDiffCards.map(p => (
@@ -363,7 +363,7 @@ export default function RivalThreatMatrix({
                       }
                     }}
                     style={{ cursor: 'pointer' }}
-                    title={`Click to inspect ${p.name} DNA breakdown`}
+                    title={`Click to view ${p.name} scouting report & stats`}
                     role="button"
                     tabIndex={0}
                   >
@@ -374,7 +374,7 @@ export default function RivalThreatMatrix({
                     </div>
                     <div className="diff-player-right font-mono">
                       <span className="diff-cost">£{Number(p.cost || 6.0).toFixed(1)}m</span>
-                      <span className="diff-xp">+{Number(p.xp || 4.5).toFixed(1)} xP</span>
+                      <span className="diff-xp">+{Number(p.xp || 4.5).toFixed(1)} pts</span>
                     </div>
                   </div>
                 ))}
@@ -385,7 +385,7 @@ export default function RivalThreatMatrix({
             <div className="diff-section" style={{ marginTop: '16px' }}>
               <div className="diff-section-title red">
                 <ShieldWarning size={14} weight="bold" />
-                <span>Rival&apos;s Danger Men (You Don&apos;t Own)</span>
+                <span>Danger Players (Players {selectedRival.manager_name} owns that you don&apos;t)</span>
               </div>
               <div className="diff-cards-list">
                 {rivalDiffCards.map(p => (
@@ -400,7 +400,7 @@ export default function RivalThreatMatrix({
                       }
                     }}
                     style={{ cursor: 'pointer' }}
-                    title={`Click to inspect ${p.name} DNA breakdown`}
+                    title={`Click to view ${p.name} scouting report & stats`}
                     role="button"
                     tabIndex={0}
                   >
@@ -411,7 +411,7 @@ export default function RivalThreatMatrix({
                     </div>
                     <div className="diff-player-right font-mono">
                       <span className="diff-cost">£{Number(p.cost || 6.0).toFixed(1)}m</span>
-                      <span className="diff-xp" style={{ color: 'var(--accent-crimson)' }}>+{Number(p.xp || 4.5).toFixed(1)} xP</span>
+                      <span className="diff-xp" style={{ color: 'var(--accent-crimson)' }}>+{Number(p.xp || 4.5).toFixed(1)} pts</span>
                     </div>
                   </div>
                 ))}

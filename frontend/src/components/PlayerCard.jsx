@@ -49,7 +49,7 @@ export default function PlayerCard({
       onDoubleClick={() => {
         if (onInspect) onInspect(player);
       }}
-      title="Click to select/swap, double-click to view complete player DNA & point breakdown"
+      title="Click to swap player · Double-click for match stats & points breakdown"
     >
       {/* Top Header: Badge / Position + BGW/DGW Indicator + Price */}
       <div className="player-card-top-row">
@@ -62,17 +62,17 @@ export default function PlayerCard({
             <span className="vice-captain-badge" title="Vice Captain">V</span>
           ) : null}
           {strategyBadge === 'DIFF' && (
-            <span className="diff-badge" style={{ background: 'rgba(245, 158, 11, 0.2)', color: 'var(--accent-amber, #F59E0B)', border: '1px solid rgba(245, 158, 11, 0.4)', borderRadius: '3px', padding: '0 4px', fontSize: '9px', fontWeight: 800 }} title="Low-EO Alpha Differential">⚡ DIFF</span>
+            <span className="diff-badge" style={{ background: 'rgba(245, 158, 11, 0.2)', color: 'var(--accent-amber, #F59E0B)', border: '1px solid rgba(245, 158, 11, 0.4)', borderRadius: '3px', padding: '0 4px', fontSize: '9px', fontWeight: 800 }} title="Differential pick — owned by under 20% of managers">⚡ DIFF</span>
           )}
           {strategyBadge === 'SHIELD' && (
-            <span className="shield-badge" style={{ background: 'rgba(6, 182, 212, 0.2)', color: 'var(--accent-cyan, #06B6D4)', border: '1px solid rgba(6, 182, 212, 0.4)', borderRadius: '3px', padding: '0 4px', fontSize: '9px', fontWeight: 800 }} title="High-EO Rank Shield Anchor">🛡️ SHIELD</span>
+            <span className="shield-badge" style={{ background: 'rgba(6, 182, 212, 0.2)', color: 'var(--accent-cyan, #06B6D4)', border: '1px solid rgba(6, 182, 212, 0.4)', borderRadius: '3px', padding: '0 4px', fontSize: '9px', fontWeight: 800 }} title="Popular pick — high ownership to protect your rank">🛡️ TEMPLATE</span>
           )}
           {isBoosted && player.is_bench_asset && (
-            <span className="boost-badge" style={{ background: 'rgba(16, 185, 129, 0.2)', color: 'var(--accent-emerald, #10B981)', border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '3px', padding: '0 4px', fontSize: '9px', fontWeight: 800 }} title="Bench Boost Asset · Active Point Scorer">🚀 BB</span>
+            <span className="boost-badge" style={{ background: 'rgba(16, 185, 129, 0.2)', color: 'var(--accent-emerald, #10B981)', border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '3px', padding: '0 4px', fontSize: '9px', fontWeight: 800 }} title="Bench Boost Active · Scoring points this gameweek">🚀 BB</span>
           )}
           <span className={`player-pos-tag ${pos}`}>{pos}</span>
-          {isBgw && <span className="bgw-badge" title="Blank Gameweek: 0 fixtures scheduled">BLANK</span>}
-          {isDgw && <span className="dgw-badge" title="Double Gameweek: 2 fixtures scheduled">DGW</span>}
+          {isBgw && <span className="bgw-badge" title="Blank Gameweek: No game scheduled">BLANK</span>}
+          {isDgw && <span className="dgw-badge" title="Double Gameweek: 2 games scheduled">DGW</span>}
         </div>
         <span className="player-cost-val font-mono">£{cost}m</span>
       </div>
@@ -92,7 +92,7 @@ export default function PlayerCard({
               onOpenMatchup(player.fixture_details || { home_team: player.team, away_team: opponent || 'Opponent' });
             }
           }}
-          title="Click to view match preview & clean sheet odds"
+          title="Click for match preview, win odds & clean sheet chances"
         >
           {player.team} {fixtureLabel && <span className="fixture-sub-tag font-mono">{fixtureLabel}</span>}
         </span>
@@ -101,7 +101,7 @@ export default function PlayerCard({
       {/* Minimalist Expected Points Score Banner */}
       <div className="player-stats-bar" style={{ justifyContent: 'center' }}>
         <span className="player-xp font-mono">
-          {isTripleCaptain ? (xp * 3).toFixed(1) : isCaptain ? (xp * 2).toFixed(1) : xp.toFixed(1)} <span className="xp-unit">{isTripleCaptain ? '3xP' : isCaptain ? '2xP' : 'xP'}</span>
+          {isTripleCaptain ? (xp * 3).toFixed(1) : isCaptain ? (xp * 2).toFixed(1) : xp.toFixed(1)} <span className="xp-unit">{isTripleCaptain ? 'pts (3x)' : isCaptain ? 'pts (2x)' : 'xP'}</span>
         </span>
       </div>
     </div>

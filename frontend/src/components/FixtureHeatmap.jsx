@@ -113,10 +113,10 @@ export default function FixtureHeatmap({
         <div className="ticker-title-group">
           <h3 className="ticker-title">
             <GridNine size={18} weight="bold" />
-            <span>Fixture Schedule &amp; Difficulty Ticker</span>
+            <span>Fixture Difficulty &amp; Schedule Ticker</span>
           </h3>
           <div className="ticker-subtitle">
-            Teams ranked from easiest to toughest fixture run over the next {gwWindow} gameweeks (GW{selectedGw}–GW{Math.min(38, Number(selectedGw) + gwWindow - 1)}). Click any matchup to inspect Dixon-Coles Poisson probabilities.
+            Teams sorted from easiest to toughest fixture run over the next {gwWindow} gameweeks (GW{selectedGw} to GW{Math.min(38, Number(selectedGw) + gwWindow - 1)}). Click any match to view clean sheet chances and scoreline odds.
           </div>
         </div>
 
@@ -146,7 +146,7 @@ export default function FixtureHeatmap({
             <thead>
               <tr>
                 <th className="sticky-col team-col">Team</th>
-                <th className="avg-col font-mono">FDR Avg</th>
+                <th className="avg-col font-mono">Avg Difficulty</th>
                 {Array.from({ length: 38 }, (_, i) => i + 1).map(gw => (
                   <th key={gw} className={`gw-col font-mono ${gw === Number(selectedGw) ? 'current-gw-header' : ''}`}>
                     GW{gw}
@@ -189,7 +189,7 @@ export default function FixtureHeatmap({
                           tabIndex={isInteractive ? 0 : undefined}
                           role={isInteractive ? 'button' : undefined}
                           style={{ cursor: isInteractive ? 'pointer' : 'default' }}
-                          title={isInteractive ? `Click to view ${f.home_team} vs ${f.away_team} Dixon-Coles odds (GW${f.gw})` : undefined}
+                          title={isInteractive ? `Click to view ${f.home_team} vs ${f.away_team} match odds & clean sheet chances (GW${f.gw})` : undefined}
                         >
                           <div className="fdr-cell-content">
                             <span className="opp-name font-mono">{f.oppShort}</span>

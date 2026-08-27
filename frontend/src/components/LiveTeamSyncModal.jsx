@@ -121,10 +121,10 @@ export default function LiveTeamSyncModal({
             </div>
             <div>
               <h2 id="sync-modal-title" className="modal-title">
-                Squad Configuration & Sync
+                Team Settings & Sync
               </h2>
               <p className="modal-subtitle">
-                Official FPL Team ID & Classic Mini-League Tracker
+                FPL Team ID & Mini-League Tracker
               </p>
             </div>
           </div>
@@ -152,13 +152,13 @@ export default function LiveTeamSyncModal({
           {saved && (
             <div className="sync-success-banner" role="status">
               <CheckCircle size={16} weight="fill" className="success-icon" />
-              <span>Squad & Mini-League successfully synced with FPL servers!</span>
+              <span>Squad and mini-league synced successfully!</span>
             </div>
           )}
 
           <div className="form-group">
             <label htmlFor="fpl-entry-id" className="form-label">
-              FPL Team ID (Entry ID)
+              FPL Team ID
             </label>
             <div className="input-action-row">
               <input
@@ -183,7 +183,7 @@ export default function LiveTeamSyncModal({
                   weight="bold"
                   className={isLoading ? 'spin-animation' : ''}
                 />
-                <span>{isLoading ? 'Syncing...' : 'Sync Live Data'}</span>
+                <span>{isLoading ? 'Syncing...' : 'Sync Team'}</span>
               </button>
             </div>
             <span className="input-help">
@@ -193,7 +193,7 @@ export default function LiveTeamSyncModal({
 
           <div className="form-group">
             <label htmlFor="fpl-league-id" className="form-label">
-              Classic Mini-League ID (Optional)
+              Mini-League ID (Optional)
             </label>
             <input
               id="fpl-league-id"
@@ -207,7 +207,7 @@ export default function LiveTeamSyncModal({
               disabled={isLoading}
             />
             <span className="input-help">
-              Used to populate the Rival Radar tab with your mini-league standings.
+              Used to track your mini-league rivals and their captain picks.
             </span>
           </div>
 
@@ -222,11 +222,11 @@ export default function LiveTeamSyncModal({
             <div className="profile-header">
               <span className="profile-tag">
                 <UsersThree size={12} weight="bold" style={{ display: 'inline', marginRight: '4px' }} />
-                ACTIVE SQUAD ROSTER
+                YOUR SQUAD DETAILS
               </span>
               <span className="profile-status">
                 <span className="live-sync-indicator" />
-                <span>LIVE SYNC ACTIVE</span>
+                <span>CONNECTED</span>
               </span>
             </div>
             <div className="profile-grid">

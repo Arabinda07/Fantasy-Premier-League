@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="terminal-footer-simple">
       <div className="footer-simple-inner">
         <div className="footer-copyright">
-          © {new Date().getFullYear()} FPL Matchday Hub
+          © {new Date().getFullYear()} FPL Dugout
         </div>
         <div className="footer-links">
           <a

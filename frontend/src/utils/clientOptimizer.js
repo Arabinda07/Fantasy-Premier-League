@@ -52,14 +52,14 @@ export function validateFormation(starters = []) {
   const formationStr = `${counts.DEF}-${counts.MID}-${counts.FWD}`;
 
   if (!isLegal) {
-    let errorMsg = 'Illegal formation.';
-    if (counts.GK !== 1) errorMsg = `Lineup must have exactly 1 Goalkeeper (has ${counts.GK}).`;
-    else if (counts.DEF < 3) errorMsg = `Lineup requires at least 3 Defenders (has ${counts.DEF}).`;
-    else if (counts.DEF > 5) errorMsg = `Lineup allows maximum 5 Defenders (has ${counts.DEF}).`;
-    else if (counts.MID < 2) errorMsg = `Lineup requires at least 2 Midfielders (has ${counts.MID}).`;
-    else if (counts.MID > 5) errorMsg = `Lineup allows maximum 5 Midfielders (has ${counts.MID}).`;
-    else if (counts.FWD < 1) errorMsg = `Lineup requires at least 1 Forward (has ${counts.FWD}).`;
-    else if (counts.FWD > 3) errorMsg = `Lineup allows maximum 3 Forwards (has ${counts.FWD}).`;
+    let errorMsg = 'Invalid lineup formation.';
+    if (counts.GK !== 1) errorMsg = `You need exactly 1 Goalkeeper in your starting XI (currently have ${counts.GK}).`;
+    else if (counts.DEF < 3) errorMsg = `You need at least 3 Defenders in your starting XI (currently have ${counts.DEF}).`;
+    else if (counts.DEF > 5) errorMsg = `You can have at most 5 Defenders in your starting XI (currently have ${counts.DEF}).`;
+    else if (counts.MID < 2) errorMsg = `You need at least 2 Midfielders in your starting XI (currently have ${counts.MID}).`;
+    else if (counts.MID > 5) errorMsg = `You can have at most 5 Midfielders in your starting XI (currently have ${counts.MID}).`;
+    else if (counts.FWD < 1) errorMsg = `You need at least 1 Forward in your starting XI (currently have ${counts.FWD}).`;
+    else if (counts.FWD > 3) errorMsg = `You can have at most 3 Forwards in your starting XI (currently have ${counts.FWD}).`;
 
     return {
       isValid: false,
@@ -81,7 +81,7 @@ export function validateFormation(starters = []) {
  */
 export function swapStarterBench(starters = [], bench = [], starterPlayer, benchPlayer) {
   if (!starterPlayer || !benchPlayer) {
-    return { success: false, error: 'Both starter and bench players must be specified.' };
+    return { success: false, error: 'Both starter and bench players must be selected.' };
   }
 
   const sCode = starterPlayer.player_code || starterPlayer.code;
@@ -91,7 +91,7 @@ export function swapStarterBench(starters = [], bench = [], starterPlayer, bench
   const benchIdx = bench.findIndex((p) => (p.player_code || p.code) === bCode);
 
   if (starterIdx === -1 || benchIdx === -1) {
-    return { success: false, error: 'Specified players not found in current lineup/bench.' };
+    return { success: false, error: 'Selected players not found in current lineup or bench.' };
   }
 
   // Create tentative new starters
@@ -137,7 +137,7 @@ export function swapStarterBench(starters = [], bench = [], starterPlayer, bench
  */
 export function applyTransferToSquad(squad = [], playerOut, playerIn, bank = 0.0) {
   if (!playerOut || !playerIn) {
-    return { success: false, error: 'Both transfer OUT and transfer IN players must be provided.' };
+    return { success: false, error: 'Both player to sell (OUT) and player to buy (IN) must be selected.' };
   }
 
   const outCode = playerOut.player_code || playerOut.code;
@@ -145,17 +145,17 @@ export function applyTransferToSquad(squad = [], playerOut, playerIn, bank = 0.0
 
   const outIdx = squad.findIndex((p) => (p.player_code || p.code) === outCode);
   if (outIdx === -1) {
-    return { success: false, error: `Player ${playerOut.web_name || outCode} not in squad.` };
+    return { success: false, error: `Player ${playerOut.web_name || outCode} is not in your squad.` };
   }
 
   if (squad.some((p) => (p.player_code || p.code) === inCode)) {
-    return { success: false, error: `Player ${playerIn.web_name || inCode} is already in squad.` };
+    return { success: false, error: `Player ${playerIn.web_name || inCode} is already in your squad.` };
   }
 
   if (playerOut.position !== playerIn.position) {
     return {
       success: false,
-      error: `Position mismatch: ${playerOut.web_name} (${playerOut.position}) vs ${playerIn.web_name} (${playerIn.position}).`,
+      error: `Position mismatch: ${playerOut.web_name} (${playerOut.position}) cannot be replaced by ${playerIn.web_name} (${playerIn.position}).`,
     };
   }
 
@@ -166,7 +166,7 @@ export function applyTransferToSquad(squad = [], playerOut, playerIn, bank = 0.0
   if (inCost > maxSpend) {
     return {
       success: false,
-      error: `Insufficient budget: ${playerIn.web_name} costs £${inCost.toFixed(1)}m but max available is £${maxSpend.toFixed(1)}m.`,
+      error: `Not enough funds: ${playerIn.web_name} costs £${inCost.toFixed(1)}m, but you only have £${maxSpend.toFixed(1)}m available.`,
     };
   }
 

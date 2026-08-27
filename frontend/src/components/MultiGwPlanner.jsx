@@ -86,7 +86,7 @@ export default function MultiGwPlanner({
           </div>
         </div>
         <div className="chip-switcher-right font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-          {viewMode === 'roadmap' ? 'LP Horizon Engine' : viewMode === 'workbench' ? 'H2H Scout' : 'Full Strategy Suite'}
+          {viewMode === 'roadmap' ? '5-Week Plan' : viewMode === 'workbench' ? 'Player Comparison' : 'Full Transfer View'}
         </div>
       </div>
 
@@ -95,35 +95,35 @@ export default function MultiGwPlanner({
           {/* Hero Header */}
           <div className="studio-hero-panel">
             <div className="studio-hero-header">
-              <span className="studio-version font-mono">HORIZON: GW2 → GW6</span>
+              <span className="studio-version font-mono">NEXT 5 GAMEWEEKS · GW2 TO GW6</span>
             </div>
-            <h2 className="studio-title">5-Week Transfer Roadmap &amp; Bank Strategy</h2>
+            <h2 className="studio-title">5-Gameweek Transfer Planner &amp; Bank Strategy</h2>
             <p className="studio-description">
-              Multi-horizon optimization: roll free transfers to build flexibility, eliminate point hit deductions, and capitalize on fixture swings.
+              Plan your transfers in advance, bank free transfers, and preview your points over the next 5 gameweeks.
             </p>
 
             {/* Horizon Metric Strip */}
             <div className="kpi-strip">
               <div className="kpi-card">
-                <div className="kpi-label">5-GW Points Target</div>
+                <div className="kpi-label">5-Week Expected Total</div>
                 <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
                   {totalHorizonXp.toFixed(1)} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
                 </div>
-                <div className="kpi-subtext">Projected haul across 5 gameweeks</div>
+                <div className="kpi-subtext">Projected score across 5 gameweeks</div>
               </div>
               <div className="kpi-card">
-                <div className="kpi-label">Transfer Hits Budgeted</div>
+                <div className="kpi-label">Point Hits Planned</div>
                 <div className="kpi-value font-mono" style={{ color: totalHits === 0 ? 'var(--accent-emerald)' : 'var(--accent-amber)' }}>
-                  {totalHits} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Hits (0 pts lost)</span>
+                  {totalHits} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>(-{totalHits * 4} pts)</span>
                 </div>
-                <div className="kpi-subtext">No point deductions needed</div>
+                <div className="kpi-subtext">No transfer penalties needed</div>
               </div>
               <div className="kpi-card">
                 <div className="kpi-label">Bank Balance</div>
                 <div className="kpi-value font-mono">
                   £{Number(activeRoadmap[activeGwIndex]?.bank || 0.0).toFixed(1)}m
                 </div>
-                <div className="kpi-subtext">Ready for the GW3 Canvot move</div>
+                <div className="kpi-subtext">Available in your bank for upcoming transfers</div>
               </div>
             </div>
           </div>
@@ -134,9 +134,9 @@ export default function MultiGwPlanner({
           <div className="controls-left">
             <span className="controls-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <ChartLine size={14} weight="bold" />
-              Cumulative Points Growth Trajectory
+              Projected Points Growth (Next 5 Weeks)
             </span>
-            <span className="controls-count font-mono">Multi-Horizon LP Forecast</span>
+            <span className="controls-count font-mono">Based on planned transfers &amp; fixture difficulty</span>
           </div>
         </div>
 
@@ -211,7 +211,7 @@ export default function MultiGwPlanner({
               {/* Weekly Point Projection & Bank */}
               <div className="gw-column-kpi">
                 <div className="gw-xp-val font-mono">
-                  {Number(item.net_xp || 0).toFixed(1)} <span className="xp-unit">xP</span>
+                  {Number(item.net_xp || 0).toFixed(1)} <span className="xp-unit">pts</span>
                 </div>
                 <div className="gw-bank-val font-mono">
                   Bank: £{Number(item.bank || 0.0).toFixed(1)}m
@@ -222,7 +222,7 @@ export default function MultiGwPlanner({
               <div className="gw-transfer-box">
                 <div className="box-title">
                   <ArrowsLeftRight size={13} weight="bold" />
-                  <span>TRANSFER MOVES</span>
+                  <span>PLANNED TRANSFERS</span>
                 </div>
 
                 {hasTransfers ? (
@@ -233,11 +233,11 @@ export default function MultiGwPlanner({
                         <div key={tIdx} className="transfer-move-item">
                           <div className="move-tag in font-mono">
                             <ArrowUpRight size={11} weight="bold" />
-                            <span>IN: {inPlayer}</span>
+                            <span>BUY: {inPlayer}</span>
                           </div>
                           <div className="move-tag out font-mono">
                             <ArrowDownRight size={11} weight="bold" />
-                            <span>OUT: {outPlayer}</span>
+                            <span>SELL: {outPlayer}</span>
                           </div>
                         </div>
                       );
@@ -246,15 +246,15 @@ export default function MultiGwPlanner({
                 ) : (
                   <div className="no-transfers-label font-mono">
                     <CheckCircle size={13} weight="fill" color="var(--accent-emerald)" />
-                    <span>Roll Free Transfer (Bank FT)</span>
+                    <span>Save Free Transfer (Bank 1 FT)</span>
                   </div>
                 )}
               </div>
 
               {/* Free Transfers & Hits Status */}
               <div className="gw-footer-meta font-mono">
-                <span>FT Available: {item.ft_available || 1}</span>
-                <span>Hits: {item.hits_taken ? `-${item.hits_taken * 4} pts` : '0'}</span>
+                <span>Free Transfers: {item.ft_available || 1}</span>
+                <span>Hits: {item.hits_taken ? `-${item.hits_taken * 4} pts` : '0 pts'}</span>
               </div>
             </div>
           );

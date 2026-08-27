@@ -80,3 +80,12 @@ To prevent hallucinations, formula drift, and schema guesswork, consult the **Op
 * **Attested Computation Contracts**: Read [`knowledge/computations/`](file:///e:/Fantasy-Premier-League/knowledge/computations/index.md) for approved CLI parameters, receipts, and deterministic attester checkers.
 * **Validation**: Run `python scripts/validate_okf.py` whenever updating documentation to ensure OKF v0.2 conformance and valid links.
 
+## Brand Voice, Tone & Frontend Copy Guidelines
+
+All user-facing copy in the frontend (titles, buttons, modals, tooltips, validation errors, empty states) MUST adhere to the **FPL Dugout Voice & Tone Guide**:
+
+* **Style Guide**: Read [`docs/voice-and-tone-guide.md`](file:///e:/Fantasy-Premier-League/docs/voice-and-tone-guide.md) for the 3-tier vocabulary filter (Keep/Translate/Ban), brand persona, and surface copy patterns.
+* **Single Source of Truth**: Import shared strings, chip advice, badges, and validation messages directly from [`frontend/src/constants/copyTokens.js`](file:///e:/Fantasy-Premier-League/frontend/src/constants/copyTokens.js).
+* **Rule**: Never introduce corporate jargon (*"assets"*, *"portfolios"*), raw math formulas (*"Dixon-Coles bivariate Poisson"*, *"Bayesian shrinkage"*), or robotic error messages into user-facing components.
+
+

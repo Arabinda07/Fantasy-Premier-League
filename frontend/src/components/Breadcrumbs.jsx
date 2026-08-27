@@ -3,12 +3,12 @@ import { CaretRight, House } from '@phosphor-icons/react';
 
 export default function Breadcrumbs({ activeTab, onNavigateTab, subItem, onClearSubItem }) {
   const tabLabels = {
-    pitch: 'Matchday Starting XI',
-    transfers: '5-Week Transfer Planner',
-    rivals: 'Rival Radar & Differentials',
-    fixtures: '38-GW Fixture Heatmap',
-    market: 'Price Predictor & Velocity',
-    math: 'Points Studio & Projections'
+    pitch: 'My Lineup',
+    transfers: 'Transfer Planner',
+    rivals: 'Mini-Leagues & Rivals',
+    fixtures: 'Fixture Ticker',
+    market: 'Price Trends',
+    math: 'Points Forecaster'
   };
 
   if (!subItem) {

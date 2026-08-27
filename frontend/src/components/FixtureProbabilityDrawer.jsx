@@ -193,7 +193,7 @@ export default function FixtureProbabilityDrawer({
               <SoccerBall size={18} weight="fill" />
             </div>
             <div>
-              <span className="profile-tag">MATCH PREVIEW & ODDS SIMULATOR</span>
+              <span className="profile-tag">MATCH PREVIEW &amp; PROBABILITY FORECAST</span>
               <h2 id="drawer-title" className="modal-title" style={{ marginTop: '2px' }}>
                 {fixture.home_team} vs {fixture.away_team}
               </h2>
@@ -210,27 +210,26 @@ export default function FixtureProbabilityDrawer({
             <span className="team-role">HOME</span>
             <div className="team-display-name">{fixture.home_team}</div>
             <div className="exp-goals font-mono">
-              {lambda.toFixed(2)} <span className="exp-label">xG</span>
+              {lambda.toFixed(2)} <span className="exp-label">Exp Goals</span>
             </div>
           </div>
 
           <div className="vs-badge">
             <span>VS</span>
-            <span className="rho-tag font-mono">Dixon-Coles ρ=-0.05</span>
           </div>
 
           <div className="team-side away">
             <span className="team-role">AWAY</span>
             <div className="team-display-name">{fixture.away_team}</div>
             <div className="exp-goals font-mono">
-              {mu.toFixed(2)} <span className="exp-label">xG</span>
+              {mu.toFixed(2)} <span className="exp-label">Exp Goals</span>
             </div>
           </div>
         </div>
 
         {/* Win/Draw/Loss Outcome Probability Bar */}
         <div className="prob-breakdown-section" style={{ marginBottom: '16px' }}>
-          <div className="section-label">Match Outcome Distribution</div>
+          <div className="section-label">Win / Draw / Loss Chances</div>
           <div className="prob-split-bar">
             <div
               className="split-segment home"
@@ -262,9 +261,9 @@ export default function FixtureProbabilityDrawer({
             <div className="controls-left">
               <span className="controls-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Table size={14} weight="bold" />
-                5×5 Joint Scoreline Probability Heatmap
+                Most Likely Match Scorelines (Probability Grid)
               </span>
-              <span className="controls-count font-mono">Bivariate Poisson Model</span>
+              <span className="controls-count font-mono">Scoreline Chances</span>
             </div>
           </div>
 
@@ -313,7 +312,7 @@ export default function FixtureProbabilityDrawer({
                             style={{ background: baseColor }}
                             onMouseEnter={() => setHoveredCell(cell)}
                             onMouseLeave={() => setHoveredCell(null)}
-                            title={`${fixture.home_team} ${cell.home} - ${cell.away} ${fixture.away_team}: ${pct}% probability (${isHomeWin ? 'Home Win' : isAwayWin ? 'Away Win' : 'Draw'})`}
+                            title={`${fixture.home_team} ${cell.home} - ${cell.away} ${fixture.away_team}: ${pct}% chance (${isHomeWin ? 'Home Win' : isAwayWin ? 'Away Win' : 'Draw'})`}
                           >
                             <span className="matrix-val font-mono">{pct}%</span>
                           </td>
@@ -333,7 +332,7 @@ export default function FixtureProbabilityDrawer({
                 </span>
               ) : (
                 <span style={{ color: 'var(--text-muted)' }}>
-                  Hover over any scoreline cell to view exact match outcome probabilities
+                  Hover over any scoreline to see exact probability
                 </span>
               )}
             </div>
@@ -347,7 +346,7 @@ export default function FixtureProbabilityDrawer({
             <div className="kpi-value font-mono" style={{ color: 'var(--accent-blue)' }}>
               {Math.round((fixture.home_cs_prob || 0.28) * 100)}%
             </div>
-            <div className="kpi-subtext">Column 0 sum (Away 0 goals)</div>
+            <div className="kpi-subtext">Chance of shutting out {fixture.away_team}</div>
           </div>
 
           <div className="kpi-card">
@@ -355,7 +354,7 @@ export default function FixtureProbabilityDrawer({
             <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
               {Math.round((fixture.away_cs_prob || 0.32) * 100)}%
             </div>
-            <div className="kpi-subtext">Row 0 sum (Home 0 goals)</div>
+            <div className="kpi-subtext">Chance of shutting out {fixture.home_team}</div>
           </div>
 
           <div className="kpi-card">
@@ -363,7 +362,7 @@ export default function FixtureProbabilityDrawer({
             <div className="kpi-value font-mono" style={{ color: 'var(--accent-amber)' }}>
               {Math.round((fixture.btts_prob || 0.54) * 100)}%
             </div>
-            <div className="kpi-subtext">H &gt; 0 and A &gt; 0</div>
+            <div className="kpi-subtext">Both sides find the net</div>
           </div>
 
           <div className="kpi-card">
@@ -371,7 +370,7 @@ export default function FixtureProbabilityDrawer({
             <div className="kpi-value font-mono" style={{ color: 'var(--text-primary)' }}>
               {Math.round((fixture.over_2_5_prob || 0.51) * 100)}%
             </div>
-            <div className="kpi-subtext">Total goals sum &ge; 3</div>
+            <div className="kpi-subtext">3 or more total goals expected</div>
           </div>
         </div>
 
@@ -379,8 +378,8 @@ export default function FixtureProbabilityDrawer({
         <div className="data-table-container">
           <div className="studio-table-controls">
             <div className="controls-left">
-              <span className="controls-title">Top 5 Most Likely Scorelines</span>
-              <span className="controls-count font-mono">Ranked by Joint Likelihood</span>
+              <span className="controls-title">Top 5 Most Likely Final Scores</span>
+              <span className="controls-count font-mono">Ranked by Likelihood</span>
             </div>
           </div>
           <div className="scorelines-grid">

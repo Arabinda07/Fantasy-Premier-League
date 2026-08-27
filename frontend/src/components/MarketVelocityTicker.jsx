@@ -94,11 +94,11 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
   }, [allPlayers]);
 
   const chips = [
-    { name: 'Triple Captain (3XC)', target_gw: 'GW25 or GW34', value: '+14.2 pts gain', reason: 'Deploy on a prolific premium attacker (Haaland/Salah) during a Double Gameweek with 2 favorable fixtures.' },
-    { name: 'Bench Boost (BB)', target_gw: 'GW37', value: '+18.5 pts gain', reason: 'Deploy when your entire 15-man squad has two fixtures in the season\'s largest double gameweek.' },
-    { name: 'Free Hit (FH)', target_gw: 'GW29', value: '+22.0 pts gain', reason: 'Navigate blank FA Cup weekends when only 8–10 clubs play, fielding a full XI without burning transfers.' },
-    { name: 'First Wildcard (WC1)', target_gw: 'GW6 to GW8', value: '+9.4 pts per GW', reason: 'Capitalize on early-season fixture swings to load up on Arsenal, Man City, and Liverpool assets.' },
-    { name: 'Second Wildcard (WC2)', target_gw: 'GW30 to GW33', value: '+11.8 pts per GW', reason: 'Set up your optimal 15-man bench and starter infrastructure ahead of the massive DGW34 and DGW37 hauls.' },
+    { name: 'Triple Captain', target_gw: 'GW25 or GW34', value: '+14.2 pts expected boost', reason: 'Best used on heavy hitters like Haaland or Salah during a Double Gameweek with two easy fixtures.' },
+    { name: 'Bench Boost', target_gw: 'GW37', value: '+18.5 pts expected boost', reason: 'Best played during the biggest Double Gameweek when all 15 players in your squad have two games.' },
+    { name: 'Free Hit', target_gw: 'GW29', value: '+22.0 pts expected boost', reason: 'Save this for major Blank Gameweeks (e.g. FA Cup clash weekends) to field a full starting XI without using transfers.' },
+    { name: 'First Wildcard (Early Season)', target_gw: 'GW6 to GW8', value: '+9.4 pts per GW', reason: 'Use during early fixture swings (GW6–GW8) to reshape your squad and bring in players from top clubs.' },
+    { name: 'Second Wildcard (Late Season)', target_gw: 'GW30 to GW33', value: '+11.8 pts per GW', reason: 'Set up your optimal 15-man bench and starters ahead of the massive Double Gameweeks in DGW34 and DGW37.' },
   ];
 
   // Helper to trigger inspection by matching asset name
@@ -128,7 +128,7 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
           <div className="panel-header">
             <span className="market-section-title rising">
               <TrendUp size={16} weight="bold" />
-              <span>Players Set to Rise in Price (+£0.1m)</span>
+              <span>Players Set to Rise Tonight (+£0.1m)</span>
             </span>
           </div>
 
@@ -146,7 +146,7 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
                 tabIndex={0}
                 role="button"
                 className="market-asset-row"
-                title="Click to inspect player DNA"
+                title="Click to view player scouting report & stats"
               >
                 <div className="asset-main-info">
                   <div className="market-asset-identity">
@@ -179,7 +179,7 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
           <div className="panel-header">
             <span className="market-section-title falling">
               <TrendDown size={16} weight="bold" />
-              <span>Players Set to Drop in Price (-£0.1m)</span>
+              <span>Players Set to Fall Tonight (-£0.1m)</span>
             </span>
           </div>
 
@@ -197,7 +197,7 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
                 tabIndex={0}
                 role="button"
                 className="market-asset-row"
-                title="Click to inspect player DNA"
+                title="Click to view player scouting report & stats"
               >
                 <div className="asset-main-info">
                   <div className="market-asset-identity">
@@ -231,7 +231,7 @@ export default function MarketVelocityTicker({ allPlayers = [], onInspectPlayer 
         <div className="panel-header">
           <span className="market-section-title">
             <CalendarCheck size={16} weight="bold" />
-            <span>Season Chip Strategy &amp; Double Gameweek Roadmap</span>
+            <span>Season Chip Strategy &amp; Double Gameweek Guide</span>
           </span>
         </div>
 

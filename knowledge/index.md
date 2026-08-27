@@ -80,3 +80,13 @@ Standard Operating Procedures (SOPs) for maintenance and matchday execution:
 
 * [Weekly Gameweek Transition Workflow](/playbooks/weekly-gameweek-workflow.md) - End-to-end operational guide from pre-deadline team selection to live tracking and post-GW rollover.
 * [Troubleshooting Data Drift & ID Reconciliation](/playbooks/troubleshooting-data-drift.md) - Diagnosing and resolving missing player IDs, unmapped FBref names, and schema shifts.
+
+---
+
+## 7. Brand Voice, Tone & UI Copy Standards
+
+Guidelines for user-facing language, terminology, and single-source-of-truth copy tokens:
+
+* [FPL Dugout Voice & Tone Guide](/docs/voice-and-tone-guide.md) - 3-tier vocabulary filter (Keep/Translate/Ban), brand persona, and surface copy blueprints.
+* [Frontend Copy Token Dictionary](/frontend/src/constants/copyTokens.js) - Single-source-of-truth constants for chips, badges, tooltips, metrics, and validation messages.
+

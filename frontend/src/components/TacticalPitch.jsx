@@ -84,7 +84,7 @@ export default function TacticalPitch({
         starting_xp: Number(tripleCaptainXp.toFixed(1)),
         total_xp: Number(tripleCaptainXp.toFixed(1)),
         formation: `${starters.filter(p => p.position === 'DEF').length}-${starters.filter(p => p.position === 'MID').length}-${starters.filter(p => p.position === 'FWD').length}`,
-        label: `Triple Captain Active (${capt?.web_name || 'Captain'} 3x Points)`
+        label: `Triple Captain Active · 3x points on ${capt?.web_name || 'Captain'}`
       },
       'bboost': {
         starters: starters,
@@ -92,7 +92,7 @@ export default function TacticalPitch({
         starting_xp: Number(benchBoostXp.toFixed(1)),
         total_xp: Number(benchBoostXp.toFixed(1)),
         formation: '15 Active (2-5-5-3)',
-        label: `Bench Boost Active (+${benchXp.toFixed(1)} xP from Bench Assets · 15 Scoring)`
+        label: `Bench Boost Active · All 15 players scoring (+${benchXp.toFixed(1)} pts from bench)`
       },
     };
 
@@ -165,17 +165,17 @@ export default function TacticalPitch({
   };
 
   const chipOptions = [
-    { id: 'none', label: 'Standard XI', icon: ShieldCheck },
-    { id: 'wildcard', label: 'Wildcard', icon: Cards },
-    { id: 'freehit', label: 'Free Hit', icon: Lightning },
-    { id: 'bboost', label: 'Bench Boost', icon: RocketLaunch },
-    { id: '3xc', label: 'Triple Capt', icon: Crown }
+    { id: 'none', label: 'No Chip', icon: ShieldCheck, desc: 'Regular matchday XI (No chip active)' },
+    { id: 'wildcard', label: 'Wildcard', icon: Cards, desc: 'Unlimited permanent transfers with no point hits' },
+    { id: 'freehit', label: 'Free Hit', icon: Lightning, desc: 'Make unlimited transfers for this gameweek only' },
+    { id: 'bboost', label: 'Bench Boost', icon: RocketLaunch, desc: 'Activate Bench Boost (All 15 players score)' },
+    { id: '3xc', label: 'Triple Captain', icon: Crown, desc: 'Triple Captain Active (Captain scores 3x points)' }
   ];
 
   const strategyOptions = [
-    { id: 'pure_xp', label: 'Pure xP', icon: Target, desc: 'Mathematical baseline LP solver' },
-    { id: 'rank_protect', label: 'Rank Shield', icon: ShieldCheck, desc: 'Effective Ownership weighting to protect lead' },
-    { id: 'differential_chase', label: 'Diff Chase', icon: Lightning, desc: 'Rewards low-EO assets to accelerate rank climb' }
+    { id: 'pure_xp', label: 'Max Points', icon: Target, desc: 'Pick the best possible starting XI for maximum points' },
+    { id: 'rank_protect', label: 'Protect Lead', icon: ShieldCheck, desc: 'Back popular picks to defend your rank and protect your lead' },
+    { id: 'differential_chase', label: 'Climb Rank', icon: Lightning, desc: 'Back low-ownership punts to gain ground on your mini-league rivals' }
   ];
 
   // Helper to parse transfer actions into clean icon-driven pills
@@ -195,13 +195,13 @@ export default function TacticalPitch({
         <div className="rec-transfer-group">
           <div className="rec-transfer-pill in">
             <ArrowUpRight size={13} weight="bold" />
-            <span className="rec-tag">IN</span>
+            <span className="rec-tag">BUY</span>
             <span className="rec-player-name">{inName}</span>
           </div>
           <CaretRight size={13} className="rec-arrow" />
           <div className="rec-transfer-pill out">
             <ArrowDownRight size={13} weight="bold" />
-            <span className="rec-tag">OUT</span>
+            <span className="rec-tag">SELL</span>
             <span className="rec-player-name">{outName}</span>
           </div>
         </div>
@@ -209,7 +209,7 @@ export default function TacticalPitch({
     }
 
     const cleanMsg = summaryStr.includes('LOCKED') || summaryStr.includes('INITIAL') || summaryStr.includes('BENCHMARK')
-      ? (summaryStr.includes('BENCHMARK') ? 'Optimal Starting XI template locked · 0 transfers needed' : 'Optimal 15-man squad locked · 1 Free Transfer saved · 0 hits taken')
+      ? (summaryStr.includes('BENCHMARK') ? 'Starting XI looks solid · No transfers needed this week' : 'Squad in good shape · Save free transfer to bank 2 FTs next week')
       : summaryStr.replace(/EXECUTE\s*\d*\s*FREE\s*TRANSFER\(S\):\s*/i, '');
 
     return (
@@ -235,9 +235,9 @@ export default function TacticalPitch({
     <div>
       {/* Streamlined Matchday Control Deck */}
       <div className="matchday-control-deck">
-        <div className="deck-group">
-          <span className="deck-label font-mono">Scenario</span>
-          <div className="segmented-chip-rail">
+        <div className="deck-group deck-group-scenario">
+          <span className="deck-label font-mono">Chips</span>
+          <div className="segmented-chip-rail chip-rail-scrollable" role="group" aria-label="Chip Selection">
             {chipOptions.map(chip => {
               const Icon = chip.icon;
               const isSelected = activeChip === chip.id;
@@ -247,7 +247,7 @@ export default function TacticalPitch({
                   type="button"
                   className={`segmented-chip-btn ${isSelected ? 'active' : ''}`}
                   onClick={() => onSelectChip(chip.id)}
-                  title={`Switch to ${chip.label} scenario`}
+                  title={`Play ${chip.label}`}
                 >
                   <Icon size={13} weight={isSelected ? 'fill' : 'bold'} />
                   <span>{chip.label}</span>
@@ -257,9 +257,9 @@ export default function TacticalPitch({
           </div>
         </div>
 
-        <div className="deck-group">
-          <span className="deck-label font-mono">Strategy</span>
-          <div className="segmented-chip-rail">
+        <div className="deck-group deck-group-strategy">
+          <span className="deck-label font-mono">Goal</span>
+          <div className="segmented-chip-rail chip-rail-scrollable" role="group" aria-label="Goal Selection">
             {strategyOptions.map(opt => {
               const Icon = opt.icon;
               const isSelected = strategy === opt.id;
@@ -281,13 +281,13 @@ export default function TacticalPitch({
 
         <div className="deck-telemetry">
           <div className="deck-telemetry-item font-mono">
-            <span className="telemetry-label">Formation</span>
+            <span className="telemetry-label">Lineup</span>
             <span className="telemetry-value">{formation}</span>
           </div>
           <div className="deck-telemetry-divider" />
           <div className="deck-telemetry-item font-mono">
-            <span className="telemetry-label">Projected</span>
-            <span className="telemetry-value xp-highlight">{displayStartingXp} <span className="telemetry-unit">xP</span></span>
+            <span className="telemetry-label">Expected</span>
+            <span className="telemetry-value xp-highlight">{displayStartingXp} <span className="telemetry-unit">pts</span></span>
           </div>
         </div>
       </div>
@@ -295,16 +295,16 @@ export default function TacticalPitch({
       {/* Streamlined Contextual Directive Strip */}
       <div className="matchday-directive-strip">
         <div className="directive-tag-box font-mono">
-          {isChipActive ? 'SCENARIO' : strategy !== 'pure_xp' ? 'STRATEGY' : 'MATCHDAY'}
+          {isChipActive ? 'CHIP' : strategy !== 'pure_xp' ? 'TACTIC' : 'NEXT MOVE'}
         </div>
         <div className="directive-body">
           {isChipActive ? (
             <span className="directive-text chip-active-text">
-              {currentChipData.label || currentChipData.description || 'Active Scenario Projection'}
+              {currentChipData.label || currentChipData.description || 'Active Chip Projection'}
             </span>
           ) : currentStrategyData && strategy !== 'pure_xp' ? (
             <span className="directive-text strategy-active-text">
-              {currentStrategyData.label} ({currentStrategyData.subtitle || 'Tactical Optimization Active'}) · Formation {currentStrategyData.formation}
+              {currentStrategyData.label} ({currentStrategyData.subtitle || 'Tactical Goal Active'}) · Formation {currentStrategyData.formation}
             </span>
           ) : (
             renderTransferPills(effectiveActionSummary)
@@ -412,29 +412,29 @@ export default function TacticalPitch({
                 </span>
               </div>
 
-              {/* Institutional Telemetry Metric Matrix */}
+              {/* Bench Boost Metric Grid */}
               <div className="bb-telemetry-grid">
                 <div className="bb-telemetry-stat">
                   <span className="bb-stat-label">STARTING XI</span>
-                  <span className="bb-stat-val font-mono">{Number(startingXp || 64.7).toFixed(1)} <span className="bb-stat-unit">xP</span></span>
+                  <span className="bb-stat-val font-mono">{Number(startingXp || 64.7).toFixed(1)} <span className="bb-stat-unit">pts</span></span>
                 </div>
                 <div className="bb-telemetry-stat highlight">
-                  <span className="bb-stat-label">BENCH UPLIFT</span>
-                  <span className="bb-stat-val font-mono emerald">+{benchUpliftTotal} <span className="bb-stat-unit">xP</span></span>
+                  <span className="bb-stat-label">BENCH CONTRIBUTION</span>
+                  <span className="bb-stat-val font-mono emerald">+{benchUpliftTotal} <span className="bb-stat-unit">pts</span></span>
                 </div>
                 <div className="bb-telemetry-stat full-width">
                   <div>
-                    <span className="bb-stat-label">BOOSTED PROJECTION</span>
-                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>15 active point scorers</span>
+                    <span className="bb-stat-label">TOTAL SQUAD PROJECTION</span>
+                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>All 15 players scoring</span>
                   </div>
                   <span className="bb-stat-val font-mono emerald" style={{ fontSize: '16px' }}>
-                    {displayStartingXp} <span className="bb-stat-unit">xP</span>
+                    {displayStartingXp} <span className="bb-stat-unit">pts</span>
                   </span>
                 </div>
               </div>
 
               <div className="bb-sub-header font-mono">
-                <span>ACTIVATED BENCH ASSETS</span>
+                <span>BENCH PLAYERS SCORING THIS WEEK</span>
                 <span className="bb-count-pill">4 ACTIVE</span>
               </div>
 
@@ -447,7 +447,7 @@ export default function TacticalPitch({
                     onDoubleClick={() => onInspectPlayer && onInspectPlayer(p)}
                     tabIndex={0}
                     role="button"
-                    title="Click to view player DNA breakdown"
+                    title="Click to view scouting report & stats"
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
                       <span className="bench-slot-tag font-mono boost-tag">
@@ -468,7 +468,7 @@ export default function TacticalPitch({
                         +{Number(p.expected_points || 0).toFixed(1)} pts
                       </div>
                       <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                        boost xP
+                        bench pts
                       </div>
                     </div>
                   </div>
@@ -476,7 +476,7 @@ export default function TacticalPitch({
               </div>
 
               <div className="bench-help-text">
-                All 15 cards are deployed on the tactical pitch. Double-click any player card to inspect comprehensive Player DNA metrics.
+                All 15 players are active on the pitch. Double-click any player card to view their scouting report & match stats.
               </div>
             </div>
           ) : (
@@ -509,7 +509,7 @@ export default function TacticalPitch({
                       tabIndex={0}
                       role="button"
                       aria-label={`Bench ${slotLabel}: ${p.web_name}, ${p.position}, £${Number(p.cost || 0).toFixed(1)}M, ${Number(p.expected_points || 0).toFixed(1)} expected points`}
-                      title="Click to swap with starter · Double-click for DNA stats"
+                      title="Click to swap with starter · Double-click for player stats"
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
                         <span className="bench-slot-tag font-mono">
@@ -530,7 +530,7 @@ export default function TacticalPitch({
                           {Number(p.expected_points || 0).toFixed(1)} pts
                         </div>
                         <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                          exp xP
+                          exp pts
                         </div>
                       </div>
                     </div>
@@ -539,7 +539,7 @@ export default function TacticalPitch({
               </div>
 
               <div className="bench-help-text">
-                Click any starter and bench player to swap. Double-click any player card to view full Player DNA breakdown.
+                Click any starter and bench player to swap them. Double-click any player card to view their scouting report.
               </div>
             </div>
           )}

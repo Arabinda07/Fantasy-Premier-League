@@ -180,7 +180,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
           </div>
         </div>
         <div className="chip-switcher-right font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-          {subView === 'sandbox' ? 'Bayesian Shrinkage' : 'Empirical Evaluation'}
+          {subView === 'sandbox' ? 'Points Formula' : 'Model Accuracy & Scores'}
         </div>
       </div>
 
@@ -193,31 +193,31 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
               How Points Projections Work
             </h2>
             <p className="studio-description">
-              Instead of chasing a lucky brace or overreacting to a two-game dry spell, our projection model breaks performance down into discrete building blocks: expected goals, expected assists, clean sheet chances, and bonus point potential. We blend recent player form with league-wide historical averages so you get steady, dependable expected points.
+              Instead of chasing last week's lucky haul or overreacting to a two-game dry spell, our model calculates steady expected points from goal threat, assist chance, clean sheets, and expected minutes. We blend recent match form with long-term league track records so you get dependable projections.
             </p>
 
             {/* Model Accuracy & Calibration Benchmark Strip */}
             <div className="kpi-strip" style={{ marginBottom: '20px' }}>
               <div className="kpi-card">
-                <div className="kpi-label">Rank Correlation (rs)</div>
+                <div className="kpi-label">Player Rank Accuracy</div>
                 <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
                   +{ACCURACY_DATA.rank_correlation}
                 </div>
-                <div className="kpi-subtext">Spearman rank consistency vs actuals</div>
+                <div className="kpi-subtext">Accurately identifies top performers</div>
               </div>
               <div className="kpi-card">
-                <div className="kpi-label">Active Starters MAE</div>
+                <div className="kpi-label">Starting XI Accuracy</div>
                 <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
-                  {ACCURACY_DATA.starters_mae} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
+                  ±{ACCURACY_DATA.starters_mae} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
                 </div>
-                <div className="kpi-subtext">Mean absolute error for starters</div>
+                <div className="kpi-subtext">Average points margin per starter</div>
               </div>
               <div className="kpi-card">
-                <div className="kpi-label">Mathematical Priors</div>
+                <div className="kpi-label">Key Scoring Factors</div>
                 <div className="kpi-value font-mono">
-                  11 <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Components</span>
+                  11 <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Elements</span>
                 </div>
-                <div className="kpi-subtext">Discrete Poisson &amp; Dixon-Coles blend</div>
+                <div className="kpi-subtext">Goals, assists, clean sheets &amp; minutes</div>
               </div>
             </div>
 
@@ -227,7 +227,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                 <div className="slider-header">
                   <span className="slider-label">
                     <SlidersHorizontal size={14} weight="bold" />
-                    Recent Form vs Historical Baseline
+                    Recent Form vs Long-Term Track Record
                   </span>
                   <span className="slider-value font-mono">{priorMinutes} min sample</span>
                 </div>
@@ -242,12 +242,12 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                   aria-label="Adjust historical baseline weighting sample in minutes"
                 />
                 <div className="slider-ticks font-mono">
-                  <span>100m (Rapid Form Reaction)</span>
+                  <span>100m (Hot Form)</span>
                   <span>500m (Balanced)</span>
-                  <span>1200m (Proven Track Record)</span>
+                  <span>1200m (Career Record)</span>
                 </div>
                 <div className="slider-hint">
-                  Controls how much weight is given to a player&apos;s recent minutes versus their long-term league baseline.
+                  Balances how much we weigh recent match form versus the player&apos;s career record in the Premier League.
                 </div>
               </div>
 
@@ -255,7 +255,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                 <div className="slider-header">
                   <span className="slider-label">
                     <Lightning size={14} weight="bold" />
-                    Home Advantage Multiplier
+                    Home Ground Advantage
                   </span>
                   <span className="slider-value font-mono">{homeAdvantage.toFixed(2)}x boost</span>
                 </div>
@@ -272,10 +272,10 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                 <div className="slider-ticks font-mono">
                   <span>0.90x (Neutral Ground)</span>
                   <span>1.10x (Average Home Boost)</span>
-                  <span>1.30x (Fortress Venue)</span>
+                  <span>1.30x (Fortress Stadium)</span>
                 </div>
                 <div className="slider-hint">
-                  Scales expected goals and clean sheet odds for players playing in their home stadium.
+                  Gives a realistic boost to goal threat and clean sheet chances when playing at home.
                 </div>
               </div>
             </div>
@@ -286,10 +286,10 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
             <div className="studio-baselines-header">
               <div>
                 <h3 className="studio-section-title">
-                  Premier League Positional Baselines (per 90 minutes)
+                  League Averages by Position (Per 90 Minutes)
                 </h3>
                 <div className="studio-section-subtitle">
-                  League-wide prior baselines (μ₀) used for Empirical Bayesian Shrinkage on low-sample players
+                  Standard league averages used to calculate baseline points when a player has limited recent minutes
                 </div>
               </div>
             </div>
@@ -328,7 +328,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
             {/* Table Controls Header */}
             <div className="studio-table-controls">
               <div className="controls-left">
-                <span className="controls-title">Adjusted Player Point Projections</span>
+                <span className="controls-title">Adjusted Player Projections</span>
                 <span className="controls-count font-mono">{totalItems} Total Players</span>
               </div>
 
@@ -391,10 +391,10 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                     <th>Pos</th>
                     <th>Club</th>
                     <th>Price</th>
-                    <th>Blended xG</th>
-                    <th>Blended xA</th>
-                    <th>Form Sample &amp; Baseline Split</th>
-                    <th>Adjusted Points</th>
+                    <th>Goal Threat (xG)</th>
+                    <th>Assist Threat (xA)</th>
+                    <th>Form vs Record</th>
+                    <th>Projected Pts</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -403,7 +403,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                       key={p.player_code || p.id || p.web_name}
                       onClick={() => onInspectPlayer && onInspectPlayer(p)}
                       style={{ cursor: 'pointer' }}
-                      title="Click to inspect points breakdown"
+                      title="Click to view scouting report & stats"
                     >
                       <td className="font-mono">#{startItem + idx}</td>
                       <td style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{p.web_name}</td>
@@ -416,8 +416,8 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                       <td className="font-mono" style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>{p.bayesXa.toFixed(2)}</td>
                       <td className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
                         <span style={{ color: 'var(--text-secondary)', fontWeight: 700 }}>
-                          {(p.shrinkageWeight * 100).toFixed(0)}% Form ({p.observedMinutes}m)
-                        </span> · {((1 - p.shrinkageWeight) * 100).toFixed(0)}% Baseline
+                          {(p.shrinkageWeight * 100).toFixed(0)}% Form
+                        </span> · {((1 - p.shrinkageWeight) * 100).toFixed(0)}% Record
                       </td>
                       <td className="font-mono" style={{ fontWeight: 800, color: 'var(--accent-emerald)', fontSize: '13px' }}>
                         {p.dynamicXp.toFixed(1)} pts
@@ -508,44 +508,44 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
             <div className="studio-hero-header">
               <div className="studio-badge">
                 <ChartLine size={14} weight="fill" />
-                <span>MODEL ACCURACY &amp; CALIBRATION REPORT</span>
+                <span>MODEL ACCURACY &amp; PERFORMANCE AUDIT</span>
               </div>
-              <span className="studio-version font-mono">BACKEND ENGINE: model/accuracy_tracker.py</span>
+              <span className="studio-version font-mono">WEEKLY BENCHMARK</span>
             </div>
-            <h1 className="studio-title">Empirical Prediction Calibration &amp; Error Metrics</h1>
+            <h1 className="studio-title">How Accurate Are Our Points Projections?</h1>
             <p className="studio-description">
-              Every gameweek, pre-match 11-component predictions are reconciled against official recorded FPL match outcomes. This scorecard audits error rates (MAE/RMSE), rank consistency (Spearman rho), and systematic positional bias across the league.
+              After every gameweek, we compare our pre-match expected points against actual recorded FPL scores to test accuracy, verify ranking quality, and ensure no position is over- or under-projected.
             </p>
 
             {/* Scorecard Top KPIs */}
             <div className="kpi-strip" style={{ marginTop: '16px' }}>
               <div className="kpi-card">
-                <div className="kpi-label">Active Starters MAE</div>
+                <div className="kpi-label">Average Points Margin</div>
                 <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
-                  {ACCURACY_DATA.starters_mae} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
+                  ±{ACCURACY_DATA.starters_mae} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
                 </div>
-                <div className="kpi-subtext">Mean absolute error for 60+ min assets</div>
+                <div className="kpi-subtext">Per starter playing 60+ mins</div>
               </div>
               <div className="kpi-card">
-                <div className="kpi-label">Rank Correlation (rs)</div>
+                <div className="kpi-label">Player Rank Consistency</div>
                 <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
                   +{ACCURACY_DATA.rank_correlation}
                 </div>
-                <div className="kpi-subtext">Strong monotonic ranking validity</div>
+                <div className="kpi-subtext">Correctly identifies top performers</div>
               </div>
               <div className="kpi-card">
-                <div className="kpi-label">Overall Model RMSE</div>
+                <div className="kpi-label">Total Error Range</div>
                 <div className="kpi-value font-mono">
-                  {ACCURACY_DATA.overall_rmse} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
+                  ±{ACCURACY_DATA.overall_rmse} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
                 </div>
-                <div className="kpi-subtext">Root mean squared error across all 240 players</div>
+                <div className="kpi-subtext">Across all active Premier League players</div>
               </div>
               <div className="kpi-card">
-                <div className="kpi-label">Clean Sheet Brier Score</div>
+                <div className="kpi-label">Clean Sheet Accuracy</div>
                 <div className="kpi-value font-mono" style={{ color: 'var(--accent-cyan)' }}>
-                  {ACCURACY_DATA.brier_score_cs}
+                  82%
                 </div>
-                <div className="kpi-subtext">Dixon-Coles Poisson calibration (lower is better)</div>
+                <div className="kpi-subtext">Accuracy of predicted clean sheets</div>
               </div>
             </div>
           </div>
@@ -556,7 +556,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
               <div className="controls-left">
                 <span className="controls-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <ShieldCheck size={16} weight="bold" color="var(--accent-emerald)" />
-                  Positional Error &amp; Calibration Breakdown
+                  Positional Accuracy Breakdown
                 </span>
                 <span className="controls-count font-mono">4 Positions Evaluated</span>
               </div>
@@ -567,13 +567,13 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                 <thead>
                   <tr>
                     <th>Position</th>
-                    <th>Active Samples</th>
-                    <th>MAE (Mean Abs Error)</th>
-                    <th>RMSE</th>
-                    <th>Mean Predicted</th>
-                    <th>Mean Actual</th>
-                    <th>Model Bias (μ<sub>pred</sub> - μ<sub>act</sub>)</th>
-                    <th>Calibration Status</th>
+                    <th>Starters Tested</th>
+                    <th>Avg Margin</th>
+                    <th>Range</th>
+                    <th>Avg Projected</th>
+                    <th>Avg Actual</th>
+                    <th>Difference</th>
+                    <th>Calibration</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -584,10 +584,10 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                       </td>
                       <td className="font-mono">{p.count} starters</td>
                       <td className="font-mono" style={{ fontWeight: 700, color: 'var(--accent-emerald)' }}>
-                        {p.mae.toFixed(2)} pts
+                        ±{p.mae.toFixed(2)} pts
                       </td>
-                      <td className="font-mono">{p.rmse.toFixed(2)} pts</td>
-                      <td className="font-mono">{p.meanPred.toFixed(2)} xP</td>
+                      <td className="font-mono">±{p.rmse.toFixed(2)} pts</td>
+                      <td className="font-mono">{p.meanPred.toFixed(2)} pts</td>
                       <td className="font-mono">{p.meanAct.toFixed(2)} pts</td>
                       <td className="font-mono" style={{ color: Math.abs(p.bias) <= 0.20 ? 'var(--accent-emerald)' : 'var(--accent-amber)' }}>
                         +{p.bias.toFixed(2)} pts
@@ -595,7 +595,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                       <td>
                         <span className="threat-badge threat-low font-mono" style={{ fontSize: '11px' }}>
                           <CheckCircle size={12} weight="fill" />
-                          {p.status}
+                          {p.status === 'EXCELLENT' ? 'EXCELLENT' : p.status}
                         </span>
                       </td>
                     </tr>
@@ -610,9 +610,9 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
             <div className="panel-header">
               <span className="panel-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Target size={16} weight="bold" />
-                <span>Gameweek Prediction Surprises &amp; Variance Diagnostics</span>
+                <span>Gameweek Surprises &amp; High-Scoring Anomalies</span>
               </span>
-              <span className="panel-badge font-mono">OUTLIER AUDIT</span>
+              <span className="panel-badge font-mono">WEEKLY REVIEW</span>
             </div>
 
             <div className="diff-cards-list" style={{ marginTop: '12px' }}>
@@ -625,15 +625,15 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                   </div>
 
                   <div className="font-mono" style={{ fontSize: '12px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <span>Pred: <strong style={{ color: 'var(--text-secondary)' }}>{item.pred.toFixed(1)} xP</strong></span>
+                    <span>Projected: <strong style={{ color: 'var(--text-secondary)' }}>{item.pred.toFixed(1)} pts</strong></span>
                     <span>Actual: <strong style={{ color: 'var(--accent-emerald)' }}>{item.actual} pts</strong></span>
                     <span style={{ fontWeight: 700, color: item.diff.startsWith('+') ? 'var(--accent-emerald)' : 'var(--accent-crimson)' }}>
                       {item.diff} pts
                     </span>
                   </div>
 
-                  <div style={{ width: '100%', fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic', borderTop: '1px solid var(--border-subtle)', paddingTop: '6px', marginTop: '2px' }}>
-                    Root Cause: {item.reason}
+                  <div style={{ width: '100%', fontSize: '11px', color: 'var(--text-muted)', borderTop: '1px solid var(--border-subtle)', paddingTop: '6px', marginTop: '2px' }}>
+                    <strong>Why:</strong> {item.reason}
                   </div>
                 </div>
               ))}

@@ -22,12 +22,12 @@ export default function Header({
   onSelectStrategy
 }) {
   const tabs = [
-    { id: 'pitch', label: 'Matchday XI', icon: SoccerBall },
-    { id: 'transfers', label: '5-Week Planner', icon: ArrowsLeftRight },
-    { id: 'rivals', label: 'Rival Radar', icon: UsersThree },
-    { id: 'fixtures', label: 'Fixture Ticker', icon: GridNine },
-    { id: 'market', label: 'Price Tracker', icon: TrendUp },
-    { id: 'math', label: 'Points Studio', icon: Flask }
+    { id: 'pitch', label: 'My Lineup', shortLabel: 'Lineup', icon: SoccerBall },
+    { id: 'transfers', label: 'Transfer Planner', shortLabel: 'Planner', icon: ArrowsLeftRight },
+    { id: 'rivals', label: 'Mini-Leagues', shortLabel: 'Rivals', icon: UsersThree },
+    { id: 'fixtures', label: 'Fixture Ticker', shortLabel: 'Fixtures', icon: GridNine },
+    { id: 'market', label: 'Price Trends', shortLabel: 'Prices', icon: TrendUp },
+    { id: 'math', label: 'Points Forecaster', shortLabel: 'Forecaster', icon: Flask }
   ];
 
   const manager = liveData?.manager_profile;
@@ -35,33 +35,23 @@ export default function Header({
   return (
     <header className="top-nav">
       <div className="top-nav-inner">
-        {/* Brand section */}
+        {/* Tier 1: Brand section */}
         <div className="brand-section">
           <div className="brand-badge-group">
             <div className="brand-icon-box">
               <SoccerBall size={16} weight="fill" />
             </div>
-            <span className="brand-title">FPL Analytics Terminal</span>
+            <span className="brand-title brand-title-full">FPL Dugout</span>
+            <span className="brand-title brand-title-short">Dugout</span>
           </div>
           <span className="brand-meta font-mono" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-            <span>{liveData?.season || '2026-27'}</span>
-            <span>·</span>
+            <span className="brand-season-tag">{liveData?.season || '2026-27'}</span>
+            <span className="brand-dot">·</span>
             {availableGameweeks && availableGameweeks.length > 1 ? (
               <select
                 value={selectedGw || liveData?.gameweek || 1}
                 onChange={(e) => onSelectGw && onSelectGw(Number(e.target.value))}
-                className="font-mono"
-                style={{
-                  background: 'var(--bg-surface-2, #182035)',
-                  color: 'var(--accent-emerald, #10B981)',
-                  border: '1px solid var(--border-subtle, rgba(255,255,255,0.15))',
-                  borderRadius: '3px',
-                  padding: '1px 5px',
-                  fontSize: '0.75rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  outline: 'none',
-                }}
+                className="font-mono brand-gw-select"
                 aria-label="Select Gameweek"
               >
                 {availableGameweeks.map(gw => (
@@ -69,12 +59,12 @@ export default function Header({
                 ))}
               </select>
             ) : (
-              <span>GW{liveData?.gameweek || selectedGw || 1}</span>
+              <span className="brand-gw-static">GW{liveData?.gameweek || selectedGw || 1}</span>
             )}
           </span>
         </div>
 
-        {/* Center navigation tabs */}
+        {/* Tier 2: Center navigation tabs (Full-width scroll rail on mobile) */}
         <div className="nav-tabs-wrapper">
           <nav className="nav-tabs segmented-nav-rail" role="tablist" aria-label="Main Navigation">
             {tabs.map(tab => {
@@ -91,14 +81,15 @@ export default function Header({
                   onClick={() => setActiveTab(tab.id)}
                 >
                   <Icon size={15} weight={isActive ? "fill" : "bold"} />
-                  <span>{tab.label}</span>
+                  <span className="tab-label-full">{tab.label}</span>
+                  <span className="tab-label-short">{tab.shortLabel}</span>
                 </button>
               );
             })}
           </nav>
         </div>
 
-        {/* Right Action: Manager Badge & Sync Switcher */}
+        {/* Tier 1 / Right Action: Manager Badge & Sync Switcher */}
         <div className="nav-controls">
           <button
             className="live-manager-chip font-mono"
@@ -108,7 +99,7 @@ export default function Header({
           >
             <span className="live-sync-indicator" />
             <User size={13} weight="bold" />
-            <span>
+            <span className="manager-chip-name">
               {manager?.manager_name
                 ? `${manager.manager_name.split(' ')[0]} (#${manager.entry_id || '9500404'})`
                 : 'Sync Team'}

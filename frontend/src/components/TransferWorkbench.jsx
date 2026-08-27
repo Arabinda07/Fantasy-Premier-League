@@ -91,13 +91,13 @@ export default function TransferWorkbench({
         <div className="studio-hero-header">
           <div className="studio-badge">
             <Scales size={14} weight="fill" />
-            <span>H2H TRANSFER SIMULATOR &amp; SCOUT MARKETPLACE</span>
+            <span>TRANSFER COMPARISON &amp; SCOUT</span>
           </div>
-          <span className="studio-version font-mono">LIVE OPTIMIZATION WORKBENCH</span>
+          <span className="studio-version font-mono">PLAYER COMPARISON</span>
         </div>
-        <h1 className="studio-title">Head-to-Head Transfer Simulator &amp; Target Scout</h1>
+        <h1 className="studio-title">Head-to-Head Transfer Scout</h1>
         <p className="studio-description">
-          Test potential transfers against your current 15-man squad in real time. Compare expected points ($\Delta\text{xP}$), budget impact ($\Delta\text{Cost}$), and underlying goal &amp; assist threat ($\Delta\text{xG90} / \Delta\text{xA90}$) before locking in your deadline moves.
+          Test potential transfer targets against your current players. Compare expected points, price differences, and underlying goal &amp; assist stats before locking in your moves.
         </p>
       </div>
 
@@ -110,7 +110,7 @@ export default function TransferWorkbench({
                 <Scales size={15} weight="bold" />
               </div>
               <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)' }}>
-                Head-to-Head Transfer Comparison
+                Player Swap Comparison
               </span>
             </div>
             <button
@@ -127,7 +127,7 @@ export default function TransferWorkbench({
             {/* Player OUT Card */}
             <div className="compare-player-card out-card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <span className="transfer-label out">TRANSFER OUT</span>
+                <span className="transfer-label out">SELLING (OUT)</span>
                 <select
                   value={playerOut?.player_code || ''}
                   onChange={(e) => {
@@ -160,8 +160,8 @@ export default function TransferWorkbench({
 
               <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <div>Price: £{costOut.toFixed(1)}m</div>
-                <div>Expected Goals (xG90): {xgOut.toFixed(2)}</div>
-                <div>Expected Assists (xA90): {xaOut.toFixed(2)}</div>
+                <div>Expected Goals (xG / 90 mins): {xgOut.toFixed(2)}</div>
+                <div>Expected Assists (xA / 90 mins): {xaOut.toFixed(2)}</div>
               </div>
             </div>
 
@@ -169,19 +169,19 @@ export default function TransferWorkbench({
             <div className="compare-delta-column">
               <div className={`delta-badge ${xpDelta >= 0 ? 'positive' : 'negative'}`}>
                 {xpDelta >= 0 ? <TrendUp size={16} weight="bold" /> : <TrendDown size={16} weight="bold" />}
-                <span>{xpDelta >= 0 ? `+${xpDelta.toFixed(1)}` : xpDelta.toFixed(1)} pts</span>
+                <span>{xpDelta >= 0 ? `+${xpDelta.toFixed(1)} pts gain` : `${xpDelta.toFixed(1)} pts`}</span>
               </div>
               <div style={{ fontSize: '11px', color: costDelta <= 0 ? 'var(--accent-emerald)' : 'var(--accent-amber)', fontFamily: 'var(--font-mono)', marginTop: '4px', fontWeight: 700 }}>
-                {costDelta <= 0 ? `Saves £${Math.abs(costDelta).toFixed(1)}m` : `Costs +£${costDelta.toFixed(1)}m`}
+                {costDelta <= 0 ? `Saves £${Math.abs(costDelta).toFixed(1)}m` : `Extra cost: £${costDelta.toFixed(1)}m`}
               </div>
             </div>
 
             {/* Player IN Card */}
             <div className="compare-player-card in-card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <span className="transfer-label in">TRANSFER IN</span>
+                <span className="transfer-label in">BUYING (IN)</span>
                 <span style={{ fontSize: '11px', color: 'var(--accent-emerald)', fontWeight: 700 }}>
-                  Target Acquisition
+                  New Transfer Target
                 </span>
               </div>
 
@@ -199,8 +199,8 @@ export default function TransferWorkbench({
 
               <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <div>Price: £{costIn.toFixed(1)}m</div>
-                <div>Expected Goals (xG90): {xgIn.toFixed(2)}</div>
-                <div>Expected Assists (xA90): {xaIn.toFixed(2)}</div>
+                <div>Expected Goals (xG / 90 mins): {xgIn.toFixed(2)}</div>
+                <div>Expected Assists (xA / 90 mins): {xaIn.toFixed(2)}</div>
               </div>
             </div>
           </div>
@@ -209,10 +209,10 @@ export default function TransferWorkbench({
         <div className="compare-workbench-container" style={{ margin: '20px 0', background: 'var(--bg-surface-1)', border: '1px dashed var(--border-medium)', borderRadius: 'var(--radius-lg)', padding: '20px', textAlign: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: 'var(--accent-emerald)', marginBottom: '6px' }}>
             <Scales size={20} weight="bold" />
-            <span style={{ fontWeight: 700, fontSize: '14px' }}>Head-to-Head Transfer Simulator Ready</span>
+            <span style={{ fontWeight: 700, fontSize: '14px' }}>Test Any Transfer Head-to-Head</span>
           </div>
           <p style={{ color: 'var(--text-secondary)', fontSize: '13px', margin: 0 }}>
-            Click the <strong style={{ color: 'var(--text-primary)' }}>&quot;Compare&quot;</strong> button on any player in the Transfer Market below to test a live swap against your squad and inspect point, budget, and threat deltas.
+            Click the <strong style={{ color: 'var(--text-primary)' }}>&quot;Compare&quot;</strong> button on any player in the transfer market below to test a live swap against your squad and inspect points, budget, and goal threat differences.
           </p>
         </div>
       )}
@@ -221,8 +221,8 @@ export default function TransferWorkbench({
       <div className="data-table-container" style={{ marginTop: '20px' }}>
         <div className="scout-controls">
           <div className="scout-title-group">
-            <span className="scout-title">Player Scout &amp; Transfer Market</span>
-            <span className="scout-hint">(Click row to view stats · Click Compare to test transfer)</span>
+            <span className="scout-title">Scout Transfer Targets</span>
+            <span className="scout-hint">(Click any row for full stats · Click &quot;Compare&quot; to test a swap)</span>
           </div>
 
           <div className="scout-filters">
@@ -231,7 +231,7 @@ export default function TransferWorkbench({
               <MagnifyingGlass size={14} className="scout-search-icon" />
               <input
                 type="text"
-                placeholder="Search player or team..."
+                placeholder="Search player or club..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 aria-label="Search players by name or club"
@@ -255,7 +255,7 @@ export default function TransferWorkbench({
 
             {/* Max Price Slider */}
             <div className="scout-price-control">
-              <span>Max: £{maxPrice}m</span>
+              <span>Max Price: £{maxPrice}m</span>
               <input
                 type="range"
                 min="4.0"
@@ -275,7 +275,7 @@ export default function TransferWorkbench({
               aria-label="Sort players by metric"
               className="scout-sort-select"
             >
-              <option value="xP">Highest Projected Points</option>
+              <option value="xP">Most Expected Points</option>
               <option value="cost_desc">Price (High to Low)</option>
               <option value="cost_asc">Price (Low to High)</option>
             </select>
@@ -290,11 +290,11 @@ export default function TransferWorkbench({
                 <th>Pos</th>
                 <th>Club</th>
                 <th>Price</th>
-                <th>Projected Points</th>
-                <th>Expected Goals (xG90)</th>
-                <th>Expected Assists (xA90)</th>
-                <th>Start Chance</th>
-                <th style={{ textAlign: 'center' }}>Action</th>
+                <th>Exp Pts</th>
+                <th>xG / 90</th>
+                <th>xA / 90</th>
+                <th>Start %</th>
+                <th style={{ textAlign: 'center' }}>Compare</th>
               </tr>
             </thead>
             <tbody>
@@ -312,7 +312,7 @@ export default function TransferWorkbench({
                   role="button"
                   aria-label={`${p.web_name}, ${p.position}, £${Number(p.now_cost || p.cost || 0).toFixed(1)}M, ${Number(p.expected_points ?? p.xp ?? p.xP ?? 0).toFixed(1)} points`}
                   style={{ cursor: 'pointer' }}
-                  title="Click to view detailed point projections"
+                  title="Click to view scouting report & underlying stats"
                 >
                   <td style={{ position: 'sticky', left: 0, zIndex: 10, fontWeight: 700, color: 'var(--text-primary)', background: 'var(--bg-surface-1)' }}>
                     {p.web_name}
