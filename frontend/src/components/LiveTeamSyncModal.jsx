@@ -92,6 +92,17 @@ export default function LiveTeamSyncModal({
     }
   };
 
+  const handleResetOnboarding = () => {
+    try {
+      localStorage.removeItem('fpl_has_onboarded');
+      localStorage.removeItem('fpl_synced_entry_id');
+      localStorage.removeItem('fpl_synced_league_id');
+      window.location.reload();
+    } catch (e) {
+      console.warn(e);
+    }
+  };
+
   const manager = currentProfile;
 
   return (
@@ -103,42 +114,53 @@ export default function LiveTeamSyncModal({
         aria-modal="true"
         aria-labelledby="sync-modal-title"
       >
-        {/* Modal Header */}
         <div className="modal-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div className="sync-icon-wrapper">
+          <div className="modal-title-group">
+            <div className="modal-icon-box">
               <SoccerBall size={18} weight="fill" />
             </div>
             <div>
-              <h2 id="sync-modal-title" className="modal-title">Squad Configuration & Sync</h2>
+              <h2 id="sync-modal-title" className="modal-title">
+                Squad Configuration & Sync
+              </h2>
               <p className="modal-subtitle">
                 Official FPL Team ID & Classic Mini-League Tracker
               </p>
             </div>
           </div>
-          <button className="modal-close-btn" onClick={onClose} aria-label="Close modal">
-            <X size={18} weight="bold" />
+          <button
+            type="button"
+            className="modal-close-btn"
+            onClick={onClose}
+            aria-label="Close modal"
+          >
+            <X size={16} weight="bold" />
           </button>
         </div>
 
-        {/* Error Alert */}
-        {error && (
-          <div className="sync-error-banner" role="alert">
-            <WarningCircle size={18} weight="bold" style={{ flexShrink: 0, marginTop: '1px' }} />
-            <div>
-              <div style={{ fontWeight: 700 }}>Sync Notice</div>
-              <div>{error}</div>
+        <form onSubmit={handleSync} className="sync-modal-body">
+          {error && (
+            <div className="sync-error-banner" role="alert">
+              <WarningCircle size={16} weight="fill" className="error-icon" />
+              <div>
+                <strong>Sync Notice</strong>
+                <p>{error}</p>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Form */}
-        <form onSubmit={handleSync} className="sync-form">
+          {saved && (
+            <div className="sync-success-banner" role="status">
+              <CheckCircle size={16} weight="fill" className="success-icon" />
+              <span>Squad & Mini-League successfully synced with FPL servers!</span>
+            </div>
+          )}
+
           <div className="form-group">
             <label htmlFor="fpl-entry-id" className="form-label">
               FPL Team ID (Entry ID)
             </label>
-            <div className="input-with-button">
+            <div className="input-action-row">
               <input
                 id="fpl-entry-id"
                 type="text"
@@ -147,35 +169,25 @@ export default function LiveTeamSyncModal({
                 value={entryId}
                 onChange={(e) => setEntryId(e.target.value)}
                 placeholder="e.g. 9500404"
-                required
                 className="sync-input font-mono"
+                required
                 disabled={isLoading}
               />
               <button
                 type="submit"
-                className="sync-submit-btn"
+                className="btn-primary sync-submit-btn font-mono"
                 disabled={isLoading}
               >
-                {isLoading ? (
-                  <>
-                    <ArrowsClockwise size={15} className="spin-animation" />
-                    <span>Syncing...</span>
-                  </>
-                ) : saved ? (
-                  <>
-                    <CheckCircle size={15} weight="fill" />
-                    <span>Synced!</span>
-                  </>
-                ) : (
-                  <>
-                    <ArrowsClockwise size={15} />
-                    <span>Sync Live Data</span>
-                  </>
-                )}
+                <ArrowsClockwise
+                  size={14}
+                  weight="bold"
+                  className={isLoading ? 'spin-animation' : ''}
+                />
+                <span>{isLoading ? 'Syncing...' : 'Sync Live Data'}</span>
               </button>
             </div>
             <span className="input-help">
-              Found at: fantasy.premierleague.com/entry/<strong>{entryId || '9500404'}</strong>/history
+              Found at: fantasy.premierleague.com/entry/<strong>{entryId || 'YOUR_ID'}</strong>/history
             </span>
           </div>
 
@@ -199,7 +211,6 @@ export default function LiveTeamSyncModal({
             </span>
           </div>
 
-          {/* Kinetic Loading Status */}
           {isLoading && (
             <div className="sync-ticker-box">
               <ArrowsClockwise size={15} className="spin-animation" />
@@ -207,7 +218,6 @@ export default function LiveTeamSyncModal({
             </div>
           )}
 
-          {/* Live Squad Preview Card */}
           <div className="profile-preview-card">
             <div className="profile-header">
               <span className="profile-tag">
@@ -239,7 +249,16 @@ export default function LiveTeamSyncModal({
             </div>
           </div>
 
-          <div className="modal-actions">
+          <div className="modal-actions" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <button
+              type="button"
+              className="btn-secondary font-mono"
+              style={{ fontSize: '11px', color: 'var(--text-muted)' }}
+              onClick={handleResetOnboarding}
+              title="Clear cached profile and restart onboarding"
+            >
+              Reset / Reopen Onboarding
+            </button>
             <button type="button" className="btn-secondary" onClick={onClose}>
               Close
             </button>

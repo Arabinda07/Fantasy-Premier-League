@@ -1200,6 +1200,92 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
+   BENCH BOOST INSTITUTIONAL TELEMETRY COCKPIT (DESIGN.MD)
+   ========================================================================== */
+
+.bench-boost-telemetry-panel {
+  border-color: rgba(16, 185, 129, 0.35);
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, var(--bg-surface-1) 100%);
+}
+
+.bb-telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.bb-telemetry-stat {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+}
+
+.bb-telemetry-stat.highlight {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.bb-telemetry-stat.full-width {
+  grid-column: span 2;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(17, 23, 38, 0.95) 100%);
+  border-color: rgba(16, 185, 129, 0.5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bb-stat-label {
+  display: block;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.bb-stat-val {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.bb-stat-val.emerald {
+  color: var(--accent-emerald);
+}
+
+.bb-stat-unit {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.bb-sub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 12px 0 8px 0;
+  padding: 0 2px;
+}
+
+.bb-count-pill {
+  background: rgba(16, 185, 129, 0.18);
+  color: var(--accent-emerald);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  padding: 1px 5px;
+  border-radius: var(--radius-xs);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+/* ==========================================================================
    MULTI-HORIZON TRANSFER WORKBENCH & HEATMAP TABLES
    ========================================================================== */
 

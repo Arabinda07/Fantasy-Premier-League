@@ -404,32 +404,38 @@ export default function TacticalPitch({
             <div className="sidebar-panel bench-boost-telemetry-panel">
               <div className="panel-header">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <RocketLaunch size={16} weight="fill" color="var(--accent-emerald)" />
-                  <span className="panel-title" style={{ color: 'var(--accent-emerald)' }}>
-                    BENCH BOOST ACTIVE
-                  </span>
+                  <RocketLaunch size={15} weight="fill" color="var(--accent-emerald)" />
+                  <span className="panel-title">BENCH BOOST</span>
                 </div>
-                <span className="panel-badge font-mono" style={{ background: 'rgba(16, 185, 129, 0.2)', color: 'var(--accent-emerald)', border: '1px solid rgba(16, 185, 129, 0.4)' }}>
-                  15 / 15 Scoring
+                <span className="panel-badge font-mono" style={{ whiteSpace: 'nowrap' }}>
+                  15 SCORING
                 </span>
               </div>
 
-              <div className="bench-boost-summary-card" style={{ background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '6px', padding: '10px 12px', margin: '8px 0 12px 0' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                  <span style={{ fontSize: '11px', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600 }}>
-                    Bench Uplift
-                  </span>
-                  <span className="font-mono" style={{ fontSize: '14px', fontWeight: 800, color: 'var(--accent-emerald)' }}>
-                    +{benchUpliftTotal} xP
-                  </span>
+              {/* Institutional Telemetry Metric Matrix */}
+              <div className="bb-telemetry-grid">
+                <div className="bb-telemetry-stat">
+                  <span className="bb-stat-label">STARTING XI</span>
+                  <span className="bb-stat-val font-mono">{Number(startingXp || 64.7).toFixed(1)} <span className="bb-stat-unit">xP</span></span>
                 </div>
-                <div style={{ fontSize: '11px', color: 'var(--text-muted)', lineHeight: '1.4' }}>
-                  All 15 squad members are deployed on the tactical pitch. Both starting XI and all 4 bench assets contribute to your total gameweek score.
+                <div className="bb-telemetry-stat highlight">
+                  <span className="bb-stat-label">BENCH UPLIFT</span>
+                  <span className="bb-stat-val font-mono emerald">+{benchUpliftTotal} <span className="bb-stat-unit">xP</span></span>
+                </div>
+                <div className="bb-telemetry-stat full-width">
+                  <div>
+                    <span className="bb-stat-label">BOOSTED PROJECTION</span>
+                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>15 active point scorers</span>
+                  </div>
+                  <span className="bb-stat-val font-mono emerald" style={{ fontSize: '16px' }}>
+                    {displayStartingXp} <span className="bb-stat-unit">xP</span>
+                  </span>
                 </div>
               </div>
 
-              <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '6px' }}>
-                Activated Bench Assets (4)
+              <div className="bb-sub-header font-mono">
+                <span>ACTIVATED BENCH ASSETS</span>
+                <span className="bb-count-pill">4 ACTIVE</span>
               </div>
 
               <div className="bench-list">
@@ -441,12 +447,11 @@ export default function TacticalPitch({
                     onDoubleClick={() => onInspectPlayer && onInspectPlayer(p)}
                     tabIndex={0}
                     role="button"
-                    title="Click to view player DNA"
-                    style={{ cursor: 'pointer' }}
+                    title="Click to view player DNA breakdown"
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-                      <span className="bench-slot-tag font-mono boost-tag" style={{ background: 'rgba(16, 185, 129, 0.25)', color: 'var(--accent-emerald)', border: '1px solid rgba(16, 185, 129, 0.5)' }}>
-                        ACTIVE
+                      <span className="bench-slot-tag font-mono boost-tag">
+                        {p.slotLabel || 'SUB'}
                       </span>
                       <span className={`player-pos-tag ${p.position}`}>{p.position}</span>
                       <div style={{ minWidth: 0, overflow: 'hidden' }}>
@@ -463,15 +468,15 @@ export default function TacticalPitch({
                         +{Number(p.expected_points || 0).toFixed(1)} pts
                       </div>
                       <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                        bench xP
+                        boost xP
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="bench-help-text" style={{ marginTop: '10px' }}>
-                All 15 cards are active on the pitch. Double-click any player card to inspect comprehensive Player DNA metrics.
+              <div className="bench-help-text">
+                All 15 cards are deployed on the tactical pitch. Double-click any player card to inspect comprehensive Player DNA metrics.
               </div>
             </div>
           ) : (
