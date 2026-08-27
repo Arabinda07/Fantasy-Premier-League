@@ -9,17 +9,24 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   CaretRight,
-  Target
+  Target,
+  Sparkle
 } from '@phosphor-icons/react';
 
 export default function TacticalPitch({
+  liveData,
   starters = [],
   bench = [],
+  allPlayersData = [],
   _allPlayers = [],
   selectedPlayer,
+  selectedSwapPlayer,
+  setSelectedSwapPlayer,
   onSelectPlayer,
+  onSwapPlayers,
   onInspectPlayer,
   onOpenMatchup,
+  onOpenFixture,
   actionSummary,
   startingXp = 64.7,
   _totalXp = 64.7,
@@ -30,16 +37,45 @@ export default function TacticalPitch({
   strategy = 'pure_xp',
   onSelectStrategy = () => {}
 }) {
-  // Compute Dynamic Chip Simulations if not provided in payload
-  const resolvedChipData = useMemo(() => {
-    // 1. Triple Captain Simulation
-    const capt = starters.find(p => p.is_captain);
-    const captXp = capt ? Number(capt.expected_points || 0) : 0;
-    const tripleCaptainXp = startingXp + captXp; // Adds another 1x captain points
+  // Extract data from liveData payload if provided
+  const effectiveChipSimulations = liveData?.chip_simulations || chipSimulations || {};
+  const effectiveStrategies = liveData?.strategies || strategies || {};
+  const effectiveActionSummary = liveData?.action_summary || actionSummary;
+  const effectiveStartingXp = liveData?.starting_xp != null ? liveData.starting_xp : startingXp;
+  const activeSelectedPlayer = selectedSwapPlayer || selectedPlayer;
 
-    // 2. Bench Boost Simulation
+  const handlePlayerSelect = (p) => {
+    if (activeChip !== 'none') {
+      if (onInspectPlayer) onInspectPlayer(p);
+      return;
+    }
+
+    if (onSwapPlayers && activeSelectedPlayer) {
+      if ((activeSelectedPlayer.player_code || activeSelectedPlayer.code) !== (p.player_code || p.code)) {
+        onSwapPlayers(activeSelectedPlayer, p);
+      } else {
+        if (setSelectedSwapPlayer) setSelectedSwapPlayer(null);
+      }
+    } else if (setSelectedSwapPlayer) {
+      setSelectedSwapPlayer(activeSelectedPlayer?.player_code === p.player_code ? null : p);
+    } else if (onSelectPlayer) {
+      onSelectPlayer(p);
+    }
+  };
+
+  const handleMatchupClick = (details) => {
+    if (onOpenFixture) onOpenFixture(details);
+    else if (onOpenMatchup) onOpenMatchup(details);
+  };
+
+  // Compute Dynamic Chip Simulations
+  const resolvedChipData = useMemo(() => {
+    const capt = starters.find(p => p.is_captain) || starters[0];
+    const captXp = capt ? Number(capt.expected_points || 0) : 0;
+    const tripleCaptainXp = effectiveStartingXp + captXp;
+
     const benchXp = bench.reduce((acc, p) => acc + Number(p.expected_points || 0), 0);
-    const benchBoostXp = startingXp + benchXp;
+    const benchBoostXp = effectiveStartingXp + benchXp;
 
     const result = {
       '3xc': {
@@ -55,44 +91,63 @@ export default function TacticalPitch({
         bench: bench.map(p => ({ ...p, is_boosted: true })),
         starting_xp: Number(benchBoostXp.toFixed(1)),
         total_xp: Number(benchBoostXp.toFixed(1)),
-        formation: `${starters.filter(p => p.position === 'DEF').length}-${starters.filter(p => p.position === 'MID').length}-${starters.filter(p => p.position === 'FWD').length}`,
+        formation: '15 Active (2-5-5-3)',
         label: `Bench Boost Active (+${benchXp.toFixed(1)} xP from Bench Assets · 15 Scoring)`
       },
     };
 
-    // Free Hit and Wildcard data from solver payload
-    if (chipSimulations.freehit) result.freehit = chipSimulations.freehit;
-    if (chipSimulations.wildcard) result.wildcard = chipSimulations.wildcard;
+    if (effectiveChipSimulations.wildcard) result.wildcard = effectiveChipSimulations.wildcard;
+    if (effectiveChipSimulations.freehit) result.freehit = effectiveChipSimulations.freehit;
+    if (effectiveChipSimulations.bboost) result.bboost = effectiveChipSimulations.bboost;
+    if (effectiveChipSimulations['3xc']) result['3xc'] = effectiveChipSimulations['3xc'];
 
     return result;
-  }, [starters, bench, startingXp, chipSimulations]);
+  }, [starters, bench, effectiveStartingXp, effectiveChipSimulations]);
 
   // Determine active strategy squad if chip is none
-  const currentStrategyData = strategies && strategies[strategy] ? strategies[strategy] : null;
+  const currentStrategyData = effectiveStrategies && effectiveStrategies[strategy] ? effectiveStrategies[strategy] : null;
 
   // Determine active display data: Priority: Active Chip > Active Strategy > Base Matchday Squad
-  const currentChipData = activeChip !== 'none' ? (chipSimulations[activeChip] || resolvedChipData[activeChip]) : null;
+  const currentChipData = activeChip !== 'none' ? (effectiveChipSimulations[activeChip] || resolvedChipData[activeChip]) : null;
   const isChipActive = activeChip !== 'none' && currentChipData != null;
+  const isBenchBoost = activeChip === 'bboost';
 
   const displayStarters = isChipActive
-    ? currentChipData.starters
+    ? (currentChipData.starters || starters)
     : (currentStrategyData ? currentStrategyData.starters : starters);
 
   const displayBench = isChipActive
-    ? currentChipData.bench
+    ? (currentChipData.bench || (isBenchBoost ? [] : bench))
     : (currentStrategyData ? currentStrategyData.bench : bench);
 
   const displayStartingXp = isChipActive
-    ? currentChipData.starting_xp
-    : (currentStrategyData ? currentStrategyData.starting_xp : startingXp);
+    ? (currentChipData.starting_xp != null ? currentChipData.starting_xp : currentChipData.total_xp)
+    : (currentStrategyData ? currentStrategyData.starting_xp : effectiveStartingXp);
 
-  // Group starters by position
-  const gks = displayStarters.filter(p => p.position === 'GK');
-  const defs = displayStarters.filter(p => p.position === 'DEF');
-  const mids = displayStarters.filter(p => p.position === 'MID');
-  const fwds = displayStarters.filter(p => p.position === 'FWD');
+  // Group players for pitch rendering
+  // For Bench Boost: combine all 15 players onto the pitch in expanded 2-5-5-3 layout
+  const allPitchPlayers = useMemo(() => {
+    if (!isBenchBoost) return displayStarters;
+    if (currentChipData?.starters && currentChipData.starters.length === 15) {
+      return currentChipData.starters.map(p => ({
+        ...p,
+        is_boosted: true
+      }));
+    }
+    return [
+      ...displayStarters,
+      ...bench.map(p => ({ ...p, is_boosted: true, is_bench_asset: true }))
+    ];
+  }, [isBenchBoost, currentChipData, displayStarters, bench]);
 
-  const formation = isChipActive
+  const gks = allPitchPlayers.filter(p => p.position === 'GK');
+  const defs = allPitchPlayers.filter(p => p.position === 'DEF');
+  const mids = allPitchPlayers.filter(p => p.position === 'MID');
+  const fwds = allPitchPlayers.filter(p => p.position === 'FWD');
+
+  const formation = isBenchBoost
+    ? '15 Active (2-5-5-3)'
+    : isChipActive
     ? (currentChipData.formation || `${defs.length}-${mids.length}-${fwds.length}`)
     : (currentStrategyData?.formation || `${defs.length}-${mids.length}-${fwds.length}`);
 
@@ -163,6 +218,18 @@ export default function TacticalPitch({
       </div>
     );
   };
+
+  const boostedBenchList = useMemo(() => {
+    return bench.map((p, idx) => ({
+      ...p,
+      is_boosted: true,
+      slotLabel: idx === 0 ? 'GK Sub' : `Sub ${idx}`
+    }));
+  }, [bench]);
+
+  const benchUpliftTotal = useMemo(() => {
+    return bench.reduce((acc, p) => acc + Number(p.expected_points || 0), 0).toFixed(1);
+  }, [bench]);
 
   return (
     <div>
@@ -240,15 +307,15 @@ export default function TacticalPitch({
               {currentStrategyData.label} ({currentStrategyData.subtitle || 'Tactical Optimization Active'}) · Formation {currentStrategyData.formation}
             </span>
           ) : (
-            renderTransferPills(actionSummary)
+            renderTransferPills(effectiveActionSummary)
           )}
         </div>
       </div>
 
-      {/* Classical 2-Column Pitch Workspace (Pitch on Left, Substitutes Sidebar on Right) */}
+      {/* Classical 2-Column Pitch Workspace (Pitch on Left, Sidebar on Right) */}
       <div className="pitch-workspace">
         {/* Tactical Pitch Surface (Left Column) */}
-        <div className="pitch-container">
+        <div className={`pitch-container ${isBenchBoost ? 'bench-boost-active-pitch' : ''}`}>
           <div className="pitch-marking-center-line" />
           <div className="pitch-marking-center-circle" />
           <div className="pitch-marking-penalty-top" />
@@ -263,12 +330,12 @@ export default function TacticalPitch({
                 isCaptain={Boolean(p.is_captain)}
                 isViceCaptain={Boolean(p.is_vice_captain)}
                 isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
-                isBoosted={activeChip === 'bboost'}
+                isBoosted={Boolean(p.is_boosted || isBenchBoost)}
                 strategyBadge={getStrategyBadge(p)}
-                isSubTarget={selectedPlayer?.player_code === p.player_code}
-                onSelectSub={onSelectPlayer}
+                isSubTarget={activeSelectedPlayer?.player_code === p.player_code}
+                onSelectSub={handlePlayerSelect}
                 onInspect={onInspectPlayer}
-                onOpenMatchup={onOpenMatchup}
+                onOpenMatchup={handleMatchupClick}
               />
             ))}
           </div>
@@ -282,12 +349,12 @@ export default function TacticalPitch({
                 isCaptain={Boolean(p.is_captain)}
                 isViceCaptain={Boolean(p.is_vice_captain)}
                 isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
-                isBoosted={activeChip === 'bboost'}
+                isBoosted={Boolean(p.is_boosted || isBenchBoost)}
                 strategyBadge={getStrategyBadge(p)}
-                isSubTarget={selectedPlayer?.player_code === p.player_code}
-                onSelectSub={onSelectPlayer}
+                isSubTarget={activeSelectedPlayer?.player_code === p.player_code}
+                onSelectSub={handlePlayerSelect}
                 onInspect={onInspectPlayer}
-                onOpenMatchup={onOpenMatchup}
+                onOpenMatchup={handleMatchupClick}
               />
             ))}
           </div>
@@ -301,12 +368,12 @@ export default function TacticalPitch({
                 isCaptain={Boolean(p.is_captain)}
                 isViceCaptain={Boolean(p.is_vice_captain)}
                 isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
-                isBoosted={activeChip === 'bboost'}
+                isBoosted={Boolean(p.is_boosted || isBenchBoost)}
                 strategyBadge={getStrategyBadge(p)}
-                isSubTarget={selectedPlayer?.player_code === p.player_code}
-                onSelectSub={onSelectPlayer}
+                isSubTarget={activeSelectedPlayer?.player_code === p.player_code}
+                onSelectSub={handlePlayerSelect}
                 onInspect={onInspectPlayer}
-                onOpenMatchup={onOpenMatchup}
+                onOpenMatchup={handleMatchupClick}
               />
             ))}
           </div>
@@ -320,51 +387,66 @@ export default function TacticalPitch({
                 isCaptain={Boolean(p.is_captain)}
                 isViceCaptain={Boolean(p.is_vice_captain)}
                 isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
-                isBoosted={activeChip === 'bboost'}
+                isBoosted={Boolean(p.is_boosted || isBenchBoost)}
                 strategyBadge={getStrategyBadge(p)}
-                isSubTarget={selectedPlayer?.player_code === p.player_code}
-                onSelectSub={onSelectPlayer}
+                isSubTarget={activeSelectedPlayer?.player_code === p.player_code}
+                onSelectSub={handlePlayerSelect}
+                onInspect={onInspectPlayer}
+                onOpenMatchup={handleMatchupClick}
               />
             ))}
           </div>
         </div>
 
-        {/* Substitutes Sidebar (Right Column) */}
+        {/* Sidebar (Right Column) - Transforms into Bench Boost Telemetry Hub if Bench Boost is active */}
         <div className="pitch-sidebar">
-          <div className="sidebar-panel">
-            <div className="panel-header">
-              <span className="panel-title">
-                {activeChip === 'bboost' ? 'BENCH BOOST ACTIVE' : activeChip === 'wildcard' ? 'WILDCARD BENCH' : activeChip === 'freehit' ? 'FREE HIT BENCH' : activeChip === '3xc' ? 'TRIPLE CAPTAIN BENCH' : 'Substitutes'}
-              </span>
-              <span className="panel-badge font-mono">
-                {activeChip === 'bboost' ? '4 Scoring' : `${displayBench.length} on bench`}
-              </span>
-            </div>
+          {isBenchBoost ? (
+            <div className="sidebar-panel bench-boost-telemetry-panel">
+              <div className="panel-header">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <RocketLaunch size={16} weight="fill" color="var(--accent-emerald)" />
+                  <span className="panel-title" style={{ color: 'var(--accent-emerald)' }}>
+                    BENCH BOOST ACTIVE
+                  </span>
+                </div>
+                <span className="panel-badge font-mono" style={{ background: 'rgba(16, 185, 129, 0.2)', color: 'var(--accent-emerald)', border: '1px solid rgba(16, 185, 129, 0.4)' }}>
+                  15 / 15 Scoring
+                </span>
+              </div>
 
-            <div className="bench-list">
-              {displayBench.map((p, idx) => {
-                const isSelected = selectedPlayer?.player_code === p.player_code;
-                const slotLabel = idx === 0 ? 'GK Sub' : `Sub ${idx}`;
-                return (
+              <div className="bench-boost-summary-card" style={{ background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '6px', padding: '10px 12px', margin: '8px 0 12px 0' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <span style={{ fontSize: '11px', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600 }}>
+                    Bench Uplift
+                  </span>
+                  <span className="font-mono" style={{ fontSize: '14px', fontWeight: 800, color: 'var(--accent-emerald)' }}>
+                    +{benchUpliftTotal} xP
+                  </span>
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)', lineHeight: '1.4' }}>
+                  All 15 squad members are deployed on the tactical pitch. Both starting XI and all 4 bench assets contribute to your total gameweek score.
+                </div>
+              </div>
+
+              <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '6px' }}>
+                Activated Bench Assets (4)
+              </div>
+
+              <div className="bench-list">
+                {boostedBenchList.map((p) => (
                   <div
                     key={p.player_code || p.id || p.web_name}
-                    className={`bench-item ${isSelected ? 'is-selected' : ''} ${activeChip === 'bboost' ? 'boost-active' : ''}`}
-                    onClick={() => onSelectPlayer(p)}
+                    className="bench-item boost-active"
+                    onClick={() => onInspectPlayer && onInspectPlayer(p)}
                     onDoubleClick={() => onInspectPlayer && onInspectPlayer(p)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        onSelectPlayer(p);
-                      }
-                    }}
                     tabIndex={0}
                     role="button"
-                    aria-label={`Bench ${slotLabel}: ${p.web_name}, ${p.position}, £${Number(p.cost || 0).toFixed(1)}M, ${Number(p.expected_points || 0).toFixed(1)} expected points`}
-                    title="Click to swap with starter · Double-click for DNA stats"
+                    title="Click to view player DNA"
+                    style={{ cursor: 'pointer' }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-                      <span className={`bench-slot-tag font-mono ${activeChip === 'bboost' ? 'boost-tag' : ''}`}>
-                        {activeChip === 'bboost' ? 'ACTIVE' : slotLabel}
+                      <span className="bench-slot-tag font-mono boost-tag" style={{ background: 'rgba(16, 185, 129, 0.25)', color: 'var(--accent-emerald)', border: '1px solid rgba(16, 185, 129, 0.5)' }}>
+                        ACTIVE
                       </span>
                       <span className={`player-pos-tag ${p.position}`}>{p.position}</span>
                       <div style={{ minWidth: 0, overflow: 'hidden' }}>
@@ -378,23 +460,87 @@ export default function TacticalPitch({
                     </div>
                     <div style={{ textAlign: 'right', flexShrink: 0 }}>
                       <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 800, color: 'var(--accent-emerald)' }}>
-                        {Number(p.expected_points || 0).toFixed(1)} pts
+                        +{Number(p.expected_points || 0).toFixed(1)} pts
                       </div>
                       <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                        exp xP
+                        bench xP
                       </div>
                     </div>
                   </div>
-                );
-              })}
-            </div>
+                ))}
+              </div>
 
-            <div className="bench-help-text">
-              Click any starter and bench player to swap. Double-click any player card to view full Player DNA breakdown.
+              <div className="bench-help-text" style={{ marginTop: '10px' }}>
+                All 15 cards are active on the pitch. Double-click any player card to inspect comprehensive Player DNA metrics.
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="sidebar-panel">
+              <div className="panel-header">
+                <span className="panel-title">
+                  {activeChip === 'wildcard' ? 'WILDCARD BENCH' : activeChip === 'freehit' ? 'FREE HIT BENCH' : activeChip === '3xc' ? 'TRIPLE CAPTAIN BENCH' : 'Substitutes'}
+                </span>
+                <span className="panel-badge font-mono">
+                  {`${displayBench.length} on bench`}
+                </span>
+              </div>
+
+              <div className="bench-list">
+                {displayBench.map((p, idx) => {
+                  const isSelected = activeSelectedPlayer?.player_code === p.player_code;
+                  const slotLabel = idx === 0 ? 'GK Sub' : `Sub ${idx}`;
+                  return (
+                    <div
+                      key={p.player_code || p.id || p.web_name}
+                      className={`bench-item ${isSelected ? 'is-selected' : ''}`}
+                      onClick={() => handlePlayerSelect(p)}
+                      onDoubleClick={() => onInspectPlayer && onInspectPlayer(p)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handlePlayerSelect(p);
+                        }
+                      }}
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`Bench ${slotLabel}: ${p.web_name}, ${p.position}, £${Number(p.cost || 0).toFixed(1)}M, ${Number(p.expected_points || 0).toFixed(1)} expected points`}
+                      title="Click to swap with starter · Double-click for DNA stats"
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+                        <span className="bench-slot-tag font-mono">
+                          {slotLabel}
+                        </span>
+                        <span className={`player-pos-tag ${p.position}`}>{p.position}</span>
+                        <div style={{ minWidth: 0, overflow: 'hidden' }}>
+                          <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                            {p.web_name}
+                          </div>
+                          <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                            {p.team} · £{Number(p.cost || 0).toFixed(1)}m
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 800, color: 'var(--accent-emerald)' }}>
+                          {Number(p.expected_points || 0).toFixed(1)} pts
+                        </div>
+                        <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                          exp xP
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="bench-help-text">
+                Click any starter and bench player to swap. Double-click any player card to view full Player DNA breakdown.
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
+
