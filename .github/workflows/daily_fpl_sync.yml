@@ -4,7 +4,7 @@ on:
   schedule:
     # Runs every day at 06:00 UTC (07:00 BST / 11:30 IST)
     - cron: '0 6 * * *'
-  # Allows you to trigger the workflow manually anytime from your phone or GitHub web UI:
+  # Allows you to trigger the workflow manually anytime from GitHub web UI:
   workflow_dispatch:
     inputs:
       gameweek:
@@ -55,6 +55,9 @@ jobs:
           
           MODE="${{ github.event.inputs.mode || 'sync' }}"
           python -m model.pipeline_automation --season 2026-27 --mode "$MODE" --team-id 9500404 --league-id 1305495 $GW_ARG
+          
+          # Enrich frontend cockpit payloads with Dixon-Coles & Minutes Hazard metrics
+          python -m model.enrich_frontend_data $GW_ARG || true
 
       - name: Commit & Push Live Matchday Reports
         run: |
@@ -68,5 +71,5 @@ jobs:
           else
             TODAY=$(date -u +"%Y-%m-%d")
             git commit -m "Automated Daily FPL Sync & Predictions Refresh ($TODAY) [skip ci]"
-            git push origin master
+            git push origin HEAD:master
           fi
