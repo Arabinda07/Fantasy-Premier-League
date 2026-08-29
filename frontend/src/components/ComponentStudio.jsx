@@ -45,10 +45,10 @@ const ACCURACY_DATA = {
   outliers: (accuracyMetricsData?.outliers && accuracyMetricsData.outliers.length > 0)
     ? accuracyMetricsData.outliers
     : [
-        { player: 'Hinshelwood', team: 'Brighton', pos: 'ASSET', pred: 2.95, actual: 16, diff: '+13.1', reason: 'High conversion or unexpected haul' },
-        { player: 'Mendy', team: 'Hull City', pos: 'ASSET', pred: 2.21, actual: 15, diff: '+12.8', reason: 'High conversion or unexpected haul' },
-        { player: 'De Cuyper', team: 'Brighton', pos: 'ASSET', pred: 4.51, actual: 17, diff: '+12.5', reason: 'High conversion or unexpected haul' },
-        { player: 'Haaland', team: 'Man City', pos: 'ASSET', pred: 7.06, actual: 2, diff: '-5.1', reason: 'Tactical substitution or match blank' },
+        { player: 'Hinshelwood', team: 'Brighton', pos: 'DEF', pred: 2.95, actual: 16, diff: '+13.1', reason: 'High conversion or unexpected haul' },
+        { player: 'Mendy', team: 'Hull City', pos: 'MID', pred: 2.21, actual: 15, diff: '+12.8', reason: 'High conversion or unexpected haul' },
+        { player: 'De Cuyper', team: 'Brighton', pos: 'DEF', pred: 4.51, actual: 17, diff: '+12.5', reason: 'High conversion or unexpected haul' },
+        { player: 'Haaland', team: 'Man City', pos: 'FWD', pred: 7.06, actual: 2, diff: '-5.1', reason: 'Tactical substitution or match blank' },
       ]
 };
 

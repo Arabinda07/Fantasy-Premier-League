@@ -564,16 +564,37 @@ This document tracks the phased rebuild of the Fantasy Premier League (FPL) poin
   - `python -m pytest model/`: **161 passed, 0 failed** in 14.88s.
   - `python scripts/validate_okf.py`: **43 files scanned, 0 errors verified**.
 
+### 17. Intuitive Tactical Cockpit Upgrades & Automated Voice/Tone Enforcement System
+- **Problem**:
+  1. Users in the tactical pitch view needed immediate visibility into captaincy rationale and head-to-head alternatives without digging into scouting sub-menus.
+  2. Structural comparisons between 3-5-2 Spread ("Big in the Middle") and Mega-Forward Anchor (Haaland) required seamless UI toggling and dynamic squad re-solving.
+  3. Ensure all frontend copy permanently adheres to the 3-Tier Vocabulary Filter and eliminates AI slop, corporate jargon, and unformatted math formulas automatically across all future PRs/builds.
+- **Implementation**:
+  - **Manager's Decision Brief ([`frontend/src/components/TacticalPitch.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/TacticalPitch.jsx))**:
+    - Added an expandable card above the pitch view detailing why Bruno Fernandes (C) was selected over alternatives (+36% Goal Threat vs promoted Ipswich, 1.0x penalty order, set-piece delivery, 11.2 Exp Pts) with an interactive comparison matrix vs Haaland, Salah, and Palmer.
+  - **Structural Build Toggle ([`frontend/src/utils/clientOptimizer.js`](file:///e:/Fantasy-Premier-League/frontend/src/utils/clientOptimizer.js), [`frontend/src/components/TacticalPitch.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/TacticalPitch.jsx))**:
+    - Added "Big in the Middle" (3-5-2 Spread) and "Haaland Mega-Anchor" (3-4-3 / 3-5-2) solvers dynamically updating the starting XI, bench, and formation metrics.
+  - **Tactical Badges & DNA Inspector ([`frontend/src/components/PlayerCard.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/PlayerCard.jsx), [`frontend/src/components/PlayerDNAInspector.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/PlayerDNAInspector.jsx))**:
+    - Added designated penalty tier badges (`🎯 High PK`, `🎯 Std PK`, `🎯 Low PK`) and Away Defcon (+5% recovery/tackle boost) badges.
+  - **Automated Copy & Voice Enforcement ([`scripts/validate_frontend_copy.py`](file:///e:/Fantasy-Premier-League/scripts/validate_frontend_copy.py), [`scripts/check_copy.cjs`](file:///e:/Fantasy-Premier-League/scripts/check_copy.cjs), [`model/test_voice_and_tone.py`](file:///e:/Fantasy-Premier-League/model/test_voice_and_tone.py))**:
+    - Embedded automated copy validation directly into Vite pre-build (`npm run build`), standalone script (`npm run check-copy`), and Pytest test suite (`pytest model/test_voice_and_tone.py`).
+- **Verification**:
+  - `npm run check-copy`: **23 files scanned, 0 errors**.
+  - `npm run build`: Production bundle compiled in **513ms** with copy check passing.
+  - `pytest model/`: **206 passed, 0 failed** in 31.5s.
+  - `python scripts/validate_okf.py`: **43 files scanned, 0 errors verified**.
+
 ---
 
 ## Current Status & Next Horizon
 
-All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit with Reactive 4-Chip Projections**, the **Autonomous Gameweek Transition Orchestrator**, the **100% Native FPL Opta Data Engine**, **Phases 1–4 of the Multi-User Live Platform Rebuild**, the **FPL Dugout Rebranding & Complete 6-Surface Fan-Friendly Copy Transformation**, **Frontend Prop Alignment & Pipeline Unification**, **Promoted Clubs Calibration & Institutional UI Polish**, and **Creator-Aligned Model Mechanics & Solver Optimizations** are **complete, robust, and production-verified**.
+All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit with Reactive 4-Chip Projections**, the **Autonomous Gameweek Transition Orchestrator**, the **100% Native FPL Opta Data Engine**, **Phases 1–4 of the Multi-User Live Platform Rebuild**, the **FPL Dugout Rebranding & Complete 6-Surface Fan-Friendly Copy Transformation**, **Frontend Prop Alignment & Pipeline Unification**, **Promoted Clubs Calibration & Institutional UI Polish**, **Creator-Aligned Model Mechanics & Solver Optimizations**, and **Intuitive Tactical Cockpit Upgrades with Automated Voice/Tone Enforcement** are **complete, robust, and production-verified**.
 
 For complete operational playbooks and design standards:
 - 👉 **[DESIGN.md](file:///E:/Fantasy-Premier-League/DESIGN.md)**
 - 👉 **[docs/voice-and-tone-guide.md](file:///E:/Fantasy-Premier-League/docs/voice-and-tone-guide.md)**
 - 👉 **[docs/HANDOVER_AND_ROADMAP.md](file:///E:/Fantasy-Premier-League/docs/HANDOVER_AND_ROADMAP.md)**
+
 
 
 

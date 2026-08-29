@@ -132,3 +132,165 @@ export const VALIDATION_MESSAGES = {
       `Maximum 3 players allowed from ${clubName}. Please sell a player from ${clubName} before adding another.`,
   },
 };
+
+export const CAPTAINCY_DECISION_BRIEF = {
+  title: "Manager's Decision Brief",
+  subtitle: 'Why Bruno Fernandes (C) is your best captain pick this week',
+  badge: '👑 CAPTAINCY BRIEF',
+  selectedCaptain: {
+    name: 'Bruno Fernandes',
+    shortName: 'B.Fernandes',
+    team: 'Man Utd',
+    fixture: 'IPS (H)',
+    baseXp: 5.6,
+    captainXp: 11.2,
+    role: 'Primary penalty taker and takes all set-pieces',
+  },
+  rationales: [
+    {
+      id: 'fixture_mult',
+      icon: 'HouseLine',
+      title: 'Easy Home Match (+36% Goal Threat)',
+      summary: 'Man United host promoted Ipswich Town at Old Trafford, giving Bruno a huge home boost (+36% team goal threat).',
+      badge: '+36% Goal Threat',
+    },
+    {
+      id: 'penalty_order',
+      icon: 'Target',
+      title: 'Takes Every Penalty',
+      summary: 'Undisputed first-choice penalty taker for United, who win plenty of spot-kicks in the box (7–9 per season).',
+      badge: 'First-Choice PK',
+    },
+    {
+      id: 'set_piece_monopoly',
+      icon: 'CornersOut',
+      title: 'Takes All Corners & Free-Kicks',
+      summary: 'Delivers every corner and direct free-kick, creating big scoring chances and scooping extra bonus points.',
+      badge: 'All Dead Balls',
+    },
+    {
+      id: 'higher_ev',
+      icon: 'TrendUp',
+      title: 'Highest Projected Points (11.2 pts as C)',
+      summary: 'Projected for 5.6 points (11.2 with the armband)—the safest and highest captain pick this gameweek.',
+      badge: '11.2 Exp Pts',
+    },
+  ],
+  alternatives: [
+    {
+      name: 'Erling Haaland',
+      team: 'Man City',
+      fixture: 'CHE (A)',
+      xp: 4.9,
+      captainXp: 9.8,
+      comparison: 'Tough away match against Chelsea at Stamford Bridge. Bruno has a much easier fixture at home.',
+      verdict: 'Tough away game (9.8 pts as C)',
+    },
+    {
+      name: 'Mohamed Salah',
+      team: 'Liverpool',
+      fixture: 'IPS (A)',
+      xp: 5.1,
+      captainXp: 10.2,
+      comparison: 'Away at Ipswich and does not take all set-pieces. Bruno’s full set-piece duties give him the edge.',
+      verdict: 'Away trip · 1.0 pt behind Bruno',
+    },
+    {
+      name: 'Cole Palmer',
+      team: 'Chelsea',
+      fixture: 'MCI (H)',
+      xp: 3.7,
+      captainXp: 7.4,
+      comparison: 'Tough opener against champions Man City, which limits Chelsea’s scoring chances.',
+      verdict: 'Faces Man City (7.4 pts as C)',
+    },
+  ],
+};
+
+export const STRUCTURAL_BUILDS = {
+  spread: {
+    id: 'spread',
+    name: 'Big in the Middle',
+    shortName: '5 Big Midfielders',
+    formation: '3-5-2',
+    tagline: '3-5-2 · Stacked 5-man midfield',
+    description: 'Packs your midfield with five top scorers: Palmer, Bruno (C), Szoboszlai, Mbeumo, and Tavernier.',
+    keyPlayers: ['Palmer', 'B.Fernandes', 'Szoboszlai', 'Mbeumo', 'Tavernier'],
+    captain: 'B.Fernandes',
+    formationDetails: '3-5-2 Formation',
+    badge: '3-5-2 SPREAD',
+    badgeColor: 'var(--accent-cyan)',
+    tooltip: 'Big in the Middle: 3-5-2 with 5 top-scoring midfielders and Bruno (C)',
+  },
+  anchor: {
+    id: 'anchor',
+    name: 'Haaland Mega-Anchor',
+    shortName: 'Haaland Heavy',
+    formation: '3-4-3',
+    tagline: '3-4-3 · Haaland captain with budget rotation',
+    description: 'Builds around Haaland (£15.5m) as permanent captain, using smart budget picks to round out the squad.',
+    keyPlayers: ['Haaland', 'Calvert-Lewin', 'B.Fernandes', 'Mbeumo', 'Gabriel'],
+    captain: 'Haaland',
+    formationDetails: '3-4-3 / 3-5-2 Anchor',
+    badge: 'HAALAND ANCHOR',
+    badgeColor: 'var(--accent-amber)',
+    tooltip: 'Haaland Mega-Anchor: Build around Haaland (£15.5m) with cheap enablers',
+  },
+};
+
+export const SET_PIECE_TIERS = {
+  high: {
+    tier: 'High',
+    rate: 0.18,
+    rateFormatted: '0.18 pk/90',
+    label: 'High PK',
+    badge: '🎯 High PK',
+    desc: 'Top Penalty Team (~7–9 penalties a season)',
+    tooltip: 'Penalty Taker: Team wins lots of spot-kicks in the box (~7–9 per season)',
+    teams: ['Man City', 'Chelsea', 'Arsenal', 'Liverpool', 'Man Utd'],
+  },
+  standard: {
+    tier: 'Standard',
+    rate: 0.12,
+    rateFormatted: '0.12 pk/90',
+    label: 'Std PK',
+    badge: '🎯 Std PK',
+    desc: 'Average Penalty Team (~4–5 penalties a season)',
+    tooltip: 'Penalty Taker: Team wins an average number of spot-kicks (~4–5 per season)',
+    teams: ['Aston Villa', 'Newcastle', 'Spurs', 'Brighton', 'Brentford', 'West Ham', 'Crystal Palace', 'Fulham', 'Bournemouth'],
+  },
+  low: {
+    tier: 'Low',
+    rate: 0.07,
+    rateFormatted: '0.07 pk/90',
+    label: 'Low PK',
+    badge: '🎯 Low PK',
+    desc: 'Low Penalty Team (~2–3 penalties a season)',
+    tooltip: 'Penalty Taker: Team rarely wins penalties in the box (~2–3 per season)',
+    teams: ['Everton', "Nott'm Forest", 'Wolves', 'Leicester', 'Ipswich Town', 'Southampton', 'Sunderland'],
+  },
+};
+
+export const DEFCON_BADGES = {
+  awayDefcon: {
+    badge: '🛡️ Away Defcon (+5%)',
+    shortBadge: '🛡️ DEFCON',
+    label: 'Away Defcon (+5%)',
+    desc: 'More tackles and ball recoveries in away games (+5% defensive points)',
+    tooltip: 'Away Match Bonus: Defenders under away pressure make more tackles and recoveries, boosting baseline points (+5%).',
+  },
+};
+
+export function getPenaltyTierForTeam(teamName) {
+  if (!teamName) return SET_PIECE_TIERS.standard;
+  const cleanTeam = teamName.trim();
+  if (SET_PIECE_TIERS.high.teams.some(t => cleanTeam.toLowerCase().includes(t.toLowerCase()) || t.toLowerCase().includes(cleanTeam.toLowerCase()))) {
+    return SET_PIECE_TIERS.high;
+  }
+  if (SET_PIECE_TIERS.low.teams.some(t => cleanTeam.toLowerCase().includes(t.toLowerCase()) || t.toLowerCase().includes(cleanTeam.toLowerCase()))) {
+    return SET_PIECE_TIERS.low;
+  }
+  return SET_PIECE_TIERS.standard;
+}
+
+

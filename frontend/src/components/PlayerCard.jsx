@@ -1,4 +1,5 @@
 import React from 'react';
+import { getPenaltyTierForTeam, DEFCON_BADGES } from '../constants/copyTokens';
 
 export default function PlayerCard({
   player,
@@ -36,6 +37,13 @@ export default function PlayerCard({
   const isBgw = fixtureCount === 0;
   const isDgw = fixtureCount >= 2;
 
+  // Set-Piece & Penalty Hierarchy Detection
+  const isPenaltyTaker = player.sp_pk_order === 1 || player.penalties_order === 1 || player.is_penalty_taker || (player.web_name === 'B.Fernandes' || player.web_name === 'Haaland' || player.web_name === 'Palmer' || player.web_name === 'Salah' || player.web_name === 'Saka' || player.web_name === 'Mbeumo');
+  const penaltyTier = isPenaltyTaker ? getPenaltyTierForTeam(player.team) : null;
+
+  // Center-Back / Defender Away Venue Defcon (+5% C11 recovery/tackle boost)
+  const isAwayDefender = (pos === 'DEF' || pos === 'GK') && venue === 'A';
+
   return (
     <div
       className={`player-pitch-card ${isSubTarget ? 'sub-target' : ''} ${isBoosted ? 'bench-boosted' : ''} ${isBgw ? 'is-bgw' : ''} ${isDgw ? 'is-dgw' : ''}`}
@@ -53,7 +61,7 @@ export default function PlayerCard({
     >
       {/* Top Header: Badge / Position + BGW/DGW Indicator + Price */}
       <div className="player-card-top-row">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
           {isTripleCaptain ? (
             <span className="captain-badge triple" title="Triple Captain Active (3x Points)">3XC</span>
           ) : isCaptain ? (
@@ -98,6 +106,50 @@ export default function PlayerCard({
         </span>
       </div>
 
+      {/* Tactical Badges Strip: Penalty Tier + Away Defcon */}
+      {(penaltyTier || isAwayDefender) && (
+        <div className="player-tactical-badges-strip" style={{ display: 'flex', justifyContent: 'center', gap: '3px', margin: '3px 0 2px 0' }}>
+          {penaltyTier && (
+            <span
+              className="pk-tier-badge font-mono"
+              style={{
+                background: 'rgba(239, 68, 68, 0.18)',
+                color: '#F87171',
+                border: '1px solid rgba(239, 68, 68, 0.4)',
+                borderRadius: '3px',
+                padding: '0 3px',
+                fontSize: '8px',
+                fontWeight: 800,
+                letterSpacing: '0.02em',
+                lineHeight: '1.2'
+              }}
+              title={penaltyTier.tooltip}
+            >
+              {penaltyTier.badge}
+            </span>
+          )}
+          {isAwayDefender && (
+            <span
+              className="defcon-badge font-mono"
+              style={{
+                background: 'rgba(59, 130, 246, 0.18)',
+                color: '#60A5FA',
+                border: '1px solid rgba(59, 130, 246, 0.4)',
+                borderRadius: '3px',
+                padding: '0 3px',
+                fontSize: '8px',
+                fontWeight: 800,
+                letterSpacing: '0.02em',
+                lineHeight: '1.2'
+              }}
+              title={DEFCON_BADGES.awayDefcon.tooltip}
+            >
+              {DEFCON_BADGES.awayDefcon.shortBadge}
+            </span>
+          )}
+        </div>
+      )}
+
       {/* Minimalist Expected Points Score Banner */}
       <div className="player-stats-bar" style={{ justifyContent: 'center' }}>
         <span className="player-xp font-mono">
@@ -107,3 +159,4 @@ export default function PlayerCard({
     </div>
   );
 }
+

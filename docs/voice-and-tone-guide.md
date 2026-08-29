@@ -103,6 +103,22 @@ Forecaster      -> Points Forecaster (Projection formula & accuracy scorecard)
 - **Club Limit Errors**:
   - *"Maximum 3 players allowed from Arsenal (you already have Saka, Gabriel, and Saliba)."*
 
+### 4.4 Captaincy Decision Brief, Structural Builds & Tactical Badges
+- **Captaincy Decision Brief**:
+  - *"Why Bruno Fernandes (C) is your best captain pick this week"*
+  - *"Easy Home Match (+36% Goal Threat) · Man United play promoted Ipswich at Old Trafford"*
+  - *"Takes Every Penalty · Undisputed first-choice penalty taker for United"*
+  - *"Takes All Corners & Free-Kicks · Delivers every corner and direct free-kick"*
+  - *"Highest Projected Points (11.2 pts as C) · Projected for 5.6 points (11.2 with the armband)"*
+- **Structural Builds**:
+  - `Big in the Middle`: *"3-5-2 with 5 top-scoring midfielders and Bruno (C)"*
+  - `Haaland Mega-Anchor`: *"Builds around Haaland (£15.5m) as permanent captain, using smart budget picks to round out the squad"*
+- **Set-Piece & Defcon Badges**:
+  - `🎯 High PK`: *"Penalty Taker: Team wins lots of spot-kicks in the box (~7–9 per season)"*
+  - `🎯 Std PK`: *"Penalty Taker: Team wins an average number of spot-kicks (~4–5 per season)"*
+  - `🎯 Low PK`: *"Penalty Taker: Team rarely wins penalties in the box (~2–3 per season)"*
+  - `🛡️ DEFCON`: *"Away Match Bonus: Defenders under away pressure make more tackles and recoveries, boosting baseline points (+5%)."*
+
 ---
 
 ## 5. Development Checklist for New Features
@@ -112,3 +128,27 @@ Before merging any new component, modal, or tooltip, verify:
 2. [ ] **No Corporate Speak**: Are you referring to *"players"* and *"squad"* rather than *"assets"* and *"portfolio"*?
 3. [ ] **Tone Check**: Does this sound like a knowledgeable friend in a football chat group?
 4. [ ] **Tokens Used**: Are shared strings imported from `frontend/src/constants/copyTokens.js`?
+5. [ ] **Automated Validation**: Does `npm run check-copy` or `npm run build` pass with 0 violations?
+
+---
+
+## 6. Automated Copy & Voice Enforcement System
+
+Frontend copy is automatically validated in both JavaScript and Python test/build environments:
+
+1. **Pre-Build Hook (Node.js)**:
+   ```bash
+   npm run build        # Runs `node ../scripts/check_copy.cjs` before invoking Vite build
+   npm run check-copy   # Fast standalone check across all .jsx, .js, and .html files
+   ```
+2. **Python Test Suite (Pytest)**:
+   ```bash
+   pytest model/test_voice_and_tone.py   # Unit test verifying frontend copy conformance
+   python scripts/validate_frontend_copy.py # Standalone CLI validator with line-by-line report
+   ```
+
+### 6.1 Adding New Rules or Synonyms
+To add a new banned term, translation rule, or anti-slop pattern:
+1. Add the pattern and suggestion to `BANNED_RULES` in [`scripts/validate_frontend_copy.py`](file:///e:/Fantasy-Premier-League/scripts/validate_frontend_copy.py) and [`scripts/check_copy.cjs`](file:///e:/Fantasy-Premier-League/scripts/check_copy.cjs).
+2. Update the reference table in Section 3 of this document.
+3. Run `npm run check-copy` or `pytest model/test_voice_and_tone.py` to confirm.

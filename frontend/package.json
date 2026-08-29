@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "check-copy": "node ../scripts/check_copy.cjs",
+    "build": "node ../scripts/check_copy.cjs && vite build",
     "lint": "oxlint",
     "preview": "vite preview"
   },

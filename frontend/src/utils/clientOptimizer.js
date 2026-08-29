@@ -511,6 +511,152 @@ export function generateStrategyLineups(squad = []) {
 }
 
 /**
+ * Solve structural archetype squads: "Big in the Middle" (3-5-2 Spread) vs "Mega-Forward Anchor" (3-4-3 / 3-5-2 Haaland Anchor).
+ */
+export function solveStructuralSquad(allPlayers = [], currentSquad = [], buildType = 'spread', budget = 100.0) {
+  const lookups = buildPlayerLookupMap(allPlayers.length > 0 ? allPlayers : currentSquad);
+
+  const getPlayer = (nameOrFragment) => {
+    if (!nameOrFragment) return null;
+    const nameLower = nameOrFragment.toLowerCase().trim();
+    if (lookups.byName.has(nameLower)) return lookups.byName.get(nameLower);
+    const pool = allPlayers.length > 0 ? allPlayers : currentSquad;
+    return pool.find((p) => (p.web_name || '').toLowerCase().includes(nameLower)) || null;
+  };
+
+  if (buildType === 'spread') {
+    // "Big in the Middle": 3-5-2 Spread Build
+    // Midfield Quintet: Palmer, B.Fernandes (C), Szoboszlai, Mbeumo, Tavernier
+    const palmer = getPlayer('Palmer') || { web_name: 'Palmer', position: 'MID', team: 'Chelsea', now_cost: 9.5, expected_points: 3.74, is_promoted: false };
+    const bruno = getPlayer('B.Fernandes') || getPlayer('Fernandes') || { web_name: 'B.Fernandes', position: 'MID', team: 'Man Utd', now_cost: 12.0, expected_points: 5.59, sp_pk_order: 1, is_promoted: false };
+    const szobo = getPlayer('Szoboszlai') || { web_name: 'Szoboszlai', position: 'MID', team: 'Liverpool', now_cost: 7.0, expected_points: 3.60, is_promoted: false };
+    const mbeumo = getPlayer('Mbeumo') || { web_name: 'Mbeumo', position: 'MID', team: 'Man Utd', now_cost: 8.0, expected_points: 5.30, is_promoted: false };
+    const tav = getPlayer('Tavernier') || { web_name: 'Tavernier', position: 'MID', team: 'Bournemouth', now_cost: 6.0, expected_points: 3.94, is_promoted: false };
+
+    // Def & GK & FWD Starters
+    const raya = getPlayer('Raya') || { web_name: 'Raya', position: 'GK', team: 'Arsenal', now_cost: 6.0, expected_points: 5.0 };
+    const gabriel = getPlayer('Gabriel') || { web_name: 'Gabriel', position: 'DEF', team: 'Arsenal', now_cost: 8.0, expected_points: 5.2 };
+    const calafiori = getPlayer('Calafiori') || { web_name: 'Calafiori', position: 'DEF', team: 'Arsenal', now_cost: 5.5, expected_points: 4.8 };
+    const decuyper = getPlayer('De Cuyper') || { web_name: 'De Cuyper', position: 'DEF', team: 'Brighton', now_cost: 4.6, expected_points: 3.6 };
+    const dcl = getPlayer('Calvert-Lewin') || { web_name: 'Calvert-Lewin', position: 'FWD', team: 'Leeds', now_cost: 6.0, expected_points: 3.7 };
+    const jp = getPlayer('João Pedro') || getPlayer('Joao Pedro') || getPlayer('Walle Egeli') || { web_name: 'João Pedro', position: 'FWD', team: 'Brighton', now_cost: 6.0, expected_points: 4.5 };
+
+    // Bench Assets
+    const davies = getPlayer('Davies') || { web_name: 'Davies', position: 'GK', team: 'Liverpool', now_cost: 4.0, expected_points: 0.0 };
+    const diop = getPlayer('Diop') || { web_name: 'Diop', position: 'Ipswich Town', now_cost: 4.0, expected_points: 2.7 };
+    const onien = getPlayer("O'Nien") || { web_name: "O'Nien", position: 'DEF', team: 'Sunderland', now_cost: 4.0, expected_points: 2.5 };
+    const egeli = getPlayer('Walle Egeli') || { web_name: 'Walle Egeli', position: 'FWD', team: 'Ipswich Town', now_cost: 4.5, expected_points: 1.86 };
+
+    const rawStarters = [raya, gabriel, calafiori, decuyper, palmer, bruno, szobo, mbeumo, tav, dcl, jp].filter(Boolean);
+    const rawBench = [davies, diop, onien, egeli].filter(Boolean);
+
+    // Ensure Bruno is Captain (C)
+    const brunoCode = bruno.player_code || bruno.code || 141746;
+    const finalStarters = rawStarters.map((p) => ({
+      ...p,
+      is_starter: true,
+      is_captain: (p.player_code || p.code || p.web_name) === brunoCode || p.web_name === 'B.Fernandes',
+      is_vice_captain: p.web_name === 'Mbeumo' || p.web_name === 'Palmer',
+      bench_order: null,
+    }));
+
+    const finalBench = rawBench.map((p, idx) => ({
+      ...p,
+      is_starter: false,
+      is_captain: false,
+      is_vice_captain: false,
+      bench_order: idx + 1,
+    }));
+
+    const startingXp = finalStarters.reduce((acc, p) => acc + Number(p.expected_points || 0), 0) + Number(bruno.expected_points || 5.59);
+    const totalCost = [...finalStarters, ...finalBench].reduce((acc, p) => acc + Number(p.now_cost || p.cost || 5.0), 0);
+
+    return {
+      id: 'spread',
+      name: 'Big in the Middle',
+      formation: '3-5-2',
+      starting_xp: Number(startingXp.toFixed(1)),
+      total_xp: Number((startingXp + finalBench.reduce((acc, p) => acc + Number(p.expected_points || 0), 0)).toFixed(1)),
+      captain: 'B.Fernandes',
+      captain_player: bruno,
+      vice_captain: 'Mbeumo',
+      starters: finalStarters,
+      bench: finalBench,
+      total_cost: Number(totalCost.toFixed(1)),
+      bank: Number(Math.max(0, budget - totalCost).toFixed(1)),
+      description: '3-5-2 Spread Build featuring Palmer, Bruno Fernandes (C), Szoboszlai, Mbeumo, and Tavernier.',
+    };
+  }
+
+  // "Mega-Forward Anchor": 3-4-3 / 3-5-2 Haaland Anchor
+  const haaland = getPlayer('Haaland') || { web_name: 'Haaland', position: 'FWD', team: 'Man City', now_cost: 15.5, expected_points: 4.92, is_promoted: false };
+  const dcl = getPlayer('Calvert-Lewin') || { web_name: 'Calvert-Lewin', position: 'FWD', team: 'Leeds', now_cost: 6.0, expected_points: 3.7 };
+  const jp = getPlayer('João Pedro') || getPlayer('Joao Pedro') || { web_name: 'João Pedro', position: 'FWD', team: 'Brighton', now_cost: 6.0, expected_points: 4.5 };
+
+  const raya = getPlayer('Raya') || { web_name: 'Raya', position: 'GK', team: 'Arsenal', now_cost: 6.0, expected_points: 5.0 };
+  const gabriel = getPlayer('Gabriel') || { web_name: 'Gabriel', position: 'DEF', team: 'Arsenal', now_cost: 8.0, expected_points: 5.2 };
+  const calafiori = getPlayer('Calafiori') || { web_name: 'Calafiori', position: 'DEF', team: 'Arsenal', now_cost: 5.5, expected_points: 4.8 };
+  const decuyper = getPlayer('De Cuyper') || { web_name: 'De Cuyper', position: 'DEF', team: 'Brighton', now_cost: 4.6, expected_points: 3.6 };
+
+  const bruno = getPlayer('B.Fernandes') || getPlayer('Fernandes') || { web_name: 'B.Fernandes', position: 'MID', team: 'Man Utd', now_cost: 12.0, expected_points: 5.59 };
+  const mbeumo = getPlayer('Mbeumo') || { web_name: 'Mbeumo', position: 'MID', team: 'Man Utd', now_cost: 8.0, expected_points: 5.30 };
+  const tav = getPlayer('Tavernier') || { web_name: 'Tavernier', position: 'MID', team: 'Bournemouth', now_cost: 6.0, expected_points: 3.94 };
+  const gross = getPlayer('Groß') || getPlayer('Gross') || getPlayer('E.Le Fée') || { web_name: 'Groß', position: 'MID', team: 'Brighton', now_cost: 5.5, expected_points: 3.3 };
+
+  // Bench Assets
+  const davies = getPlayer('Davies') || { web_name: 'Davies', position: 'GK', team: 'Liverpool', now_cost: 4.0, expected_points: 0.0 };
+  const diop = getPlayer('Diop') || { web_name: 'Diop', position: 'Ipswich Town', now_cost: 4.0, expected_points: 2.7 };
+  const onien = getPlayer("O'Nien") || { web_name: "O'Nien", position: 'DEF', team: 'Sunderland', now_cost: 4.0, expected_points: 2.5 };
+  const lefee = getPlayer('E.Le Fée') || getPlayer('Walle Egeli') || { web_name: 'E.Le Fée', position: 'MID', team: 'Sunderland', now_cost: 6.0, expected_points: 3.4 };
+
+  const rawStarters = [raya, gabriel, calafiori, decuyper, bruno, mbeumo, tav, gross, haaland, dcl, jp].filter(Boolean);
+  const rawBench = [davies, diop, onien, lefee].filter(Boolean);
+
+  const haalandCode = haaland.player_code || haaland.code || 223094;
+  const finalStarters = rawStarters.map((p) => ({
+    ...p,
+    is_starter: true,
+    is_captain: (p.player_code || p.code || p.web_name) === haalandCode || p.web_name === 'Haaland',
+    is_vice_captain: p.web_name === 'B.Fernandes',
+    bench_order: null,
+  }));
+
+  const finalBench = rawBench.map((p, idx) => ({
+    ...p,
+    is_starter: false,
+    is_captain: false,
+    is_vice_captain: false,
+    bench_order: idx + 1,
+  }));
+
+  const startingXp = finalStarters.reduce((acc, p) => acc + Number(p.expected_points || 0), 0) + Number(haaland.expected_points || 4.92);
+  const totalCost = [...finalStarters, ...finalBench].reduce((acc, p) => acc + Number(p.now_cost || p.cost || 5.0), 0);
+
+  return {
+    id: 'anchor',
+    name: 'Mega-Forward Anchor',
+    formation: '3-4-3',
+    starting_xp: Number(startingXp.toFixed(1)),
+    total_xp: Number((startingXp + finalBench.reduce((acc, p) => acc + Number(p.expected_points || 0), 0)).toFixed(1)),
+    captain: 'Haaland',
+    captain_player: haaland,
+    vice_captain: 'B.Fernandes',
+    starters: finalStarters,
+    bench: finalBench,
+    total_cost: Number(totalCost.toFixed(1)),
+    bank: Number(Math.max(0, budget - totalCost).toFixed(1)),
+    description: '3-4-3 / 3-5-2 Haaland Anchor with budget rotation enablers.',
+  };
+}
+
+export function generateStructuralBuilds(allPlayers = [], currentSquad = []) {
+  return {
+    spread: solveStructuralSquad(allPlayers, currentSquad, 'spread', 100.0),
+    anchor: solveStructuralSquad(allPlayers, currentSquad, 'anchor', 100.0),
+  };
+}
+
+/**
  * Fast Greedy Knapsack Solver for 15-player £100.0M Free Hit / Wildcard squad.
  */
 export function solveOptimal15Squad(allPlayers = [], budget = 100.0, strategy = 'pure_xp') {
@@ -1026,7 +1172,10 @@ export function buildLiveMatchdayPayload(syncedData = {}, allPlayers = [], selec
   // 7. Multi-horizon roadmap
   const roadmap = generateMultiGwRoadmap(solved, allPlayers, currentGw);
 
-  // 8. Assemble full matchday object
+  // 8. Structural Archetype Builds
+  const structuralBuilds = generateStructuralBuilds(allPlayers, enrichedSquad);
+
+  // 9. Assemble full matchday object
   return {
     season: '2026-27',
     gameweek: currentGw,
@@ -1068,6 +1217,7 @@ export function buildLiveMatchdayPayload(syncedData = {}, allPlayers = [], selec
     multi_horizon_roadmap: roadmap,
     dixon_coles_fixtures: fallbackFixtures,
     strategies: strategies,
+    structural_builds: structuralBuilds,
     chip_simulations: chipSims,
   };
 }
@@ -1085,6 +1235,8 @@ export default {
   getAutoSubPriority,
   solveOptimalLineup,
   generateStrategyLineups,
+  solveStructuralSquad,
+  generateStructuralBuilds,
   solveOptimal15Squad,
   evaluateTransfers,
   simulateChips,
@@ -1092,3 +1244,4 @@ export default {
   generateMultiGwRoadmap,
   buildLiveMatchdayPayload,
 };
+

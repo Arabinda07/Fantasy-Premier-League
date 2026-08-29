@@ -5693,6 +5693,281 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
+/* ==========================================================================
+   MANAGER'S CAPTAINCY DECISION BRIEF & STRUCTURAL BUILD COCKPIT
+   ========================================================================== */
+
+.decision-brief-container {
+  margin-bottom: 14px;
+}
+
+.decision-brief-card {
+  background: var(--bg-surface-1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(245, 158, 11, 0.12);
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.decision-brief-card:hover {
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.decision-brief-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.08) 0%, rgba(15, 23, 42, 0.4) 100%);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s ease;
+}
+
+.decision-brief-header:hover {
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.12) 0%, rgba(15, 23, 42, 0.6) 100%);
+}
+
+.brief-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.brief-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--accent-amber);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  padding: 2px 7px;
+  border-radius: var(--radius-xs);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.brief-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.brief-subtitle {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+
+.brief-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brief-captain-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+}
+
+.brief-captain-name {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.brief-captain-xp {
+  font-weight: 800;
+  color: var(--accent-amber);
+}
+
+.brief-chevron-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.15s ease;
+}
+
+.brief-chevron-btn:hover {
+  color: var(--text-primary);
+}
+
+.brief-chevron-btn.expanded {
+  transform: rotate(180deg);
+}
+
+.decision-brief-body {
+  padding: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 14px;
+  background: rgba(10, 15, 26, 0.6);
+}
+
+@media (max-width: 900px) {
+  .decision-brief-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+.brief-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.brief-rationales-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .brief-rationales-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.brief-rationale-card {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 4px;
+  transition: border-color 0.15s ease;
+}
+
+.brief-rationale-card:hover {
+  border-color: var(--border-medium);
+}
+
+.rationale-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.rationale-card-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.rationale-card-badge {
+  font-size: 9.5px;
+  font-weight: 800;
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--accent-amber);
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+.rationale-card-text {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.brief-alternatives-card {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.alternatives-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.alternative-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 6px 8px;
+  border-radius: var(--radius-xs);
+  gap: 8px;
+}
+
+.alt-player-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.alt-player-name {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.alt-fixture-tag {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.alt-comparison-text {
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.alt-stats-block {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.alt-xp-val {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--text-secondary);
+}
+
+.alt-verdict-tag {
+  font-size: 9px;
+  color: var(--accent-amber);
+  font-family: var(--font-mono);
+}
+
+
 
 
 

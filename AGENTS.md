@@ -87,5 +87,7 @@ All user-facing copy in the frontend (titles, buttons, modals, tooltips, validat
 * **Style Guide**: Read [`docs/voice-and-tone-guide.md`](file:///e:/Fantasy-Premier-League/docs/voice-and-tone-guide.md) for the 3-tier vocabulary filter (Keep/Translate/Ban), brand persona, and surface copy patterns.
 * **Single Source of Truth**: Import shared strings, chip advice, badges, and validation messages directly from [`frontend/src/constants/copyTokens.js`](file:///e:/Fantasy-Premier-League/frontend/src/constants/copyTokens.js).
 * **Rule**: Never introduce corporate jargon (*"assets"*, *"portfolios"*), raw math formulas (*"Dixon-Coles bivariate Poisson"*, *"Bayesian shrinkage"*), or robotic error messages into user-facing components.
+* **Automated Enforcement**: All frontend builds (`npm run build`) and Pytest runs (`pytest model/test_voice_and_tone.py`) automatically execute the copy validation suite ([`scripts/validate_frontend_copy.py`](file:///e:/Fantasy-Premier-League/scripts/validate_frontend_copy.py) & [`scripts/check_copy.cjs`](file:///e:/Fantasy-Premier-League/scripts/check_copy.cjs)). Run `npm run check-copy` to verify changes instantly.
+
 
 

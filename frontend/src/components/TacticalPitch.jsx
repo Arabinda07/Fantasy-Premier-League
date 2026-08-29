@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import PlayerCard from './PlayerCard';
 import {
   ShieldCheck,
@@ -10,8 +10,19 @@ import {
   ArrowDownRight,
   CaretRight,
   Target,
-  Sparkle
+  Sparkle,
+  HouseLine,
+  CornersOut,
+  TrendUp,
+  CaretDown,
+  CaretUp,
+  UsersThree,
+  CheckCircle,
+  WarningCircle,
+  XCircle
 } from '@phosphor-icons/react';
+import { CAPTAINCY_DECISION_BRIEF, STRUCTURAL_BUILDS } from '../constants/copyTokens';
+import { solveStructuralSquad } from '../utils/clientOptimizer';
 
 export default function TacticalPitch({
   liveData,
@@ -37,6 +48,9 @@ export default function TacticalPitch({
   strategy = 'pure_xp',
   onSelectStrategy = () => {}
 }) {
+  const [isBriefExpanded, setIsBriefExpanded] = useState(true);
+  const [squadBuild, setSquadBuild] = useState('spread'); // 'spread' (Big in the Middle) | 'anchor' (Mega-Forward Anchor)
+
   // Extract data from liveData payload if provided
   const effectiveChipSimulations = liveData?.chip_simulations || chipSimulations || {};
   const effectiveStrategies = liveData?.strategies || strategies || {};
@@ -68,27 +82,38 @@ export default function TacticalPitch({
     else if (onOpenMatchup) onOpenMatchup(details);
   };
 
+  // Structural Squad Preset Solver (Spread vs Anchor)
+  const structuralBuildData = useMemo(() => {
+    if (liveData?.structural_builds && liveData.structural_builds[squadBuild]) {
+      return liveData.structural_builds[squadBuild];
+    }
+    return solveStructuralSquad(allPlayersData, starters.length ? [...starters, ...bench] : [], squadBuild, 100.0);
+  }, [liveData, allPlayersData, starters, bench, squadBuild]);
+
   // Compute Dynamic Chip Simulations
   const resolvedChipData = useMemo(() => {
-    const capt = starters.find(p => p.is_captain) || starters[0];
+    const activeBaseStarters = structuralBuildData?.starters || starters;
+    const activeBaseBench = structuralBuildData?.bench || bench;
+    const capt = activeBaseStarters.find(p => p.is_captain) || activeBaseStarters[0];
     const captXp = capt ? Number(capt.expected_points || 0) : 0;
-    const tripleCaptainXp = effectiveStartingXp + captXp;
+    const baseStartingXp = structuralBuildData?.starting_xp || effectiveStartingXp;
+    const tripleCaptainXp = baseStartingXp + captXp;
 
-    const benchXp = bench.reduce((acc, p) => acc + Number(p.expected_points || 0), 0);
-    const benchBoostXp = effectiveStartingXp + benchXp;
+    const benchXp = activeBaseBench.reduce((acc, p) => acc + Number(p.expected_points || 0), 0);
+    const benchBoostXp = baseStartingXp + benchXp;
 
     const result = {
       '3xc': {
-        starters: starters,
-        bench: bench,
+        starters: activeBaseStarters,
+        bench: activeBaseBench,
         starting_xp: Number(tripleCaptainXp.toFixed(1)),
         total_xp: Number(tripleCaptainXp.toFixed(1)),
-        formation: `${starters.filter(p => p.position === 'DEF').length}-${starters.filter(p => p.position === 'MID').length}-${starters.filter(p => p.position === 'FWD').length}`,
+        formation: `${activeBaseStarters.filter(p => p.position === 'DEF').length}-${activeBaseStarters.filter(p => p.position === 'MID').length}-${activeBaseStarters.filter(p => p.position === 'FWD').length}`,
         label: `Triple Captain Active · 3x points on ${capt?.web_name || 'Captain'}`
       },
       'bboost': {
-        starters: starters,
-        bench: bench.map(p => ({ ...p, is_boosted: true })),
+        starters: activeBaseStarters,
+        bench: activeBaseBench.map(p => ({ ...p, is_boosted: true })),
         starting_xp: Number(benchBoostXp.toFixed(1)),
         total_xp: Number(benchBoostXp.toFixed(1)),
         formation: '15 Active (2-5-5-3)',
@@ -102,30 +127,35 @@ export default function TacticalPitch({
     if (effectiveChipSimulations['3xc']) result['3xc'] = effectiveChipSimulations['3xc'];
 
     return result;
-  }, [starters, bench, effectiveStartingXp, effectiveChipSimulations]);
+  }, [starters, bench, effectiveStartingXp, structuralBuildData, effectiveChipSimulations]);
 
   // Determine active strategy squad if chip is none
   const currentStrategyData = effectiveStrategies && effectiveStrategies[strategy] ? effectiveStrategies[strategy] : null;
 
-  // Determine active display data: Priority: Active Chip > Active Strategy > Base Matchday Squad
+  // Determine active display data: Priority: Active Chip > Active Strategy (if not pure_xp) > Structural Build > Base Squad
   const currentChipData = activeChip !== 'none' ? (effectiveChipSimulations[activeChip] || resolvedChipData[activeChip]) : null;
   const isChipActive = activeChip !== 'none' && currentChipData != null;
   const isBenchBoost = activeChip === 'bboost';
 
   const displayStarters = isChipActive
     ? (currentChipData.starters || starters)
-    : (currentStrategyData ? currentStrategyData.starters : starters);
+    : (strategy !== 'pure_xp' && currentStrategyData
+      ? currentStrategyData.starters
+      : (structuralBuildData?.starters || starters));
 
   const displayBench = isChipActive
     ? (currentChipData.bench || (isBenchBoost ? [] : bench))
-    : (currentStrategyData ? currentStrategyData.bench : bench);
+    : (strategy !== 'pure_xp' && currentStrategyData
+      ? currentStrategyData.bench
+      : (structuralBuildData?.bench || bench));
 
   const displayStartingXp = isChipActive
     ? (currentChipData.starting_xp != null ? currentChipData.starting_xp : currentChipData.total_xp)
-    : (currentStrategyData ? currentStrategyData.starting_xp : effectiveStartingXp);
+    : (strategy !== 'pure_xp' && currentStrategyData
+      ? currentStrategyData.starting_xp
+      : (structuralBuildData?.starting_xp || effectiveStartingXp));
 
   // Group players for pitch rendering
-  // For Bench Boost: combine all 15 players onto the pitch in expanded 2-5-5-3 layout
   const allPitchPlayers = useMemo(() => {
     if (!isBenchBoost) return displayStarters;
     if (currentChipData?.starters && currentChipData.starters.length === 15) {
@@ -136,9 +166,9 @@ export default function TacticalPitch({
     }
     return [
       ...displayStarters,
-      ...bench.map(p => ({ ...p, is_boosted: true, is_bench_asset: true }))
+      ...displayBench.map(p => ({ ...p, is_boosted: true, is_bench_asset: true }))
     ];
-  }, [isBenchBoost, currentChipData, displayStarters, bench]);
+  }, [isBenchBoost, currentChipData, displayStarters, displayBench]);
 
   const gks = allPitchPlayers.filter(p => p.position === 'GK');
   const defs = allPitchPlayers.filter(p => p.position === 'DEF');
@@ -149,7 +179,9 @@ export default function TacticalPitch({
     ? '15 Active (2-5-5-3)'
     : isChipActive
     ? (currentChipData.formation || `${defs.length}-${mids.length}-${fwds.length}`)
-    : (currentStrategyData?.formation || `${defs.length}-${mids.length}-${fwds.length}`);
+    : (strategy !== 'pure_xp' && currentStrategyData
+      ? currentStrategyData.formation
+      : (structuralBuildData?.formation || `${defs.length}-${mids.length}-${fwds.length}`));
 
   // Helper for strategy badges on player cards
   const getStrategyBadge = (p) => {
@@ -176,6 +208,11 @@ export default function TacticalPitch({
     { id: 'pure_xp', label: 'Max Points', icon: Target, desc: 'Pick the best possible starting XI for maximum points' },
     { id: 'rank_protect', label: 'Protect Lead', icon: ShieldCheck, desc: 'Back popular picks to defend your rank and protect your lead' },
     { id: 'differential_chase', label: 'Climb Rank', icon: Lightning, desc: 'Back low-ownership punts to gain ground on your mini-league rivals' }
+  ];
+
+  const buildOptions = [
+    { id: 'spread', label: 'Big in the Middle', shortLabel: '3-5-2 Spread', icon: UsersThree, desc: STRUCTURAL_BUILDS.spread.tooltip },
+    { id: 'anchor', label: 'Haaland Mega-Anchor', shortLabel: 'Haaland Anchor', icon: Crown, desc: STRUCTURAL_BUILDS.anchor.tooltip }
   ];
 
   const renderTransferPills = (summary) => {
@@ -226,21 +263,153 @@ export default function TacticalPitch({
   };
 
   const boostedBenchList = useMemo(() => {
-    return bench.map((p, idx) => ({
+    return displayBench.map((p, idx) => ({
       ...p,
       is_boosted: true,
       slotLabel: idx === 0 ? 'GK Sub' : `Sub ${idx}`
     }));
-  }, [bench]);
+  }, [displayBench]);
 
   const benchUpliftTotal = useMemo(() => {
-    return bench.reduce((acc, p) => acc + Number(p.expected_points || 0), 0).toFixed(1);
-  }, [bench]);
+    return displayBench.reduce((acc, p) => acc + Number(p.expected_points || 0), 0).toFixed(1);
+  }, [displayBench]);
+
+  // Dynamic Captain Profile for Decision Brief
+  const activeCaptain = displayStarters.find(p => p.is_captain) || displayStarters[0] || CAPTAINCY_DECISION_BRIEF.selectedCaptain;
 
   return (
     <div>
-      {/* Streamlined Matchday Control Deck */}
+      {/* 1. Tactical Captaincy Decision Brief (Expandable Institutional Card) */}
+      <div className="decision-brief-container">
+        <div className="decision-brief-card">
+          <div
+            className="decision-brief-header"
+            onClick={() => setIsBriefExpanded(prev => !prev)}
+            role="button"
+            tabIndex={0}
+            aria-expanded={isBriefExpanded}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setIsBriefExpanded(prev => !prev);
+              }
+            }}
+          >
+            <div className="brief-header-left">
+              <span className="brief-badge font-mono">
+                <Crown size={12} weight="fill" />
+                <span>CAPTAINCY BRIEF</span>
+              </span>
+              <span className="brief-title">Manager's Decision Brief</span>
+              <span className="brief-subtitle">
+                · {squadBuild === 'spread' ? 'Why Bruno Fernandes (C) is your best captain pick this week' : 'Haaland (C) Mega-Anchor Setup'}
+              </span>
+            </div>
+
+            <div className="brief-header-right">
+              <div className="brief-captain-pill font-mono">
+                <span className="brief-captain-name">{activeCaptain.web_name || 'Bruno Fernandes'} (C)</span>
+                <span className="brief-captain-xp">
+                  {(Number(activeCaptain.expected_points || 5.6) * 2).toFixed(1)} Exp Pts
+                </span>
+              </div>
+              <button
+                type="button"
+                className={`brief-chevron-btn ${isBriefExpanded ? 'expanded' : ''}`}
+                aria-label={isBriefExpanded ? 'Collapse brief' : 'Expand brief'}
+              >
+                {isBriefExpanded ? <CaretUp size={16} weight="bold" /> : <CaretDown size={16} weight="bold" />}
+              </button>
+            </div>
+          </div>
+
+          {isBriefExpanded && (
+            <div className="decision-brief-body">
+              {/* Left Column: 4 Core Tactical Rationales */}
+              <div>
+                <div className="brief-section-title font-mono">
+                  <Sparkle size={13} weight="fill" color="var(--accent-amber)" />
+                  <span>Why Bruno (C)?</span>
+                </div>
+                <div className="brief-rationales-grid">
+                  {CAPTAINCY_DECISION_BRIEF.rationales.map((r) => {
+                    const Icon = r.id === 'fixture_mult' ? HouseLine : (r.id === 'penalty_order' ? Target : (r.id === 'set_piece_monopoly' ? CornersOut : TrendUp));
+                    return (
+                      <div key={r.id} className="brief-rationale-card">
+                        <div className="rationale-card-header">
+                          <div className="rationale-card-title">
+                            <Icon size={14} weight="bold" color="var(--accent-amber)" />
+                            <span>{r.title}</span>
+                          </div>
+                          <span className="rationale-card-badge font-mono">{r.badge}</span>
+                        </div>
+                        <div className="rationale-card-text">{r.summary}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Right Column: Head-to-Head Alternative Comparison Matrix */}
+              <div>
+                <div className="brief-section-title font-mono">
+                  <Target size={13} weight="fill" color="var(--accent-cyan)" />
+                  <span>Other Captain Options</span>
+                </div>
+                <div className="brief-alternatives-card">
+                  <div className="alternatives-list">
+                    {CAPTAINCY_DECISION_BRIEF.alternatives.map((alt) => (
+                      <div key={alt.name} className="alternative-item">
+                        <div className="alt-player-info">
+                          <div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                              <span className="alt-player-name">{alt.name}</span>
+                              <span className="alt-fixture-tag font-mono">{alt.team} · {alt.fixture}</span>
+                            </div>
+                            <div className="alt-comparison-text" title={alt.comparison}>
+                              {alt.comparison}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="alt-stats-block font-mono">
+                          <div className="alt-xp-val">{alt.captainXp.toFixed(1)} pts (2x)</div>
+                          <div className="alt-verdict-tag">{alt.verdict}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+
+      {/* 2. Streamlined Matchday Control Deck with Structural Squad Toggle */}
       <div className="matchday-control-deck">
+        <div className="deck-group deck-group-build">
+          <span className="deck-label font-mono">Build</span>
+          <div className="segmented-chip-rail chip-rail-scrollable" role="group" aria-label="Structural Build Selection">
+            {buildOptions.map(b => {
+              const Icon = b.icon;
+              const isSelected = squadBuild === b.id;
+              return (
+                <button
+                  key={b.id}
+                  type="button"
+                  className={`segmented-chip-btn ${isSelected ? 'active' : ''}`}
+                  onClick={() => setSquadBuild(b.id)}
+                  title={b.desc}
+                >
+                  <Icon size={13} weight={isSelected ? 'fill' : 'bold'} />
+                  <span>{b.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="deck-group deck-group-scenario">
           <span className="deck-label font-mono">Chips</span>
           <div className="segmented-chip-rail chip-rail-scrollable" role="group" aria-label="Chip Selection">
@@ -297,6 +466,7 @@ export default function TacticalPitch({
           </div>
         </div>
       </div>
+
 
       {/* Streamlined Contextual Directive Strip */}
       <div className={`matchday-directive-strip ${isChipActive ? 'chip-mode' : strategy !== 'pure_xp' ? 'strategy-mode' : 'move-mode'}`}>

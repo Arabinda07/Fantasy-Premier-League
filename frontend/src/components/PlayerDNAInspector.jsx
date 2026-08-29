@@ -8,6 +8,7 @@ import {
   ChartBar,
   Polygon
 } from '@phosphor-icons/react';
+import { getPenaltyTierForTeam, DEFCON_BADGES } from '../constants/copyTokens';
 
 export default function PlayerDNAInspector({ player, onClose }) {
   const [activeView, setActiveView] = useState('chart'); // 'chart' | 'radar'
@@ -251,28 +252,83 @@ export default function PlayerDNAInspector({ player, onClose }) {
 
         {/* Underlying Match Stats Grid */}
         <h4 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }}>
-          Underlying Match Stats
+          Underlying Match Stats & Roles
         </h4>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '12px' }}>
           <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Expected Goals (xG90)</div>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Goal Threat (xG per 90)</div>
             <div className="font-mono" style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
               {xG90.toFixed(2)}
             </div>
           </div>
 
           <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Expected Assists (xA90)</div>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Assist Threat (xA per 90)</div>
             <div className="font-mono" style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
               {xA90.toFixed(2)}
             </div>
           </div>
 
           <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>60+ Min Security</div>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Starts & Plays 60+ Mins</div>
             <div className="font-mono" style={{ fontSize: '15px', fontWeight: 800, color: 'var(--accent-emerald)', marginTop: '2px' }}>
               {pMins60}%
+            </div>
+          </div>
+        </div>
+
+        {/* Tactical Hierarchy: Penalty Taker & Defcon Indicators */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginBottom: '16px' }}>
+          <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Penalties & Set-Pieces</span>
+              <span
+                className="font-mono"
+                style={{
+                  fontSize: '9px',
+                  fontWeight: 800,
+                  background: 'rgba(239, 68, 68, 0.18)',
+                  color: '#F87171',
+                  border: '1px solid rgba(239, 68, 68, 0.4)',
+                  borderRadius: '3px',
+                  padding: '1px 5px'
+                }}
+              >
+                {getPenaltyTierForTeam(player.team).badge}
+              </span>
+            </div>
+            <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', marginTop: '4px' }}>
+              {player.sp_pk_order === 1 || player.penalties_order === 1 || player.web_name === 'B.Fernandes' || player.web_name === 'Haaland' || player.web_name === 'Palmer' || player.web_name === 'Salah'
+                ? `First-choice penalty taker (${getPenaltyTierForTeam(player.team).desc})`
+                : (player.sp_ck_order === 1 ? 'Takes corners and direct free-kicks' : 'Scores and creates from open play')}
+            </div>
+          </div>
+
+          <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Tackles & Recoveries (Defcon)</span>
+              {(pos === 'DEF' || pos === 'GK') && (
+                <span
+                  className="font-mono"
+                  style={{
+                    fontSize: '9px',
+                    fontWeight: 800,
+                    background: 'rgba(59, 130, 246, 0.18)',
+                    color: '#60A5FA',
+                    border: '1px solid rgba(59, 130, 246, 0.4)',
+                    borderRadius: '3px',
+                    padding: '1px 5px'
+                  }}
+                >
+                  DEFCON +5%
+                </span>
+              )}
+            </div>
+            <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', marginTop: '4px' }}>
+              {(pos === 'DEF' || pos === 'GK')
+                ? 'Away match bonus: extra points from clearances, tackles, and ball recoveries.'
+                : 'Wins balls high up the pitch to start attacks.'}
             </div>
           </div>
         </div>
