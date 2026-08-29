@@ -540,11 +540,35 @@ This document tracks the phased rebuild of the Fantasy Premier League (FPL) poin
   - `python scripts/validate_okf.py`: **43 files scanned, 0 errors verified**.
   - `npm run build`: Production bundle compiled in **1.05s** with 0 errors.
 
+### 16. Creator-Aligned Model Mechanics & Solver Structural Optimizations
+- **Problem**:
+  1. Historical player data combines open-play and penalty equity into aggregate $xG90$, which skews predictions when designated penalty takers change (e.g. transfer of penalty taker or promotion of a new specialist like Szoboszlai/Palmer/Haaland).
+  2. Static minutes thresholds ($500\text{ mins}$) were uncalibrated in early gameweeks (GW1-GW5), either filtering out legitimate starters or failing to scale dynamically with season progression.
+  3. Center-backs in away matches experience sustained pressure and clearance volume, historically producing $\approx +5\text{--}7\%$ higher defensive contribution counts ($C_{11}$) than home fixtures.
+  4. Managers making structural draft comparisons needed the ability to model **Mega-Anchor (Haaland £15.0M) vs. Spread (5 Midfielders / £100.0M deployed)** without bank leakage (idle £1.0M–£3.0M phantom cash).
+- **Implementation**:
+  - **Dynamic Penalty Decomposition ([`model/prediction_engine.py`](file:///e:/Fantasy-Premier-League/model/prediction_engine.py))**:
+    - Extracted $npxG$ from aggregate $xG90$ and added calibrated penalty equity ($+0.083\text{ xG90}$ for primary takers, $+0.020$ for secondary takers, or explicit `pk_xg_boost` override) directly into $C_8$ goal points.
+  - **Dynamic Minutes Percentage Filter ([`model/prediction_engine.py`](file:///e:/Fantasy-Premier-League/model/prediction_engine.py), [`model/fixture_engine.py`](file:///e:/Fantasy-Premier-League/model/fixture_engine.py))**:
+    - Added `min_minutes_pct` ($\ge 10\%$ of available season minutes to date) dynamically scaling across gameweeks to filter out inactive bench fodder while protecting early-season starters.
+  - **Defender Away Venue Defcon Scaling ([`model/fixture_engine.py`](file:///e:/Fantasy-Premier-League/model/fixture_engine.py))**:
+    - Implemented a position-aware $+5\%$ away venue multiplier on $C_{11}$ defensive contribution rates for defenders facing away pressure.
+  - **Team Performance Nudges ([`model/fixture_engine.py`](file:///e:/Fantasy-Premier-League/model/fixture_engine.py))**:
+    - Added support for `team_nudges` dictionary allowing direct managerial/injury tactical adjustments ($\pm 5\text{--}15\%$ xG/xGC).
+  - **Solver Structural Bounds & Bank Utilization ([`model/solver.py`](file:///e:/Fantasy-Premier-League/model/solver.py))**:
+    - Added `max_player_cost` (e.g. $12.0\text{M}$ to enforce pure Spread builds), `max_premium_count`, and `min_spend` (e.g. $99.0\text{M}$) constraints to `solve_initial_squad`, `solve_weekly_transfers`, and `solve_multi_horizon_transfers`.
+    - Added starter bank-utilization tiebreaker $+0.0001 \times \text{cost}_i \times s_i$ to prevent idle bank leaks.
+  - **Unit Test Suite ([`model/test_creator_mechanics.py`](file:///e:/Fantasy-Premier-League/model/test_creator_mechanics.py))**:
+    - 9 comprehensive unit tests verifying penalty attribution, away Defcon scaling, dynamic minutes thresholding, team nudges, Haaland Anchor vs. Spread solver runs, and additive EV linearity.
+- **Verification**:
+  - `python -m pytest model/`: **161 passed, 0 failed** in 14.88s.
+  - `python scripts/validate_okf.py`: **43 files scanned, 0 errors verified**.
+
 ---
 
 ## Current Status & Next Horizon
 
-All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit with Reactive 4-Chip Projections**, the **Autonomous Gameweek Transition Orchestrator**, the **100% Native FPL Opta Data Engine**, **Phases 1–4 of the Multi-User Live Platform Rebuild**, the **FPL Dugout Rebranding & Complete 6-Surface Fan-Friendly Copy Transformation**, **Frontend Prop Alignment & Pipeline Unification**, and **Promoted Clubs Calibration & Institutional UI Polish** are **complete, robust, and production-verified**.
+All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit with Reactive 4-Chip Projections**, the **Autonomous Gameweek Transition Orchestrator**, the **100% Native FPL Opta Data Engine**, **Phases 1–4 of the Multi-User Live Platform Rebuild**, the **FPL Dugout Rebranding & Complete 6-Surface Fan-Friendly Copy Transformation**, **Frontend Prop Alignment & Pipeline Unification**, **Promoted Clubs Calibration & Institutional UI Polish**, and **Creator-Aligned Model Mechanics & Solver Optimizations** are **complete, robust, and production-verified**.
 
 For complete operational playbooks and design standards:
 - 👉 **[DESIGN.md](file:///E:/Fantasy-Premier-League/DESIGN.md)**

@@ -305,12 +305,16 @@ def _safe_float(val: Any, default: float = 0.0) -> float:
 def predict_player_points(
     player: Union[pd.Series, Dict[str, Any]],
     apply_shrinkage: bool = True,
+    min_minutes_pct: Optional[float] = None,
+    available_minutes: Optional[float] = None,
 ) -> Dict[str, float]:
     """Calculate the 11-component point prediction breakdown for a single player.
 
     Args:
         player: row/dict containing player metrics from model_dataset.csv.
         apply_shrinkage: if True, applies Empirical Bayes shrinkage to raw rates.
+        min_minutes_pct: optional minimum percentage of available minutes (e.g. 0.10 for 10%).
+        available_minutes: optional total available team minutes (e.g. gw * 90.0).
 
     Returns:
         Dict with keys:
@@ -329,6 +333,28 @@ def predict_player_points(
     unused_subs = _safe_float(player.get('fbref_unused_subs'))
     cost = _safe_float(player.get('now_cost', player.get('cost', 0.0)))
     status = str(player.get('status', 'a'))
+
+    # Dynamic minutes filter threshold (zeros out inactive bench fodder below fraction of season)
+    if min_minutes_pct is not None and available_minutes is not None and available_minutes > 0:
+        threshold_mins = float(min_minutes_pct) * float(available_minutes)
+        if total_minutes < threshold_mins and starts == 0.0 and cost < 6.0:
+            return {
+                'c1_app_1_60': 0.0,
+                'c2_app_60_plus': 0.0,
+                'c3_saves': 0.0,
+                'c4_yellow_cards': 0.0,
+                'c5_red_cards': 0.0,
+                'c6_bonus': 0.0,
+                'c7_assists': 0.0,
+                'c8_goals': 0.0,
+                'c9_clean_sheets': 0.0,
+                'c10_goals_conceded': 0.0,
+                'c11_defensive_contributions': 0.0,
+                'expected_points': 0.0,
+                'p_start': 0.0,
+                'p_app': 0.0,
+                'p_60_plus': 0.0,
+            }
 
     # Probabilities
     probs = estimate_playing_probabilities(
@@ -373,6 +399,21 @@ def predict_player_points(
     bonus90 = _safe_float(player.get('long_form_bonus_90'))
     saves90 = _safe_float(player.get('saves_90', player.get('long_form_saves_90')), default=3.0 if position == 'GK' else 0.0)
 
+    # Set-piece & Penalty Equity Attribution (First-class decomposition with team frequency)
+    pk_equity = 0.0
+    if player.get('pk_xg_boost') is not None:
+        pk_equity = _safe_float(player.get('pk_xg_boost'), default=0.0)
+    elif player.get('is_penalty_taker') is True or _safe_float(player.get('penalties_order')) == 1.0:
+        from model.set_pieces import get_team_pk_rate, PK_XG_VALUE
+        team_name = player.get('team', '')
+        team_pk_rate = get_team_pk_rate(team_name)
+        pk_equity = team_pk_rate * PK_XG_VALUE
+    elif _safe_float(player.get('penalties_order')) == 2.0:
+        from model.set_pieces import get_team_pk_rate, PK_XG_VALUE
+        team_name = player.get('team', '')
+        team_pk_rate = get_team_pk_rate(team_name)
+        pk_equity = team_pk_rate * PK_XG_VALUE * 0.25  # ~25% absent-primary equity
+
     # Apply Empirical Bayes shrinkage toward positional priors (Dowman fix)
     if apply_shrinkage:
         priors = POSITIONAL_PRIORS.get(position, POSITIONAL_PRIORS['MID'])
@@ -398,8 +439,6 @@ def predict_player_points(
     c3 = (saves90 / SAVES_PER_POINT) * p_start if position == 'GK' else 0.0
 
     # 4. C4: Yellow Cards (-1 pt)
-    # F-02 fix: removed `- 2.0 * rc90` correction. In FPL, a second yellow that triggers
-    # a red gives BOTH -1 (yellow) AND -3 (red). Both penalties are applied.
     yc90 = _safe_float(player.get('yellow_cards_90'), default=0.12)
     rc90 = _safe_float(player.get('red_cards_90'), default=0.01)
     c4 = YELLOW_CARD_DEDUCTION * yc90 * p_app
@@ -421,9 +460,10 @@ def predict_player_points(
     # 7. C7: Assists (3 pts)
     c7 = ASSIST_POINTS * xa90 * active_ratio
 
-    # 8. C8: Goals (4/5/6 pts based on position)
+    # 8. C8: Goals (4/5/6 pts based on position, with penalty equity included)
     goal_pts = GOAL_POINTS.get(position, 4.0)
-    c8 = goal_pts * xg90 * active_ratio
+    total_xg90 = xg90 + pk_equity
+    c8 = goal_pts * total_xg90 * active_ratio
 
     # 9. C9: Clean Sheets (4 pts GK/DEF, 1 pt MID)
     cs_pts = CLEAN_SHEET_POINTS.get(position, 0.0)
@@ -471,6 +511,8 @@ def predict_all_players(
     data_root: str = 'data',
     save_csv: bool = True,
     season: Optional[str] = None,
+    min_minutes_pct: Optional[float] = None,
+    available_minutes: Optional[float] = None,
 ) -> pd.DataFrame:
     """Generate baseline expected point predictions for all players in a season or given DataFrame."""
     if season is not None:
@@ -494,9 +536,16 @@ def predict_all_players(
             print(f"[{season}] Warning: empty player dataset for season {season}")
             return pd.DataFrame()
 
+    avail_mins = available_minutes if available_minutes is not None else float(gw * 90.0)
+
     predictions = []
     for _, player in df.iterrows():
-        pred = predict_player_points(player, apply_shrinkage=True)
+        pred = predict_player_points(
+            player,
+            apply_shrinkage=True,
+            min_minutes_pct=min_minutes_pct,
+            available_minutes=avail_mins,
+        )
         predictions.append(pred)
 
     pred_df = pd.DataFrame(predictions, index=df.index)

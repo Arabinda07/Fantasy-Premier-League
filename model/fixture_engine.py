@@ -134,6 +134,7 @@ def compute_fixture_multipliers(
     team_stats_map: Dict[str, Dict[str, float]],
     league_avg_xg: float = DEFAULT_LEAGUE_AVG_XG,
     league_avg_xgc: float = DEFAULT_LEAGUE_AVG_XGC,
+    team_nudges: Optional[Dict[str, Dict[str, float]]] = None,
 ) -> Dict[str, float]:
     """Calculate attacking and defensive multipliers for a specific fixture matchup.
 
@@ -150,13 +151,25 @@ def compute_fixture_multipliers(
         team_stats_map: mapping of team names to their blended {'xg90': float, 'xgc90': float}.
         league_avg_xg: baseline league average attacking xG.
         league_avg_xgc: baseline league average defensive xGC.
+        team_nudges: optional dictionary of team-level multipliers e.g. {'Spurs': {'xg_mult': 1.10, 'xgc_mult': 0.90}}.
 
     Returns:
         Dict with keys: 'attack_mult', 'fixture_xgc90', 'opp_xg90', 'is_home'
     """
     # Safe lookups with fallback to PROMOTED_TEAM_PRIORS if team has no match logs
-    team_stats = team_stats_map.get(team_name, {**PROMOTED_TEAM_PRIORS, 'is_promoted': True})
-    opp_stats = team_stats_map.get(opponent_name, {**PROMOTED_TEAM_PRIORS, 'is_promoted': True})
+    team_stats = dict(team_stats_map.get(team_name, {**PROMOTED_TEAM_PRIORS, 'is_promoted': True}))
+    opp_stats = dict(team_stats_map.get(opponent_name, {**PROMOTED_TEAM_PRIORS, 'is_promoted': True}))
+
+    # Apply team tactical / managerial nudges if specified
+    if team_nudges:
+        t_nudge = team_nudges.get(team_name, {})
+        o_nudge = team_nudges.get(opponent_name, {})
+        if t_nudge:
+            team_stats['xgc90'] = _safe_float(team_stats.get('xgc90'), default=PROMOTED_TEAM_PRIORS['xgc90']) * _safe_float(t_nudge.get('xgc_mult', t_nudge.get('xgc90_mult', 1.0)), 1.0)
+            team_stats['xg90'] = _safe_float(team_stats.get('xg90'), default=PROMOTED_TEAM_PRIORS['xg90']) * _safe_float(t_nudge.get('xg_mult', t_nudge.get('xg90_mult', 1.0)), 1.0)
+        if o_nudge:
+            opp_stats['xgc90'] = _safe_float(opp_stats.get('xgc90'), default=PROMOTED_TEAM_PRIORS['xgc90']) * _safe_float(o_nudge.get('xgc_mult', o_nudge.get('xgc90_mult', 1.0)), 1.0)
+            opp_stats['xg90'] = _safe_float(opp_stats.get('xg90'), default=PROMOTED_TEAM_PRIORS['xg90']) * _safe_float(o_nudge.get('xg_mult', o_nudge.get('xg90_mult', 1.0)), 1.0)
 
     team_xgc90 = _safe_float(team_stats.get('xgc90'), default=PROMOTED_TEAM_PRIORS['xgc90'])
     opp_xg90 = _safe_float(opp_stats.get('xg90'), default=PROMOTED_TEAM_PRIORS['xg90'])
@@ -261,6 +274,9 @@ def predict_player_fixture(
     league_avg_xgc: float = DEFAULT_LEAGUE_AVG_XGC,
     alpha: float = DEFAULT_ALPHA,
     m0: float = DEFAULT_MINS_FILTER,
+    team_nudges: Optional[Dict[str, Dict[str, float]]] = None,
+    min_minutes_pct: Optional[float] = None,
+    available_minutes: Optional[float] = None,
 ) -> Dict[str, Any]:
     """Calculate fixture-adjusted expected points for a single player in a single match.
 
@@ -273,6 +289,9 @@ def predict_player_fixture(
         league_avg_xgc: league average defending xGC.
         alpha: short-form blending weight.
         m0: Empirical Bayes shrinkage minutes filter.
+        team_nudges: optional dictionary of team-level multipliers.
+        min_minutes_pct: optional minimum percentage of available season minutes.
+        available_minutes: optional total available team minutes.
 
     Returns:
         Dict containing fixture-adjusted expected points, component breakdown,
@@ -323,7 +342,9 @@ def predict_player_fixture(
     adj_dc90 = apply_empirical_bayes_shrinkage(raw_dc90, sample_mins, priors['dc90'], m0)
 
     # 3. Fixture Multipliers
-    mults = compute_fixture_multipliers(team, opponent, is_home, team_stats_map, league_avg_xg, league_avg_xgc)
+    mults = compute_fixture_multipliers(
+        team, opponent, is_home, team_stats_map, league_avg_xg, league_avg_xgc, team_nudges=team_nudges
+    )
     attack_mult = mults['attack_mult']
     fixture_xgc90 = mults['fixture_xgc90']
     opp_xg90 = mults['opp_xg90']
@@ -349,11 +370,18 @@ def predict_player_fixture(
     fixture_player['long_form_bonus_90'] = fixture_bonus90
 
     # Defensive Contribution Scaling (C11): defenders under pressure make more tackles/blocks/clearances
-    fixture_dc90 = adj_dc90 * min(1.8, max(0.5, math.pow(opp_xg90 / max(0.2, league_avg_xg), 0.40)))
+    # Creator calibration: CBs / defenders get +5% DC volume away from home due to sustained defensive siege
+    venue_dc_factor = 1.05 if (not is_home and position in ('DEF', 'MID')) else 1.00
+    fixture_dc90 = adj_dc90 * min(1.8, max(0.5, math.pow(opp_xg90 / max(0.2, league_avg_xg), 0.40))) * venue_dc_factor
     fixture_player['long_form_defensive_contribution_90'] = fixture_dc90
 
     # 5. Run prediction engine (with pre-shrunken rates)
-    points_breakdown = predict_player_points(fixture_player, apply_shrinkage=False)
+    points_breakdown = predict_player_points(
+        fixture_player,
+        apply_shrinkage=False,
+        min_minutes_pct=min_minutes_pct,
+        available_minutes=available_minutes,
+    )
 
     result = {
         'fixture_opponent': opponent,
@@ -379,6 +407,8 @@ def predict_gameweek_fixtures(
     data_root: str = 'data',
     save_csv: bool = True,
     dynamic_dataset: bool = False,
+    team_nudges: Optional[Dict[str, Dict[str, float]]] = None,
+    min_minutes_pct: Optional[float] = None,
 ) -> pd.DataFrame:
     """Predict fixture-adjusted expected points for all players in a given gameweek.
 
@@ -486,7 +516,10 @@ def predict_gameweek_fixtures(
             # Standard single match
             fix, is_home = scheduled[0]
             pred = predict_player_fixture(
-                player, fix, is_home, team_stats_map, league_avg_xg, league_avg_xgc, alpha, m0
+                player, fix, is_home, team_stats_map, league_avg_xg, league_avg_xgc, alpha, m0,
+                team_nudges=team_nudges,
+                min_minutes_pct=min_minutes_pct,
+                available_minutes=float(gw * 90.0),
             )
             rec = {
                 'gw': gw,
@@ -539,7 +572,10 @@ def predict_gameweek_fixtures(
                     fixture_player['season_starts'] = p_start_base * 0.90
 
                 pred = predict_player_fixture(
-                    fixture_player, fix, is_home, team_stats_map, league_avg_xg, league_avg_xgc, alpha, m0
+                    fixture_player, fix, is_home, team_stats_map, league_avg_xg, league_avg_xgc, alpha, m0,
+                    team_nudges=team_nudges,
+                    min_minutes_pct=min_minutes_pct,
+                    available_minutes=float(gw * 90.0),
                 )
                 match_preds.append(pred)
                 total_xp += pred['expected_points']

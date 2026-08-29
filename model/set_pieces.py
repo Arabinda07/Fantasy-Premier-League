@@ -34,6 +34,42 @@ from model.prediction_engine import _safe_float
 # PL average ~0.10-0.12 penalties won per match; top teams can reach ~0.20.
 DEFAULT_TEAM_PK_RATE_PER_90: float = 0.12
 
+# Calibrated historical penalty win frequencies per 90 minutes of play
+TEAM_PK_RATES: Dict[str, float] = {
+    # High Box-Touch & Penalty Winning Tier (~7-9 penalties/season)
+    'Man City': 0.18,
+    'Chelsea': 0.18,
+    'Arsenal': 0.16,
+    'Liverpool': 0.16,
+    'Man Utd': 0.15,
+    # Standard Tier (~4-5 penalties/season)
+    'Aston Villa': 0.12,
+    'Newcastle': 0.12,
+    'Spurs': 0.12,
+    'Brighton': 0.12,
+    'Brentford': 0.12,
+    'West Ham': 0.11,
+    'Crystal Palace': 0.11,
+    'Fulham': 0.11,
+    'Bournemouth': 0.10,
+    # Low Box-Touch Tier (~2-3 penalties/season)
+    'Everton': 0.07,
+    'Nott\'m Forest': 0.07,
+    'Wolves': 0.07,
+    'Leicester': 0.07,
+    'Ipswich': 0.06,
+    'Southampton': 0.06,
+    'Coventry': 0.06,
+    'Hull': 0.06,
+    'Sunderland': 0.06,
+}
+
+def get_team_pk_rate(team_name: Optional[str] = None) -> float:
+    """Retrieve calibrated team penalty frequency per 90 minutes."""
+    if not team_name:
+        return DEFAULT_TEAM_PK_RATE_PER_90
+    return TEAM_PK_RATES.get(team_name, DEFAULT_TEAM_PK_RATE_PER_90)
+
 # Penalty conversion rate (league-wide historical average ~78%).
 PK_CONVERSION_RATE: float = 0.78
 
@@ -264,8 +300,10 @@ def enrich_predictions_with_set_pieces(
         p_code = int(row.get('player_code', 0))
         position = str(row.get('position', 'MID')).upper()
         p_start = _safe_float(row.get('p_start', 0.0))
+        team = str(row.get('team', ''))
 
         roles = role_lookup.get(p_code, {'pk_order': 0.0, 'fk_order': 0.0, 'ck_order': 0.0})
+        team_pk = get_team_pk_rate(team)
 
         equity = compute_set_piece_equity(
             player_code=p_code,
@@ -274,6 +312,7 @@ def enrich_predictions_with_set_pieces(
             fk_order=roles['fk_order'],
             ck_order=roles['ck_order'],
             p_on_pitch=p_start,
+            team_pk_rate=team_pk,
         )
 
         delta_c7_list.append(equity['delta_c7_assists'])

@@ -358,6 +358,10 @@ def solve_initial_squad(
     excluded_player_codes: Optional[Union[List[Union[int, str]], str]] = None,
     forced_captain_code: Optional[Union[int, str]] = None,
     forced_vice_captain_code: Optional[Union[int, str]] = None,
+    max_player_cost: Optional[float] = None,
+    max_premium_count: Optional[int] = None,
+    premium_cost_threshold: float = 10.0,
+    min_spend: Optional[float] = None,
 ) -> SquadSolution:
     """Solve for the optimal 15-man squad, starting XI, captain, and bench.
 
@@ -378,6 +382,10 @@ def solve_initial_squad(
         excluded_player_codes: list or comma-separated string of player names/codes to exclude.
         forced_captain_code: player name or code to force as captain.
         forced_vice_captain_code: player name or code to force as vice-captain.
+        max_player_cost: maximum allowed cost for any individual player (e.g. 12.5 to force Spread build).
+        max_premium_count: maximum number of premium players allowed (cost >= premium_cost_threshold).
+        premium_cost_threshold: price threshold in £M defining premium tier (default 10.0).
+        min_spend: optional minimum budget expenditure constraint (e.g. 98.5) to prevent idle bank leaks.
 
     Returns:
         SquadSolution object.
@@ -402,12 +410,13 @@ def solve_initial_squad(
     bench_weight = 1.0 if is_bench_boost else (0.0 if is_free_hit else 0.05)
     bench_cost_penalty = 0.01 if is_free_hit else 0.0
 
-    # Objective function
+    # Objective function with tiny bank-utilization tiebreaker on starters
     prob += pulp.lpSum(
         df.loc[i, 'opt_points'] * s[i] +
         capt_multiplier * df.loc[i, 'captain_points'] * c[i] +
         bench_weight * df.loc[i, 'opt_points'] * (x[i] - s[i]) -
-        bench_cost_penalty * df.loc[i, 'cost'] * (x[i] - s[i])
+        bench_cost_penalty * df.loc[i, 'cost'] * (x[i] - s[i]) +
+        0.0001 * df.loc[i, 'cost'] * s[i]
         for i in indices
     )
 
@@ -492,6 +501,19 @@ def solve_initial_squad(
             if not vice_idx.empty:
                 prob += v[vice_idx[0]] == 1, "Forced_Vice_Captain_Constraint"
                 prob += s[vice_idx[0]] == 1, "Forced_Vice_Must_Start"
+
+    # 7. Structural Cost Constraints (Max Player Cost, Premium Quotas, Min Budget Spend)
+    if max_player_cost is not None:
+        for i in indices:
+            if df.loc[i, 'cost'] > max_player_cost:
+                prob += x[i] == 0, f"Max_Player_Cost_{i}"
+
+    if max_premium_count is not None:
+        prem_indices = [i for i in indices if df.loc[i, 'cost'] >= premium_cost_threshold]
+        prob += pulp.lpSum(x[i] for i in prem_indices) <= max_premium_count, "Max_Premium_Quota"
+
+    if min_spend is not None:
+        prob += pulp.lpSum(df.loc[i, 'cost'] * x[i] for i in indices) >= min_spend, "Min_Budget_Spend"
 
     # Solve using CBC solver
     solver = pulp.PULP_CBC_CMD(msg=False)
@@ -643,6 +665,9 @@ def solve_weekly_transfers(
     excluded_player_codes: Optional[Union[List[Union[int, str]], str]] = None,
     forced_captain_code: Optional[Union[int, str]] = None,
     forced_vice_captain_code: Optional[Union[int, str]] = None,
+    max_player_cost: Optional[float] = None,
+    max_premium_count: Optional[int] = None,
+    premium_cost_threshold: float = 10.0,
 ) -> TransferSolution:
     """Solve for optimal transfers in/out from an existing 15-man squad."""
     df = prepare_solver_dataframe(df, season=season, data_root=data_root, strategy=strategy, lambda_risk=lambda_risk)
@@ -785,6 +810,16 @@ def solve_weekly_transfers(
                 prob += v[vice_idx[0]] == 1, "Forced_Vice_Captain_Constraint"
                 prob += s[vice_idx[0]] == 1, "Forced_Vice_Must_Start"
 
+    # Structural Cost Constraints (Max Player Cost, Premium Quotas)
+    if max_player_cost is not None:
+        for i in indices:
+            if df.loc[i, 'cost'] > max_player_cost:
+                prob += x[i] == 0, f"Max_Player_Cost_{i}"
+
+    if max_premium_count is not None:
+        prem_indices = [i for i in indices if df.loc[i, 'cost'] >= premium_cost_threshold]
+        prob += pulp.lpSum(x[i] for i in prem_indices) <= max_premium_count, "Max_Premium_Quota"
+
     solver = pulp.PULP_CBC_CMD(msg=False)
     prob.solve(solver)
     status_str = pulp.LpStatus[prob.status]
@@ -918,6 +953,9 @@ def solve_multi_horizon_transfers(
     forced_captain_code: Optional[Union[int, str]] = None,
     forced_vice_captain_code: Optional[Union[int, str]] = None,
     chip: Optional[str] = None,
+    max_player_cost: Optional[float] = None,
+    max_premium_count: Optional[int] = None,
+    premium_cost_threshold: float = 10.0,
 ) -> MultiHorizonSolution:
     """Solve multi-gameweek lookahead optimization across H gameweeks (H=3..5).
 
@@ -945,6 +983,9 @@ def solve_multi_horizon_transfers(
         forced_captain_code: player code that must be captain in GW 0.
         forced_vice_captain_code: player code that must be vice-captain in GW 0.
         chip: optional active chip for first gameweek ('wildcard', 'freehit', 'bboost', '3xc').
+        max_player_cost: maximum individual player cost allowed across horizon.
+        max_premium_count: maximum number of premium players allowed per gameweek.
+        premium_cost_threshold: price threshold in £M defining premium tier (default 10.0).
 
     Returns:
         MultiHorizonSolution containing step-by-step transfer schedule and lineups.
@@ -1108,38 +1149,35 @@ def solve_multi_horizon_transfers(
         prob += pulp.lpSum([u[(c, t)] for c in all_codes_set]) <= max_transfers_per_gw, f"trans_max_{t}"
 
         # 7. FT Rollover & Hits Constraint (F-05 fix: model FT accumulation)
-        # ft_var[t] tracks available free transfers at each horizon step
         if t == 0:
-            # First GW uses the given free_transfers value directly
             ft_t_val = free_transfers if not (chip in ('wildcard', 'freehit')) else 15
             prob += hits[t] >= pulp.lpSum([u[(c, t)] for c in all_codes_set]) - ft_t_val, f"hits_bound_{t}"
         else:
-            # Subsequent GWs: FT accumulates based on previous GW's transfer activity
-            # Linearized approximation: ft[t] = min(5, ft[t-1] - transfers[t-1] + 1)
-            # We use ft_var auxiliary variables for dynamic FT tracking
             transfers_prev = pulp.lpSum([u[(c, t - 1)] for c in all_codes_set])
-            # If t=1 and chip was freehit/wildcard, previous GW didn't consume FTs
             if t == 1 and chip in ('wildcard', 'freehit'):
                 effective_prev_ft = free_transfers
             else:
                 effective_prev_ft = free_transfers if t == 1 else 1
-            # Conservative bound: at least 1 FT, at most 5
-            # hits[t] >= transfers[t] - available_ft[t]
-            # Since exact FT rollover requires nonlinear min(), use conservative bound of 1 FT
-            # for t >= 2 (this is the same as before but with correct t=1 handling)
             ft_t_val = effective_prev_ft if t == 1 else 1
             prob += hits[t] >= pulp.lpSum([u[(c, t)] for c in all_codes_set]) - ft_t_val, f"hits_bound_{t}"
 
         # 8. Budget Constraint
         prob += pulp.lpSum([all_meta.get(c, {}).get('cost', 5.0) * x[(c, t)] for c in all_codes_set]) <= total_allowed_budget, f"budget_{t}"
 
+        # 9. Structural Cost Constraints
+        if max_player_cost is not None:
+            for c in all_codes_set:
+                if all_meta.get(c, {}).get('cost', 5.0) > max_player_cost:
+                    prob += x[(c, t)] == 0, f"max_cost_{c}_{t}"
+
+        if max_premium_count is not None:
+            prem_codes = [c for c in all_codes_set if all_meta.get(c, {}).get('cost', 5.0) >= premium_cost_threshold]
+            prob += pulp.lpSum([x[(c, t)] for c in prem_codes]) <= max_premium_count, f"max_premium_{t}"
+
     # F-06 fix: Free Hit squad reversion — squad at t=1 must revert to pre-FH initial state
     if chip == 'freehit' and horizon >= 2:
         for c in all_codes_set:
             is_init = 1 if c in initial_codes_set else 0
-            # After Free Hit GW (t=0), squad at t=1 reverts to initial squad
-            # Override the continuity constraint: x[c,1] must equal initial state + transfers at t=1
-            # The reversion means the "base" for t=1 is initial squad, not the FH squad
             prob += x[(c, 1)] == is_init + u[(c, 1)] - v[(c, 1)], f"fh_revert_{c}"
             prob += v[(c, 1)] <= is_init, f"fh_revert_sell_{c}"
 

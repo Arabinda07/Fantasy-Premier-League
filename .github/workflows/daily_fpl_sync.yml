@@ -4,6 +4,8 @@ on:
   schedule:
     # Runs every day at 06:00 UTC (07:00 BST / 11:30 IST)
     - cron: '0 6 * * *'
+    # Post-Press Conference Friday Run at 16:00 UTC (17:00 BST / 21:30 IST)
+    - cron: '0 16 * * 5'
   # Allows you to trigger the workflow manually anytime from GitHub web UI:
   workflow_dispatch:
     inputs:

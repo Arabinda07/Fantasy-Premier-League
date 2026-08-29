@@ -1,6 +1,6 @@
 {
   "evaluated_gw": 1,
-  "evaluated_at": "2026-08-28T17:50:26.602473+00:00",
+  "evaluated_at": "2026-08-29T06:59:45.747591+00:00",
   "season": "2026-27",
   "total_players": 616,
   "active_players": 310,
@@ -26,7 +26,7 @@
       "count": 205,
       "mae": 1.23,
       "rmse": 2.54,
-      "meanPred": 1.26,
+      "meanPred": 1.27,
       "meanAct": 1.66,
       "bias": -0.39,
       "status": "UNDER_PROJECTED"
@@ -102,7 +102,7 @@
       "player": "Lindelöf",
       "team": "Aston Villa",
       "pos": "ASSET",
-      "pred": 1.78,
+      "pred": 1.79,
       "actual": -2,
       "diff": "-3.8",
       "reason": "Tactical substitution or match blank"

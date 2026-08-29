@@ -1,0 +1,672 @@
+:root {
+  /* Brand Tokens - Arabinda Saha Design System v3.0 */
+  --brand-blue: #066AFE;
+  --brand-cobalt: #2E35EE;
+  --brand-indigo: #0A1333;
+  --brand-obsidian: #080C1A;
+  --brand-violet: #8338EC;
+  --brand-orchid: #E040FB;
+  --brand-tangerine: #FF7A00;
+  --brand-orange: #FF5E1E;
+  --brand-amber: #FFB020;
+  --brand-lavender: #C4B5FD;
+  --brand-mint: #00A389;
+  --brand-white: #FFFFFF;
+  --brand-slate: #94A3B8;
+
+  /* Full-Bleed Atmospheric Gradients */
+  --grad-aurora-blue: radial-gradient(circle at 85% 20%, rgba(255, 122, 0, 0.45) 0%, transparent 50%),
+                      radial-gradient(circle at 15% 85%, rgba(46, 53, 238, 0.4) 0%, transparent 60%),
+                      #080F26;
+
+  --grad-sunset-dark: radial-gradient(circle at 85% 20%, rgba(255, 122, 0, 0.35) 0%, transparent 55%),
+                      radial-gradient(circle at 20% 85%, rgba(255, 94, 30, 0.2) 0%, transparent 50%),
+                      linear-gradient(145deg, #1C0F08 0%, #2A1409 50%, #150904 100%);
+
+  --grad-indigo-discovery: radial-gradient(circle at 80% 20%, rgba(6, 106, 254, 0.4) 0%, transparent 50%),
+                           radial-gradient(circle at 15% 80%, rgba(0, 163, 137, 0.25) 0%, transparent 55%),
+                           #0A1333;
+
+  --grad-profile-radiance: radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.2) 0%, transparent 50%),
+                           linear-gradient(135deg, #2E35EE 0%, #8338EC 50%, #E040FB 100%);
+
+  --grad-obsidian-scale: radial-gradient(circle at 80% 15%, rgba(46, 53, 238, 0.35) 0%, transparent 50%),
+                         radial-gradient(circle at 20% 85%, rgba(255, 176, 32, 0.25) 0%, transparent 50%),
+                         #080C1A;
+
+  /* Typography */
+  --font-display: 'Space Grotesk', 'DM Sans', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Geometry & Spacing */
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 32px;
+  --radius-pill: 9999px;
+  --safe-margin: 64px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: #03060C;
+  color: var(--brand-white);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  padding: 40px 20px 80px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Control Bar */
+.control-bar {
+  background: rgba(8, 12, 26, 0.92);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-pill);
+  padding: 12px 28px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 40px;
+  position: sticky;
+  top: 20px;
+  z-index: 1000;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+.brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--brand-white);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding-right: 18px;
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.brand-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--brand-mint);
+}
+
+.btn {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--brand-blue);
+  color: var(--brand-white);
+}
+
+.btn-primary:hover {
+  background: #055FE5;
+  transform: translateY(-1px);
+}
+
+.btn-accent {
+  background: var(--brand-orange);
+  color: var(--brand-white);
+}
+
+.btn-accent:hover {
+  background: #E04D12;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--brand-white);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Slide Wrapper & Individual Download Button */
+.slide-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.slide-download-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.slide-download-btn:hover {
+  background: var(--brand-blue);
+  border-color: var(--brand-blue);
+  transform: translateY(-1px);
+}
+
+/* Carousel Grid */
+.carousel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(540px, 1fr));
+  gap: 56px;
+  max-width: 1240px;
+  width: 100%;
+  justify-items: center;
+}
+
+/* Master Slide Canvas (Strict 1080 x 1350 px, 4:5 Aspect Ratio) */
+.slide-canvas {
+  width: 1080px;
+  height: 1350px;
+  min-width: 1080px;
+  min-height: 1350px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--safe-margin);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  transform-origin: top left;
+  zoom: 0.5;
+  border-radius: 4px;
+}
+
+/* Halftone Texture Overlay */
+.halftone-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1.5px, transparent 1.5px);
+  background-size: 32px 32px;
+  opacity: 0.35;
+}
+
+/* Header & Footer */
+.slide-header-minimal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+.slide-number-subtle {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  opacity: 0.9;
+}
+
+.author-watermark {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+}
+
+.slide-footer-minimal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+  padding-top: 16px;
+}
+
+.footer-handle {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.swipe-indicator-minimal {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Slide Body - Poster Architecture */
+.slide-body {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  padding: 20px 0 10px 0;
+  gap: 20px;
+}
+
+/* Gradients */
+.slide-bg-cover {
+  background: var(--grad-aurora-blue);
+  color: var(--brand-white);
+}
+
+.slide-bg-obsidian {
+  background: var(--grad-obsidian-scale);
+  color: var(--brand-white);
+}
+
+.slide-bg-indigo {
+  background: var(--grad-indigo-discovery);
+  color: var(--brand-white);
+}
+
+.slide-bg-radiance {
+  background: var(--grad-profile-radiance);
+  color: var(--brand-white);
+}
+
+.slide-bg-sunset {
+  background: var(--grad-sunset-dark);
+  color: var(--brand-white);
+}
+
+/* Poster Split Layout (For Slides 3, 4, 5 with Diagrams) */
+.poster-split-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: center;
+  flex: 1;
+}
+
+.poster-card-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.poster-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.poster-card-tag {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.poster-card-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.poster-card-desc {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.4;
+}
+
+/* User's FPL Squad Screenshot Frame */
+.fpl-squad-pitch-frame {
+  width: 100%;
+  max-width: 480px;
+  border-radius: var(--radius-md);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  background: #11052C;
+}
+
+.fpl-squad-pitch-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* SVG Vector Pitch Graphic */
+.svg-pitch-canvas {
+  width: 100%;
+  max-width: 450px;
+  height: 480px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, #166534 0%, #0F3F21 100%);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Poster Typography */
+.poster-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  width: fit-content;
+}
+
+/* Giant Scroll-Stopping Cover Headline */
+.cover-hero-title {
+  font-family: var(--font-display);
+  font-size: 72px;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  color: #FFFFFF;
+}
+
+.cover-sub-promise {
+  font-family: var(--font-body);
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--brand-amber);
+  margin-top: 14px;
+}
+
+.poster-title-slide {
+  font-family: var(--font-display);
+  font-size: 54px;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: #FFFFFF;
+}
+
+.poster-lead {
+  font-family: var(--font-body);
+  font-size: 27px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.92);
+  margin-top: 8px;
+}
+
+/* Editorial 3-Column Grid for Slide 1 */
+.editorial-3col-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+.editorial-pillar-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-md);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pillar-number {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--brand-mint);
+  letter-spacing: 0.08em;
+}
+
+.pillar-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.pillar-desc {
+  font-size: 15.5px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.4;
+}
+
+/* Editorial 2-Column Grid for Slide 2 (The Emotion Trap) */
+.editorial-2col-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  width: 100%;
+  flex: 1;
+}
+
+.emotion-card {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius-md);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.emotion-card.human {
+  border-left: 5px solid var(--brand-tangerine);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.emotion-card.model {
+  border-left: 5px solid var(--brand-mint);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.emotion-card-header {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.emotion-step-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.emotion-step-label {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.emotion-step-title {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.emotion-step-desc {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.35;
+}
+
+/* Slide 6 Rules & CTA Grid */
+.contract-2x2-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  width: 100%;
+}
+
+.contract-rule-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-left: 4px solid var(--brand-mint);
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contract-rule-num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--brand-mint);
+  letter-spacing: 0.08em;
+}
+
+.contract-rule-text {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.3;
+}
+
+.cta-grand-box {
+  background: rgba(0, 163, 137, 0.18);
+  border: 2px solid var(--brand-mint);
+  border-radius: var(--radius-md);
+  padding: 26px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 20px 40px rgba(0, 163, 137, 0.2);
+}
+
+.cta-grand-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.cta-grand-badges {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.cta-badge-option {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+/* Takeaway Banner */
+.poster-takeaway-banner {
+  background: rgba(8, 12, 26, 0.78);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+  padding: 18px 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.poster-takeaway-text {
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+/* Print & PDF Export */
+@page {
+  size: 1080px 1350px;
+  margin: 0;
+}
+
+@media print {
+  body {
+    background: transparent !important;
+    padding: 0 !important;
+  }
+  .control-bar, .slide-download-btn {
+    display: none !important;
+  }
+  .carousel-grid {
+    display: block !important;
+    max-width: 1080px !important;
+  }
+  .slide-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .slide-canvas {
+    zoom: 1 !important;
+    width: 1080px !important;
+    height: 1350px !important;
+    page-break-after: always !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+}

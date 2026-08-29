@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Can An Algorithm Play Fantasy Football? - Arabinda Saha</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Control Bar -->
+  <div class="control-bar">
+    <div class="brand-badge">
+      <div class="brand-dot"></div>
+      <span>FPL PREDICTION ENGINE // CAROUSEL EXPORTER</span>
+    </div>
+    
+    <!-- PPTX Direct Download -->
+    <a href="fpl-algorithm-experiment.pptx" download="Arabinda-Saha-FPL-Algorithm-Experiment.pptx" class="btn btn-accent" style="text-decoration: none;">
+      <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H6v-2h6v2zm4-4H6v-2h10v2zm0-4H6V7h10v2z"/></svg>
+      Download PowerPoint (.pptx)
+    </a>
+
+    <!-- Multi-Page PDF Download -->
+    <button class="btn btn-primary" onclick="exportFullPDF()">
+      <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+      Download Multi-Page PDF (1080x1350)
+    </button>
+
+    <button class="btn btn-secondary" onclick="toggleZoom()">
+      <span id="zoom-label">Zoom: 50%</span>
+    </button>
+  </div>
+
+  <!-- Carousel Grid -->
+  <div class="carousel-grid">
+
+    <!-- ==========================================
+         SLIDE 1: THE HOOK / COVER (Text Only)
+         ========================================== -->
+    <div class="slide-wrapper">
+      <div class="slide-canvas slide-bg-cover" id="slide-1">
+        <div class="halftone-overlay"></div>
+        <div class="slide-header-minimal">
+          <span class="slide-number-subtle">01 / 06</span>
+          <span class="author-watermark">Arabinda Saha</span>
+        </div>
+
+        <div class="slide-body">
+          <div class="poster-full-layout">
+            <div>
+              <div class="poster-badge" style="margin-bottom: 20px;">A LIVE BENCHMARK EXPERIMENT // 2026-27</div>
+              <h1 class="cover-hero-title">
+                I MISSED GAMEWEEK 1.<br>
+                SO I AM LETTING AN ALGORITHM RUN MY ENTIRE FPL SEASON FROM 0 POINTS.
+              </h1>
+              <p class="cover-sub-promise">
+                37 Gameweeks. £100.0M Budget. Zero Human Overrides.
+              </p>
+            </div>
+
+            <!-- 3 Architectural Pillars -->
+            <div class="editorial-3col-grid">
+              <div class="editorial-pillar-card">
+                <span class="pillar-number">PILLAR 01</span>
+                <div class="pillar-title">Match Data Ingestion</div>
+                <div class="pillar-desc">Pulls underlying xG, xA, shot locations, and rotation risk factors.</div>
+              </div>
+
+              <div class="editorial-pillar-card">
+                <span class="pillar-number">PILLAR 02</span>
+                <div class="pillar-title">11 Probability Models</div>
+                <div class="pillar-desc">Deconstructs points into discrete, Poisson-adjusted match events.</div>
+              </div>
+
+              <div class="editorial-pillar-card">
+                <span class="pillar-number">PILLAR 03</span>
+                <div class="pillar-title">Integer Linear Solver</div>
+                <div class="pillar-desc">Mathematically optimizes the 15-player squad across a 5-week rolling horizon.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="poster-takeaway-banner">
+            <span style="font-family: var(--font-mono); font-size: 15px; color: var(--brand-amber); font-weight: 700;">THE CHALLENGE</span>
+            <span class="poster-takeaway-text">Can pure mathematics beat 11 million human managers over 37 weeks? →</span>
+          </div>
+        </div>
+
+        <div class="slide-footer-minimal">
+          <span class="footer-handle">@robin0607saha</span>
+          <span class="swipe-indicator-minimal">Swipe →</span>
+        </div>
+      </div>
+      <button class="slide-download-btn" onclick="downloadSingleSlide(1, 'Slide-01-The-Hook-FPL.png')">
+        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Download Slide 1 (1080x1350 PNG)
+      </button>
+    </div>
+
+    <!-- ==========================================
+         SLIDE 2: THE EMOTION TRAP (Text Only)
+         ========================================== -->
+    <div class="slide-wrapper">
+      <div class="slide-canvas slide-bg-obsidian" id="slide-2">
+        <div class="halftone-overlay"></div>
+        <div class="slide-header-minimal">
+          <span class="slide-number-subtle">02 / 06</span>
+          <span class="author-watermark">Arabinda Saha</span>
+        </div>
+
+        <div class="slide-body">
+          <div class="poster-full-layout">
+            <div>
+              <h2 class="poster-title-slide">THE FRIDAY 1:00 AM TRAP</h2>
+              <p class="poster-lead">Why rational football fans make completely irrational fantasy decisions.</p>
+            </div>
+
+            <div class="editorial-2col-grid">
+              <!-- Human Loop -->
+              <div class="emotion-card human">
+                <div class="emotion-card-header" style="color: var(--brand-tangerine);">THE 5-DAY HUMAN LOOP</div>
+                
+                <div class="emotion-step-row">
+                  <span class="emotion-step-label">MON — THU</span>
+                  <div class="emotion-step-title">Rational Analysis</div>
+                  <div class="emotion-step-desc">Study underlying numbers, check injury news, and build a disciplined plan.</div>
+                </div>
+
+                <div class="emotion-step-row" style="background: rgba(255, 122, 0, 0.12); padding: 10px 14px; border-radius: 8px;">
+                  <span class="emotion-step-label" style="color: var(--brand-tangerine);">FRIDAY 1:00 AM</span>
+                  <div class="emotion-step-title">The Emotional Knee-Jerk</div>
+                  <div class="emotion-step-desc">Throw the plan away. Captain a differential purely on gut feeling.</div>
+                </div>
+
+                <div class="emotion-step-row">
+                  <span class="emotion-step-label">SUNDAY 94TH MIN</span>
+                  <div class="emotion-step-title">Clean Sheet Heartbreak</div>
+                  <div class="emotion-step-desc">Wiped out by a deflected cross. Rage-quit until next weekend.</div>
+                </div>
+              </div>
+
+              <!-- Model Loop -->
+              <div class="emotion-card model">
+                <div class="emotion-card-header" style="color: var(--brand-mint);">THE MATHEMATICAL REMEDY</div>
+                
+                <div class="emotion-step-row">
+                  <span class="emotion-step-label">STEP 01</span>
+                  <div class="emotion-step-title">Objective Baseline Priors</div>
+                  <div class="emotion-step-desc">Evaluates shot quality and venue dynamics without human narrative bias.</div>
+                </div>
+
+                <div class="emotion-step-row" style="background: rgba(0, 163, 137, 0.12); padding: 10px 14px; border-radius: 8px;">
+                  <span class="emotion-step-label" style="color: var(--brand-mint);">STEP 02</span>
+                  <div class="emotion-step-title">Bayesian Shrinkage</div>
+                  <div class="emotion-step-desc">Blends 6-week short form with multi-season baselines to stop cameo overreactions.</div>
+                </div>
+
+                <div class="emotion-step-row">
+                  <span class="emotion-step-label">STEP 03</span>
+                  <div class="emotion-step-title">5-Week Horizon Solver</div>
+                  <div class="emotion-step-desc">Optimizes for rolling multi-week expectation rather than single-week panic.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="poster-takeaway-banner" style="border-color: var(--brand-mint);">
+            <span style="font-family: var(--font-mono); font-size: 15px; color: var(--brand-mint); font-weight: 700;">CORE PRINCIPLE</span>
+            <span class="poster-takeaway-text">Emotion maximizes variance. Mathematical solvers optimize expectation.</span>
+          </div>
+        </div>
+
+        <div class="slide-footer-minimal">
+          <span class="footer-handle">@robin0607saha</span>
+          <span class="swipe-indicator-minimal">Swipe →</span>
+        </div>
+      </div>
+      <button class="slide-download-btn" onclick="downloadSingleSlide(2, 'Slide-02-The-Emotion-Trap.png')">
+        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Download Slide 2 (1080x1350 PNG)
+      </button>
+    </div>
+
+    <!-- ==========================================
+         SLIDE 3: 11 PROBABILITIES (Tactical Diagram - Zero Overlap)
+         ========================================== -->
+    <div class="slide-wrapper">
+      <div class="slide-canvas slide-bg-indigo" id="slide-3">
+        <div class="halftone-overlay"></div>
+        <div class="slide-header-minimal">
+          <span class="slide-number-subtle">03 / 06</span>
+          <span class="author-watermark">Arabinda Saha</span>
+        </div>
+
+        <div class="slide-body">
+          <div>
+            <h2 class="poster-title-slide">DECONSTRUCTING POINTS INTO MATH</h2>
+            <p class="poster-lead">The engine does not guess raw points. It models 11 distinct event probabilities.</p>
+          </div>
+
+          <div class="poster-split-layout">
+            <div class="poster-card-stack">
+              <div class="poster-card" style="border-left: 4px solid var(--brand-tangerine);">
+                <span class="poster-card-tag" style="color: var(--brand-tangerine);">01. ATTACKING SUITE</span>
+                <div class="poster-card-title" style="font-size: 18px;">xG90 • xA90 • Set Pieces</div>
+                <div class="poster-card-desc">Goal threat by pitch zone, open-play assist lanes, and direct penalty shares.</div>
+              </div>
+
+              <div class="poster-card" style="border-left: 4px solid var(--brand-blue);">
+                <span class="poster-card-tag" style="color: var(--brand-blue);">02. DEFENSE ENGINE</span>
+                <div class="poster-card-title" style="font-size: 18px;">Poisson Clean Sheet • Saves</div>
+                <div class="poster-card-desc">Poisson clean sheet probability, goals conceded deductions, and goalkeeper save volume.</div>
+              </div>
+
+              <div class="poster-card" style="border-left: 4px solid var(--brand-mint);">
+                <span class="poster-card-tag" style="color: var(--brand-mint);">03. REALITY LAYER</span>
+                <div class="poster-card-title" style="font-size: 18px;">Starting Odds • BPS • Cards</div>
+                <div class="poster-card-desc">Lineup start odds, dynamic bonus point (BPS) capture, and discipline deductions.</div>
+              </div>
+            </div>
+
+            <!-- Clean Vector Pitch Diagram (Zero Overlap) -->
+            <div style="display: flex; justify-content: center;">
+              <div class="svg-pitch-canvas">
+                <svg viewBox="0 0 380 420" style="width: 100%; height: 100%;">
+                  <!-- Outer Pitch Lines -->
+                  <rect x="10" y="10" width="360" height="400" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="3" />
+                  <rect x="60" y="10" width="260" height="150" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.8)" stroke-width="3" />
+                  <rect x="120" y="10" width="140" height="60" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="3" />
+                  <circle cx="190" cy="110" r="4" fill="#FFFFFF" />
+                  <path d="M 130 160 A 70 70 0 0 0 250 160" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="3" />
+
+                  <!-- xG Danger Circle -->
+                  <circle cx="190" cy="70" r="45" fill="rgba(255, 122, 0, 0.4)" stroke="#FF7A00" stroke-width="2" />
+                  <circle cx="190" cy="70" r="24" fill="rgba(255, 255, 255, 0.95)" />
+                  <text x="190" y="75" font-family="'JetBrains Mono'" font-size="12" font-weight="bold" fill="#0A1333" text-anchor="middle">0.65 xG</text>
+
+                  <!-- Passing Assist Vector -->
+                  <path d="M 40 130 Q 110 70 170 70" fill="none" stroke="#00A389" stroke-width="4" stroke-dasharray="6,4" />
+                  <polygon points="172,70 160,64 162,76" fill="#00A389" />
+                  <text x="65" y="150" font-family="'JetBrains Mono'" font-size="12" font-weight="bold" fill="#00A389">xA ASSIST LANE</text>
+
+                  <!-- Clean Sheet Defense Box -->
+                  <rect x="50" y="200" width="280" height="44" rx="8" fill="rgba(6, 106, 254, 0.35)" stroke="#066AFE" stroke-width="2" />
+                  <text x="190" y="228" font-family="'Space Grotesk'" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">POISSON CLEAN SHEET DEFENSE</text>
+
+                  <!-- Bonus Points BPS Box -->
+                  <rect x="50" y="270" width="280" height="44" rx="8" fill="rgba(224, 64, 251, 0.25)" stroke="#E040FB" stroke-width="2" />
+                  <text x="190" y="298" font-family="'Space Grotesk'" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">DYNAMIC BPS BONUS ENGINE</text>
+
+                  <!-- Lineup Probability Box -->
+                  <rect x="50" y="340" width="280" height="44" rx="8" fill="rgba(0, 163, 137, 0.25)" stroke="#00A389" stroke-width="2" />
+                  <text x="190" y="368" font-family="'Space Grotesk'" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">LINEUP STARTING PROBABILITY</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="poster-takeaway-banner">
+            <span style="font-family: var(--font-mono); font-size: 15px; color: var(--brand-lavender); font-weight: 700;">PROJECTION</span>
+            <span class="poster-takeaway-text">Granular micro-events compound into resilient season-long predictions.</span>
+          </div>
+        </div>
+
+        <div class="slide-footer-minimal">
+          <span class="footer-handle">@robin0607saha</span>
+          <span class="swipe-indicator-minimal">Swipe →</span>
+        </div>
+      </div>
+      <button class="slide-download-btn" onclick="downloadSingleSlide(3, 'Slide-03-Deconstructing-Points.png')">
+        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Download Slide 3 (1080x1350 PNG)
+      </button>
+    </div>
+
+    <!-- ==========================================
+         SLIDE 4: THE REAL SQUAD (Screenshot Diagram)
+         ========================================== -->
+    <div class="slide-wrapper">
+      <div class="slide-canvas slide-bg-radiance" id="slide-4">
+        <div class="halftone-overlay"></div>
+        <div class="slide-header-minimal">
+          <span class="slide-number-subtle">04 / 06</span>
+          <span class="author-watermark">Arabinda Saha</span>
+        </div>
+
+        <div class="slide-body">
+          <div>
+            <h2 class="poster-title-slide">THE ALGORITHM'S STARTING LINEUP</h2>
+            <p class="poster-lead">The mathematically optimal 15-player squad within the £100.0M budget ceiling.</p>
+          </div>
+
+          <div class="poster-split-layout" style="grid-template-columns: 0.95fr 1.05fr; align-items: center;">
+            <div class="poster-card-stack">
+              <div class="poster-card">
+                <span class="poster-card-tag" style="color: var(--brand-amber);">CAPTAINCY LOCK</span>
+                <div class="poster-card-title">Bruno Fernandes (C)</div>
+                <div class="poster-card-desc">Highest simulated 5-week expected yield vs Ipswich (H).</div>
+              </div>
+
+              <div class="poster-card">
+                <span class="poster-card-tag" style="color: var(--brand-mint);">MIDFIELD FIREPOWER</span>
+                <div class="poster-card-title">Palmer • Mbeumo • Szoboszlai</div>
+                <div class="poster-card-desc">Maximized open-play shot volume and high-value set-piece creation.</div>
+              </div>
+
+              <div class="poster-card">
+                <span class="poster-card-tag" style="color: var(--brand-lavender);">VALUE ENABLERS</span>
+                <div class="poster-card-title">João Pedro • Calvert-Lewin</div>
+                <div class="poster-card-desc">Budget frontline unlocking premium midfield and defensive depth.</div>
+              </div>
+            </div>
+
+            <!-- Real FPL Lineup Screenshot -->
+            <div class="fpl-squad-pitch-frame">
+              <img src="assets/fpl-lineup-screenshot.png" alt="Algorithm Real FPL Lineup" class="fpl-squad-pitch-img">
+            </div>
+          </div>
+
+          <div class="poster-takeaway-banner">
+            <span style="font-family: var(--font-mono); font-size: 15px; color: var(--brand-mint); font-weight: 700;">SOLVER SPECS</span>
+            <span class="poster-takeaway-text">£100.0M Cost • 3-5-2 Formation • Max 3 per Club • 5-Week Horizon</span>
+          </div>
+        </div>
+
+        <div class="slide-footer-minimal">
+          <span class="footer-handle">@robin0607saha</span>
+          <span class="swipe-indicator-minimal">Swipe →</span>
+        </div>
+      </div>
+      <button class="slide-download-btn" onclick="downloadSingleSlide(4, 'Slide-04-The-Starting-Lineup.png')">
+        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Download Slide 4 (1080x1350 PNG)
+      </button>
+    </div>
+
+    <!-- ==========================================
+         SLIDE 5: WHY RAW STATS LIE (Tactical Diagram)
+         ========================================== -->
+    <div class="slide-wrapper">
+      <div class="slide-canvas slide-bg-sunset" id="slide-5">
+        <div class="halftone-overlay"></div>
+        <div class="slide-header-minimal">
+          <span class="slide-number-subtle">05 / 06</span>
+          <span class="author-watermark">Arabinda Saha</span>
+        </div>
+
+        <div class="slide-body">
+          <div>
+            <h2 class="poster-title-slide">WHY RAW STATS LIE</h2>
+            <p class="poster-lead">Algorithms get tricked by shiny numbers unless you enforce reality constraints.</p>
+          </div>
+
+          <div class="poster-split-layout">
+            <div class="poster-card-stack">
+              <div class="poster-card" style="border-left: 4px solid var(--brand-tangerine);">
+                <span class="poster-card-tag" style="color: var(--brand-tangerine);">CALIBRATION 01</span>
+                <div class="poster-card-title">Promoted Teams Reality Tax</div>
+                <div class="poster-card-desc">20% discount on lower-tier shot creation rates against Premier League defenses.</div>
+              </div>
+
+              <div class="poster-card" style="border-left: 4px solid var(--brand-blue);">
+                <span class="poster-card-tag" style="color: var(--brand-blue);">CALIBRATION 02</span>
+                <div class="poster-card-title">Bayes Sample-Size Shrinkage</div>
+                <div class="poster-card-desc">Blends 6-week short form with multi-season baselines to prevent 1-game overreactions.</div>
+              </div>
+
+              <div class="poster-card" style="border-left: 4px solid var(--brand-mint);">
+                <span class="poster-card-tag" style="color: var(--brand-mint);">CALIBRATION 03</span>
+                <div class="poster-card-title">Rotation & Fatigue Decay</div>
+                <div class="poster-card-desc">10% playing probability reduction for the second match in Double Gameweeks.</div>
+              </div>
+            </div>
+
+            <!-- Tactical Matchup Pitch SVG -->
+            <div style="display: flex; justify-content: center;">
+              <div class="svg-pitch-canvas" style="background: linear-gradient(180deg, #1C0F08 0%, #0A1333 100%);">
+                <svg viewBox="0 0 380 400" style="width: 100%; height: 100%;">
+                  <rect x="10" y="10" width="360" height="380" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+                  <line x1="10" y1="200" x2="370" y2="200" stroke="rgba(255,255,255,0.5)" stroke-width="2" />
+                  <circle cx="190" cy="200" r="50" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+
+                  <!-- Top Zone: Premier League Defense -->
+                  <rect x="30" y="35" width="320" height="120" rx="10" fill="rgba(6, 106, 254, 0.2)" stroke="#066AFE" stroke-width="2" />
+                  <text x="190" y="65" font-family="'Space Grotesk'" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">PREMIER LEAGUE DEFENSIVE BASELINE</text>
+                  <text x="190" y="90" font-family="'JetBrains Mono'" font-size="11" fill="#94A3B8" text-anchor="middle">High Shot Suppression & Elite Press</text>
+                  <circle cx="90" cy="120" r="12" fill="#066AFE" />
+                  <circle cx="160" cy="120" r="12" fill="#066AFE" />
+                  <circle cx="220" cy="120" r="12" fill="#066AFE" />
+                  <circle cx="290" cy="120" r="12" fill="#066AFE" />
+
+                  <!-- Filter Arrow Downward -->
+                  <path d="M 190 165 L 190 225" stroke="#FF7A00" stroke-width="4" />
+                  <polygon points="190,230 184,220 196,220" fill="#FF7A00" />
+                  <rect x="120" y="185" width="140" height="24" rx="4" fill="#FF7A00" />
+                  <text x="190" y="201" font-family="'JetBrains Mono'" font-size="11" font-weight="bold" fill="#080C1A" text-anchor="middle">-20% REALITY TAX</text>
+
+                  <!-- Bottom Zone: Promoted Attack -->
+                  <rect x="30" y="245" width="320" height="115" rx="10" fill="rgba(255, 122, 0, 0.2)" stroke="#FF7A00" stroke-width="2" />
+                  <text x="190" y="275" font-family="'Space Grotesk'" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">PROMOTED ATTACKING OUTPUT</text>
+                  <text x="190" y="300" font-family="'JetBrains Mono'" font-size="11" fill="#FFB020" text-anchor="middle">Championship xG Scaled Downward</text>
+                  <circle cx="130" cy="330" r="12" fill="#FF7A00" />
+                  <circle cx="250" cy="330" r="12" fill="#FF7A00" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="poster-takeaway-banner">
+            <span style="font-family: var(--font-mono); font-size: 15px; color: var(--brand-amber); font-weight: 700;">THE FILTER</span>
+            <span class="poster-takeaway-text">Turn statistical noise and recency bias into pure predictive signal.</span>
+          </div>
+        </div>
+
+        <div class="slide-footer-minimal">
+          <span class="footer-handle">@robin0607saha</span>
+          <span class="swipe-indicator-minimal">Swipe →</span>
+        </div>
+      </div>
+      <button class="slide-download-btn" onclick="downloadSingleSlide(5, 'Slide-05-Why-Raw-Stats-Lie.png')">
+        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Download Slide 5 (1080x1350 PNG)
+      </button>
+    </div>
+
+    <!-- ==========================================
+         SLIDE 6: THE CLOSING BENCHMARK & CTA (Text Only)
+         ========================================== -->
+    <div class="slide-wrapper">
+      <div class="slide-canvas slide-bg-obsidian" id="slide-6">
+        <div class="halftone-overlay"></div>
+        <div class="slide-header-minimal">
+          <span class="slide-number-subtle">06 / 06</span>
+          <span class="author-watermark">Arabinda Saha</span>
+        </div>
+
+        <div class="slide-body">
+          <div class="poster-full-layout">
+            <div>
+              <h2 class="poster-title-slide" style="font-size: 58px;">37 GAMEWEEKS. ZERO OVERRIDES.</h2>
+              <p class="poster-lead">Starting from dead last with 0 points. Handing the keys completely to the code.</p>
+            </div>
+
+            <!-- The 4 Rules Grid -->
+            <div class="contract-2x2-grid">
+              <div class="contract-rule-card">
+                <span class="contract-rule-num">RULE 01</span>
+                <div class="contract-rule-text">The model selects the Starting XI, Captain & Vice Captain.</div>
+              </div>
+
+              <div class="contract-rule-card">
+                <span class="contract-rule-num">RULE 02</span>
+                <div class="contract-rule-text">The model executes all free transfers, hits, and chips.</div>
+              </div>
+
+              <div class="contract-rule-card">
+                <span class="contract-rule-num">RULE 03</span>
+                <div class="contract-rule-text">Zero human emotional intervention, even when I hate the pick.</div>
+              </div>
+
+              <div class="contract-rule-card">
+                <span class="contract-rule-num">RULE 04</span>
+                <div class="contract-rule-text">Transparent weekly post-mortems published every Tuesday.</div>
+              </div>
+            </div>
+
+            <!-- High-Converting CTA Box -->
+            <div class="cta-grand-box">
+              <div class="cta-grand-title">THE BENCHMARK QUESTION</div>
+              <div style="font-size: 19px; color: rgba(255, 255, 255, 0.95); line-height: 1.4;">
+                Where does an automated algorithm finish by May after spotting 11 million managers a 1-week head start?
+              </div>
+              <div class="cta-grand-badges">
+                <span class="cta-badge-option">🔥 TOP 100K</span>
+                <span class="cta-badge-option">📈 TOP 1M</span>
+                <span class="cta-badge-option">💥 TOTAL DISASTER</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="poster-takeaway-banner" style="border-color: var(--brand-mint);">
+            <span style="font-family: var(--font-mono); font-size: 15px; color: var(--brand-mint); font-weight: 700;">JOIN THE EXPERIMENT</span>
+            <span class="poster-takeaway-text">Drop your prediction in the comments. Weekly updates begin next Tuesday.</span>
+          </div>
+        </div>
+
+        <div class="slide-footer-minimal">
+          <span class="footer-handle">@robin0607saha</span>
+          <span class="swipe-indicator-minimal" style="color: var(--brand-mint);">Completed ✓</span>
+        </div>
+      </div>
+      <button class="slide-download-btn" onclick="downloadSingleSlide(6, 'Slide-06-The-Closing-Benchmark.png')">
+        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Download Slide 6 (1080x1350 PNG)
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Exporter Scripts -->
+  <script>
+    let currentZoom = 0.5;
+    function toggleZoom() {
+      currentZoom = currentZoom === 0.5 ? 0.8 : 0.5;
+      document.querySelectorAll('.slide-canvas').forEach(s => s.style.zoom = currentZoom);
+      document.getElementById('zoom-label').innerText = `Zoom: ${Math.round(currentZoom * 100)}%`;
+    }
+
+    // Capture single slide at strict 1080 x 1350 px
+    async function captureSlideCanvas(slideElement) {
+      const originalZoom = slideElement.style.zoom;
+      slideElement.style.zoom = '1';
+
+      const canvas = await html2canvas(slideElement, {
+        scale: 1,
+        width: 1080,
+        height: 1350,
+        useCORS: true,
+        logging: false,
+        backgroundColor: null
+      });
+
+      slideElement.style.zoom = originalZoom;
+      return canvas;
+    }
+
+    // Download Single Slide as PNG (1080x1350)
+    async function downloadSingleSlide(slideIndex, filename) {
+      const btn = event.currentTarget;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = "Rendering PNG...";
+      
+      try {
+        const slide = document.getElementById(`slide-${slideIndex}`);
+        if (!slide) return;
+        const canvas = await captureSlideCanvas(slide);
+        const link = document.createElement('a');
+        link.download = filename || `Slide-0${slideIndex}-Arabinda-Saha-FPL.png`;
+        link.href = canvas.toDataURL('image/png');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } finally {
+        btn.innerHTML = originalText;
+      }
+    }
+
+    // Export Multi-Page PDF strictly formatted to 1080 x 1350 portrait
+    async function exportFullPDF() {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [1080, 1350]
+      });
+
+      for (let i = 1; i <= 6; i++) {
+        const slide = document.getElementById(`slide-${i}`);
+        const canvas = await captureSlideCanvas(slide);
+        const imgData = canvas.toDataURL('image/jpeg', 0.98);
+        if (i > 1) pdf.addPage([1080, 1350], 'portrait');
+        pdf.addImage(imgData, 'JPEG', 0, 0, 1080, 1350);
+      }
+
+      pdf.save('Arabinda-Saha-FPL-Algorithm-Experiment.pdf');
+    }
+  </script>
+</body>
+</html>
