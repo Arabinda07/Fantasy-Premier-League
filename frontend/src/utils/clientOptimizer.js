@@ -228,23 +228,47 @@ export function buildPlayerLookupMap(allPlayers = []) {
   const byElementId = new Map();
   const byCode = new Map();
   const byName = new Map();
+  const byNameAndPos = new Map();
 
   for (const p of allPlayers) {
     if (p.id != null) byElementId.set(Number(p.id), p);
     if (p.element_id != null) byElementId.set(Number(p.element_id), p);
     if (p.player_code != null) byCode.set(Number(p.player_code), p);
     if (p.code != null) byCode.set(Number(p.code), p);
-    if (p.web_name) byName.set(p.web_name.toLowerCase().trim(), p);
+
+    const nameKey = (p.web_name || '').toLowerCase().trim();
+    const posKey = (p.position || '').toUpperCase().trim();
+
+    if (nameKey) {
+      // Prioritize active/fielded players with higher cost or minutes to avoid backup GK collisions (e.g. Cole Palmer vs Ipswich GK Palmer)
+      if (!byName.has(nameKey)) {
+        byName.set(nameKey, p);
+      } else {
+        const existing = byName.get(nameKey);
+        const existingCost = Number(existing.cost || existing.now_cost || 0);
+        const currentCost = Number(p.cost || p.now_cost || 0);
+        const existingMins = Number(existing.season_minutes || existing.long_form_minutes || 0);
+        const currentMins = Number(p.season_minutes || p.long_form_minutes || 0);
+
+        if (currentCost > existingCost || currentMins > existingMins) {
+          byName.set(nameKey, p);
+        }
+      }
+
+      if (posKey) {
+        byNameAndPos.set(`${nameKey}_${posKey}`, p);
+      }
+    }
   }
 
-  return { byElementId, byCode, byName };
+  return { byElementId, byCode, byName, byNameAndPos };
 }
 
 /**
  * Match a single pick against the player database.
  */
 export function findPlayerData(pick, lookups) {
-  const { byElementId, byCode, byName } = lookups;
+  const { byElementId, byCode, byName, byNameAndPos } = lookups;
 
   // 1. Direct element ID lookup
   const elemId = pick.element != null ? Number(pick.element) : Number(pick.id);
@@ -257,13 +281,21 @@ export function findPlayerData(pick, lookups) {
   // 3. Fallback: match by element as code if IDs were inverted
   if (elemId && byCode.has(elemId)) return byCode.get(elemId);
 
-  // 4. Web name lookup
-  if (pick.web_name && byName.has(pick.web_name.toLowerCase().trim())) {
-    return byName.get(pick.web_name.toLowerCase().trim());
+  // 4. Exact Position + Web name lookup
+  const nameKey = pick.web_name ? pick.web_name.toLowerCase().trim() : '';
+  const posKey = pick.position ? pick.position.toUpperCase().trim() : '';
+  if (nameKey && posKey && byNameAndPos && byNameAndPos.has(`${nameKey}_${posKey}`)) {
+    return byNameAndPos.get(`${nameKey}_${posKey}`);
+  }
+
+  // 5. Web name lookup
+  if (nameKey && byName.has(nameKey)) {
+    return byName.get(nameKey);
   }
 
   return null;
 }
+
 
 /**
  * Reconcile 15 squad picks with full mathematical DNA.
@@ -516,39 +548,79 @@ export function generateStrategyLineups(squad = []) {
 export function solveStructuralSquad(allPlayers = [], currentSquad = [], buildType = 'spread', budget = 100.0) {
   const lookups = buildPlayerLookupMap(allPlayers.length > 0 ? allPlayers : currentSquad);
 
-  const getPlayer = (nameOrFragment) => {
-    if (!nameOrFragment) return null;
-    const nameLower = nameOrFragment.toLowerCase().trim();
-    if (lookups.byName.has(nameLower)) return lookups.byName.get(nameLower);
+  const getPlayer = (identifier, desiredPos, desiredTeam) => {
+    // 1. Exact numeric player_code or element_id lookup
+    if (typeof identifier === 'number') {
+      if (lookups.byCode.has(identifier)) return lookups.byCode.get(identifier);
+      if (lookups.byElementId.has(identifier)) return lookups.byElementId.get(identifier);
+    }
+
+    // 2. Exact Position + Name lookup
+    if (desiredPos && typeof identifier === 'string') {
+      const compositeKey = `${identifier.toLowerCase().trim()}_${desiredPos.toUpperCase().trim()}`;
+      if (lookups.byNameAndPos && lookups.byNameAndPos.has(compositeKey)) {
+        return lookups.byNameAndPos.get(compositeKey);
+      }
+    }
+
+    // 3. Scan pool with position and team constraint
     const pool = allPlayers.length > 0 ? allPlayers : currentSquad;
-    return pool.find((p) => (p.web_name || '').toLowerCase().includes(nameLower)) || null;
+    if (typeof identifier === 'string') {
+      const nameLower = identifier.toLowerCase().trim();
+      const match = pool.find((p) => {
+        const matchesName = (p.web_name || '').toLowerCase().includes(nameLower);
+        const matchesPos = desiredPos ? (p.position || '').toUpperCase() === desiredPos.toUpperCase() : true;
+        const matchesTeam = desiredTeam ? (p.team || '').toLowerCase().includes(desiredTeam.toLowerCase()) : true;
+        return matchesName && matchesPos && matchesTeam;
+      });
+      if (match) return match;
+
+      // Position-only match
+      if (desiredPos) {
+        const posMatch = pool.find((p) => {
+          const matchesName = (p.web_name || '').toLowerCase().includes(nameLower);
+          const matchesPos = (p.position || '').toUpperCase() === desiredPos.toUpperCase();
+          return matchesName && matchesPos;
+        });
+        if (posMatch) return posMatch;
+      }
+
+      // Name lookup fallback
+      if (lookups.byName.has(nameLower)) return lookups.byName.get(nameLower);
+    }
+
+    return null;
   };
 
   if (buildType === 'spread') {
     // "Big in the Middle": 3-5-2 Spread Build
-    // Midfield Quintet: Palmer, B.Fernandes (C), Szoboszlai, Mbeumo, Tavernier
-    const palmer = getPlayer('Palmer') || { web_name: 'Palmer', position: 'MID', team: 'Chelsea', now_cost: 9.5, expected_points: 3.74, is_promoted: false };
-    const bruno = getPlayer('B.Fernandes') || getPlayer('Fernandes') || { web_name: 'B.Fernandes', position: 'MID', team: 'Man Utd', now_cost: 12.0, expected_points: 5.59, sp_pk_order: 1, is_promoted: false };
-    const szobo = getPlayer('Szoboszlai') || { web_name: 'Szoboszlai', position: 'MID', team: 'Liverpool', now_cost: 7.0, expected_points: 3.60, is_promoted: false };
-    const mbeumo = getPlayer('Mbeumo') || { web_name: 'Mbeumo', position: 'MID', team: 'Man Utd', now_cost: 8.0, expected_points: 5.30, is_promoted: false };
-    const tav = getPlayer('Tavernier') || { web_name: 'Tavernier', position: 'MID', team: 'Bournemouth', now_cost: 6.0, expected_points: 3.94, is_promoted: false };
+    // 1. Goalkeeper (1 GK)
+    const raya = getPlayer(154561, 'GK', 'Arsenal') || getPlayer('Raya', 'GK', 'Arsenal') || { player_code: 154561, web_name: 'Raya', position: 'GK', team: 'Arsenal', now_cost: 6.0, cost: 6.0, expected_points: 4.99 };
 
-    // Def & GK & FWD Starters
-    const raya = getPlayer('Raya') || { web_name: 'Raya', position: 'GK', team: 'Arsenal', now_cost: 6.0, expected_points: 5.0 };
-    const gabriel = getPlayer('Gabriel') || { web_name: 'Gabriel', position: 'DEF', team: 'Arsenal', now_cost: 8.0, expected_points: 5.2 };
-    const calafiori = getPlayer('Calafiori') || { web_name: 'Calafiori', position: 'DEF', team: 'Arsenal', now_cost: 5.5, expected_points: 4.8 };
-    const decuyper = getPlayer('De Cuyper') || { web_name: 'De Cuyper', position: 'DEF', team: 'Brighton', now_cost: 4.6, expected_points: 3.6 };
-    const dcl = getPlayer('Calvert-Lewin') || { web_name: 'Calvert-Lewin', position: 'FWD', team: 'Leeds', now_cost: 6.0, expected_points: 3.7 };
-    const jp = getPlayer('João Pedro') || getPlayer('Joao Pedro') || getPlayer('Walle Egeli') || { web_name: 'João Pedro', position: 'FWD', team: 'Brighton', now_cost: 6.0, expected_points: 4.5 };
+    // 2. Defenders (3 DEF)
+    const gabriel = getPlayer(226597, 'DEF', 'Arsenal') || getPlayer('Gabriel', 'DEF', 'Arsenal') || { player_code: 226597, web_name: 'Gabriel', position: 'DEF', team: 'Arsenal', now_cost: 8.0, cost: 8.0, expected_points: 5.23 };
+    const calafiori = getPlayer(466075, 'DEF', 'Arsenal') || getPlayer('Calafiori', 'DEF', 'Arsenal') || { player_code: 466075, web_name: 'Calafiori', position: 'DEF', team: 'Arsenal', now_cost: 5.6, cost: 5.6, expected_points: 4.57 };
+    const decuyper = getPlayer(493105, 'DEF', 'Brighton') || getPlayer('De Cuyper', 'DEF', 'Brighton') || { player_code: 493105, web_name: 'De Cuyper', position: 'DEF', team: 'Brighton', now_cost: 4.6, cost: 4.6, expected_points: 3.6 };
 
-    // Bench Assets
-    const davies = getPlayer('Davies') || { web_name: 'Davies', position: 'GK', team: 'Liverpool', now_cost: 4.0, expected_points: 0.0 };
-    const diop = getPlayer('Diop') || { web_name: 'Diop', position: 'Ipswich Town', now_cost: 4.0, expected_points: 2.7 };
-    const onien = getPlayer("O'Nien") || { web_name: "O'Nien", position: 'DEF', team: 'Sunderland', now_cost: 4.0, expected_points: 2.5 };
-    const egeli = getPlayer('Walle Egeli') || { web_name: 'Walle Egeli', position: 'FWD', team: 'Ipswich Town', now_cost: 4.5, expected_points: 1.86 };
+    // 3. Midfielders (5 MID)
+    const palmer = getPlayer(244851, 'MID', 'Chelsea') || getPlayer('Palmer', 'MID', 'Chelsea') || { player_code: 244851, web_name: 'Palmer', position: 'MID', team: 'Chelsea', now_cost: 9.5, cost: 9.5, expected_points: 3.74, is_promoted: false };
+    const bruno = getPlayer(141746, 'MID', 'Man Utd') || getPlayer('B.Fernandes', 'MID', 'Man Utd') || { player_code: 141746, web_name: 'B.Fernandes', position: 'MID', team: 'Man Utd', now_cost: 12.0, cost: 12.0, expected_points: 5.59, sp_pk_order: 1, is_promoted: false };
+    const szobo = getPlayer(441164, 'MID', 'Liverpool') || getPlayer('Szoboszlai', 'MID', 'Liverpool') || getPlayer('Groß', 'MID', 'Brighton') || { player_code: 441164, web_name: 'Szoboszlai', position: 'MID', team: 'Liverpool', now_cost: 7.0, cost: 7.0, expected_points: 3.60, is_promoted: false };
+    const mbeumo = getPlayer(446008, 'MID', 'Man Utd') || getPlayer('Mbeumo', 'MID', 'Man Utd') || { player_code: 446008, web_name: 'Mbeumo', position: 'MID', team: 'Man Utd', now_cost: 8.0, cost: 8.0, expected_points: 5.30, is_promoted: false };
+    const tav = getPlayer(201658, 'MID', 'Bournemouth') || getPlayer('Tavernier', 'MID', 'Bournemouth') || { player_code: 201658, web_name: 'Tavernier', position: 'MID', team: 'Bournemouth', now_cost: 6.0, cost: 6.0, expected_points: 3.94, is_promoted: false };
+
+    // 4. Forwards (2 FWD)
+    const dcl = getPlayer(176297, 'FWD', 'Leeds') || getPlayer('Calvert-Lewin', 'FWD', 'Leeds') || { player_code: 176297, web_name: 'Calvert-Lewin', position: 'FWD', team: 'Leeds', now_cost: 6.0, cost: 6.0, expected_points: 3.7 };
+    const jp = getPlayer(243644, 'FWD') || getPlayer('João Pedro', 'FWD') || { player_code: 243644, web_name: 'João Pedro', position: 'FWD', team: 'Brighton', now_cost: 6.0, cost: 6.0, expected_points: 4.5 };
+
+    // 5. Bench (1 GK, 2 DEF, 1 FWD)
+    const benchGk = getPlayer('Fabianski', 'GK') || getPlayer('Turner', 'GK') || getPlayer('Bentley', 'GK') || getPlayer('Ward', 'GK') || { player_code: 37096, web_name: 'Fabianski', position: 'GK', team: 'West Ham', now_cost: 4.0, cost: 4.0, expected_points: 0.0 };
+    const diop = getPlayer(219924, 'DEF', 'Ipswich Town') || getPlayer('Diop', 'DEF') || { player_code: 219924, web_name: 'Diop', position: 'DEF', team: 'Ipswich Town', now_cost: 4.0, cost: 4.0, expected_points: 2.7 };
+    const onien = getPlayer(167449, 'DEF', 'Sunderland') || getPlayer("O'Nien", 'DEF') || { player_code: 167449, web_name: "O'Nien", position: 'DEF', team: 'Sunderland', now_cost: 4.0, cost: 4.0, expected_points: 2.5 };
+    const egeli = getPlayer(543210, 'FWD', 'Ipswich Town') || getPlayer('Walle Egeli', 'FWD') || { player_code: 543210, web_name: 'Walle Egeli', position: 'FWD', team: 'Ipswich Town', now_cost: 4.5, cost: 4.5, expected_points: 1.86 };
 
     const rawStarters = [raya, gabriel, calafiori, decuyper, palmer, bruno, szobo, mbeumo, tav, dcl, jp].filter(Boolean);
-    const rawBench = [davies, diop, onien, egeli].filter(Boolean);
+    const rawBench = [benchGk, diop, onien, egeli].filter(Boolean);
 
     // Ensure Bruno is Captain (C)
     const brunoCode = bruno.player_code || bruno.code || 141746;
@@ -589,28 +661,33 @@ export function solveStructuralSquad(allPlayers = [], currentSquad = [], buildTy
   }
 
   // "Mega-Forward Anchor": 3-4-3 / 3-5-2 Haaland Anchor
-  const haaland = getPlayer('Haaland') || { web_name: 'Haaland', position: 'FWD', team: 'Man City', now_cost: 15.5, expected_points: 4.92, is_promoted: false };
-  const dcl = getPlayer('Calvert-Lewin') || { web_name: 'Calvert-Lewin', position: 'FWD', team: 'Leeds', now_cost: 6.0, expected_points: 3.7 };
-  const jp = getPlayer('João Pedro') || getPlayer('Joao Pedro') || { web_name: 'João Pedro', position: 'FWD', team: 'Brighton', now_cost: 6.0, expected_points: 4.5 };
+  // 1. Goalkeeper (1 GK)
+  const raya = getPlayer(154561, 'GK', 'Arsenal') || getPlayer('Raya', 'GK', 'Arsenal') || { player_code: 154561, web_name: 'Raya', position: 'GK', team: 'Arsenal', now_cost: 6.0, cost: 6.0, expected_points: 4.99 };
 
-  const raya = getPlayer('Raya') || { web_name: 'Raya', position: 'GK', team: 'Arsenal', now_cost: 6.0, expected_points: 5.0 };
-  const gabriel = getPlayer('Gabriel') || { web_name: 'Gabriel', position: 'DEF', team: 'Arsenal', now_cost: 8.0, expected_points: 5.2 };
-  const calafiori = getPlayer('Calafiori') || { web_name: 'Calafiori', position: 'DEF', team: 'Arsenal', now_cost: 5.5, expected_points: 4.8 };
-  const decuyper = getPlayer('De Cuyper') || { web_name: 'De Cuyper', position: 'DEF', team: 'Brighton', now_cost: 4.6, expected_points: 3.6 };
+  // 2. Defenders (3 DEF)
+  const gabriel = getPlayer(226597, 'DEF', 'Arsenal') || getPlayer('Gabriel', 'DEF', 'Arsenal') || { player_code: 226597, web_name: 'Gabriel', position: 'DEF', team: 'Arsenal', now_cost: 8.0, cost: 8.0, expected_points: 5.23 };
+  const calafiori = getPlayer(466075, 'DEF', 'Arsenal') || getPlayer('Calafiori', 'DEF', 'Arsenal') || { player_code: 466075, web_name: 'Calafiori', position: 'DEF', team: 'Arsenal', now_cost: 5.6, cost: 5.6, expected_points: 4.57 };
+  const decuyper = getPlayer(493105, 'DEF', 'Brighton') || getPlayer('De Cuyper', 'DEF', 'Brighton') || { player_code: 493105, web_name: 'De Cuyper', position: 'DEF', team: 'Brighton', now_cost: 4.6, cost: 4.6, expected_points: 3.6 };
 
-  const bruno = getPlayer('B.Fernandes') || getPlayer('Fernandes') || { web_name: 'B.Fernandes', position: 'MID', team: 'Man Utd', now_cost: 12.0, expected_points: 5.59 };
-  const mbeumo = getPlayer('Mbeumo') || { web_name: 'Mbeumo', position: 'MID', team: 'Man Utd', now_cost: 8.0, expected_points: 5.30 };
-  const tav = getPlayer('Tavernier') || { web_name: 'Tavernier', position: 'MID', team: 'Bournemouth', now_cost: 6.0, expected_points: 3.94 };
-  const gross = getPlayer('Groß') || getPlayer('Gross') || getPlayer('E.Le Fée') || { web_name: 'Groß', position: 'MID', team: 'Brighton', now_cost: 5.5, expected_points: 3.3 };
+  // 3. Midfielders (4 MID)
+  const bruno = getPlayer(141746, 'MID', 'Man Utd') || getPlayer('B.Fernandes', 'MID', 'Man Utd') || { player_code: 141746, web_name: 'B.Fernandes', position: 'MID', team: 'Man Utd', now_cost: 12.0, cost: 12.0, expected_points: 5.59 };
+  const mbeumo = getPlayer(446008, 'MID', 'Man Utd') || getPlayer('Mbeumo', 'MID', 'Man Utd') || { player_code: 446008, web_name: 'Mbeumo', position: 'MID', team: 'Man Utd', now_cost: 8.0, cost: 8.0, expected_points: 5.30 };
+  const tav = getPlayer(201658, 'MID', 'Bournemouth') || getPlayer('Tavernier', 'MID', 'Bournemouth') || { player_code: 201658, web_name: 'Tavernier', position: 'MID', team: 'Bournemouth', now_cost: 6.0, cost: 6.0, expected_points: 3.94 };
+  const gross = getPlayer('Groß', 'MID', 'Brighton') || getPlayer('Gross', 'MID') || getPlayer('E.Le Fée', 'MID') || { player_code: 60914, web_name: 'Groß', position: 'MID', team: 'Brighton', now_cost: 5.5, cost: 5.5, expected_points: 3.3 };
 
-  // Bench Assets
-  const davies = getPlayer('Davies') || { web_name: 'Davies', position: 'GK', team: 'Liverpool', now_cost: 4.0, expected_points: 0.0 };
-  const diop = getPlayer('Diop') || { web_name: 'Diop', position: 'Ipswich Town', now_cost: 4.0, expected_points: 2.7 };
-  const onien = getPlayer("O'Nien") || { web_name: "O'Nien", position: 'DEF', team: 'Sunderland', now_cost: 4.0, expected_points: 2.5 };
-  const lefee = getPlayer('E.Le Fée') || getPlayer('Walle Egeli') || { web_name: 'E.Le Fée', position: 'MID', team: 'Sunderland', now_cost: 6.0, expected_points: 3.4 };
+  // 4. Forwards (3 FWD)
+  const haaland = getPlayer(223094, 'FWD', 'Man City') || getPlayer('Haaland', 'FWD', 'Man City') || { player_code: 223094, web_name: 'Haaland', position: 'FWD', team: 'Man City', now_cost: 15.5, cost: 15.5, expected_points: 4.92 };
+  const dcl = getPlayer(176297, 'FWD', 'Leeds') || getPlayer('Calvert-Lewin', 'FWD', 'Leeds') || { player_code: 176297, web_name: 'Calvert-Lewin', position: 'FWD', team: 'Leeds', now_cost: 6.0, cost: 6.0, expected_points: 3.7 };
+  const jp = getPlayer(243644, 'FWD') || getPlayer('João Pedro', 'FWD') || { player_code: 243644, web_name: 'João Pedro', position: 'FWD', team: 'Brighton', now_cost: 6.0, cost: 6.0, expected_points: 4.5 };
+
+  // 5. Bench (1 GK, 2 DEF, 1 MID)
+  const benchGk = getPlayer('Fabianski', 'GK') || getPlayer('Turner', 'GK') || getPlayer('Bentley', 'GK') || getPlayer('Ward', 'GK') || { player_code: 37096, web_name: 'Fabianski', position: 'GK', team: 'West Ham', now_cost: 4.0, cost: 4.0, expected_points: 0.0 };
+  const diop = getPlayer(219924, 'DEF', 'Ipswich Town') || getPlayer('Diop', 'DEF') || { player_code: 219924, web_name: 'Diop', position: 'DEF', team: 'Ipswich Town', now_cost: 4.0, cost: 4.0, expected_points: 2.7 };
+  const onien = getPlayer(167449, 'DEF', 'Sunderland') || getPlayer("O'Nien", 'DEF') || { player_code: 167449, web_name: "O'Nien", position: 'DEF', team: 'Sunderland', now_cost: 4.0, cost: 4.0, expected_points: 2.5 };
+  const lefee = getPlayer('E.Le Fée', 'MID') || getPlayer('Walle Egeli', 'FWD') || { player_code: 486745, web_name: 'E.Le Fée', position: 'MID', team: 'Sunderland', now_cost: 6.0, cost: 6.0, expected_points: 3.4 };
 
   const rawStarters = [raya, gabriel, calafiori, decuyper, bruno, mbeumo, tav, gross, haaland, dcl, jp].filter(Boolean);
-  const rawBench = [davies, diop, onien, lefee].filter(Boolean);
+  const rawBench = [benchGk, diop, onien, lefee].filter(Boolean);
 
   const haalandCode = haaland.player_code || haaland.code || 223094;
   const finalStarters = rawStarters.map((p) => ({
@@ -648,6 +725,7 @@ export function solveStructuralSquad(allPlayers = [], currentSquad = [], buildTy
     description: '3-4-3 / 3-5-2 Haaland Anchor with budget rotation enablers.',
   };
 }
+
 
 export function generateStructuralBuilds(allPlayers = [], currentSquad = []) {
   return {

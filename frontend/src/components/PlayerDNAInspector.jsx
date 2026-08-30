@@ -8,7 +8,7 @@ import {
   ChartBar,
   Polygon
 } from '@phosphor-icons/react';
-import { getPenaltyTierForTeam, DEFCON_BADGES } from '../constants/copyTokens';
+import { getPenaltyTierForTeam } from '../constants/copyTokens';
 
 export default function PlayerDNAInspector({ player, onClose }) {
   const [activeView, setActiveView] = useState('chart'); // 'chart' | 'radar'
@@ -179,9 +179,9 @@ export default function PlayerDNAInspector({ player, onClose }) {
           </div>
         </div>
 
-        {/* Chart View: Diverging Horizontal Bar Chart */}
-        {activeView === 'chart' ? (
-          <div style={{ width: '100%', height: '240px', background: 'rgba(0,0,0,0.2)', padding: '12px 10px 6px 0', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)', marginBottom: '16px' }}>
+        {/* Chart / Radar View */}
+        <div style={{ width: '100%', height: '240px', background: 'rgba(0,0,0,0.2)', padding: '12px 10px 6px 0', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)', marginBottom: '16px' }}>
+          {activeView === 'chart' ? (
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={componentsData}
@@ -224,49 +224,55 @@ export default function PlayerDNAInspector({ player, onClose }) {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-          </div>
-        ) : (
-          /* Radar View: 5-Axis Attribute Radar Polygon */
-          <div style={{ width: '100%', height: '240px', background: 'rgba(0,0,0,0.2)', padding: '6px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)', marginBottom: '16px' }}>
+          ) : (
             <ResponsiveContainer width="100%" height="100%">
-              <RadarChart data={radarData} margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
-                <PolarGrid stroke="rgba(255,255,255,0.12)" />
-                <PolarAngleAxis dataKey="subject" stroke="var(--text-secondary)" fontSize={11} />
-                <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="var(--text-muted)" fontSize={9} />
-                <Tooltip
-                  contentStyle={{
-                    background: 'var(--bg-surface-2)',
-                    border: '1px solid var(--border-medium)',
-                    borderRadius: '4px',
-                    fontSize: '12px',
-                    color: 'var(--text-primary)'
-                  }}
-                />
-                <Radar name={player.web_name} dataKey="Player" stroke="#10B981" fill="#10B981" fillOpacity={0.4} />
-                <Radar name="Positional Benchmark" dataKey="Baseline" stroke="#64748B" fill="#64748B" fillOpacity={0.15} strokeDasharray="3 3" />
-                <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '4px' }} />
+              <RadarChart data={radarData} margin={{ top: 10, right: 20, left: 20, bottom: 10 }}>
+                <PolarGrid stroke="rgba(255,255,255,0.08)" />
+                <PolarAngleAxis dataKey="metric" stroke="var(--text-muted)" fontSize={10} />
+                <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="rgba(255,255,255,0.05)" />
+                <Radar name={player.web_name} dataKey="score" stroke="#10B981" fill="#10B981" fillOpacity={0.25} />
               </RadarChart>
             </ResponsiveContainer>
-          </div>
-        )}
+          )}
+        </div>
 
-        {/* Underlying Match Stats Grid */}
-        <h4 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }}>
-          Underlying Match Stats & Roles
-        </h4>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '12px' }}>
-          <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Goal Threat (xG per 90)</div>
-            <div className="font-mono" style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
-              {xG90.toFixed(2)}
+        {/* Underlying Stats Breakdown */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginBottom: '16px' }}>
+          <div style={{ background: 'var(--bg-surface-2)', padding: '8px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>xG / 90</div>
+            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
+              {Number(player.long_form_expected_goals_90 || 0).toFixed(2)}
             </div>
           </div>
 
+          <div style={{ background: 'var(--bg-surface-2)', padding: '8px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>xA / 90</div>
+            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
+              {Number(player.long_form_expected_assists_90 || 0).toFixed(2)}
+            </div>
+          </div>
+
+          <div style={{ background: 'var(--bg-surface-2)', padding: '8px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Tackles / 90</div>
+            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
+              {Number(player.long_form_defensive_contribution_90 || 0).toFixed(1)}
+            </div>
+          </div>
+
+          <div style={{ background: 'var(--bg-surface-2)', padding: '8px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Bonus / 90</div>
+            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 800, color: 'var(--accent-amber)', marginTop: '2px' }}>
+              {Number(player.long_form_bonus_90 || 0).toFixed(2)}
+            </div>
+          </div>
+        </div>
+
+        {/* Minutes & Tactical Profile */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginBottom: '14px' }}>
           <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Assist Threat (xA per 90)</div>
-            <div className="font-mono" style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
-              {xA90.toFixed(2)}
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Predicted Lineup Starter</div>
+            <div className="font-mono" style={{ fontSize: '15px', fontWeight: 800, color: 'var(--accent-emerald)', marginTop: '2px' }}>
+              {pStart}%
             </div>
           </div>
 
@@ -278,58 +284,29 @@ export default function PlayerDNAInspector({ player, onClose }) {
           </div>
         </div>
 
-        {/* Tactical Hierarchy: Penalty Taker & Defcon Indicators */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginBottom: '16px' }}>
-          <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Penalties & Set-Pieces</span>
-              <span
-                className="font-mono"
-                style={{
-                  fontSize: '9px',
-                  fontWeight: 800,
-                  background: 'rgba(239, 68, 68, 0.18)',
-                  color: '#F87171',
-                  border: '1px solid rgba(239, 68, 68, 0.4)',
-                  borderRadius: '3px',
-                  padding: '1px 5px'
-                }}
-              >
-                {getPenaltyTierForTeam(player.team).badge}
-              </span>
-            </div>
-            <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', marginTop: '4px' }}>
-              {player.sp_pk_order === 1 || player.penalties_order === 1 || player.web_name === 'B.Fernandes' || player.web_name === 'Haaland' || player.web_name === 'Palmer' || player.web_name === 'Salah'
-                ? `First-choice penalty taker (${getPenaltyTierForTeam(player.team).desc})`
-                : (player.sp_ck_order === 1 ? 'Takes corners and direct free-kicks' : 'Scores and creates from open play')}
-            </div>
+        {/* Tactical Spot-Kick Hierarchy */}
+        <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Penalties & Set-Pieces</span>
+            <span
+              className="font-mono"
+              style={{
+                fontSize: '9px',
+                fontWeight: 800,
+                background: 'rgba(239, 68, 68, 0.18)',
+                color: '#F87171',
+                border: '1px solid rgba(239, 68, 68, 0.4)',
+                borderRadius: '3px',
+                padding: '1px 5px'
+              }}
+            >
+              {getPenaltyTierForTeam(player.team).badge}
+            </span>
           </div>
-
-          <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Tackles & Recoveries (Defcon)</span>
-              {(pos === 'DEF' || pos === 'GK') && (
-                <span
-                  className="font-mono"
-                  style={{
-                    fontSize: '9px',
-                    fontWeight: 800,
-                    background: 'rgba(59, 130, 246, 0.18)',
-                    color: '#60A5FA',
-                    border: '1px solid rgba(59, 130, 246, 0.4)',
-                    borderRadius: '3px',
-                    padding: '1px 5px'
-                  }}
-                >
-                  DEFCON +5%
-                </span>
-              )}
-            </div>
-            <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', marginTop: '4px' }}>
-              {(pos === 'DEF' || pos === 'GK')
-                ? 'Away match bonus: extra points from clearances, tackles, and ball recoveries.'
-                : 'Wins balls high up the pitch to start attacks.'}
-            </div>
+          <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', marginTop: '4px' }}>
+            {player.sp_pk_order === 1 || player.penalties_order === 1 || player.web_name === 'B.Fernandes' || player.web_name === 'Haaland' || player.web_name === 'Palmer' || player.web_name === 'Salah'
+              ? `First-choice penalty taker (${getPenaltyTierForTeam(player.team).desc})`
+              : (player.sp_ck_order === 1 ? 'Takes corners and direct free-kicks' : 'Scores and creates from open play')}
           </div>
         </div>
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { getPenaltyTierForTeam, DEFCON_BADGES } from '../constants/copyTokens';
+import { getPenaltyTierForTeam } from '../constants/copyTokens';
 
 export default function PlayerCard({
   player,
@@ -40,9 +40,6 @@ export default function PlayerCard({
   // Set-Piece & Penalty Hierarchy Detection
   const isPenaltyTaker = player.sp_pk_order === 1 || player.penalties_order === 1 || player.is_penalty_taker || (player.web_name === 'B.Fernandes' || player.web_name === 'Haaland' || player.web_name === 'Palmer' || player.web_name === 'Salah' || player.web_name === 'Saka' || player.web_name === 'Mbeumo');
   const penaltyTier = isPenaltyTaker ? getPenaltyTierForTeam(player.team) : null;
-
-  // Center-Back / Defender Away Venue Defcon (+5% C11 recovery/tackle boost)
-  const isAwayDefender = (pos === 'DEF' || pos === 'GK') && venue === 'A';
 
   return (
     <div
@@ -106,47 +103,26 @@ export default function PlayerCard({
         </span>
       </div>
 
-      {/* Tactical Badges Strip: Penalty Tier + Away Defcon */}
-      {(penaltyTier || isAwayDefender) && (
-        <div className="player-tactical-badges-strip" style={{ display: 'flex', justifyContent: 'center', gap: '3px', margin: '3px 0 2px 0' }}>
-          {penaltyTier && (
-            <span
-              className="pk-tier-badge font-mono"
-              style={{
-                background: 'rgba(239, 68, 68, 0.18)',
-                color: '#F87171',
-                border: '1px solid rgba(239, 68, 68, 0.4)',
-                borderRadius: '3px',
-                padding: '0 3px',
-                fontSize: '8px',
-                fontWeight: 800,
-                letterSpacing: '0.02em',
-                lineHeight: '1.2'
-              }}
-              title={penaltyTier.tooltip}
-            >
-              {penaltyTier.badge}
-            </span>
-          )}
-          {isAwayDefender && (
-            <span
-              className="defcon-badge font-mono"
-              style={{
-                background: 'rgba(59, 130, 246, 0.18)',
-                color: '#60A5FA',
-                border: '1px solid rgba(59, 130, 246, 0.4)',
-                borderRadius: '3px',
-                padding: '0 3px',
-                fontSize: '8px',
-                fontWeight: 800,
-                letterSpacing: '0.02em',
-                lineHeight: '1.2'
-              }}
-              title={DEFCON_BADGES.awayDefcon.tooltip}
-            >
-              {DEFCON_BADGES.awayDefcon.shortBadge}
-            </span>
-          )}
+      {/* Tactical Spot-Kick Hierarchy (if primary taker) */}
+      {penaltyTier && (
+        <div className="player-tactical-badges-strip" style={{ display: 'flex', justifyContent: 'center', margin: '3px 0 2px 0' }}>
+          <span
+            className="pk-tier-badge font-mono"
+            style={{
+              background: 'rgba(239, 68, 68, 0.18)',
+              color: '#F87171',
+              border: '1px solid rgba(239, 68, 68, 0.4)',
+              borderRadius: '3px',
+              padding: '0 3px',
+              fontSize: '8px',
+              fontWeight: 800,
+              letterSpacing: '0.02em',
+              lineHeight: '1.2'
+            }}
+            title={penaltyTier.tooltip}
+          >
+            {penaltyTier.badge}
+          </span>
         </div>
       )}
 
@@ -159,4 +135,5 @@ export default function PlayerCard({
     </div>
   );
 }
+
 
