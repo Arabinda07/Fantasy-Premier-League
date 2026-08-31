@@ -14,57 +14,211 @@
     "league_name": "Arsenal Bengal FPL 2026-27",
     "rivals": [
       {
-        "entry_id": 1198015,
-        "manager_name": "Souptik Som",
-        "team_name": "The Corner Kings",
+        "entry_id": 3945879,
+        "manager_name": "Avirup Chakraborty",
+        "team_name": "Expected TouLouse",
         "overall_rank": 1,
         "rank": 1,
-        "overall_points": 134,
-        "total_points": 134,
-        "event_points": 39,
-        "captain_name": "Haaland",
-        "captain_code": 223094,
+        "overall_points": 180,
+        "total_points": 180,
+        "event_points": 126,
+        "captain_name": "B.Fernandes",
+        "captain_code": 141746,
         "shared_players": [
+          "B.Fernandes",
+          "Gro\u00df",
+          "Raya",
           "Calafiori",
-          "Haaland",
-          "Diop"
+          "Mbeumo",
+          "Calvert-Lewin",
+          "Haaland"
         ],
         "differentials": [
-          "Verbruggen",
-          "Kayode",
-          "Gvardiol",
+          "Ajer",
+          "Shaw",
           "Szoboszlai",
-          "\u00d8degaard",
-          "Tzolis",
-          "Palmer",
-          "Wirtz",
           "Jo\u00e3o Pedro",
-          "Forster",
-          "N.Williams",
-          "Brobbey"
+          "Petrovi\u0107",
+          "M.Sangar\u00e9",
+          "Thomas",
+          "van Ewijk"
         ],
         "user_differentials": [
+          "De Cuyper",
+          "Tavernier",
+          "E.Le F\u00e9e",
+          "Gabriel",
+          "Davies",
+          "O'Nien",
+          "Diop",
+          "Walle Egeli"
+        ],
+        "user_differential_cards": [
+          {
+            "name": "De Cuyper",
+            "pos": "DEF",
+            "team": "BHA",
+            "cost": 4.6,
+            "xp": 2.9
+          },
+          {
+            "name": "Tavernier",
+            "pos": "MID",
+            "team": "BOU",
+            "cost": 6.0,
+            "xp": 3.9
+          },
+          {
+            "name": "E.Le F\u00e9e",
+            "pos": "MID",
+            "team": "SUN",
+            "cost": 6.0,
+            "xp": 3.3
+          },
+          {
+            "name": "Gabriel",
+            "pos": "DEF",
+            "team": "ARS",
+            "cost": 8.0,
+            "xp": 4.3
+          },
+          {
+            "name": "Davies",
+            "pos": "GK",
+            "team": "LIV",
+            "cost": 4.0,
+            "xp": 0.0
+          },
+          {
+            "name": "O'Nien",
+            "pos": "DEF",
+            "team": "SUN",
+            "cost": 4.0,
+            "xp": 2.3
+          },
+          {
+            "name": "Diop",
+            "pos": "DEF",
+            "team": "IPS",
+            "cost": 4.0,
+            "xp": 1.8
+          },
+          {
+            "name": "Walle Egeli",
+            "pos": "FWD",
+            "team": "IPS",
+            "cost": 4.5,
+            "xp": 1.7
+          }
+        ],
+        "rival_differential_cards": [
+          {
+            "name": "Ajer",
+            "pos": "DEF",
+            "team": "BRE",
+            "cost": 4.5,
+            "xp": 2.2
+          },
+          {
+            "name": "Shaw",
+            "pos": "DEF",
+            "team": "MUN",
+            "cost": 4.5,
+            "xp": 3.2
+          },
+          {
+            "name": "Szoboszlai",
+            "pos": "MID",
+            "team": "LIV",
+            "cost": 7.0,
+            "xp": 3.6
+          },
+          {
+            "name": "Jo\u00e3o Pedro",
+            "pos": "FWD",
+            "team": "CHE",
+            "cost": 7.6,
+            "xp": 4.0
+          },
+          {
+            "name": "Petrovi\u0107",
+            "pos": "GK",
+            "team": "BOU",
+            "cost": 4.5,
+            "xp": 3.4
+          },
+          {
+            "name": "M.Sangar\u00e9",
+            "pos": "MID",
+            "team": "BRE",
+            "cost": 5.6,
+            "xp": 2.2
+          },
+          {
+            "name": "Thomas",
+            "pos": "DEF",
+            "team": "COV",
+            "cost": 4.0,
+            "xp": 2.3
+          },
+          {
+            "name": "van Ewijk",
+            "pos": "DEF",
+            "team": "COV",
+            "cost": 4.0,
+            "xp": 2.3
+          }
+        ],
+        "your_upside": 20.2,
+        "rival_upside": 23.2,
+        "net_delta": -3.0,
+        "threat_level": "HIGH",
+        "overlap_count": 7,
+        "overlap_pct": 46.7
+      },
+      {
+        "entry_id": 12842,
+        "manager_name": "Aadrik Das",
+        "team_name": "The Dark Horses",
+        "overall_rank": 2,
+        "rank": 2,
+        "overall_points": 173,
+        "total_points": 173,
+        "event_points": 99,
+        "captain_name": "B.Fernandes",
+        "captain_code": 141746,
+        "shared_players": [
           "B.Fernandes",
+          "Calafiori",
+          "Mbeumo",
+          "Calvert-Lewin",
+          "Haaland"
+        ],
+        "differentials": [
+          "Kinsky",
+          "Maguire",
+          "Ajer",
+          "Tzolis",
+          "Szoboszlai",
+          "Jo\u00e3o Pedro",
+          "Verbruggen",
+          "Rodon",
+          "Gomez",
+          "Davis"
+        ],
+        "user_differentials": [
           "De Cuyper",
           "Gro\u00df",
           "Tavernier",
           "Raya",
           "E.Le F\u00e9e",
           "Gabriel",
-          "Mbeumo",
-          "Calvert-Lewin",
           "Davies",
           "O'Nien",
+          "Diop",
           "Walle Egeli"
         ],
         "user_differential_cards": [
-          {
-            "name": "B.Fernandes",
-            "pos": "MID",
-            "team": "MUN",
-            "cost": 12.0,
-            "xp": 5.6
-          },
           {
             "name": "De Cuyper",
             "pos": "DEF",
@@ -108,11 +262,183 @@
             "xp": 4.3
           },
           {
-            "name": "Mbeumo",
-            "pos": "MID",
+            "name": "Davies",
+            "pos": "GK",
+            "team": "LIV",
+            "cost": 4.0,
+            "xp": 0.0
+          },
+          {
+            "name": "O'Nien",
+            "pos": "DEF",
+            "team": "SUN",
+            "cost": 4.0,
+            "xp": 2.3
+          },
+          {
+            "name": "Diop",
+            "pos": "DEF",
+            "team": "IPS",
+            "cost": 4.0,
+            "xp": 1.8
+          },
+          {
+            "name": "Walle Egeli",
+            "pos": "FWD",
+            "team": "IPS",
+            "cost": 4.5,
+            "xp": 1.7
+          }
+        ],
+        "rival_differential_cards": [
+          {
+            "name": "Kinsky",
+            "pos": "GK",
+            "team": "TOT",
+            "cost": 4.5,
+            "xp": 3.3
+          },
+          {
+            "name": "Maguire",
+            "pos": "DEF",
             "team": "MUN",
+            "cost": 5.0,
+            "xp": 3.6
+          },
+          {
+            "name": "Ajer",
+            "pos": "DEF",
+            "team": "BRE",
+            "cost": 4.5,
+            "xp": 2.2
+          },
+          {
+            "name": "Tzolis",
+            "pos": "MID",
+            "team": "ARS",
+            "cost": 6.5,
+            "xp": 2.3
+          },
+          {
+            "name": "Szoboszlai",
+            "pos": "MID",
+            "team": "LIV",
+            "cost": 7.0,
+            "xp": 3.6
+          },
+          {
+            "name": "Jo\u00e3o Pedro",
+            "pos": "FWD",
+            "team": "CHE",
+            "cost": 7.6,
+            "xp": 4.0
+          },
+          {
+            "name": "Verbruggen",
+            "pos": "GK",
+            "team": "BHA",
+            "cost": 4.5,
+            "xp": 3.1
+          },
+          {
+            "name": "Rodon",
+            "pos": "DEF",
+            "team": "LEE",
+            "cost": 4.5,
+            "xp": 2.3
+          },
+          {
+            "name": "Gomez",
+            "pos": "MID",
+            "team": "BHA",
+            "cost": 5.0,
+            "xp": 3.3
+          },
+          {
+            "name": "Davis",
+            "pos": "DEF",
+            "team": "IPS",
+            "cost": 4.0,
+            "xp": 1.4
+          }
+        ],
+        "your_upside": 27.8,
+        "rival_upside": 29.1,
+        "net_delta": -1.3,
+        "threat_level": "HIGH",
+        "overlap_count": 5,
+        "overlap_pct": 33.3
+      },
+      {
+        "entry_id": 5825581,
+        "manager_name": "Darth Vader",
+        "team_name": "Sound of Tzolis",
+        "overall_rank": 3,
+        "rank": 3,
+        "overall_points": 169,
+        "total_points": 169,
+        "event_points": 102,
+        "captain_name": "B.Fernandes",
+        "captain_code": 141746,
+        "shared_players": [
+          "B.Fernandes",
+          "De Cuyper",
+          "Raya",
+          "Calafiori",
+          "Mbeumo"
+        ],
+        "differentials": [
+          "Gvardiol",
+          "Truffert",
+          "Ndiaye",
+          "Palmer",
+          "Wissa",
+          "Jo\u00e3o Pedro",
+          "Isak",
+          "Verbruggen",
+          "M.Sangar\u00e9",
+          "Rodon"
+        ],
+        "user_differentials": [
+          "Gro\u00df",
+          "Tavernier",
+          "E.Le F\u00e9e",
+          "Gabriel",
+          "Calvert-Lewin",
+          "Haaland",
+          "Davies",
+          "O'Nien",
+          "Diop",
+          "Walle Egeli"
+        ],
+        "user_differential_cards": [
+          {
+            "name": "Gro\u00df",
+            "pos": "MID",
+            "team": "BHA",
+            "cost": 5.5,
+            "xp": 3.1
+          },
+          {
+            "name": "Tavernier",
+            "pos": "MID",
+            "team": "BOU",
+            "cost": 6.0,
+            "xp": 3.9
+          },
+          {
+            "name": "E.Le F\u00e9e",
+            "pos": "MID",
+            "team": "SUN",
+            "cost": 6.0,
+            "xp": 3.3
+          },
+          {
+            "name": "Gabriel",
+            "pos": "DEF",
+            "team": "ARS",
             "cost": 8.0,
-            "xp": 5.3
+            "xp": 4.3
           },
           {
             "name": "Calvert-Lewin",
@@ -120,6 +446,13 @@
             "team": "LEE",
             "cost": 6.0,
             "xp": 4.0
+          },
+          {
+            "name": "Haaland",
+            "pos": "FWD",
+            "team": "MCI",
+            "cost": 15.5,
+            "xp": 4.9
           },
           {
             "name": "Davies",
@@ -136,6 +469,13 @@
             "xp": 2.3
           },
           {
+            "name": "Diop",
+            "pos": "DEF",
+            "team": "IPS",
+            "cost": 4.0,
+            "xp": 1.8
+          },
+          {
             "name": "Walle Egeli",
             "pos": "FWD",
             "team": "IPS",
@@ -145,20 +485,6 @@
         ],
         "rival_differential_cards": [
           {
-            "name": "Verbruggen",
-            "pos": "GK",
-            "team": "BHA",
-            "cost": 4.5,
-            "xp": 3.1
-          },
-          {
-            "name": "Kayode",
-            "pos": "DEF",
-            "team": "BRE",
-            "cost": 4.6,
-            "xp": 2.1
-          },
-          {
             "name": "Gvardiol",
             "pos": "DEF",
             "team": "MCI",
@@ -166,25 +492,18 @@
             "xp": 2.7
           },
           {
-            "name": "Szoboszlai",
-            "pos": "MID",
-            "team": "LIV",
-            "cost": 7.0,
-            "xp": 3.6
+            "name": "Truffert",
+            "pos": "DEF",
+            "team": "BOU",
+            "cost": 5.5,
+            "xp": 3.3
           },
           {
-            "name": "\u00d8degaard",
+            "name": "Ndiaye",
             "pos": "MID",
-            "team": "ARS",
-            "cost": 6.6,
-            "xp": 2.6
-          },
-          {
-            "name": "Tzolis",
-            "pos": "MID",
-            "team": "ARS",
-            "cost": 6.5,
-            "xp": 2.3
+            "team": "EVE",
+            "cost": 6.0,
+            "xp": 3.1
           },
           {
             "name": "Palmer",
@@ -194,10 +513,10 @@
             "xp": 3.7
           },
           {
-            "name": "Wirtz",
-            "pos": "MID",
-            "team": "LIV",
-            "cost": 7.5,
+            "name": "Wissa",
+            "pos": "FWD",
+            "team": "NEW",
+            "cost": 6.0,
             "xp": 3.0
           },
           {
@@ -208,43 +527,228 @@
             "xp": 4.0
           },
           {
-            "name": "Forster",
+            "name": "Isak",
+            "pos": "FWD",
+            "team": "LIV",
+            "cost": 9.0,
+            "xp": 3.5
+          },
+          {
+            "name": "Verbruggen",
             "pos": "GK",
+            "team": "BHA",
+            "cost": 4.5,
+            "xp": 3.1
+          },
+          {
+            "name": "M.Sangar\u00e9",
+            "pos": "MID",
+            "team": "BRE",
+            "cost": 5.6,
+            "xp": 2.2
+          },
+          {
+            "name": "Rodon",
+            "pos": "DEF",
+            "team": "LEE",
+            "cost": 4.5,
+            "xp": 2.3
+          }
+        ],
+        "your_upside": 29.3,
+        "rival_upside": 30.9,
+        "net_delta": -1.6,
+        "threat_level": "HIGH",
+        "overlap_count": 5,
+        "overlap_pct": 33.3
+      },
+      {
+        "entry_id": 2721839,
+        "manager_name": "Pratik Dutta",
+        "team_name": "Its not done yet",
+        "overall_rank": 4,
+        "rank": 4,
+        "overall_points": 168,
+        "total_points": 168,
+        "event_points": 90,
+        "captain_name": "B.Fernandes",
+        "captain_code": 141746,
+        "shared_players": [
+          "B.Fernandes",
+          "Gro\u00df",
+          "Raya",
+          "Calafiori",
+          "Calvert-Lewin",
+          "Haaland"
+        ],
+        "differentials": [
+          "Shaw",
+          "Maguire",
+          "Ndiaye",
+          "Szoboszlai",
+          "Tzolis",
+          "Jo\u00e3o Pedro",
+          "Verbruggen",
+          "Ajer",
+          "O'Shea"
+        ],
+        "user_differentials": [
+          "De Cuyper",
+          "Tavernier",
+          "E.Le F\u00e9e",
+          "Gabriel",
+          "Mbeumo",
+          "Davies",
+          "O'Nien",
+          "Diop",
+          "Walle Egeli"
+        ],
+        "user_differential_cards": [
+          {
+            "name": "De Cuyper",
+            "pos": "DEF",
+            "team": "BHA",
+            "cost": 4.6,
+            "xp": 2.9
+          },
+          {
+            "name": "Tavernier",
+            "pos": "MID",
             "team": "BOU",
+            "cost": 6.0,
+            "xp": 3.9
+          },
+          {
+            "name": "E.Le F\u00e9e",
+            "pos": "MID",
+            "team": "SUN",
+            "cost": 6.0,
+            "xp": 3.3
+          },
+          {
+            "name": "Gabriel",
+            "pos": "DEF",
+            "team": "ARS",
+            "cost": 8.0,
+            "xp": 4.3
+          },
+          {
+            "name": "Mbeumo",
+            "pos": "MID",
+            "team": "MUN",
+            "cost": 8.0,
+            "xp": 5.3
+          },
+          {
+            "name": "Davies",
+            "pos": "GK",
+            "team": "LIV",
             "cost": 4.0,
             "xp": 0.0
           },
           {
-            "name": "N.Williams",
+            "name": "O'Nien",
             "pos": "DEF",
-            "team": "NFO",
-            "cost": 5.0,
+            "team": "SUN",
+            "cost": 4.0,
             "xp": 2.3
           },
           {
-            "name": "Brobbey",
+            "name": "Diop",
+            "pos": "DEF",
+            "team": "IPS",
+            "cost": 4.0,
+            "xp": 1.8
+          },
+          {
+            "name": "Walle Egeli",
             "pos": "FWD",
-            "team": "SUN",
-            "cost": 6.0,
-            "xp": 2.5
+            "team": "IPS",
+            "cost": 4.5,
+            "xp": 1.7
           }
         ],
-        "your_upside": 40.9,
-        "rival_upside": 31.9,
-        "net_delta": 9.0,
+        "rival_differential_cards": [
+          {
+            "name": "Shaw",
+            "pos": "DEF",
+            "team": "MUN",
+            "cost": 4.5,
+            "xp": 3.2
+          },
+          {
+            "name": "Maguire",
+            "pos": "DEF",
+            "team": "MUN",
+            "cost": 5.0,
+            "xp": 3.6
+          },
+          {
+            "name": "Ndiaye",
+            "pos": "MID",
+            "team": "EVE",
+            "cost": 6.0,
+            "xp": 3.1
+          },
+          {
+            "name": "Szoboszlai",
+            "pos": "MID",
+            "team": "LIV",
+            "cost": 7.0,
+            "xp": 3.6
+          },
+          {
+            "name": "Tzolis",
+            "pos": "MID",
+            "team": "ARS",
+            "cost": 6.5,
+            "xp": 2.3
+          },
+          {
+            "name": "Jo\u00e3o Pedro",
+            "pos": "FWD",
+            "team": "CHE",
+            "cost": 7.6,
+            "xp": 4.0
+          },
+          {
+            "name": "Verbruggen",
+            "pos": "GK",
+            "team": "BHA",
+            "cost": 4.5,
+            "xp": 3.1
+          },
+          {
+            "name": "Ajer",
+            "pos": "DEF",
+            "team": "BRE",
+            "cost": 4.5,
+            "xp": 2.2
+          },
+          {
+            "name": "O'Shea",
+            "pos": "DEF",
+            "team": "IPS",
+            "cost": 4.0,
+            "xp": 1.4
+          }
+        ],
+        "your_upside": 25.5,
+        "rival_upside": 26.5,
+        "net_delta": -1.0,
         "threat_level": "HIGH",
-        "overlap_count": 3,
-        "overlap_pct": 20.0
+        "overlap_count": 6,
+        "overlap_pct": 40.0
       },
       {
         "entry_id": 1670132,
         "manager_name": "Ishaan Agarwal",
         "team_name": "Young Guns",
-        "overall_rank": 2,
-        "rank": 2,
-        "overall_points": 127,
-        "total_points": 127,
-        "event_points": 40,
+        "overall_rank": 5,
+        "rank": 5,
+        "overall_points": 164,
+        "total_points": 164,
+        "event_points": 77,
         "captain_name": "Haaland",
         "captain_code": 223094,
         "shared_players": [
@@ -475,489 +979,42 @@
         "overlap_pct": 13.3
       },
       {
-        "entry_id": 2767745,
-        "manager_name": "Sayak Naha",
-        "team_name": "AKB11",
-        "overall_rank": 3,
-        "rank": 3,
-        "overall_points": 122,
-        "total_points": 122,
-        "event_points": 47,
-        "captain_name": "Haaland",
-        "captain_code": 223094,
+        "entry_id": 974090,
+        "manager_name": "MONODIP ROY",
+        "team_name": "VENGA ARTETA",
+        "overall_rank": 6,
+        "rank": 6,
+        "overall_points": 164,
+        "total_points": 164,
+        "event_points": 107,
+        "captain_name": "B.Fernandes",
+        "captain_code": 141746,
         "shared_players": [
+          "B.Fernandes",
           "Calafiori",
-          "Haaland"
+          "Mbeumo",
+          "Calvert-Lewin"
         ],
         "differentials": [
-          "Lammens",
-          "Gu\u00e9hi",
-          "Kerkez",
-          "Kayode",
-          "Wirtz",
-          "Rogers",
-          "Tzolis",
-          "Cherki",
-          "Havertz",
           "Kinsky",
-          "Schade",
-          "Jacquet",
-          "Igor Jesus"
-        ],
-        "user_differentials": [
-          "B.Fernandes",
-          "De Cuyper",
-          "Gro\u00df",
-          "Tavernier",
-          "Raya",
-          "E.Le F\u00e9e",
-          "Gabriel",
-          "Mbeumo",
-          "Calvert-Lewin",
-          "Davies",
-          "O'Nien",
-          "Diop",
-          "Walle Egeli"
-        ],
-        "user_differential_cards": [
-          {
-            "name": "B.Fernandes",
-            "pos": "MID",
-            "team": "MUN",
-            "cost": 12.0,
-            "xp": 5.6
-          },
-          {
-            "name": "De Cuyper",
-            "pos": "DEF",
-            "team": "BHA",
-            "cost": 4.6,
-            "xp": 2.9
-          },
-          {
-            "name": "Gro\u00df",
-            "pos": "MID",
-            "team": "BHA",
-            "cost": 5.5,
-            "xp": 3.1
-          },
-          {
-            "name": "Tavernier",
-            "pos": "MID",
-            "team": "BOU",
-            "cost": 6.0,
-            "xp": 3.9
-          },
-          {
-            "name": "Raya",
-            "pos": "GK",
-            "team": "ARS",
-            "cost": 6.0,
-            "xp": 4.5
-          },
-          {
-            "name": "E.Le F\u00e9e",
-            "pos": "MID",
-            "team": "SUN",
-            "cost": 6.0,
-            "xp": 3.3
-          },
-          {
-            "name": "Gabriel",
-            "pos": "DEF",
-            "team": "ARS",
-            "cost": 8.0,
-            "xp": 4.3
-          },
-          {
-            "name": "Mbeumo",
-            "pos": "MID",
-            "team": "MUN",
-            "cost": 8.0,
-            "xp": 5.3
-          },
-          {
-            "name": "Calvert-Lewin",
-            "pos": "FWD",
-            "team": "LEE",
-            "cost": 6.0,
-            "xp": 4.0
-          },
-          {
-            "name": "Davies",
-            "pos": "GK",
-            "team": "LIV",
-            "cost": 4.0,
-            "xp": 0.0
-          },
-          {
-            "name": "O'Nien",
-            "pos": "DEF",
-            "team": "SUN",
-            "cost": 4.0,
-            "xp": 2.3
-          },
-          {
-            "name": "Diop",
-            "pos": "DEF",
-            "team": "IPS",
-            "cost": 4.0,
-            "xp": 1.8
-          },
-          {
-            "name": "Walle Egeli",
-            "pos": "FWD",
-            "team": "IPS",
-            "cost": 4.5,
-            "xp": 1.7
-          }
-        ],
-        "rival_differential_cards": [
-          {
-            "name": "Lammens",
-            "pos": "GK",
-            "team": "MUN",
-            "cost": 5.0,
-            "xp": 4.3
-          },
-          {
-            "name": "Gu\u00e9hi",
-            "pos": "DEF",
-            "team": "MCI",
-            "cost": 6.0,
-            "xp": 2.7
-          },
-          {
-            "name": "Kerkez",
-            "pos": "DEF",
-            "team": "LIV",
-            "cost": 5.5,
-            "xp": 2.9
-          },
-          {
-            "name": "Kayode",
-            "pos": "DEF",
-            "team": "BRE",
-            "cost": 4.6,
-            "xp": 2.1
-          },
-          {
-            "name": "Wirtz",
-            "pos": "MID",
-            "team": "LIV",
-            "cost": 7.5,
-            "xp": 3.0
-          },
-          {
-            "name": "Rogers",
-            "pos": "MID",
-            "team": "CHE",
-            "cost": 7.5,
-            "xp": 3.0
-          },
-          {
-            "name": "Tzolis",
-            "pos": "MID",
-            "team": "ARS",
-            "cost": 6.5,
-            "xp": 2.3
-          },
-          {
-            "name": "Cherki",
-            "pos": "MID",
-            "team": "MCI",
-            "cost": 7.5,
-            "xp": 2.5
-          },
-          {
-            "name": "Havertz",
-            "pos": "FWD",
-            "team": "ARS",
-            "cost": 7.5,
-            "xp": 3.6
-          },
-          {
-            "name": "Kinsky",
-            "pos": "GK",
-            "team": "TOT",
-            "cost": 4.5,
-            "xp": 3.3
-          },
-          {
-            "name": "Schade",
-            "pos": "MID",
-            "team": "BRE",
-            "cost": 6.0,
-            "xp": 3.3
-          },
-          {
-            "name": "Jacquet",
-            "pos": "DEF",
-            "team": "LIV",
-            "cost": 5.0,
-            "xp": 2.4
-          },
-          {
-            "name": "Igor Jesus",
-            "pos": "FWD",
-            "team": "NFO",
-            "cost": 6.0,
-            "xp": 2.9
-          }
-        ],
-        "your_upside": 42.7,
-        "rival_upside": 38.3,
-        "net_delta": 4.4,
-        "threat_level": "HIGH",
-        "overlap_count": 2,
-        "overlap_pct": 13.3
-      },
-      {
-        "entry_id": 5859543,
-        "manager_name": "Pallab Das",
-        "team_name": "Pallab's Team",
-        "overall_rank": 4,
-        "rank": 4,
-        "overall_points": 119,
-        "total_points": 119,
-        "event_points": 46,
-        "captain_name": "Haaland",
-        "captain_code": 223094,
-        "shared_players": [
-          "Calafiori",
-          "Gabriel",
-          "Calvert-Lewin",
-          "Haaland"
-        ],
-        "differentials": [
-          "Pickford",
-          "Tarkowski",
-          "Gvardiol",
-          "Rice",
-          "Xhaka",
-          "Damsgaard",
-          "Iwobi",
-          "Jo\u00e3o Pedro",
-          "Roefs",
-          "R\u00faben",
-          "Garnacho"
-        ],
-        "user_differentials": [
-          "B.Fernandes",
-          "De Cuyper",
-          "Gro\u00df",
-          "Tavernier",
-          "Raya",
-          "E.Le F\u00e9e",
-          "Mbeumo",
-          "Davies",
-          "O'Nien",
-          "Diop",
-          "Walle Egeli"
-        ],
-        "user_differential_cards": [
-          {
-            "name": "B.Fernandes",
-            "pos": "MID",
-            "team": "MUN",
-            "cost": 12.0,
-            "xp": 5.6
-          },
-          {
-            "name": "De Cuyper",
-            "pos": "DEF",
-            "team": "BHA",
-            "cost": 4.6,
-            "xp": 2.9
-          },
-          {
-            "name": "Gro\u00df",
-            "pos": "MID",
-            "team": "BHA",
-            "cost": 5.5,
-            "xp": 3.1
-          },
-          {
-            "name": "Tavernier",
-            "pos": "MID",
-            "team": "BOU",
-            "cost": 6.0,
-            "xp": 3.9
-          },
-          {
-            "name": "Raya",
-            "pos": "GK",
-            "team": "ARS",
-            "cost": 6.0,
-            "xp": 4.5
-          },
-          {
-            "name": "E.Le F\u00e9e",
-            "pos": "MID",
-            "team": "SUN",
-            "cost": 6.0,
-            "xp": 3.3
-          },
-          {
-            "name": "Mbeumo",
-            "pos": "MID",
-            "team": "MUN",
-            "cost": 8.0,
-            "xp": 5.3
-          },
-          {
-            "name": "Davies",
-            "pos": "GK",
-            "team": "LIV",
-            "cost": 4.0,
-            "xp": 0.0
-          },
-          {
-            "name": "O'Nien",
-            "pos": "DEF",
-            "team": "SUN",
-            "cost": 4.0,
-            "xp": 2.3
-          },
-          {
-            "name": "Diop",
-            "pos": "DEF",
-            "team": "IPS",
-            "cost": 4.0,
-            "xp": 1.8
-          },
-          {
-            "name": "Walle Egeli",
-            "pos": "FWD",
-            "team": "IPS",
-            "cost": 4.5,
-            "xp": 1.7
-          }
-        ],
-        "rival_differential_cards": [
-          {
-            "name": "Pickford",
-            "pos": "GK",
-            "team": "EVE",
-            "cost": 5.5,
-            "xp": 2.9
-          },
-          {
-            "name": "Tarkowski",
-            "pos": "DEF",
-            "team": "EVE",
-            "cost": 6.0,
-            "xp": 2.5
-          },
-          {
-            "name": "Gvardiol",
-            "pos": "DEF",
-            "team": "MCI",
-            "cost": 5.5,
-            "xp": 2.7
-          },
-          {
-            "name": "Rice",
-            "pos": "MID",
-            "team": "ARS",
-            "cost": 7.5,
-            "xp": 2.5
-          },
-          {
-            "name": "Xhaka",
-            "pos": "MID",
-            "team": "SUN",
-            "cost": 5.5,
-            "xp": 2.8
-          },
-          {
-            "name": "Damsgaard",
-            "pos": "MID",
-            "team": "BRE",
-            "cost": 5.5,
-            "xp": 2.1
-          },
-          {
-            "name": "Iwobi",
-            "pos": "MID",
-            "team": "FUL",
-            "cost": 5.5,
-            "xp": 2.9
-          },
-          {
-            "name": "Jo\u00e3o Pedro",
-            "pos": "FWD",
-            "team": "CHE",
-            "cost": 7.6,
-            "xp": 4.0
-          },
-          {
-            "name": "Roefs",
-            "pos": "GK",
-            "team": "SUN",
-            "cost": 5.0,
-            "xp": 3.6
-          },
-          {
-            "name": "R\u00faben",
-            "pos": "DEF",
-            "team": "MCI",
-            "cost": 5.5,
-            "xp": 2.2
-          },
-          {
-            "name": "Garnacho",
-            "pos": "MID",
-            "team": "AVL",
-            "cost": 6.0,
-            "xp": 1.8
-          }
-        ],
-        "your_upside": 34.4,
-        "rival_upside": 30.0,
-        "net_delta": 4.4,
-        "threat_level": "HIGH",
-        "overlap_count": 4,
-        "overlap_pct": 26.7
-      },
-      {
-        "entry_id": 8337759,
-        "manager_name": "Sagneek Datta",
-        "team_name": "Tzol Searching XI",
-        "overall_rank": 5,
-        "rank": 5,
-        "overall_points": 113,
-        "total_points": 113,
-        "event_points": 48,
-        "captain_name": "Raya",
-        "captain_code": 154561,
-        "shared_players": [
-          "B.Fernandes",
-          "Raya",
-          "Calafiori"
-        ],
-        "differentials": [
-          "Gu\u00e9hi",
-          "Tarkowski",
-          "Gibbs-White",
-          "Tzolis",
-          "Szoboszlai",
+          "White",
+          "Shaw",
           "Semenyo",
-          "Woltemade",
-          "Wissa",
-          "Dubravka",
-          "Evanilson",
-          "Senesi",
-          "Virgil"
+          "Wirtz",
+          "Palmer",
+          "Jo\u00e3o Pedro",
+          "Thiago",
+          "Rushworth",
+          "Thomas",
+          "van Ewijk"
         ],
         "user_differentials": [
           "De Cuyper",
           "Gro\u00df",
           "Tavernier",
+          "Raya",
           "E.Le F\u00e9e",
           "Gabriel",
-          "Mbeumo",
-          "Calvert-Lewin",
           "Haaland",
           "Davies",
           "O'Nien",
@@ -987,6 +1044,13 @@
             "xp": 3.9
           },
           {
+            "name": "Raya",
+            "pos": "GK",
+            "team": "ARS",
+            "cost": 6.0,
+            "xp": 4.5
+          },
+          {
             "name": "E.Le F\u00e9e",
             "pos": "MID",
             "team": "SUN",
@@ -999,20 +1063,6 @@
             "team": "ARS",
             "cost": 8.0,
             "xp": 4.3
-          },
-          {
-            "name": "Mbeumo",
-            "pos": "MID",
-            "team": "MUN",
-            "cost": 8.0,
-            "xp": 5.3
-          },
-          {
-            "name": "Calvert-Lewin",
-            "pos": "FWD",
-            "team": "LEE",
-            "cost": 6.0,
-            "xp": 4.0
           },
           {
             "name": "Haaland",
@@ -1052,39 +1102,25 @@
         ],
         "rival_differential_cards": [
           {
-            "name": "Gu\u00e9hi",
-            "pos": "DEF",
-            "team": "MCI",
-            "cost": 6.0,
-            "xp": 2.7
+            "name": "Kinsky",
+            "pos": "GK",
+            "team": "TOT",
+            "cost": 4.5,
+            "xp": 3.3
           },
           {
-            "name": "Tarkowski",
+            "name": "White",
             "pos": "DEF",
-            "team": "EVE",
-            "cost": 6.0,
-            "xp": 2.5
-          },
-          {
-            "name": "Gibbs-White",
-            "pos": "MID",
-            "team": "NFO",
-            "cost": 8.0,
+            "team": "ARS",
+            "cost": 5.5,
             "xp": 3.5
           },
           {
-            "name": "Tzolis",
-            "pos": "MID",
-            "team": "ARS",
-            "cost": 6.5,
-            "xp": 2.3
-          },
-          {
-            "name": "Szoboszlai",
-            "pos": "MID",
-            "team": "LIV",
-            "cost": 7.0,
-            "xp": 3.6
+            "name": "Shaw",
+            "pos": "DEF",
+            "team": "MUN",
+            "cost": 4.5,
+            "xp": 3.2
           },
           {
             "name": "Semenyo",
@@ -1094,259 +1130,58 @@
             "xp": 3.3
           },
           {
-            "name": "Woltemade",
-            "pos": "FWD",
-            "team": "NEW",
-            "cost": 6.0,
-            "xp": 1.5
-          },
-          {
-            "name": "Wissa",
-            "pos": "FWD",
-            "team": "NEW",
-            "cost": 6.0,
+            "name": "Wirtz",
+            "pos": "MID",
+            "team": "LIV",
+            "cost": 7.5,
             "xp": 3.0
           },
           {
-            "name": "Dubravka",
-            "pos": "GK",
-            "team": "TOT",
-            "cost": 4.0,
-            "xp": 0.0
-          },
-          {
-            "name": "Evanilson",
-            "pos": "FWD",
-            "team": "BOU",
-            "cost": 6.0,
-            "xp": 2.7
-          },
-          {
-            "name": "Senesi",
-            "pos": "DEF",
-            "team": "TOT",
-            "cost": 6.0,
-            "xp": 3.3
-          },
-          {
-            "name": "Virgil",
-            "pos": "DEF",
-            "team": "LIV",
-            "cost": 6.5,
-            "xp": 3.4
-          }
-        ],
-        "your_upside": 37.5,
-        "rival_upside": 31.8,
-        "net_delta": 5.7,
-        "threat_level": "HIGH",
-        "overlap_count": 3,
-        "overlap_pct": 20.0
-      },
-      {
-        "entry_id": 2635648,
-        "manager_name": "Indrajeet Dutta",
-        "team_name": "Up The Gun FC",
-        "overall_rank": 6,
-        "rank": 6,
-        "overall_points": 111,
-        "total_points": 111,
-        "event_points": 54,
-        "captain_name": "Haaland",
-        "captain_code": 223094,
-        "shared_players": [
-          "De Cuyper",
-          "Gabriel",
-          "Calvert-Lewin",
-          "Haaland"
-        ],
-        "differentials": [
-          "Tzolakis",
-          "Van Hecke",
-          "Gibbs-White",
-          "Szoboszlai",
-          "Rogers",
-          "Tzolis",
-          "Havertz",
-          "Dubravka",
-          "Fernandes",
-          "Mu\u00f1oz",
-          "Cash"
-        ],
-        "user_differentials": [
-          "B.Fernandes",
-          "Gro\u00df",
-          "Tavernier",
-          "Raya",
-          "E.Le F\u00e9e",
-          "Calafiori",
-          "Mbeumo",
-          "Davies",
-          "O'Nien",
-          "Diop",
-          "Walle Egeli"
-        ],
-        "user_differential_cards": [
-          {
-            "name": "B.Fernandes",
+            "name": "Palmer",
             "pos": "MID",
-            "team": "MUN",
-            "cost": 12.0,
-            "xp": 5.6
-          },
-          {
-            "name": "Gro\u00df",
-            "pos": "MID",
-            "team": "BHA",
-            "cost": 5.5,
-            "xp": 3.1
-          },
-          {
-            "name": "Tavernier",
-            "pos": "MID",
-            "team": "BOU",
-            "cost": 6.0,
-            "xp": 3.9
-          },
-          {
-            "name": "Raya",
-            "pos": "GK",
-            "team": "ARS",
-            "cost": 6.0,
-            "xp": 4.5
-          },
-          {
-            "name": "E.Le F\u00e9e",
-            "pos": "MID",
-            "team": "SUN",
-            "cost": 6.0,
-            "xp": 3.3
-          },
-          {
-            "name": "Calafiori",
-            "pos": "DEF",
-            "team": "ARS",
-            "cost": 5.6,
+            "team": "CHE",
+            "cost": 9.5,
             "xp": 3.7
           },
           {
-            "name": "Mbeumo",
-            "pos": "MID",
-            "team": "MUN",
-            "cost": 8.0,
-            "xp": 5.3
-          },
-          {
-            "name": "Davies",
-            "pos": "GK",
-            "team": "LIV",
-            "cost": 4.0,
-            "xp": 0.0
-          },
-          {
-            "name": "O'Nien",
-            "pos": "DEF",
-            "team": "SUN",
-            "cost": 4.0,
-            "xp": 2.3
-          },
-          {
-            "name": "Diop",
-            "pos": "DEF",
-            "team": "IPS",
-            "cost": 4.0,
-            "xp": 1.8
-          },
-          {
-            "name": "Walle Egeli",
+            "name": "Jo\u00e3o Pedro",
             "pos": "FWD",
-            "team": "IPS",
-            "cost": 4.5,
-            "xp": 1.7
-          }
-        ],
-        "rival_differential_cards": [
-          {
-            "name": "Tzolakis",
-            "pos": "GK",
-            "team": "HUL",
-            "cost": 4.5,
-            "xp": 3.0
-          },
-          {
-            "name": "Van Hecke",
-            "pos": "DEF",
-            "team": "TOT",
-            "cost": 5.0,
-            "xp": 3.1
-          },
-          {
-            "name": "Gibbs-White",
-            "pos": "MID",
-            "team": "NFO",
-            "cost": 8.0,
-            "xp": 3.5
-          },
-          {
-            "name": "Szoboszlai",
-            "pos": "MID",
-            "team": "LIV",
-            "cost": 7.0,
-            "xp": 3.6
-          },
-          {
-            "name": "Rogers",
-            "pos": "MID",
             "team": "CHE",
-            "cost": 7.5,
-            "xp": 3.0
+            "cost": 7.6,
+            "xp": 4.0
           },
           {
-            "name": "Tzolis",
-            "pos": "MID",
-            "team": "ARS",
-            "cost": 6.5,
+            "name": "Thiago",
+            "pos": "FWD",
+            "team": "BRE",
+            "cost": 8.0,
+            "xp": 3.4
+          },
+          {
+            "name": "Rushworth",
+            "pos": "GK",
+            "team": "COV",
+            "cost": 4.5,
+            "xp": 2.9
+          },
+          {
+            "name": "Thomas",
+            "pos": "DEF",
+            "team": "COV",
+            "cost": 4.0,
             "xp": 2.3
           },
           {
-            "name": "Havertz",
-            "pos": "FWD",
-            "team": "ARS",
-            "cost": 7.5,
-            "xp": 3.6
-          },
-          {
-            "name": "Dubravka",
-            "pos": "GK",
-            "team": "TOT",
+            "name": "van Ewijk",
+            "pos": "DEF",
+            "team": "COV",
             "cost": 4.0,
-            "xp": 0.0
-          },
-          {
-            "name": "Fernandes",
-            "pos": "MID",
-            "team": "TOT",
-            "cost": 6.0,
-            "xp": 1.7
-          },
-          {
-            "name": "Mu\u00f1oz",
-            "pos": "DEF",
-            "team": "CRY",
-            "cost": 5.5,
-            "xp": 1.8
-          },
-          {
-            "name": "Cash",
-            "pos": "DEF",
-            "team": "AVL",
-            "cost": 4.5,
-            "xp": 2.0
+            "xp": 2.3
           }
         ],
-        "your_upside": 35.2,
-        "rival_upside": 27.6,
-        "net_delta": 7.6,
+        "your_upside": 32.7,
+        "rival_upside": 34.9,
+        "net_delta": -2.2,
         "threat_level": "HIGH",
         "overlap_count": 4,
         "overlap_pct": 26.7
