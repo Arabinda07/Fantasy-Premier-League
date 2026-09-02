@@ -1,6 +1,32 @@
 import React from 'react';
 import { getPenaltyTierForTeam } from '../constants/copyTokens';
 
+// Map Premier League team names to kit stripe identifiers
+const getTeamKitClass = (teamName) => {
+  const t = (teamName || '').toLowerCase().replace(/[^a-z]/g, '');
+  if (t.includes('arsenal')) return 'kit-arsenal';
+  if (t.includes('aston') || t.includes('villa')) return 'kit-aston-villa';
+  if (t.includes('bournemouth')) return 'kit-bournemouth';
+  if (t.includes('brentford')) return 'kit-brentford';
+  if (t.includes('brighton')) return 'kit-brighton';
+  if (t.includes('chelsea')) return 'kit-chelsea';
+  if (t.includes('palace')) return 'kit-crystal-palace';
+  if (t.includes('everton')) return 'kit-everton';
+  if (t.includes('fulham')) return 'kit-fulham';
+  if (t.includes('ipswich')) return 'kit-ipswich';
+  if (t.includes('leicester')) return 'kit-leicester';
+  if (t.includes('liverpool')) return 'kit-liverpool';
+  if (t.includes('city') || t.includes('mancity')) return 'kit-man-city';
+  if (t.includes('utd') || t.includes('united') || t.includes('manutd')) return 'kit-man-utd';
+  if (t.includes('newcastle')) return 'kit-newcastle';
+  if (t.includes('nottingham') || t.includes('forest')) return 'kit-nottingham-forest';
+  if (t.includes('southampton')) return 'kit-southampton';
+  if (t.includes('tottenham') || t.includes('spurs')) return 'kit-tottenham';
+  if (t.includes('westham')) return 'kit-west-ham';
+  if (t.includes('wolves')) return 'kit-wolves';
+  return 'kit-generic';
+};
+
 export default function PlayerCard({
   player,
   onInspect,
@@ -41,9 +67,22 @@ export default function PlayerCard({
   const isPenaltyTaker = player.sp_pk_order === 1 || player.penalties_order === 1 || player.is_penalty_taker || (player.web_name === 'B.Fernandes' || player.web_name === 'Haaland' || player.web_name === 'Palmer' || player.web_name === 'Salah' || player.web_name === 'Saka' || player.web_name === 'Mbeumo');
   const penaltyTier = isPenaltyTaker ? getPenaltyTierForTeam(player.team) : null;
 
+  // Determine whether to display actual match points or forward expected points
+  const hasActualPoints = player.actual_points !== undefined;
+  const basePts = hasActualPoints ? Number(player.actual_points) : xp;
+  const mult = isTripleCaptain ? 3 : (isCaptain ? 2 : 1);
+  const displayPts = hasActualPoints
+    ? (basePts * mult)
+    : (mult > 1 ? (xp * mult).toFixed(1) : xp.toFixed(1));
+  const unit = hasActualPoints
+    ? (mult > 1 ? `pts (${mult}x)` : 'pts')
+    : (mult > 1 ? `pts (${mult}x)` : 'xP');
+
+  const kitClass = getTeamKitClass(player.team);
+
   return (
     <div
-      className={`player-pitch-card ${isSubTarget ? 'sub-target' : ''} ${isBoosted ? 'bench-boosted' : ''} ${isBgw ? 'is-bgw' : ''} ${isDgw ? 'is-dgw' : ''}`}
+      className={`player-pitch-card ${kitClass} ${isSubTarget ? 'sub-target' : ''} ${isBoosted ? 'bench-boosted' : ''} ${isBgw ? 'is-bgw' : ''} ${isDgw ? 'is-dgw' : ''} ${hasActualPoints ? 'has-actuals' : ''}`}
       onClick={() => {
         if (onSelectSub) {
           onSelectSub(player);
@@ -126,11 +165,28 @@ export default function PlayerCard({
         </div>
       )}
 
-      {/* Minimalist Expected Points Score Banner */}
-      <div className="player-stats-bar" style={{ justifyContent: 'center' }}>
-        <span className="player-xp font-mono">
-          {isTripleCaptain ? (xp * 3).toFixed(1) : isCaptain ? (xp * 2).toFixed(1) : xp.toFixed(1)} <span className="xp-unit">{isTripleCaptain ? 'pts (3x)' : isCaptain ? 'pts (2x)' : 'xP'}</span>
+      {/* Points Banner (Actual Points for Completed GWs / Expected Points for Upcoming) */}
+      <div className="player-stats-bar" style={{ justifyContent: 'center', gap: '6px' }}>
+        <span className="player-xp font-mono" style={hasActualPoints ? { color: 'var(--accent-emerald, #10B981)', fontWeight: 800 } : {}}>
+          {displayPts} <span className="xp-unit">{unit}</span>
         </span>
+        {hasActualPoints && Number(player.actual_bonus) > 0 && (
+          <span
+            className="font-mono"
+            style={{
+              fontSize: '9px',
+              background: 'rgba(245, 158, 11, 0.2)',
+              color: 'var(--accent-amber, #F59E0B)',
+              border: '1px solid rgba(245, 158, 11, 0.4)',
+              borderRadius: '2px',
+              padding: '0 3px',
+              fontWeight: 700
+            }}
+            title={`${player.actual_bonus} Bonus Points Awarded`}
+          >
+            +{player.actual_bonus}
+          </span>
+        )}
       </div>
     </div>
   );

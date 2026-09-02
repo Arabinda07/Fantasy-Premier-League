@@ -643,6 +643,174 @@ def order_bench(bench_players: List[PlayerPick]) -> List[PlayerPick]:
 
 
 # ---------------------------------------------------------------------------
+# Fixed 15-Player Squad Lineup Optimizer (0 Transfers)
+# ---------------------------------------------------------------------------
+
+def solve_squad_lineup(
+    squad_df: pd.DataFrame,
+    season: str = '2026-27',
+    data_root: str = 'data',
+    strategy: str = 'pure_xp',
+    chip: Optional[str] = None,
+    lambda_risk: float = 0.0,
+    forced_captain_code: Optional[Union[int, str]] = None,
+    forced_vice_captain_code: Optional[Union[int, str]] = None,
+) -> SquadSolution:
+    """Solve optimal 11-man starting lineup and captaincy for a fixed 15-player squad.
+
+    Ensures 0 transfers are made and squad membership is 100% preserved.
+
+    Args:
+        squad_df: DataFrame containing the 15 players in the squad.
+        season: season string e.g. '2026-27'.
+        data_root: root data directory.
+        strategy: 'pure_xp', 'rank_protect', or 'differential_chase'.
+        chip: optional chip ('3xc', 'bboost').
+        lambda_risk: CVaR risk aversion parameter.
+        forced_captain_code: player code or name for forced captaincy.
+        forced_vice_captain_code: player code or name for forced vice-captaincy.
+
+    Returns:
+        SquadSolution with optimal starting XI, ordered bench, and captaincy.
+    """
+    df = prepare_solver_dataframe(squad_df, season=season, data_root=data_root, strategy=strategy, lambda_risk=lambda_risk)
+    indices = list(df.index)
+
+    prob = pulp.LpProblem("FPL_Squad_Lineup_Optimization", pulp.LpMaximize)
+
+    # Decision variables: starting XI, captain, vice-captain
+    s = {i: pulp.LpVariable(f"starter_{i}", cat=pulp.LpBinary) for i in indices}
+    c = {i: pulp.LpVariable(f"captain_{i}", cat=pulp.LpBinary) for i in indices}
+    v = {i: pulp.LpVariable(f"vice_{i}", cat=pulp.LpBinary) for i in indices}
+
+    # Chip flags
+    is_triple_captain = (chip == '3xc')
+    is_bench_boost = (chip == 'bboost')
+
+    capt_multiplier = 2.0 if is_triple_captain else 1.0
+    bench_weight = 1.0 if is_bench_boost else 0.10
+
+    # Objective
+    prob += pulp.lpSum(
+        df.loc[i, 'opt_points'] * s[i] +
+        capt_multiplier * df.loc[i, 'captain_points'] * c[i] +
+        bench_weight * df.loc[i, 'opt_points'] * (1 - s[i])
+        for i in indices
+    )
+
+    gk_indices = df[df['position'] == 'GK'].index
+    def_indices = df[df['position'] == 'DEF'].index
+    mid_indices = df[df['position'] == 'MID'].index
+    fwd_indices = df[df['position'] == 'FWD'].index
+
+    if is_bench_boost:
+        for i in indices:
+            prob += s[i] == 1, f"All_Start_Bench_Boost_{i}"
+    else:
+        prob += pulp.lpSum(s[i] for i in indices) == 11, "Starting_XI_Total_Count"
+        prob += pulp.lpSum(s[i] for i in gk_indices) == 1, "Starting_GK_Count"
+        prob += pulp.lpSum(s[i] for i in def_indices) >= 3, "Starting_DEF_Min"
+        prob += pulp.lpSum(s[i] for i in def_indices) <= 5, "Starting_DEF_Max"
+        prob += pulp.lpSum(s[i] for i in mid_indices) >= 2, "Starting_MID_Min"
+        prob += pulp.lpSum(s[i] for i in mid_indices) <= 5, "Starting_MID_Max"
+        prob += pulp.lpSum(s[i] for i in fwd_indices) >= 1, "Starting_FWD_Min"
+        prob += pulp.lpSum(s[i] for i in fwd_indices) <= 3, "Starting_FWD_Max"
+
+    # Captain and Vice-Captain constraints
+    prob += pulp.lpSum(c[i] for i in indices) == 1, "One_Captain"
+    prob += pulp.lpSum(v[i] for i in indices) == 1, "One_Vice"
+    for i in indices:
+        prob += c[i] <= s[i], f"Captain_Must_Start_{i}"
+        prob += v[i] <= s[i], f"Vice_Must_Start_{i}"
+        prob += c[i] + v[i] <= 1, f"Captain_Vice_Exclusive_{i}"
+
+    # Forced Captain / Vice-Captain
+    if forced_captain_code is not None:
+        resolved_c = resolve_player_code(forced_captain_code, df)
+        if resolved_c is not None:
+            c_idx = df[df['player_code'] == resolved_c].index
+            if not c_idx.empty:
+                prob += c[c_idx[0]] == 1, "Forced_Captain_Constraint"
+                prob += s[c_idx[0]] == 1, "Forced_Captain_Must_Start"
+
+    if forced_vice_captain_code is not None:
+        resolved_v = resolve_player_code(forced_vice_captain_code, df)
+        if resolved_v is not None:
+            v_idx = df[df['player_code'] == resolved_v].index
+            if not v_idx.empty:
+                prob += v[v_idx[0]] == 1, "Forced_Vice_Captain_Constraint"
+                prob += s[v_idx[0]] == 1, "Forced_Vice_Must_Start"
+
+    # Solve
+    solver = pulp.PULP_CBC_CMD(msg=False)
+    prob.solve(solver)
+    status_str = pulp.LpStatus[prob.status]
+
+    if status_str != "Optimal":
+        print(f"Warning: solve_squad_lineup returned non-optimal status: {status_str}")
+
+    squad_picks: List[PlayerPick] = []
+    starters: List[PlayerPick] = []
+    bench_unranked: List[PlayerPick] = []
+    captain_pick: Optional[PlayerPick] = None
+    vice_pick: Optional[PlayerPick] = None
+
+    for i in indices:
+        is_start = bool(pulp.value(s[i]) and pulp.value(s[i]) > 0.5)
+        is_capt = bool(pulp.value(c[i]) and pulp.value(c[i]) > 0.5)
+        is_vice = bool(pulp.value(v[i]) and pulp.value(v[i]) > 0.5)
+
+        pick = PlayerPick(
+            player_code=int(df.loc[i, 'player_code']),
+            web_name=str(df.loc[i, 'web_name']),
+            team=str(df.loc[i, 'team']),
+            position=str(df.loc[i, 'position']),
+            cost=float(df.loc[i, 'cost']),
+            expected_points=round(float(df.loc[i, 'expected_points']), 4),
+            is_starter=is_start,
+            is_captain=is_capt,
+            is_vice_captain=is_vice,
+        )
+        squad_picks.append(pick)
+        if is_start:
+            starters.append(pick)
+            if is_capt:
+                captain_pick = pick
+            if is_vice:
+                vice_pick = pick
+        else:
+            bench_unranked.append(pick)
+
+    bench = order_bench(bench_unranked)
+
+    def_count = sum(1 for p in starters if p.position == 'DEF')
+    mid_count = sum(1 for p in starters if p.position == 'MID')
+    fwd_count = sum(1 for p in starters if p.position == 'FWD')
+    formation_str = f"{def_count}-{mid_count}-{fwd_count}"
+
+    total_cost = round(sum(p.cost for p in squad_picks), 2)
+    starting_xp = round(sum(p.expected_points for p in starters), 4)
+    captain_bonus_mult = 2.0 if is_triple_captain else 1.0
+    captain_xp = round(captain_bonus_mult * captain_pick.expected_points, 4) if captain_pick else 0.0
+    total_xp = round(starting_xp + captain_xp, 4)
+
+    return SquadSolution(
+        squad=squad_picks,
+        starters=starters,
+        bench=bench,
+        captain=captain_pick if captain_pick else (starters[0] if starters else None),
+        vice_captain=vice_pick if vice_pick else (starters[1] if len(starters) > 1 else None),
+        total_cost=total_cost,
+        starting_xp=starting_xp,
+        captain_xp=captain_xp,
+        total_xp=total_xp,
+        formation=formation_str,
+        status=status_str,
+        chip=chip,
+    )
+
+
+# ---------------------------------------------------------------------------
 # Weekly Transfer Optimizer
 # ---------------------------------------------------------------------------
 

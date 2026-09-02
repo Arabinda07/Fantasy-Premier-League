@@ -14,6 +14,7 @@ from dataclasses import asdict
 import json
 import os
 import sys
+import time
 from typing import Dict, Any, List, Tuple, Optional, Union
 import pandas as pd
 
@@ -38,7 +39,12 @@ from model.ownership_engine import enrich_predictions_with_ownership
 from model.price_predictor import enrich_predictions_with_price_trends, RISING_LOCK, RISING_ALERT, FALLING_ALERT, FALLING_LOCK
 from model.rotation_intelligence import apply_rotation_dampening
 from model.matchup_intelligence import enrich_predictions_with_matchup_intelligence
-from model.live_sync import sync_manager_profile, LiveSyncProfile
+from model.live_sync import (
+    sync_manager_profile,
+    LiveSyncProfile,
+    load_manager_squad_snapshot,
+    save_manager_squad_snapshot,
+)
 
 
 def apply_live_injury_dampening(
@@ -93,7 +99,7 @@ def manage_gameweek(
     league_id: Optional[int] = None,
     current_squad_codes: Optional[List[int]] = None,
     bank: float = 0.0,
-    free_transfers: int = 1,
+    free_transfers: Optional[int] = None,
     horizon: int = 3,
     chip: Optional[str] = None,
     strategy: str = 'pure_xp',
@@ -102,6 +108,7 @@ def manage_gameweek(
     forced_captain_code: Optional[Union[int, str]] = None,
     forced_vice_captain_code: Optional[Union[int, str]] = None,
     data_root: str = 'data',
+    force_new_squad: bool = False,
     export_excel: bool = True,
     export_json: bool = True,
 ) -> Dict[str, Any]:
@@ -123,12 +130,15 @@ def manage_gameweek(
                 current_squad_codes = live_profile.squad_codes
             if bank == 0.0 and live_profile.bank > 0.0:
                 bank = live_profile.bank
-            if free_transfers == 1 and live_profile.free_transfers > 1:
+            if free_transfers is None and live_profile.free_transfers > 0:
                 free_transfers = live_profile.free_transfers
             if chip is None and live_profile.active_chip:
                 chip = live_profile.active_chip
         except Exception as e:
             print(f"[!] Warning: Live sync for team ID {team_id} encountered an error ({e}). Continuing with local solve.")
+
+    if free_transfers is None:
+        free_transfers = 1
 
     # 1. Load predictions for all gameweeks in lookahead horizon
     horizon_dfs: List[pd.DataFrame] = []
@@ -151,35 +161,67 @@ def manage_gameweek(
 
     gw1_df = horizon_dfs[0]
 
-    # 2. If no squad provided, check for previous gameweek saved squad or solve initial optimal squad
+    # 2. If no squad provided, check persistent snapshot, previous gameweek saved squads, or solve initial squad
     if not current_squad_codes or len(current_squad_codes) != 15:
-        # Check if previous gameweek squad is saved in cache or frontend
-        prev_squad_found = False
-        if gw > 1:
-            prev_paths = [
-                os.path.join(season_dir, 'cache', f'entry_{team_id}_gw{gw-1}.json') if team_id else None,
-                os.path.join('frontend', 'src', 'data', f'live_matchday_gw{gw-1}.json'),
-                os.path.join('frontend', 'src', 'data', 'live_matchday_gw1.json'),
-            ]
-            for p in prev_paths:
-                if p and os.path.exists(p):
-                    try:
-                        with open(p, 'r', encoding='utf-8') as f:
-                            saved_data = json.load(f)
-                            # Extract all 15 players (starters + bench)
-                            extracted = []
-                            for item in saved_data.get('starters', []) + saved_data.get('bench', []):
-                                if 'player_code' in item:
-                                    extracted.append(int(item['player_code']))
-                            if len(extracted) == 15:
-                                current_squad_codes = extracted
-                                prev_squad_found = True
-                                print(f"[*] Loaded existing 15-man squad from {p}")
-                                break
-                    except Exception:
-                        pass
+        # First check persistent snapshot from disk
+        snapshot = load_manager_squad_snapshot(entry_id=team_id, season=season, data_root=data_root)
+        if snapshot and len(snapshot.get('squad_codes', [])) == 15:
+            current_squad_codes = [int(c) for c in snapshot['squad_codes']]
+            print(f"[*] Loaded existing 15-man squad from persistent snapshot ({len(current_squad_codes)} players)")
 
-        if not prev_squad_found or not current_squad_codes:
+        # Deep backwards search across all historical gameweeks
+        if not current_squad_codes and gw > 1:
+            prev_squad_found = False
+            for prior_gw in range(gw - 1, 0, -1):
+                prev_paths = [
+                    os.path.join(season_dir, f'fpl_matchday_live_gw{prior_gw}.json'),
+                    os.path.join(season_dir, 'cache', f'entry_{team_id}_gw{prior_gw}.json') if team_id else None,
+                ]
+                if data_root == 'data':
+                    prev_paths.extend([
+                        os.path.join('frontend', 'src', 'data', f'live_matchday_gw{prior_gw}.json'),
+                        os.path.join('frontend', 'src', 'data', 'live_matchday_gw1.json'),
+                    ])
+                for p in prev_paths:
+                    if p and os.path.exists(p):
+                        try:
+                            with open(p, 'r', encoding='utf-8') as f:
+                                saved_data = json.load(f)
+                                key_pairs = [
+                                    ('starters', 'bench'),
+                                    ('recommended_starters', 'recommended_bench'),
+                                    ('actual_starters', 'actual_bench'),
+                                ]
+                                for s_key, b_key in key_pairs:
+                                    extracted = []
+                                    for item in saved_data.get(s_key, []) + saved_data.get(b_key, []):
+                                        if isinstance(item, dict) and 'player_code' in item:
+                                            extracted.append(int(item['player_code']))
+                                    if len(extracted) == 15:
+                                        current_squad_codes = extracted
+                                        prev_squad_found = True
+                                        print(f"[*] Loaded existing 15-man squad from GW{prior_gw} ({s_key}/{b_key}) at {p}")
+                                        break
+                                if prev_squad_found:
+                                    break
+                        except Exception:
+                            pass
+                if prev_squad_found:
+                    break
+
+        if not current_squad_codes or len(current_squad_codes) != 15:
+            # Enforce strict guardrail: cannot solve initial squad from scratch after GW1 unless permitted
+            allowed_to_rebuild = (gw == 1) or (chip in ('wildcard', 'freehit')) or force_new_squad
+            if not allowed_to_rebuild:
+                raise RuntimeError(
+                    f"Cannot optimize transfers for GW{gw}: No existing 15-man squad could be found! "
+                    f"Calling solve_initial_squad after GW1 without a Wildcard or Free Hit chip would "
+                    f"replace your entire squad with 15 new players and violate transfer limitations.\n"
+                    f"Please provide an existing squad via --team-id <ID> (live sync), ensure a previous "
+                    f"gameweek file exists in data/{season}/, or explicitly pass --force-new-squad if you "
+                    f"intend to rebuild your squad from scratch."
+                )
+
             initial_solution = solve_initial_squad(
                 df=gw1_df,
                 budget=100.0 - bank,
@@ -217,6 +259,38 @@ def manage_gameweek(
     # 5. Build Matchday Action Plan
     curr_plan = multi_sol.gw_plans[0] if multi_sol.gw_plans else None
     active_sq = curr_plan.squad_solution if curr_plan else None
+
+    # Persist authoritative squad snapshot for transfer continuity across runs
+    if active_sq and len(active_sq.squad) == 15:
+        try:
+            current_snapshot_path = os.path.join(season_dir, 'current_squad.json')
+            snap_payload = {
+                'entry_id': team_id,
+                'manager_name': live_profile.manager_name if live_profile else 'Manager',
+                'team_name': live_profile.team_name if live_profile else 'Team',
+                'season': season,
+                'last_updated_gw': gw,
+                'squad_codes': [p.player_code for p in active_sq.squad],
+                'starter_codes': [p.player_code for p in active_sq.starters],
+                'bench_codes': [p.player_code for p in active_sq.bench],
+                'captain_code': active_sq.captain.player_code if active_sq.captain else None,
+                'vice_captain_code': active_sq.vice_captain.player_code if active_sq.vice_captain else None,
+                'bank': curr_plan.bank if curr_plan else bank,
+                'updated_at': time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime()),
+            }
+            import tempfile
+            fd, tmp_path = tempfile.mkstemp(suffix='.json.tmp', dir=season_dir)
+            with os.fdopen(fd, 'w') as tmp_f:
+                json.dump(snap_payload, tmp_f, indent=2)
+            os.replace(tmp_path, current_snapshot_path)
+            if team_id:
+                team_snap_path = os.path.join(season_dir, f'manager_squad_{team_id}.json')
+                fd2, tmp_path2 = tempfile.mkstemp(suffix='.json.tmp', dir=season_dir)
+                with os.fdopen(fd2, 'w') as tmp_f2:
+                    json.dump(snap_payload, tmp_f2, indent=2)
+                os.replace(tmp_path2, team_snap_path)
+        except Exception as e:
+            print(f"[!] Warning: Failed to persist squad snapshot ({e}).")
 
     # Immediate Action Logic
     if curr_plan and curr_plan.transfers_count == 0:
@@ -347,18 +421,103 @@ def manage_gameweek(
 
     if export_json and active_sq:
         out_json = os.path.join(season_dir, f"fpl_matchday_live_gw{gw}.json")
+        pred_lookup = {
+            int(r.get('player_code')): r
+            for _, r in gw1_df.iterrows()
+            if pd.notnull(r.get('player_code'))
+        }
+
+        def profile_pick(code: int, is_starter: bool, bench_order: Optional[int] = None) -> Dict[str, Any]:
+            row = pred_lookup.get(int(code), {})
+            return asdict(PlayerPick(
+                player_code=int(code),
+                web_name=str(row.get('web_name', code)),
+                team=str(row.get('team', '')),
+                position=str(row.get('position', 'MID')),
+                cost=float(live_profile.selling_prices.get(int(code), row.get('now_cost', 0.0))) if live_profile else float(row.get('now_cost', 0.0)),
+                expected_points=round(float(row.get('expected_points', 0.0)), 2),
+                is_starter=is_starter,
+                is_captain=bool(live_profile and int(code) == live_profile.captain_code),
+                is_vice_captain=bool(live_profile and int(code) == live_profile.vice_captain_code),
+                bench_order=bench_order,
+            ))
+
+        actual_starters = []
+        actual_bench = []
+        if live_profile and len(live_profile.starter_codes) == 11:
+            actual_starters = [profile_pick(code, True) for code in live_profile.starter_codes]
+            actual_bench = [
+                profile_pick(code, False, idx + 1)
+                for idx, code in enumerate(live_profile.bench_codes)
+            ]
+
+        # F-11 fix: For incomplete GWs, display the solver's recommended
+        # (post-transfer) squad as the primary starters/bench so the frontend
+        # shows what the user SHOULD play. The API-synced current state is
+        # preserved in actual_starters / actual_bench for reference.
+        recommended_starters_dicts = [asdict(p) for p in active_sq.starters]
+        recommended_bench_dicts = [asdict(p) for p in active_sq.bench]
+
+        # Determine if this GW is already completed using active gameweek detection
+        gw_is_completed = False
+        try:
+            from model.pipeline_automation import detect_active_gameweek
+            active_gw, next_gw, _ = detect_active_gameweek(season=season, data_root=data_root, offline=True)
+            if active_gw is not None and gw <= active_gw:
+                gw_is_completed = True
+        except Exception:
+            # Fallback: if live_profile points exist and gw matches event
+            if live_profile and getattr(live_profile, 'event_points', 0) > 0:
+                gw_is_completed = False
+
+        if gw_is_completed:
+            # Completed GW: show what actually happened on the pitch
+            display_starters = actual_starters
+            display_bench = actual_bench
+        else:
+            # Upcoming / in-progress GW: show the solver's recommended post-transfer squad
+            display_starters = recommended_starters_dicts
+            display_bench = recommended_bench_dicts
+
+        display_captain = next((p for p in display_starters if p['is_captain']), None)
+        display_vice = next((p for p in display_starters if p['is_vice_captain']), None)
+        display_starting_xp = round(
+            sum(float(p.get('expected_points') or 0.0) for p in display_starters)
+            + (float(display_captain.get('expected_points') or 0.0) if display_captain else 0.0),
+            2,
+        )
+        display_total_xp = round(
+            sum(float(p.get('expected_points') or 0.0) for p in display_starters + display_bench)
+            + (float(display_captain.get('expected_points') or 0.0) if display_captain else 0.0),
+            2,
+        )
+
+        # Track whether the GW has been completed for frontend reference
+        is_completed = gw_is_completed
+        participated = bool(live_profile and len(live_profile.squad_codes) == 15)
+
         payload = {
             'season': season,
             'gameweek': gw,
             'strategy': strategy,
+            'is_completed': is_completed,
+            'participated': participated,
+            'overall_points': live_profile.overall_points if live_profile else 0,
+            'overall_rank': live_profile.overall_rank if live_profile else 0,
             'manager_profile': asdict(live_profile) if live_profile else None,
             'action_summary': action_summary,
-            'starting_xp': active_sq.starting_xp,
-            'total_xp': active_sq.total_xp,
-            'captain': active_sq.captain.web_name if active_sq.captain else None,
-            'vice_captain': active_sq.vice_captain.web_name if active_sq.vice_captain else None,
-            'starters': [asdict(p) for p in active_sq.starters],
-            'bench': [asdict(p) for p in active_sq.bench],
+            'starting_xp': display_starting_xp,
+            'total_xp': display_total_xp,
+            'captain': display_captain['web_name'] if display_captain else None,
+            'vice_captain': display_vice['web_name'] if display_vice else None,
+            'starters': display_starters,
+            'bench': display_bench,
+            'actual_starters': actual_starters,
+            'actual_bench': actual_bench,
+            'recommended_starters': recommended_starters_dicts,
+            'recommended_bench': recommended_bench_dicts,
+            'recommended_starting_xp': active_sq.starting_xp,
+            'recommended_total_xp': active_sq.total_xp,
             'multi_horizon_roadmap': [
                 {
                     'gw': p.gw,
@@ -418,7 +577,7 @@ def main():
     parser.add_argument('--team-id', type=int, default=None, help="Official FPL Entry / Team ID for 1-click live squad sync")
     parser.add_argument('--league-id', type=int, default=None, help="Mini-league ID for rival threat analysis")
     parser.add_argument('--bank', type=float, default=0.0, help="Bank balance in £M")
-    parser.add_argument('--ft', type=int, default=1, help="Available free transfers (1-5)")
+    parser.add_argument('--ft', type=int, default=None, help="Available free transfers (1-5)")
     parser.add_argument('--horizon', type=int, default=3, help="Lookahead horizon in gameweeks (1-5)")
     parser.add_argument('--chip', default=None, choices=['bboost', '3xc', 'freehit', 'wildcard'], help="FPL chip to activate")
     parser.add_argument('--strategy', default='pure_xp', choices=['pure_xp', 'rank_protect', 'differential_chase'], help="Game theory strategy")
@@ -426,6 +585,7 @@ def main():
     parser.add_argument('--exclude-players', default=None, help="Comma-separated player names/codes to exclude (e.g. 'B.Fernandes')")
     parser.add_argument('--captain', default=None, help="Player name or code to force as captain (e.g. 'Palmer')")
     parser.add_argument('--vice-captain', default=None, help="Player name or code to force as vice-captain")
+    parser.add_argument('--force-new-squad', action='store_true', default=False, help="Force rebuilding a brand-new 15-man squad from scratch even if GW > 1")
     parser.add_argument('--data-root', default='data', help="Root data directory")
     args = parser.parse_args()
 
@@ -444,6 +604,7 @@ def main():
         forced_captain_code=args.captain,
         forced_vice_captain_code=args.vice_captain,
         data_root=args.data_root,
+        force_new_squad=args.force_new_squad,
     )
 
 

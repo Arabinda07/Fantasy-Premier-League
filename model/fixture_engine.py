@@ -60,6 +60,77 @@ PROMOTED_TEAM_PRIORS: Dict[str, float] = {
 PROMOTED_TEAM_ATTACK_DISCOUNT: float = 0.80  # 20% translation discount for promoted attackers
 PROMOTED_FIXTURE_XGC_FLOOR: float = 1.40      # Minimum defensive error floor for promoted teams
 
+# ---------------------------------------------------------------------------
+# Post-GW Accuracy Feedback Loop: Positional Bias Correction
+# ---------------------------------------------------------------------------
+
+# Minimum completed gameweeks before bias correction activates
+MIN_GWS_FOR_CORRECTION: int = 2
+# Maximum absolute bias correction in points (prevents over-fitting to early noise)
+MAX_BIAS_CORRECTION_PTS: float = 0.5
+# Exponential decay weight for recency (higher = more weight on recent GWs)
+BIAS_EWMA_ALPHA: float = 0.6
+
+
+def load_positional_bias_corrections(
+    season: str = '2026-27',
+    data_root: str = 'data',
+) -> Dict[str, float]:
+    """Load per-position bias corrections from the accuracy log.
+
+    Reads accuracy_log.csv, computes exponential-weighted mean bias per
+    position across completed gameweeks, and returns additive corrections
+    that should be SUBTRACTED from predicted xP to de-bias future
+    projections.
+
+    A positive bias in the log means the model over-predicts (predicted >
+    actual), so the correction is negative (reduce predictions).  A
+    negative bias means the model under-predicts, so the correction is
+    positive (increase predictions).
+
+    Args:
+        season: season string e.g. '2026-27'.
+        data_root: root data directory.
+
+    Returns:
+        Dict mapping position string ('GK', 'DEF', 'MID', 'FWD') to an
+        additive correction in points.  Empty dict if insufficient data.
+    """
+    log_path = os.path.join(data_root, season, 'accuracy_log.csv')
+    if not os.path.exists(log_path):
+        return {}
+
+    try:
+        log_df = pd.read_csv(log_path)
+    except Exception:
+        return {}
+
+    if len(log_df) < MIN_GWS_FOR_CORRECTION:
+        return {}
+
+    corrections: Dict[str, float] = {}
+    for pos in ('GK', 'DEF', 'MID', 'FWD'):
+        bias_col = f'{pos.lower()}_bias'
+        if bias_col not in log_df.columns:
+            continue
+
+        # Compute exponential-weighted moving average of bias
+        bias_series = pd.to_numeric(log_df[bias_col], errors='coerce').dropna()
+        if bias_series.empty:
+            continue
+
+        ewma_bias = float(bias_series.ewm(alpha=BIAS_EWMA_ALPHA, adjust=False).mean().iloc[-1])
+        # Clamp to prevent wild swings from small-sample noise
+        clamped = max(-MAX_BIAS_CORRECTION_PTS, min(MAX_BIAS_CORRECTION_PTS, ewma_bias))
+        # Correction is the negative of bias (over-predict -> reduce)
+        corrections[pos] = round(-clamped, 4)
+
+    if corrections:
+        print(f"[Bias Correction] Applying positional corrections from {len(log_df)} completed GWs: "
+              + ", ".join(f"{p}: {c:+.3f} pts" for p, c in corrections.items()))
+
+    return corrections
+
 
 # ---------------------------------------------------------------------------
 # Form Blending
@@ -609,6 +680,17 @@ def predict_gameweek_fixtures(
 
     pred_df = pd.DataFrame(records, index=df.index)
     result_df = pd.concat([df, pred_df], axis=1)
+
+    # Apply positional bias corrections from the accuracy feedback loop
+    bias_corrections = load_positional_bias_corrections(season=season, data_root=data_root)
+    if bias_corrections and 'position' in result_df.columns and 'expected_points' in result_df.columns:
+        for pos, correction in bias_corrections.items():
+            mask = result_df['position'].str.upper() == pos
+            result_df.loc[mask, 'expected_points'] = (
+                result_df.loc[mask, 'expected_points'] + correction
+            ).round(4)
+            # Floor at 0.0 — predictions should never go negative
+            result_df.loc[mask, 'expected_points'] = result_df.loc[mask, 'expected_points'].clip(lower=0.0)
 
     if save_csv:
         from model.file_utils import atomic_write_csv

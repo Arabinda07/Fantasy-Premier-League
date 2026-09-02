@@ -6,8 +6,8 @@ import {
   TrendUp,
   Flask,
   UsersThree,
-  ArrowsClockwise,
-  User
+  User,
+  Gear
 } from '@phosphor-icons/react';
 
 export default function Header({
@@ -19,15 +19,52 @@ export default function Header({
   onSelectGw,
   onOpenSyncModal,
   strategy = 'pure_xp',
-  onSelectStrategy
+  onSelectStrategy,
+  activeChip = 'none'
 }) {
   const tabs = [
-    { id: 'pitch', label: 'My Lineup', shortLabel: 'Lineup', icon: SoccerBall },
-    { id: 'transfers', label: 'Transfer Planner', shortLabel: 'Planner', icon: ArrowsLeftRight },
-    { id: 'rivals', label: 'Mini-Leagues', shortLabel: 'Rivals', icon: UsersThree },
-    { id: 'fixtures', label: 'Fixture Ticker', shortLabel: 'Fixtures', icon: GridNine },
-    { id: 'market', label: 'Price Trends', shortLabel: 'Prices', icon: TrendUp },
-    { id: 'math', label: 'Points Forecaster', shortLabel: 'Forecaster', icon: Flask }
+    {
+      id: 'pitch',
+      label: 'My Lineup',
+      shortLabel: 'Lineup',
+      icon: SoccerBall,
+      badge: activeChip !== 'none' ? activeChip.toUpperCase() : null,
+      badgeType: 'chip'
+    },
+    {
+      id: 'transfers',
+      label: 'Transfer Planner',
+      shortLabel: 'Planner',
+      icon: ArrowsLeftRight,
+      badge: '1 FT',
+      badgeType: 'neutral'
+    },
+    {
+      id: 'rivals',
+      label: 'Mini-Leagues',
+      shortLabel: 'Rivals',
+      icon: UsersThree
+    },
+    {
+      id: 'fixtures',
+      label: 'Fixture Ticker',
+      shortLabel: 'Fixtures',
+      icon: GridNine
+    },
+    {
+      id: 'market',
+      label: 'Price Trends',
+      shortLabel: 'Prices',
+      icon: TrendUp,
+      badge: '🔥',
+      badgeType: 'alert'
+    },
+    {
+      id: 'math',
+      label: 'Points Forecaster',
+      shortLabel: 'Forecaster',
+      icon: Flask
+    }
   ];
 
   const manager = liveData?.manager_profile;
@@ -83,6 +120,11 @@ export default function Header({
                   <Icon size={15} weight={isActive ? "fill" : "bold"} />
                   <span className="tab-label-full">{tab.label}</span>
                   <span className="tab-label-short">{tab.shortLabel}</span>
+                  {tab.badge && (
+                    <span className={`tab-pip font-mono ${tab.badgeType || ''}`}>
+                      {tab.badge}
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -97,13 +139,14 @@ export default function Header({
             title="Configure FPL Team ID & Mini-League Tracker"
             aria-label="Manager Settings"
           >
-            <span className="live-sync-indicator" />
+            <span className="live-sync-pulse" />
             <User size={13} weight="bold" />
             <span className="manager-chip-name">
               {manager?.manager_name
                 ? `${manager.manager_name.split(' ')[0]} (#${manager.entry_id || '9500404'})`
                 : 'Sync Team'}
             </span>
+            <Gear size={12} weight="bold" style={{ opacity: 0.6, marginLeft: '2px' }} />
           </button>
         </div>
       </div>

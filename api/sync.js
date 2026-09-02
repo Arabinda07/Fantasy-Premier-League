@@ -196,14 +196,16 @@ export default async function handler(req, res) {
         try {
           return await fetchFpl(`${FPL_BASE_URL}/entry/${entryId}/event/${targetGw}/picks/`);
         } catch (err) {
-          // If target GW picks not yet available (404), fall back to previous GW
-          if (err.code === 'NOT_FOUND' && targetGw > 1) {
+          // If target GW is upcoming/future (targetGw >= currentEvent) and picks not yet published,
+          // fall back to previous GW picks so the manager can plan future moves:
+          if (err.code === 'NOT_FOUND' && targetGw > 1 && targetGw >= currentEvent) {
             try {
               return await fetchFpl(`${FPL_BASE_URL}/entry/${entryId}/event/${targetGw - 1}/picks/`);
             } catch (fallbackErr) {
               return { picks: [], entry_history: null, active_chip: null };
             }
           }
+          // For past gameweeks (targetGw < currentEvent) where manager didn't participate, return empty picks faithfully
           return { picks: [], entry_history: null, active_chip: null };
         }
       })(),

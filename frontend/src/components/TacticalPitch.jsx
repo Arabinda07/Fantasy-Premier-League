@@ -34,7 +34,8 @@ export default function TacticalPitch({
   activeChip = 'none',
   onSelectChip = () => {},
   strategy = 'pure_xp',
-  onSelectStrategy = () => {}
+  onSelectStrategy = () => {},
+  onNavigateTab
 }) {
   // Extract data from liveData payload if provided
   const effectiveChipSimulations = liveData?.chip_simulations || chipSimulations || {};
@@ -244,199 +245,301 @@ export default function TacticalPitch({
     return displayBench.reduce((acc, p) => acc + Number(p.expected_points || 0), 0).toFixed(1);
   }, [displayBench]);
 
+  // Gameweek Status Detection
+  const isNonParticipating = liveData?.participated === false || (starters.length === 0 && bench.length === 0);
+  const isCompletedGw = Boolean(liveData?.is_completed || (liveData?.event_points !== undefined && liveData?.gameweek < 3));
+
+  // Determine actual completed points
+  const completedScore = liveData?.event_points !== undefined
+    ? liveData.event_points
+    : (displayStarters.reduce((acc, p) => acc + (Number(p.actual_points || 0) * (p.is_captain ? 2 : 1)), 0));
+
   return (
     <div>
-      {/* 1. Streamlined Matchday Control Deck */}
-      <div className="matchday-control-deck">
-        <div className="deck-group deck-group-scenario">
-          <span className="deck-label font-mono">Chips</span>
-          <div className="segmented-chip-rail chip-rail-scrollable" role="group" aria-label="Chip Selection">
-            {chipOptions.map(chip => {
-              const Icon = chip.icon;
-              const isSelected = activeChip === chip.id;
-              return (
-                <button
-                  key={chip.id}
-                  type="button"
-                  className={`segmented-chip-btn ${isSelected ? 'active' : ''}`}
-                  onClick={() => onSelectChip(chip.id)}
-                  title={`Play ${chip.label}`}
-                >
-                  <Icon size={13} weight={isSelected ? 'fill' : 'bold'} />
-                  <span>{chip.label}</span>
-                </button>
-              );
-            })}
+      {/* Tactical Dugout Command HUD Ribbon (4 Modular HUD Tiles) */}
+      <div className="tactical-hud-ribbon">
+        {/* Tile 1: Tactical Objective Strategy */}
+        <div className="hud-tile hud-tile-strategy">
+          <div className="hud-tile-header">
+            <span className="hud-tile-eyebrow font-mono">
+              {isCompletedGw ? 'MATCHDAY STATE' : 'OBJECTIVE'}
+            </span>
+            <span className="hud-tile-subtext font-mono">
+              {isNonParticipating
+                ? 'Did Not Enter'
+                : isCompletedGw
+                ? 'Completed Gameweek'
+                : (strategy === 'pure_xp' ? 'Max Points' : strategy === 'rank_protect' ? 'Protect Lead' : 'Climb Rank')}
+            </span>
           </div>
-        </div>
-
-        <div className="deck-group deck-group-strategy">
-          <span className="deck-label font-mono">Goal</span>
-          <div className="segmented-chip-rail chip-rail-scrollable" role="group" aria-label="Goal Selection">
-            {strategyOptions.map(opt => {
-              const Icon = opt.icon;
-              const isSelected = strategy === opt.id;
-              return (
-                <button
-                  key={opt.id}
-                  type="button"
-                  className={`segmented-chip-btn ${isSelected ? 'active' : ''}`}
-                  onClick={() => onSelectStrategy(opt.id)}
-                  title={opt.desc}
-                >
-                  <Icon size={13} weight={isSelected ? 'fill' : 'bold'} />
-                  <span>{opt.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="deck-telemetry">
-          <div className="deck-telemetry-item font-mono">
-            <span className="telemetry-label">Lineup</span>
-            <span className="telemetry-value">{formation}</span>
-          </div>
-          <div className="deck-telemetry-divider" />
-          <div className="deck-telemetry-item font-mono">
-            <span className="telemetry-label">Starting</span>
-            <span className="telemetry-value xp-highlight">{displayStartingXp} <span className="telemetry-unit">pts</span></span>
-          </div>
-        </div>
-      </div>
-
-
-      {/* Streamlined Contextual Directive Strip */}
-      <div className={`matchday-directive-strip ${isChipActive ? 'chip-mode' : strategy !== 'pure_xp' ? 'strategy-mode' : 'move-mode'}`}>
-        <div className="directive-tag-box font-mono">
-          {isChipActive ? (
-            <>
-              <RocketLaunch size={13} weight="fill" />
-              <span>ACTIVE CHIP</span>
-            </>
-          ) : strategy !== 'pure_xp' ? (
-            <>
-              <Target size={13} weight="fill" />
-              <span>TACTIC</span>
-            </>
-          ) : (
-            <>
-              <Lightning size={13} weight="fill" />
-              <span>NEXT MOVE</span>
-            </>
-          )}
-        </div>
-        <div className="directive-body">
-          {isChipActive ? (
-            <div className="directive-structured-text">
-              <span className="directive-action chip-action-text">
-                {currentChipData.label || 'Chip Active'}
+          {isCompletedGw ? (
+            <div className="hud-directive-text" style={{ padding: '4px 0' }}>
+              <span className="hud-highlight-text font-mono" style={{ fontSize: '13px', color: isNonParticipating ? 'var(--text-muted)' : 'var(--accent-emerald)' }}>
+                {isNonParticipating ? 'No Squad Registered' : `Gameweek ${liveData?.gameweek} Result`}
               </span>
-              <span className="directive-separator font-mono">·</span>
-              <span className="directive-detail">
-                {currentChipData.description || 'Active matchday chip projection'}
-              </span>
-            </div>
-          ) : currentStrategyData && strategy !== 'pure_xp' ? (
-            <div className="directive-structured-text">
-              <span className="directive-action strategy-action-text">
-                {currentStrategyData.label}
-              </span>
-              <span className="directive-separator font-mono">·</span>
-              <span className="directive-detail">
-                {currentStrategyData.subtitle || 'Tactical Goal Active'} · Formation {currentStrategyData.formation}
+              <span className="hud-sub-text" style={{ fontSize: '11px' }}>
+                {isNonParticipating ? 'Zero points scored' : 'Official matchday scores recorded'}
               </span>
             </div>
           ) : (
-            renderTransferPills(effectiveActionSummary)
+            <div className="hud-segmented-group" role="group" aria-label="Tactical Goal">
+              {strategyOptions.map(opt => {
+                const Icon = opt.icon;
+                const isSelected = strategy === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    className={`hud-segment-btn ${isSelected ? 'active' : ''}`}
+                    onClick={() => onSelectStrategy(opt.id)}
+                    title={opt.desc}
+                  >
+                    <Icon size={12} weight={isSelected ? 'fill' : 'bold'} />
+                    <span>{opt.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           )}
+        </div>
+
+        {/* Tile 2: Matchday Chip Simulator */}
+        <div className={`hud-tile hud-tile-chip ${isChipActive ? 'active-chip-tile' : ''}`}>
+          <div className="hud-tile-header">
+            <span className="hud-tile-eyebrow font-mono">
+              {isCompletedGw ? 'CHIP PLAYED' : 'MATCHDAY CHIP'}
+            </span>
+            {isCompletedGw ? (
+              <span className="hud-chip-idle-badge font-mono">
+                {liveData?.manager_profile?.active_chip ? liveData.manager_profile.active_chip.toUpperCase() : 'NONE'}
+              </span>
+            ) : isChipActive ? (
+              <span className="hud-chip-live-badge font-mono">ACTIVE</span>
+            ) : (
+              <span className="hud-chip-idle-badge font-mono">SIMULATE</span>
+            )}
+          </div>
+          {isCompletedGw ? (
+            <div className="hud-directive-text" style={{ padding: '4px 0' }}>
+              <span className="hud-highlight-text" style={{ fontSize: '13px' }}>
+                {liveData?.manager_profile?.active_chip
+                  ? chipOptions.find(c => c.id === liveData.manager_profile.active_chip)?.label || liveData.manager_profile.active_chip.toUpperCase()
+                  : 'Regular Squad'}
+              </span>
+              <span className="hud-sub-text" style={{ fontSize: '11px' }}>
+                {liveData?.manager_profile?.active_chip ? 'Active during this matchday' : 'No bonus chip played'}
+              </span>
+            </div>
+          ) : (
+            <div className="hud-chip-selector-wrap">
+              <select
+                value={activeChip}
+                onChange={(e) => onSelectChip(e.target.value)}
+                className="hud-chip-select font-mono"
+                aria-label="Matchday Chip Selector"
+              >
+                {chipOptions.map(chip => (
+                  <option key={chip.id} value={chip.id}>
+                    {chip.label}
+                  </option>
+                ))}
+              </select>
+              <div className="hud-chip-desc">
+                {chipOptions.find(c => c.id === activeChip)?.desc || 'No chip active'}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Tile 3: Tactical Directive Action */}
+        <div className="hud-tile hud-tile-directive">
+          <div className="hud-tile-header">
+            <span className="hud-tile-eyebrow font-mono">
+              {isNonParticipating
+                ? 'STATUS'
+                : isCompletedGw
+                ? 'MATCHDAY SUMMARY'
+                : isChipActive
+                ? 'ACTIVE SIMULATION'
+                : strategy !== 'pure_xp'
+                ? 'TACTICAL OVERRIDE'
+                : 'RECOMMENDED MOVE'}
+            </span>
+            {!isCompletedGw && onNavigateTab && (
+              <button
+                type="button"
+                className="hud-directive-link font-mono"
+                onClick={() => onNavigateTab('transfers')}
+                title="Open Transfer Planner Workbench"
+              >
+                Planner <ArrowUpRight size={11} weight="bold" />
+              </button>
+            )}
+          </div>
+          <div className="hud-directive-content">
+            {isNonParticipating ? (
+              <div className="hud-directive-text">
+                <span className="hud-highlight-text" style={{ color: 'var(--text-muted)' }}>Did Not Participate</span>
+                <span className="hud-sub-text">No lineup or points scored in Gameweek {liveData?.gameweek || 1}</span>
+              </div>
+            ) : isCompletedGw ? (
+              <div className="hud-directive-text">
+                <span className="hud-highlight-text" style={{ color: 'var(--accent-emerald)' }}>
+                  {liveData?.event_points || completedScore} Points Scored
+                </span>
+                <span className="hud-sub-text">
+                  {liveData?.event_rank ? `Gameweek Rank: #${Number(liveData.event_rank).toLocaleString()}` : `Completed Gameweek ${liveData?.gameweek}`}
+                </span>
+              </div>
+            ) : isChipActive ? (
+              <div className="hud-directive-text">
+                <span className="hud-highlight-text">{currentChipData.label || 'Chip Active'}</span>
+                <span className="hud-sub-text">{currentChipData.description || 'Active matchday chip projection'}</span>
+              </div>
+            ) : currentStrategyData && strategy !== 'pure_xp' ? (
+              <div className="hud-directive-text">
+                <span className="hud-highlight-text">{currentStrategyData.label}</span>
+                <span className="hud-sub-text">{currentStrategyData.subtitle || 'Tactical Goal Active'}</span>
+              </div>
+            ) : (
+              renderTransferPills(effectiveActionSummary)
+            )}
+          </div>
+        </div>
+
+        {/* Tile 4: Matchday Scorecard Telemetry */}
+        <div className="hud-tile hud-tile-scorecard">
+          <div className="hud-tile-header">
+            <span className="hud-tile-eyebrow font-mono">
+              {isNonParticipating ? 'SCORE' : isCompletedGw ? 'FINAL SCORE' : 'PROJECTED OUTPUT'}
+            </span>
+            <span className="hud-squad-status font-mono">
+              {isNonParticipating ? '0 Active' : '15/15 Active'}
+            </span>
+          </div>
+          <div className="hud-scorecard-body">
+            <div className="hud-score-main">
+              <span className="hud-score-val font-mono" style={isCompletedGw && !isNonParticipating ? { color: 'var(--accent-emerald)' } : {}}>
+                {isNonParticipating ? '0' : isCompletedGw ? completedScore : Number(displayStartingXp).toFixed(1)}
+              </span>
+              <span className="hud-score-unit font-mono">{isCompletedGw ? 'pts' : 'xP'}</span>
+            </div>
+            <div className="hud-score-meta font-mono">
+              <span className="hud-formation-pill">{isNonParticipating ? 'No Squad' : formation}</span>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Classical 2-Column Pitch Workspace (Pitch on Left, Sidebar on Right) */}
       <div className="pitch-workspace">
         {/* Tactical Pitch Surface (Left Column) */}
-        <div className={`pitch-container ${isBenchBoost ? 'bench-boost-active-pitch' : ''}`}>
+        <div className={`pitch-container ${isBenchBoost ? 'bench-boost-active-pitch' : ''} ${isNonParticipating ? 'empty-pitch-container' : ''}`}>
           <div className="pitch-marking-center-line" />
           <div className="pitch-marking-center-circle" />
           <div className="pitch-marking-penalty-top" />
           <div className="pitch-marking-penalty-bottom" />
 
-          {/* Row 1: Goalkeepers */}
-          <div className="pitch-row">
-            {gks.map(p => (
-              <PlayerCard
-                key={p.player_code || p.id || p.web_name}
-                player={p}
-                isCaptain={Boolean(p.is_captain)}
-                isViceCaptain={Boolean(p.is_vice_captain)}
-                isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
-                isBoosted={Boolean(p.is_boosted || isBenchBoost)}
-                strategyBadge={getStrategyBadge(p)}
-                isSubTarget={activeSelectedPlayer?.player_code === p.player_code}
-                onSelectSub={handlePlayerSelect}
-                onInspect={onInspectPlayer}
-                onOpenMatchup={handleMatchupClick}
-              />
-            ))}
-          </div>
+          {isNonParticipating ? (
+            <div className="empty-pitch-overlay">
+              <div className="empty-pitch-card">
+                <div className="empty-pitch-icon font-mono">GW {liveData?.gameweek || 1}</div>
+                <span className="empty-pitch-badge font-mono">DID NOT PARTICIPATE</span>
+                <h3 className="empty-pitch-title">No Squad Active for Gameweek {liveData?.gameweek || 1}</h3>
+                <p className="empty-pitch-desc">
+                  {liveData?.manager_profile?.manager_name || 'This manager'} did not have a registered squad for this gameweek. Total score is 0 pts.
+                </p>
+                <div className="empty-pitch-stats font-mono">
+                  <div className="empty-stat-item">
+                    <span className="stat-label">Gameweek Points</span>
+                    <span className="stat-val">0 pts</span>
+                  </div>
+                  <div className="empty-stat-item">
+                    <span className="stat-label">Gameweek Rank</span>
+                    <span className="stat-val">Unranked</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Row 1: Goalkeepers */}
+              <div className="pitch-row">
+                {gks.map(p => (
+                  <PlayerCard
+                    key={p.player_code || p.id || p.web_name}
+                    player={p}
+                    isCaptain={Boolean(p.is_captain)}
+                    isViceCaptain={Boolean(p.is_vice_captain)}
+                    isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
+                    isBoosted={Boolean(p.is_boosted || isBenchBoost)}
+                    strategyBadge={getStrategyBadge(p)}
+                    isSubTarget={activeSelectedPlayer?.player_code === p.player_code}
+                    onSelectSub={handlePlayerSelect}
+                    onInspect={onInspectPlayer}
+                    onOpenMatchup={handleMatchupClick}
+                  />
+                ))}
+              </div>
 
-          {/* Row 2: Defenders */}
-          <div className="pitch-row">
-            {defs.map(p => (
-              <PlayerCard
-                key={p.player_code || p.id || p.web_name}
-                player={p}
-                isCaptain={Boolean(p.is_captain)}
-                isViceCaptain={Boolean(p.is_vice_captain)}
-                isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
-                isBoosted={Boolean(p.is_boosted || isBenchBoost)}
-                strategyBadge={getStrategyBadge(p)}
-                isSubTarget={activeSelectedPlayer?.player_code === p.player_code}
-                onSelectSub={handlePlayerSelect}
-                onInspect={onInspectPlayer}
-                onOpenMatchup={handleMatchupClick}
-              />
-            ))}
-          </div>
+              {/* Row 2: Defenders */}
+              <div className="pitch-row">
+                {defs.map(p => (
+                  <PlayerCard
+                    key={p.player_code || p.id || p.web_name}
+                    player={p}
+                    isCaptain={Boolean(p.is_captain)}
+                    isViceCaptain={Boolean(p.is_vice_captain)}
+                    isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
+                    isBoosted={Boolean(p.is_boosted || isBenchBoost)}
+                    strategyBadge={getStrategyBadge(p)}
+                    isSubTarget={activeSelectedPlayer?.player_code === p.player_code}
+                    onSelectSub={handlePlayerSelect}
+                    onInspect={onInspectPlayer}
+                    onOpenMatchup={handleMatchupClick}
+                  />
+                ))}
+              </div>
 
-          {/* Row 3: Midfielders */}
-          <div className="pitch-row">
-            {mids.map(p => (
-              <PlayerCard
-                key={p.player_code || p.id || p.web_name}
-                player={p}
-                isCaptain={Boolean(p.is_captain)}
-                isViceCaptain={Boolean(p.is_vice_captain)}
-                isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
-                isBoosted={Boolean(p.is_boosted || isBenchBoost)}
-                strategyBadge={getStrategyBadge(p)}
-                isSubTarget={activeSelectedPlayer?.player_code === p.player_code}
-                onSelectSub={handlePlayerSelect}
-                onInspect={onInspectPlayer}
-                onOpenMatchup={handleMatchupClick}
-              />
-            ))}
-          </div>
+              {/* Row 3: Midfielders */}
+              <div className="pitch-row">
+                {mids.map(p => (
+                  <PlayerCard
+                    key={p.player_code || p.id || p.web_name}
+                    player={p}
+                    isCaptain={Boolean(p.is_captain)}
+                    isViceCaptain={Boolean(p.is_vice_captain)}
+                    isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
+                    isBoosted={Boolean(p.is_boosted || isBenchBoost)}
+                    strategyBadge={getStrategyBadge(p)}
+                    isSubTarget={activeSelectedPlayer?.player_code === p.player_code}
+                    onSelectSub={handlePlayerSelect}
+                    onInspect={onInspectPlayer}
+                    onOpenMatchup={handleMatchupClick}
+                  />
+                ))}
+              </div>
 
-          {/* Row 4: Forwards */}
-          <div className="pitch-row">
-            {fwds.map(p => (
-              <PlayerCard
-                key={p.player_code || p.id || p.web_name}
-                player={p}
-                isCaptain={Boolean(p.is_captain)}
-                isViceCaptain={Boolean(p.is_vice_captain)}
-                isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
-                isBoosted={Boolean(p.is_boosted || isBenchBoost)}
-                strategyBadge={getStrategyBadge(p)}
-                isSubTarget={activeSelectedPlayer?.player_code === p.player_code}
-                onSelectSub={handlePlayerSelect}
-                onInspect={onInspectPlayer}
-                onOpenMatchup={handleMatchupClick}
-              />
-            ))}
-          </div>
+              {/* Row 4: Forwards */}
+              <div className="pitch-row">
+                {fwds.map(p => (
+                  <PlayerCard
+                    key={p.player_code || p.id || p.web_name}
+                    player={p}
+                    isCaptain={Boolean(p.is_captain)}
+                    isViceCaptain={Boolean(p.is_vice_captain)}
+                    isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
+                    isBoosted={Boolean(p.is_boosted || isBenchBoost)}
+                    strategyBadge={getStrategyBadge(p)}
+                    isSubTarget={activeSelectedPlayer?.player_code === p.player_code}
+                    onSelectSub={handlePlayerSelect}
+                    onInspect={onInspectPlayer}
+                    onOpenMatchup={handleMatchupClick}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
         {/* Sidebar (Right Column) - Transforms into Bench Boost Telemetry Hub if Bench Boost is active */}
@@ -524,63 +627,83 @@ export default function TacticalPitch({
             <div className="sidebar-panel">
               <div className="panel-header">
                 <span className="panel-title">
-                  {activeChip === 'wildcard' ? 'WILDCARD BENCH' : activeChip === 'freehit' ? 'FREE HIT BENCH' : activeChip === '3xc' ? 'TRIPLE CAPTAIN BENCH' : 'Substitutes'}
+                  {isNonParticipating
+                    ? 'Substitutes'
+                    : isCompletedGw
+                    ? 'MATCHDAY BENCH'
+                    : activeChip === 'wildcard'
+                    ? 'WILDCARD BENCH'
+                    : activeChip === 'freehit'
+                    ? 'FREE HIT BENCH'
+                    : activeChip === '3xc'
+                    ? 'TRIPLE CAPTAIN BENCH'
+                    : 'Substitutes'}
                 </span>
                 <span className="panel-badge font-mono">
-                  {`${displayBench.length} on bench`}
+                  {isNonParticipating ? '0 on bench' : `${displayBench.length} on bench`}
                 </span>
               </div>
 
-              <div className="bench-list">
-                {displayBench.map((p, idx) => {
-                  const isSelected = activeSelectedPlayer?.player_code === p.player_code;
-                  const slotLabel = idx === 0 ? 'GK Sub' : `Sub ${idx}`;
-                  return (
-                    <div
-                      key={p.player_code || p.id || p.web_name}
-                      className={`bench-item ${isSelected ? 'is-selected' : ''}`}
-                      onClick={() => handlePlayerSelect(p)}
-                      onDoubleClick={() => onInspectPlayer && onInspectPlayer(p)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          handlePlayerSelect(p);
-                        }
-                      }}
-                      tabIndex={0}
-                      role="button"
-                      aria-label={`Bench ${slotLabel}: ${p.web_name}, ${p.position}, £${Number(p.cost || 0).toFixed(1)}M, ${Number(p.expected_points || 0).toFixed(1)} expected points`}
-                      title="Click to swap with starter · Double-click for player stats"
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-                        <span className="bench-slot-tag font-mono">
-                          {slotLabel}
-                        </span>
-                        <span className={`player-pos-tag ${p.position}`}>{p.position}</span>
-                        <div style={{ minWidth: 0, overflow: 'hidden' }}>
-                          <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                            {p.web_name}
+              {isNonParticipating ? (
+                <div style={{ padding: '24px 16px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>
+                  No substitutes available for this gameweek.
+                </div>
+              ) : (
+                <div className="bench-list">
+                  {displayBench.map((p, idx) => {
+                    const isSelected = activeSelectedPlayer?.player_code === p.player_code;
+                    const slotLabel = idx === 0 ? 'GK Sub' : `Sub ${idx}`;
+                    const hasActualPoints = p.actual_points !== undefined;
+                    const displayBenchPts = hasActualPoints ? Number(p.actual_points) : Number(p.expected_points || 0).toFixed(1);
+                    return (
+                      <div
+                        key={p.player_code || p.id || p.web_name}
+                        className={`bench-item ${isSelected ? 'is-selected' : ''}`}
+                        onClick={() => handlePlayerSelect(p)}
+                        onDoubleClick={() => onInspectPlayer && onInspectPlayer(p)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handlePlayerSelect(p);
+                          }
+                        }}
+                        tabIndex={0}
+                        role="button"
+                        aria-label={`Bench ${slotLabel}: ${p.web_name}, ${p.position}, £${Number(p.cost || 0).toFixed(1)}M, ${displayBenchPts} points`}
+                        title="Click to swap with starter · Double-click for player stats"
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+                          <span className="bench-slot-tag font-mono">
+                            {slotLabel}
+                          </span>
+                          <span className={`player-pos-tag ${p.position}`}>{p.position}</span>
+                          <div style={{ minWidth: 0, overflow: 'hidden' }}>
+                            <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                              {p.web_name}
+                            </div>
+                            <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                              {p.team} · £{Number(p.cost || 0).toFixed(1)}m
+                            </div>
                           </div>
-                          <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                            {p.team} · £{Number(p.cost || 0).toFixed(1)}m
+                        </div>
+                        <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 800, color: 'var(--accent-emerald)' }}>
+                            {displayBenchPts} pts
+                          </div>
+                          <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                            {hasActualPoints ? 'actual pts' : 'exp pts'}
                           </div>
                         </div>
                       </div>
-                      <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 800, color: 'var(--accent-emerald)' }}>
-                          {Number(p.expected_points || 0).toFixed(1)} pts
-                        </div>
-                        <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                          exp pts
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
 
               <div className="bench-help-text">
-                Click any starter and bench player to swap them. Double-click any player card to view their scouting report.
+                {isCompletedGw
+                  ? 'Official matchday scores recorded for bench substitutes.'
+                  : 'Click any starter and bench player to swap them. Double-click any player card to view their scouting report.'}
               </div>
             </div>
           )}

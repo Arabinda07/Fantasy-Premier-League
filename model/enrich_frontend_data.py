@@ -267,7 +267,7 @@ def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data
 
     # 4. Compute & Enrich Strategic 4-Chip Simulations (Wildcard, Free Hit, Bench Boost, Triple Captain)
     try:
-        from model.solver import solve_initial_squad
+        from model.solver import solve_initial_squad, solve_squad_lineup
         from model.ownership_engine import compute_eo, estimate_captaincy_share
         from model.prediction_engine import _safe_float as _enrich_safe_float
         from dataclasses import asdict
@@ -322,10 +322,57 @@ def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data
                 result.append(d)
             return result
 
-        # 4. Compute & Enrich Strategic 3-Strategy Solves (Pure xP, Rank Shield, Differential Chase)
-        pure_sol = solve_initial_squad(df=preds_df, budget=100.0, strategy='pure_xp')
-        rp_sol = solve_initial_squad(df=preds_df, budget=100.0, strategy='rank_protect')
-        diff_sol = solve_initial_squad(df=preds_df, budget=100.0, strategy='differential_chase')
+        # Check if an existing 15-man squad is present in the matchday data
+        existing_squad_picks = data.get('actual_starters', []) + data.get('actual_bench', [])
+        if not existing_squad_picks or len(existing_squad_picks) != 15:
+            existing_squad_picks = data.get('starters', []) + data.get('bench', [])
+
+        has_existing_squad = len(existing_squad_picks) == 15
+
+        if has_existing_squad:
+            # Build squad DataFrame containing the manager's 15 players
+            squad_codes = [int(p.get('player_code', p.get('code', 0))) for p in existing_squad_picks if p.get('player_code') or p.get('code')]
+            squad_mask = preds_df['player_code'].astype(int).isin(set(squad_codes))
+            squad_df = preds_df[squad_mask].copy()
+
+            if len(squad_df) < 15:
+                found_codes = set(squad_df['player_code'].astype(int))
+                missing_rows = []
+                for p in existing_squad_picks:
+                    p_code = int(p.get('player_code', p.get('code', 0)))
+                    if p_code not in found_codes:
+                        missing_rows.append({
+                            'player_code': p_code,
+                            'web_name': p.get('web_name', str(p_code)),
+                            'team': p.get('team', ''),
+                            'position': p.get('position', 'MID'),
+                            'cost': float(p.get('cost', p.get('now_cost', 5.0))),
+                            'expected_points': float(p.get('expected_points', 0.0)),
+                            'eo': float(p.get('eo', 0.0)),
+                        })
+                if missing_rows:
+                    squad_df = pd.concat([squad_df, pd.DataFrame(missing_rows)], ignore_index=True)
+
+            # Solve strategic starting XI lineup variations from the manager's fixed 15 players (0 extra transfers)
+            pure_sol = solve_squad_lineup(squad_df=squad_df, season=season, data_root=data_root, strategy='pure_xp')
+            rp_sol = solve_squad_lineup(squad_df=squad_df, season=season, data_root=data_root, strategy='rank_protect')
+            diff_sol = solve_squad_lineup(squad_df=squad_df, season=season, data_root=data_root, strategy='differential_chase')
+
+            # Solve non-transfer chips directly on the manager's squad
+            bb_sol = solve_squad_lineup(squad_df=squad_df, season=season, data_root=data_root, chip='bboost')
+            tc_sol = solve_squad_lineup(squad_df=squad_df, season=season, data_root=data_root, chip='3xc')
+        else:
+            # Pre-season or no squad available: solve full initial squads
+            pure_sol = solve_initial_squad(df=preds_df, budget=100.0, strategy='pure_xp')
+            rp_sol = solve_initial_squad(df=preds_df, budget=100.0, strategy='rank_protect')
+            diff_sol = solve_initial_squad(df=preds_df, budget=100.0, strategy='differential_chase')
+
+            bb_sol = solve_initial_squad(df=preds_df, budget=100.0, chip='bboost')
+            tc_sol = solve_initial_squad(df=preds_df, budget=100.0, chip='3xc')
+
+        # Unlimited transfer chips always solve an optimal template squad
+        wc_sol = solve_initial_squad(df=preds_df, budget=100.0, chip='wildcard')
+        fh_sol = solve_initial_squad(df=preds_df, budget=100.0, chip='freehit')
 
         data['strategies'] = {
             'pure_xp': {
@@ -368,12 +415,6 @@ def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data
                 'budget_used': round(diff_sol.total_cost, 1),
             }
         }
-
-        # 5. Compute & Enrich Strategic 4-Chip Simulations (Wildcard, Free Hit, Bench Boost, Triple Captain)
-        wc_sol = solve_initial_squad(df=preds_df, budget=100.0, chip='wildcard')
-        fh_sol = solve_initial_squad(df=preds_df, budget=100.0, chip='freehit')
-        bb_sol = solve_initial_squad(df=preds_df, budget=100.0, chip='bboost')
-        tc_sol = solve_initial_squad(df=preds_df, budget=100.0, chip='3xc')
 
         bb_bench_xp = sum(float(p.expected_points or 0) for p in bb_sol.bench)
 
@@ -431,6 +472,13 @@ def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data
                 'budget_used': round(tc_sol.total_cost, 1),
             }
         }
+
+        # Synchronize multi-horizon roadmap keys for cross-version compatibility
+        if 'multi_horizon_roadmap' in data and 'multi_horizon_plan' not in data:
+            data['multi_horizon_plan'] = data['multi_horizon_roadmap']
+        elif 'multi_horizon_plan' in data and 'multi_horizon_roadmap' not in data:
+            data['multi_horizon_roadmap'] = data['multi_horizon_plan']
+
         print(f"[Enrichment] Successfully computed & enriched 3 strategy payloads and 4 chip simulations for GW{gw}.")
     except Exception as e:
         print(f"[Enrichment] Warning: Could not compute strategy/chip simulations: {e}")

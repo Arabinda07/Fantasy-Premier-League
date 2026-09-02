@@ -12,7 +12,7 @@ sources:
 
 # Pipeline: Understat xG Scraper
 
-[understat.py](file:///e:/Fantasy-Premier-League/understat.py) scrapes shot-level and match-level expected metrics ($xG, xA$) from Understat.
+[`understat.py`](../../understat.py) scrapes shot-level and match-level expected metrics ($xG, xA$) from Understat.
 
 ## Key Features
 1. **Player Matching (`match_ids`)**: Matches Understat player names to FPL IDs using fuzzy string matching and team alignment.

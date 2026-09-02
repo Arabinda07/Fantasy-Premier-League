@@ -125,9 +125,37 @@ export default function App() {
   };
 
   // Switch Gameweek Dataset handler
-  const handleSelectGw = (gw) => {
+  const handleSelectGw = async (gw) => {
     const numGw = Number(gw);
     setSelectedGw(numGw);
+
+    let customEntryId = null;
+    try {
+      customEntryId = localStorage.getItem('fpl_synced_entry_id');
+    } catch {
+      // Ignore localStorage errors
+    }
+
+    const isCustomManager = customEntryId && String(customEntryId) !== '9500404';
+
+    if (isCustomManager) {
+      try {
+        const leagueId = localStorage.getItem('fpl_synced_league_id');
+        const params = new URLSearchParams({ entry_id: customEntryId, gw: numGw });
+        if (leagueId) params.append('league_id', leagueId);
+        const res = await fetch(`/api/sync?${params.toString()}`);
+        if (res.ok) {
+          const syncData = await res.json();
+          if (syncData && syncData.success) {
+            handleLiveSyncSuccess(syncData);
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Failed to fetch custom manager GW data:', err);
+      }
+    }
+
     const data = getMatchdayData(numGw);
     if (data) {
       setLiveData(data);
@@ -277,6 +305,7 @@ export default function App() {
         onOpenSyncModal={() => setIsSyncModalOpen(true)}
         strategy={activeStrategy}
         onSelectStrategy={handleStrategyChange}
+        activeChip={activeChip}
       />
 
       {/* Semantic Breadcrumbs Navigation Bar */}
@@ -318,6 +347,7 @@ export default function App() {
                     onSelectChip={handleChipChange}
                     strategy={activeStrategy}
                     onSelectStrategy={handleStrategyChange}
+                    onNavigateTab={handleTabChange}
                   />
                 </div>
               </ErrorBoundary>
@@ -328,7 +358,7 @@ export default function App() {
               <ErrorBoundary componentName="Multi-GW Planner">
                 <div className="surface-scope-planner">
                   <MultiGwPlanner
-                    roadmap={liveData?.multi_horizon_plan || liveData?.transfer_roadmap || []}
+                    roadmap={liveData?.multi_horizon_roadmap || liveData?.multi_horizon_plan || liveData?.transfer_roadmap || []}
                     squadPlayers={[...(starters || []), ...(bench || [])]}
                     allPlayers={allPlayersData}
                     allPlayersData={allPlayersData}

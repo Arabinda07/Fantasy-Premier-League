@@ -391,14 +391,21 @@ export function reconcileSquad(squadPicks = [], allPlayers = []) {
  */
 export function getPlayerScore(player, strategy = 'pure_xp') {
   const xp = Number(player.expected_points || 0);
+  const eo = Number(player.eo || player.ownership_pct || 0.1);
+  const haulProb = Number(player.haul_prob || 0.05);
+
   switch (strategy) {
+    case 'rank_protect':
+      // Weight towards high-EO template safety
+      return xp * (1.0 + Math.min(1.0, eo * 0.6));
+    case 'differential_chase':
+    case 'differential':
+      // Weight towards low-EO upside and haul potential
+      return xp * (1.0 + haulProb * 1.5) * (1.0 - Math.min(0.6, eo * 0.4));
     case 'ceiling_p90':
       return Number(player.ceiling_p90 || (xp * 1.6));
     case 'floor_p10':
       return Number(player.floor_p10 || (xp * 0.4));
-    case 'differential':
-      // Weight by differential haul potential
-      return xp * (1 + Number(player.haul_prob || 0.05));
     case 'pure_xp':
     default:
       return xp;
@@ -518,15 +525,16 @@ export function solveOptimalLineup(squad = [], strategy = 'pure_xp') {
 }
 
 /**
- * Generate lineups for all 4 platform strategies.
+ * Generate lineups for all platform strategies.
  */
 export function generateStrategyLineups(squad = []) {
-  const strategies = ['pure_xp', 'ceiling_p90', 'floor_p10', 'differential'];
+  const strategies = ['pure_xp', 'rank_protect', 'differential_chase', 'ceiling_p90', 'floor_p10', 'differential'];
   const results = {};
 
   for (const strat of strategies) {
     const solved = solveOptimalLineup(squad, strat);
     results[strat] = {
+      strategy_id: strat,
       formation: solved.formation,
       starting_xp: solved.startingXp,
       total_xp: solved.totalXp,
@@ -1226,14 +1234,77 @@ export function generateMultiGwRoadmap(solvedLineup, allPlayers = [], currentGw 
  */
 export function buildLiveMatchdayPayload(syncedData = {}, allPlayers = [], selectedStrategy = 'pure_xp', fallbackFixtures = []) {
   const profile = syncedData.manager_profile || syncedData.manager || syncedData || {};
-  const currentGw = syncedData.gameweek || profile.current_event || 2;
+  const currentGw = Number(syncedData.gameweek || profile.current_event || 2);
   const rawPicks = syncedData.picks || profile.squad_picks || (profile.squad_elements || []).map((el, i) => ({ element: el, position: i + 1 }));
+
+  // Non-participating gameweek (e.g. manager registered after GW1)
+  if (!rawPicks || rawPicks.length === 0) {
+    return {
+      season: '2026-27',
+      gameweek: currentGw,
+      is_completed: true,
+      participated: false,
+      strategy: selectedStrategy,
+      manager_profile: {
+        entry_id: profile.entry_id,
+        manager_name: profile.manager_name || `Manager ${profile.entry_id}`,
+        team_name: profile.team_name || `Team ${profile.entry_id}`,
+        overall_rank: profile.overall_rank || 0,
+        overall_points: profile.overall_points || 0,
+        bank: profile.bank != null ? profile.bank : 0.0,
+        team_value: profile.team_value != null ? profile.team_value : 100.0,
+        free_transfers: profile.free_transfers != null ? profile.free_transfers : 1,
+        active_chip: null,
+        event_points: 0,
+        event_rank: 0,
+        points_on_bench: 0,
+        squad_codes: [],
+        starter_codes: [],
+        bench_codes: [],
+        captain_code: null,
+        vice_captain_code: null,
+        selling_prices: {},
+        purchase_prices: {},
+        rivals: [],
+        league_id: profile.league_id || null,
+        league_name: profile.league_name || null,
+      },
+      action_summary: `Did not participate in Gameweek ${currentGw}`,
+      starting_xp: 0,
+      total_xp: 0,
+      event_points: 0,
+      event_rank: 0,
+      captain: null,
+      vice_captain: null,
+      starters: [],
+      bench: [],
+      actual_starters: [],
+      actual_bench: [],
+      recommended_starters: [],
+      recommended_bench: [],
+      recommended_starting_xp: 0,
+      recommended_total_xp: 0,
+      multi_horizon_roadmap: {},
+      dixon_coles_fixtures: fallbackFixtures,
+      strategies: {},
+      structural_builds: {},
+      chip_simulations: {},
+    };
+  }
 
   // 1. Reconcile 15 squad players
   const enrichedSquad = reconcileSquad(rawPicks, allPlayers);
+  const actualStarters = enrichedSquad.filter((p) => p.is_starter);
+  const actualBench = enrichedSquad
+    .filter((p) => !p.is_starter)
+    .sort((a, b) => Number(a.bench_order || 99) - Number(b.bench_order || 99));
 
   // 2. Solve optimal lineup
   const solved = solveOptimalLineup(enrichedSquad, selectedStrategy);
+  const actualCaptain = actualStarters.find((p) => p.is_captain) || null;
+  const actualViceCaptain = actualStarters.find((p) => p.is_vice_captain) || null;
+  const actualStartingXp = actualStarters.reduce((acc, p) => acc + Number(p.expected_points || 0), 0) + Number(actualCaptain?.expected_points || 0);
+  const actualTotalXp = enrichedSquad.reduce((acc, p) => acc + Number(p.expected_points || 0), 0) + Number(actualCaptain?.expected_points || 0);
 
   // 3. Multi-strategy variations
   const strategies = generateStrategyLineups(enrichedSquad);
@@ -1253,11 +1324,19 @@ export function buildLiveMatchdayPayload(syncedData = {}, allPlayers = [], selec
   // 8. Structural Archetype Builds
   const structuralBuilds = generateStructuralBuilds(allPlayers, enrichedSquad);
 
+  const isCompleted = syncedData.is_completed !== undefined
+    ? syncedData.is_completed
+    : Boolean(currentGw < 3 && profile.event_points !== undefined);
+
   // 9. Assemble full matchday object
   return {
     season: '2026-27',
     gameweek: currentGw,
+    is_completed: isCompleted,
+    participated: true,
     strategy: selectedStrategy,
+    event_points: profile.event_points !== undefined ? profile.event_points : (syncedData.event_points || 0),
+    event_rank: profile.event_rank !== undefined ? profile.event_rank : (syncedData.event_rank || 0),
     manager_profile: {
       entry_id: profile.entry_id,
       manager_name: profile.manager_name || `Manager ${profile.entry_id}`,
@@ -1268,11 +1347,14 @@ export function buildLiveMatchdayPayload(syncedData = {}, allPlayers = [], selec
       team_value: profile.team_value != null ? profile.team_value : 100.5,
       free_transfers: profile.free_transfers != null ? profile.free_transfers : 1,
       active_chip: profile.active_chip || null,
+      event_points: profile.event_points || 0,
+      event_rank: profile.event_rank || 0,
+      points_on_bench: profile.points_on_bench || 0,
       squad_codes: enrichedSquad.map((p) => p.player_code),
-      starter_codes: solved.starters.map((p) => p.player_code),
-      bench_codes: solved.bench.map((p) => p.player_code),
-      captain_code: solved.captain ? solved.captain.player_code : null,
-      vice_captain_code: solved.viceCaptain ? solved.viceCaptain.player_code : null,
+      starter_codes: actualStarters.map((p) => p.player_code),
+      bench_codes: actualBench.map((p) => p.player_code),
+      captain_code: actualCaptain ? actualCaptain.player_code : null,
+      vice_captain_code: actualViceCaptain ? actualViceCaptain.player_code : null,
       selling_prices: Object.fromEntries(enrichedSquad.map((p) => [p.player_code, p.selling_price])),
       purchase_prices: Object.fromEntries(enrichedSquad.map((p) => [p.player_code, p.purchase_price])),
       rivals: enrichedRivals,
@@ -1286,12 +1368,18 @@ export function buildLiveMatchdayPayload(syncedData = {}, allPlayers = [], selec
       vice_captain: solved.viceCaptain ? solved.viceCaptain.web_name : 'Salah',
       net_gain: transferAnalysis.net_gain,
     },
-    starting_xp: solved.startingXp,
-    total_xp: solved.totalXp,
-    captain: solved.captain,
-    vice_captain: solved.viceCaptain,
-    starters: solved.starters,
-    bench: solved.bench,
+    starting_xp: Number(actualStartingXp.toFixed(2)),
+    total_xp: Number(actualTotalXp.toFixed(2)),
+    captain: actualCaptain,
+    vice_captain: actualViceCaptain,
+    starters: actualStarters,
+    bench: actualBench,
+    actual_starters: actualStarters,
+    actual_bench: actualBench,
+    recommended_starters: solved.starters,
+    recommended_bench: solved.bench,
+    recommended_starting_xp: solved.startingXp,
+    recommended_total_xp: solved.totalXp,
     multi_horizon_roadmap: roadmap,
     dixon_coles_fixtures: fallbackFixtures,
     strategies: strategies,
@@ -1322,4 +1410,3 @@ export default {
   generateMultiGwRoadmap,
   buildLiveMatchdayPayload,
 };
-

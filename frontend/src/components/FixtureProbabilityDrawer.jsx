@@ -195,7 +195,7 @@ export default function FixtureProbabilityDrawer({
             <div>
               <span className="profile-tag">MATCH PREVIEW &amp; PROBABILITY FORECAST</span>
               <h2 id="drawer-title" className="modal-title" style={{ marginTop: '2px' }}>
-                {fixture.home_team} vs {fixture.away_team}
+                {activeFixture.home_team} vs {activeFixture.away_team}
               </h2>
             </div>
           </div>
@@ -208,7 +208,7 @@ export default function FixtureProbabilityDrawer({
         <div className="fixture-hero-card">
           <div className="team-side home">
             <span className="team-role">HOME</span>
-            <div className="team-display-name">{fixture.home_team}</div>
+            <div className="team-display-name">{activeFixture.home_team}</div>
             <div className="exp-goals font-mono">
               {lambda.toFixed(2)} <span className="exp-label">Exp Goals</span>
             </div>
@@ -220,7 +220,7 @@ export default function FixtureProbabilityDrawer({
 
           <div className="team-side away">
             <span className="team-role">AWAY</span>
-            <div className="team-display-name">{fixture.away_team}</div>
+            <div className="team-display-name">{activeFixture.away_team}</div>
             <div className="exp-goals font-mono">
               {mu.toFixed(2)} <span className="exp-label">Exp Goals</span>
             </div>
@@ -233,24 +233,24 @@ export default function FixtureProbabilityDrawer({
           <div className="prob-split-bar">
             <div
               className="split-segment home"
-              style={{ width: `${Math.round((fixture.home_win_prob || 0.38) * 100)}%` }}
-              title={`Home Win: ${Math.round((fixture.home_win_prob || 0.38) * 100)}%`}
+              style={{ width: `${Math.round((activeFixture.home_win_prob || 0.38) * 100)}%` }}
+              title={`Home Win: ${Math.round((activeFixture.home_win_prob || 0.38) * 100)}%`}
             >
-              <span>{fixture.home_team}: {Math.round((fixture.home_win_prob || 0.38) * 100)}%</span>
+              <span>{activeFixture.home_team}: {Math.round((activeFixture.home_win_prob || 0.38) * 100)}%</span>
             </div>
             <div
               className="split-segment draw"
-              style={{ width: `${Math.round((fixture.draw_prob || 0.26) * 100)}%` }}
-              title={`Draw: ${Math.round((fixture.draw_prob || 0.26) * 100)}%`}
+              style={{ width: `${Math.round((activeFixture.draw_prob || 0.26) * 100)}%` }}
+              title={`Draw: ${Math.round((activeFixture.draw_prob || 0.26) * 100)}%`}
             >
-              <span>Draw: {Math.round((fixture.draw_prob || 0.26) * 100)}%</span>
+              <span>Draw: {Math.round((activeFixture.draw_prob || 0.26) * 100)}%</span>
             </div>
             <div
               className="split-segment away"
-              style={{ width: `${Math.round((fixture.away_win_prob || 0.36) * 100)}%` }}
-              title={`Away Win: ${Math.round((fixture.away_win_prob || 0.36) * 100)}%`}
+              style={{ width: `${Math.round((activeFixture.away_win_prob || 0.36) * 100)}%` }}
+              title={`Away Win: ${Math.round((activeFixture.away_win_prob || 0.36) * 100)}%`}
             >
-              <span>{fixture.away_team}: {Math.round((fixture.away_win_prob || 0.36) * 100)}%</span>
+              <span>{activeFixture.away_team}: {Math.round((activeFixture.away_win_prob || 0.36) * 100)}%</span>
             </div>
           </div>
         </div>
@@ -269,7 +269,7 @@ export default function FixtureProbabilityDrawer({
 
           <div style={{ padding: '12px 14px' }}>
             <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '8px', textAlign: 'center', fontFamily: 'var(--font-mono)' }}>
-              ◀ {fixture.home_team} (Home Goals) &nbsp;&nbsp;|&nbsp;&nbsp; {fixture.away_team} (Away Goals) ▼
+              ◀ {activeFixture.home_team} (Home Goals) &nbsp;&nbsp;|&nbsp;&nbsp; {activeFixture.away_team} (Away Goals) ▼
             </div>
 
             <div className="matrix-wrapper">
@@ -312,7 +312,7 @@ export default function FixtureProbabilityDrawer({
                             style={{ background: baseColor }}
                             onMouseEnter={() => setHoveredCell(cell)}
                             onMouseLeave={() => setHoveredCell(null)}
-                            title={`${fixture.home_team} ${cell.home} - ${cell.away} ${fixture.away_team}: ${pct}% chance (${isHomeWin ? 'Home Win' : isAwayWin ? 'Away Win' : 'Draw'})`}
+                            title={`${activeFixture.home_team} ${cell.home} - ${cell.away} ${activeFixture.away_team}: ${pct}% chance (${isHomeWin ? 'Home Win' : isAwayWin ? 'Away Win' : 'Draw'})`}
                           >
                             <span className="matrix-val font-mono">{pct}%</span>
                           </td>
@@ -328,7 +328,7 @@ export default function FixtureProbabilityDrawer({
             <div style={{ marginTop: '8px', minHeight: '22px', fontSize: '11.5px', textAlign: 'center', fontFamily: 'var(--font-mono)' }}>
               {hoveredCell ? (
                 <span style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>
-                  Scoreline: {fixture.home_team} {hoveredCell.home} – {hoveredCell.away} {fixture.away_team} · {(hoveredCell.prob * 100).toFixed(2)}% ({hoveredCell.home > hoveredCell.away ? `${fixture.home_team} Win` : hoveredCell.home < hoveredCell.away ? `${fixture.away_team} Win` : 'Draw'})
+                  Scoreline: {activeFixture.home_team} {hoveredCell.home} – {hoveredCell.away} {activeFixture.away_team} · {(hoveredCell.prob * 100).toFixed(2)}% ({hoveredCell.home > hoveredCell.away ? `${activeFixture.home_team} Win` : hoveredCell.home < hoveredCell.away ? `${activeFixture.away_team} Win` : 'Draw'})
                 </span>
               ) : (
                 <span style={{ color: 'var(--text-muted)' }}>
@@ -342,25 +342,25 @@ export default function FixtureProbabilityDrawer({
         {/* 4-Card Quantitative Metrics Grid */}
         <div className="kpi-strip" style={{ marginBottom: '16px' }}>
           <div className="kpi-card">
-            <div className="kpi-label">{fixture.home_team} Clean Sheet</div>
+            <div className="kpi-label">{activeFixture.home_team} Clean Sheet</div>
             <div className="kpi-value font-mono" style={{ color: 'var(--accent-blue)' }}>
-              {Math.round((fixture.home_cs_prob || 0.28) * 100)}%
+              {Math.round((activeFixture.home_cs_prob || 0.28) * 100)}%
             </div>
-            <div className="kpi-subtext">Chance of shutting out {fixture.away_team}</div>
+            <div className="kpi-subtext">Chance of shutting out {activeFixture.away_team}</div>
           </div>
 
           <div className="kpi-card">
-            <div className="kpi-label">{fixture.away_team} Clean Sheet</div>
+            <div className="kpi-label">{activeFixture.away_team} Clean Sheet</div>
             <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
-              {Math.round((fixture.away_cs_prob || 0.32) * 100)}%
+              {Math.round((activeFixture.away_cs_prob || 0.32) * 100)}%
             </div>
-            <div className="kpi-subtext">Chance of shutting out {fixture.home_team}</div>
+            <div className="kpi-subtext">Chance of shutting out {activeFixture.home_team}</div>
           </div>
 
           <div className="kpi-card">
             <div className="kpi-label">Both Teams to Score</div>
             <div className="kpi-value font-mono" style={{ color: 'var(--accent-amber)' }}>
-              {Math.round((fixture.btts_prob || 0.54) * 100)}%
+              {Math.round((activeFixture.btts_prob || 0.54) * 100)}%
             </div>
             <div className="kpi-subtext">Both sides find the net</div>
           </div>
@@ -368,7 +368,7 @@ export default function FixtureProbabilityDrawer({
           <div className="kpi-card">
             <div className="kpi-label">Over 2.5 Total Goals</div>
             <div className="kpi-value font-mono" style={{ color: 'var(--text-primary)' }}>
-              {Math.round((fixture.over_2_5_prob || 0.51) * 100)}%
+              {Math.round((activeFixture.over_2_5_prob || 0.51) * 100)}%
             </div>
             <div className="kpi-subtext">3 or more total goals expected</div>
           </div>
@@ -383,7 +383,7 @@ export default function FixtureProbabilityDrawer({
             </div>
           </div>
           <div className="scorelines-grid">
-            {(fixture.most_likely_scorelines || [
+            {(activeFixture.most_likely_scorelines || [
               { score: '1-1', prob: 0.128 },
               { score: '1-2', prob: 0.114 },
               { score: '0-1', prob: 0.098 },

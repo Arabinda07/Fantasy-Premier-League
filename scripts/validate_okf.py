@@ -108,10 +108,19 @@ def validate_concept_file(file_path: Path, bundle_root: Path, repo_root: Path) -
             continue
             
         if link_target.startswith("file:///"):
-            # Normalize file URI
-            cleaned_path = link_target.replace("file:///", "").replace("/", "\\")
-            if not Path(cleaned_path).exists():
-                errors.append(f"Broken file URI: '{link_target}'")
+            # Normalize file URI across Windows and Linux
+            raw_uri = link_target.replace("file:///", "")
+            # Check if URI references repo root path (e.g. file:///e:/Fantasy-Premier-League/...)
+            repo_match = re.search(r"Fantasy-Premier-League[/\\](.+)", raw_uri, re.IGNORECASE)
+            if repo_match:
+                rel_code_path = repo_match.group(1).replace("\\", "/")
+                target_file = repo_root / rel_code_path
+                if not target_file.exists():
+                    errors.append(f"Broken file URI: '{link_target}'")
+            else:
+                cleaned_path = Path(raw_uri.replace("/", os.sep))
+                if not cleaned_path.exists():
+                    errors.append(f"Broken file URI: '{link_target}'")
             continue
 
         path_part = link_target.split("#")[0]

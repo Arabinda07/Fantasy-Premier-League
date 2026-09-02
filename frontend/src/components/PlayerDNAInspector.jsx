@@ -94,6 +94,7 @@ export default function PlayerDNAInspector({ player, onClose }) {
   ];
 
   const pMins60 = player.p_mins_60 != null ? Math.round(player.p_mins_60 * 100) : 92;
+  const pStart = player.p_start != null ? Math.round(player.p_start * 100) : (player.chance_of_playing_next_round != null ? Number(player.chance_of_playing_next_round) : 95);
 
   // 5-Axis Attribute Radar Data (Normalized 0-100 scale)
   const radarData = [
@@ -228,9 +229,11 @@ export default function PlayerDNAInspector({ player, onClose }) {
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart data={radarData} margin={{ top: 10, right: 20, left: 20, bottom: 10 }}>
                 <PolarGrid stroke="rgba(255,255,255,0.08)" />
-                <PolarAngleAxis dataKey="metric" stroke="var(--text-muted)" fontSize={10} />
+                <PolarAngleAxis dataKey="subject" stroke="var(--text-secondary)" fontSize={11} />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="rgba(255,255,255,0.05)" />
-                <Radar name={player.web_name} dataKey="score" stroke="#10B981" fill="#10B981" fillOpacity={0.25} />
+                <Radar name={player.web_name} dataKey="Player" stroke="#10B981" fill="#10B981" fillOpacity={0.35} />
+                <Radar name="Position Baseline" dataKey="Baseline" stroke="#64748B" fill="#64748B" fillOpacity={0.15} />
+                <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '4px' }} />
               </RadarChart>
             </ResponsiveContainer>
           )}

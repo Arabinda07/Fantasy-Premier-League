@@ -23,9 +23,11 @@ if REPO_ROOT not in sys.path:
 
 from model.solver import (
     solve_initial_squad,
+    solve_squad_lineup,
     solve_weekly_transfers,
     order_bench,
     format_squad_output,
+    calculate_fpl_selling_price,
     PlayerPick,
     SquadSolution,
     TransferSolution,
@@ -272,4 +274,51 @@ class TestUserLocksAndOverrides:
         # Palmer must also be in starting XI
         starter_names = [p.web_name for p in sol.starters]
         assert 'Palmer' in starter_names
+
+
+class TestSquadLineupOptimizer:
+    """Verify solve_squad_lineup preserves exact 15 squad players while optimizing starting XI."""
+
+    @pytest.fixture
+    def fixed_15_squad(self, sample_player_pool) -> pd.DataFrame:
+        # Pick 15 players (2 GK, 5 DEF, 5 MID, 3 FWD)
+        codes = [1, 2, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 18, 19, 20]
+        return sample_player_pool[sample_player_pool['player_code'].isin(codes)].copy()
+
+    def test_squad_membership_is_100_percent_invariant(self, fixed_15_squad):
+        sol_pure = solve_squad_lineup(fixed_15_squad, strategy='pure_xp')
+        sol_rp = solve_squad_lineup(fixed_15_squad, strategy='rank_protect')
+        sol_diff = solve_squad_lineup(fixed_15_squad, strategy='differential_chase')
+
+        orig_codes = set(fixed_15_squad['player_code'])
+
+        for sol in [sol_pure, sol_rp, sol_diff]:
+            assert sol.status == "Optimal"
+            assert len(sol.squad) == 15
+            assert len(sol.starters) == 11
+            assert len(sol.bench) == 4
+            sol_codes = set(p.player_code for p in sol.squad)
+            assert sol_codes == orig_codes, "Lineup optimizer must preserve exact 15 squad players without making transfers"
+
+            # Check formation legality
+            starters_pos = [p.position for p in sol.starters]
+            assert starters_pos.count('GK') == 1
+            assert 3 <= starters_pos.count('DEF') <= 5
+            assert 2 <= starters_pos.count('MID') <= 5
+            assert 1 <= starters_pos.count('FWD') <= 3
+
+    def test_triple_captain_on_fixed_squad(self, fixed_15_squad):
+        sol_tc = solve_squad_lineup(fixed_15_squad, strategy='pure_xp', chip='3xc')
+        assert sol_tc.status == "Optimal"
+        assert sol_tc.captain is not None
+        assert abs(sol_tc.captain_xp - (2.0 * sol_tc.captain.expected_points)) < 1e-3
+        assert len(sol_tc.starters) == 11
+        assert len(sol_tc.bench) == 4
+
+    def test_bench_boost_on_fixed_squad(self, fixed_15_squad):
+        sol_bb = solve_squad_lineup(fixed_15_squad, strategy='pure_xp', chip='bboost')
+        assert sol_bb.status == "Optimal"
+        assert len(sol_bb.starters) == 15
+        assert len(sol_bb.bench) == 0
+        assert sol_bb.formation == "5-5-3"
 

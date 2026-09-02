@@ -312,6 +312,34 @@ assert.strictEqual(fullPayload.bench.length, 4);
 assert.ok(fullPayload.action_summary.pairwise_transfers);
 console.log('  ✔ Master matchday payload 100% compliant with React schema.\n');
 
+// ---------------------------------------------------------------------------
+// Test 12: Non-Participating Blank Pitch Payload & Historical Completed Gameweek
+// ---------------------------------------------------------------------------
+console.log('▶ Test 12: Non-Participating Blank Pitch & Completed Gameweek Assembly');
+const nonParticipatingSyncMock = {
+  success: true,
+  gameweek: 1,
+  manager_profile: {
+    entry_id: 9500404,
+    manager_name: 'Arabinda Saha',
+    team_name: 'Fuljhore Giants',
+    overall_rank: 0,
+    overall_points: 0,
+    squad_picks: [],
+  },
+  rivals: [],
+};
+
+const blankPayload = buildLiveMatchdayPayload(nonParticipatingSyncMock, allPlayers, 'pure_xp');
+assert.strictEqual(blankPayload.participated, false, 'Payload must indicate non-participation');
+assert.strictEqual(blankPayload.is_completed, true, 'Blank gameweek must be marked completed');
+assert.strictEqual(blankPayload.starters.length, 0, 'Starters must be empty for blank pitch');
+assert.strictEqual(blankPayload.bench.length, 0, 'Bench must be empty for blank pitch');
+assert.strictEqual(blankPayload.starting_xp, 0, 'Starting xP must be 0 for blank pitch');
+assert.strictEqual(blankPayload.event_points, 0, 'Event points must be 0');
+console.log('  ✔ Non-participating gameweek returns clean blank pitch payload with score 0.\n');
+
 console.log('================================================================');
-console.log('🎉 ALL 11 TEST SUITES PASSED CLEANLY (Zero regressions).');
+console.log('🎉 ALL 12 TEST SUITES PASSED CLEANLY (Zero regressions).');
 console.log('================================================================\n');
+

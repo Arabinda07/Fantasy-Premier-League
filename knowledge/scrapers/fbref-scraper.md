@@ -12,7 +12,7 @@ sources:
 
 # Pipeline: FBref Match Logs
 
-[fbref.py](file:///e:/Fantasy-Premier-League/fbref.py) extracts match lineups from FBref to determine:
+[`fbref.py`](../../fbref.py) extracts match lineups from FBref to determine:
 1. **Starts ($S$)**: Outfield and GK starts on the official team sheet.
 2. **Subs ($Sub$)**: Appearances brought on from the bench.
 3. **Unused Subs ($UB$)**: Included in matchday squad but remained on bench.

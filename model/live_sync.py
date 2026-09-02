@@ -58,6 +58,9 @@ class LiveSyncProfile:
     rivals: Optional[List[Dict[str, Any]]] = None  # Mini-league rivals
     league_id: Optional[int] = None
     league_name: Optional[str] = None
+    event_points: int = 0
+    event_rank: int = 0
+    points_on_bench: int = 0
 
 
 def _get_cache_dir(season: str = '2026-27', data_root: str = 'data') -> str:
@@ -97,6 +100,101 @@ def load_code_to_element_map(
     return {v: k for k, v in elem_to_code.items()}
 
 
+def save_manager_squad_snapshot(
+    profile: LiveSyncProfile,
+    season: str = '2026-27',
+    data_root: str = 'data',
+) -> str:
+    """Save an authoritative snapshot of the manager's 15-man squad.
+
+    Saves to:
+      1. data/<season>/manager_squad_{entry_id}.json (per-team snapshot)
+      2. data/<season>/current_squad.json (latest global squad snapshot)
+
+    Args:
+        profile: LiveSyncProfile dataclass.
+        season: Season string.
+        data_root: Root data path.
+
+    Returns:
+        Path to the written per-team snapshot file.
+    """
+    season_dir = os.path.join(data_root, season)
+    os.makedirs(season_dir, exist_ok=True)
+    payload = {
+        'entry_id': profile.entry_id,
+        'manager_name': profile.manager_name,
+        'team_name': profile.team_name,
+        'season': season,
+        'overall_rank': profile.overall_rank,
+        'overall_points': profile.overall_points,
+        'bank': profile.bank,
+        'team_value': profile.team_value,
+        'free_transfers': profile.free_transfers,
+        'active_chip': profile.active_chip,
+        'squad_codes': profile.squad_codes,
+        'starter_codes': profile.starter_codes,
+        'bench_codes': profile.bench_codes,
+        'captain_code': profile.captain_code,
+        'vice_captain_code': profile.vice_captain_code,
+        'selling_prices': {str(k): v for k, v in profile.selling_prices.items()},
+        'purchase_prices': {str(k): v for k, v in profile.purchase_prices.items()},
+        'updated_at': time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime()),
+    }
+
+    team_snapshot = os.path.join(season_dir, f'manager_squad_{profile.entry_id}.json')
+    current_snapshot = os.path.join(season_dir, 'current_squad.json')
+
+    import tempfile
+    for target in (team_snapshot, current_snapshot):
+        dir_name = os.path.dirname(target)
+        fd, tmp_path = tempfile.mkstemp(suffix='.json.tmp', dir=dir_name)
+        try:
+            with os.fdopen(fd, 'w') as tmp_f:
+                json.dump(payload, tmp_f, indent=2)
+            os.replace(tmp_path, target)
+        except Exception:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+            raise
+
+    return team_snapshot
+
+
+def load_manager_squad_snapshot(
+    entry_id: Optional[int] = None,
+    season: str = '2026-27',
+    data_root: str = 'data',
+) -> Optional[Dict[str, Any]]:
+    """Load the latest authoritative 15-man squad snapshot from disk.
+
+    Args:
+        entry_id: Optional FPL entry ID to check team-specific snapshot.
+        season: Season string.
+        data_root: Root data path.
+
+    Returns:
+        Dict with snapshot data if valid (15 squad codes), else None.
+    """
+    season_dir = os.path.join(data_root, season)
+    candidates = []
+    if entry_id:
+        candidates.append(os.path.join(season_dir, f'manager_squad_{entry_id}.json'))
+    candidates.append(os.path.join(season_dir, 'current_squad.json'))
+
+    for path in candidates:
+        if os.path.exists(path):
+            try:
+                with open(path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    codes = data.get('squad_codes', [])
+                    if isinstance(codes, list) and len(codes) == 15:
+                        return data
+            except Exception:
+                pass
+    return None
+
+
 def fetch_fpl_entry_summary(
     entry_id: int,
     season: str = '2026-27',
@@ -117,13 +215,6 @@ def fetch_fpl_entry_summary(
         Dict of entry summary metadata.
     """
     cache_file = os.path.join(_get_cache_dir(season, data_root), f'entry_{entry_id}_summary.json')
-
-    if use_cache and os.path.exists(cache_file):
-        try:
-            with open(cache_file, 'r') as f:
-                return json.load(f)
-        except Exception:
-            pass
 
     url = f"{FPL_BASE_URL}/entry/{entry_id}/"
     try:
@@ -166,13 +257,6 @@ def fetch_fpl_entry_picks(
 ) -> Dict[str, Any]:
     """Fetch manager picks for a gameweek from https://fantasy.premierleague.com/api/entry/{entry_id}/event/{gw}/picks/."""
     cache_file = os.path.join(_get_cache_dir(season, data_root), f'entry_{entry_id}_picks_gw{gw}.json')
-
-    if use_cache and os.path.exists(cache_file):
-        try:
-            with open(cache_file, 'r') as f:
-                return json.load(f)
-        except Exception:
-            pass
 
     url = f"{FPL_BASE_URL}/entry/{entry_id}/event/{gw}/picks/"
     try:
@@ -217,13 +301,6 @@ def fetch_fpl_entry_transfers(
     """Fetch complete transfer history from https://fantasy.premierleague.com/api/entry/{entry_id}/transfers/."""
     cache_file = os.path.join(_get_cache_dir(season, data_root), f'entry_{entry_id}_transfers.json')
 
-    if use_cache and os.path.exists(cache_file):
-        try:
-            with open(cache_file, 'r') as f:
-                return json.load(f)
-        except Exception:
-            pass
-
     url = f"{FPL_BASE_URL}/entry/{entry_id}/transfers/"
     try:
         resp = requests.get(url, headers=DEFAULT_HEADERS, timeout=timeout)
@@ -253,13 +330,6 @@ def fetch_fpl_league_standings(
 ) -> Dict[str, Any]:
     """Fetch mini-league standings from https://fantasy.premierleague.com/api/leagues-classic/{league_id}/standings/."""
     cache_file = os.path.join(_get_cache_dir(season, data_root), f'league_{league_id}_standings.json')
-
-    if use_cache and os.path.exists(cache_file):
-        try:
-            with open(cache_file, 'r') as f:
-                return json.load(f)
-        except Exception:
-            pass
 
     url = f"{FPL_BASE_URL}/leagues-classic/{league_id}/standings/"
     try:
@@ -531,10 +601,15 @@ def sync_manager_profile(
     team_value = float(value_raw) / 10.0
 
     # 2. Fetch picks
-    # If target GW picks are not yet published, try gw-1
+    # If target GW picks are not yet published, search backwards across all prior GWs
     picks_payload = fetch_fpl_entry_picks(entry_id=entry_id, gw=gw, season=season, data_root=data_root, use_cache=use_cache)
     if not picks_payload.get('picks') and gw > 1:
-        picks_payload = fetch_fpl_entry_picks(entry_id=entry_id, gw=gw - 1, season=season, data_root=data_root, use_cache=use_cache)
+        for prior_gw in range(gw - 1, 0, -1):
+            cand = fetch_fpl_entry_picks(entry_id=entry_id, gw=prior_gw, season=season, data_root=data_root, use_cache=use_cache)
+            if cand.get('picks'):
+                picks_payload = cand
+                print(f"[*] Found latest published picks from GW{prior_gw} for entry {entry_id}")
+                break
 
     raw_picks = picks_payload.get('picks', [])
     active_chip = picks_payload.get('active_chip')
@@ -546,6 +621,9 @@ def sync_manager_profile(
             bank = float(entry_hist['bank']) / 10.0
         if entry_hist.get('value') is not None:
             team_value = float(entry_hist['value']) / 10.0
+    event_points = int(entry_hist.get('points') or 0)
+    event_rank = int(entry_hist.get('rank') or 0)
+    points_on_bench = int(entry_hist.get('points_on_bench') or 0)
 
     # 3. Parse 15 picks into permanent codes
     squad_codes: List[int] = []
@@ -577,6 +655,21 @@ def sync_manager_profile(
         if 'purchase_price' in p:
             purchase_prices[code] = float(p['purchase_price']) / 10.0
 
+    # Fallback to persistent snapshot if API returned no picks
+    if not squad_codes:
+        snapshot = load_manager_squad_snapshot(entry_id=entry_id, season=season, data_root=data_root)
+        if snapshot and len(snapshot.get('squad_codes', [])) == 15:
+            print(f"[*] Loaded squad from persistent snapshot for entry {entry_id}")
+            squad_codes = [int(c) for c in snapshot.get('squad_codes', [])]
+            starter_codes = [int(c) for c in snapshot.get('starter_codes', [])]
+            bench_codes = [int(c) for c in snapshot.get('bench_codes', [])]
+            captain_code = snapshot.get('captain_code')
+            vice_captain_code = snapshot.get('vice_captain_code')
+            if not selling_prices:
+                selling_prices = {int(k): float(v) for k, v in snapshot.get('selling_prices', {}).items()}
+            if not purchase_prices:
+                purchase_prices = {int(k): float(v) for k, v in snapshot.get('purchase_prices', {}).items()}
+
     # 4. Fetch transfer history & free transfers
     transfers = fetch_fpl_entry_transfers(entry_id=entry_id, season=season, data_root=data_root, use_cache=use_cache)
     free_transfers = calculate_available_free_transfers(summary, transfers, current_gw=gw)
@@ -600,7 +693,7 @@ def sync_manager_profile(
             max_rivals=5,
         )
 
-    return LiveSyncProfile(
+    profile = LiveSyncProfile(
         entry_id=entry_id,
         manager_name=manager_name,
         team_name=team_name,
@@ -620,7 +713,15 @@ def sync_manager_profile(
         rivals=rivals_data,
         league_id=league_id,
         league_name=league_name,
+        event_points=event_points,
+        event_rank=event_rank,
+        points_on_bench=points_on_bench,
     )
+
+    if len(squad_codes) == 15:
+        save_manager_squad_snapshot(profile, season=season, data_root=data_root)
+
+    return profile
 
 
 # ---------------------------------------------------------------------------

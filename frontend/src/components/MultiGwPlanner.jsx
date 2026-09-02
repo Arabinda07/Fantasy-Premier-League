@@ -36,11 +36,13 @@ export default function MultiGwPlanner({
 }) {
   const activeRoadmap = (roadmap && roadmap.length > 0)
     ? roadmap
-    : (liveData?.multi_horizon_plan && liveData.multi_horizon_plan.length > 0)
-      ? liveData.multi_horizon_plan
-      : (liveData?.transfer_roadmap && liveData.transfer_roadmap.length > 0)
-        ? liveData.transfer_roadmap
-        : DEFAULT_5GW_ROADMAP;
+    : (liveData?.multi_horizon_roadmap && liveData.multi_horizon_roadmap.length > 0)
+      ? liveData.multi_horizon_roadmap
+      : (liveData?.multi_horizon_plan && liveData.multi_horizon_plan.length > 0)
+        ? liveData.multi_horizon_plan
+        : (liveData?.transfer_roadmap && liveData.transfer_roadmap.length > 0)
+          ? liveData.transfer_roadmap
+          : DEFAULT_5GW_ROADMAP;
 
   const activeAllPlayers = (allPlayers && allPlayers.length > 0)
     ? allPlayers
@@ -58,7 +60,7 @@ export default function MultiGwPlanner({
   const endGw = activeRoadmap[activeRoadmap.length - 1]?.gw || (startGw + Math.max(0, activeRoadmap.length - 1));
 
   const [activeGwIndex, setActiveGwIndex] = useState(0);
-  const [viewMode, setViewMode] = useState('roadmap'); // 'roadmap' | 'workbench' | 'both'
+  const [viewMode, setViewMode] = useState('both'); // 'both' | 'roadmap' | 'workbench'
 
   // Compute multi-horizon totals & cumulative trajectory
   const trajectoryData = React.useMemo(() => {
@@ -218,7 +220,7 @@ export default function MultiGwPlanner({
         </div>
       </div>
 
-      {/* 5-Column Gameweek Roadmap Matrix */}
+      {/* 5-Column Gameweek Strategic Horizon Stepper */}
       <div className="multi-gw-matrix-grid">
         {activeRoadmap.map((item, idx) => {
           const isSelected = idx === activeGwIndex;
@@ -232,25 +234,34 @@ export default function MultiGwPlanner({
             >
               {/* Gameweek Column Header */}
               <div className="gw-column-header">
-                <span className="gw-tag font-mono">GAMEWEEK {item.gw}</span>
-                {idx === 0 && <span className="current-badge font-mono">CURRENT</span>}
+                <div className="gw-header-left">
+                  <span className="gw-tag font-mono">GW{item.gw}</span>
+                  {idx === 0 && <span className="current-badge font-mono">CURRENT</span>}
+                </div>
+                <span className="gw-ft-badge font-mono" title={`${item.ft_available || 1} Free Transfers available`}>
+                  {item.ft_available || 1} FT
+                </span>
               </div>
 
               {/* Weekly Point Projection & Bank */}
               <div className="gw-column-kpi">
-                <div className="gw-xp-val font-mono">
-                  {Number(item.net_xp || 0).toFixed(1)} <span className="xp-unit">pts</span>
+                <div className="gw-xp-group">
+                  <span className="gw-kpi-label">EXPECTED</span>
+                  <div className="gw-xp-val font-mono">
+                    {Number(item.net_xp || 0).toFixed(1)} <span className="xp-unit">xP</span>
+                  </div>
                 </div>
-                <div className="gw-bank-val font-mono">
-                  Bank: £{Number(item.bank || 0.0).toFixed(1)}m
+                <div className="gw-bank-group font-mono">
+                  <span className="gw-kpi-label">BANK</span>
+                  <span className="gw-bank-val">£{Number(item.bank || 0.0).toFixed(1)}m</span>
                 </div>
               </div>
 
               {/* Planned Transfer Movements */}
               <div className="gw-transfer-box">
-                <div className="box-title">
-                  <ArrowsLeftRight size={13} weight="bold" />
-                  <span>PLANNED TRANSFERS</span>
+                <div className="box-title font-mono">
+                  <ArrowsLeftRight size={12} weight="bold" />
+                  <span>TACTICAL MOVES</span>
                 </div>
 
                 {hasTransfers ? (
@@ -260,11 +271,11 @@ export default function MultiGwPlanner({
                       return (
                         <div key={tIdx} className="transfer-move-item">
                           <div className="move-tag in font-mono">
-                            <ArrowUpRight size={11} weight="bold" />
+                            <ArrowUpRight size={12} weight="bold" />
                             <span>BUY: {inPlayer}</span>
                           </div>
                           <div className="move-tag out font-mono">
-                            <ArrowDownRight size={11} weight="bold" />
+                            <ArrowDownRight size={12} weight="bold" />
                             <span>SELL: {outPlayer}</span>
                           </div>
                         </div>
@@ -274,15 +285,19 @@ export default function MultiGwPlanner({
                 ) : (
                   <div className="no-transfers-label font-mono">
                     <CheckCircle size={13} weight="fill" color="var(--accent-emerald)" />
-                    <span>Save Free Transfer (Bank 1 FT)</span>
+                    <span>Roll Free Transfer (+1 FT)</span>
                   </div>
                 )}
               </div>
 
-              {/* Free Transfers & Hits Status */}
+              {/* Free Transfers & Hits Status Footer */}
               <div className="gw-footer-meta font-mono">
-                <span>Free Transfers: {item.ft_available || 1}</span>
-                <span>Hits: {item.hits_taken ? `-${item.hits_taken * 4} pts` : '0 pts'}</span>
+                <span className="gw-meta-hits" style={{ color: item.hits_taken ? 'var(--accent-crimson)' : 'var(--text-muted)' }}>
+                  Hits: {item.hits_taken ? `-${item.hits_taken * 4} pts` : '0 pts'}
+                </span>
+                <span className="gw-horizon-status" style={{ color: isSelected ? 'var(--accent-emerald)' : 'var(--text-muted)' }}>
+                  {isSelected ? '● ACTIVE TARGET' : 'CLICK TO VIEW'}
+                </span>
               </div>
             </div>
           );

@@ -584,16 +584,63 @@ This document tracks the phased rebuild of the Fantasy Premier League (FPL) poin
   - `pytest model/`: **206 passed, 0 failed** in 31.5s.
   - `python scripts/validate_okf.py`: **43 files scanned, 0 errors verified**.
 
+### 18. In-Season Squad Consistency & Transfer Feasibility Alignment
+- **Problem**:
+  1. In GW2, selecting strategy objectives (*Max Points*, *Protect Lead*, *Climb Rank*) or chip scenarios (*Triple Captain*, *Bench Boost*) loaded unconstrained 15-man teams (requiring 5 to 7 transfers) instead of optimizing starting XI on the manager's existing 15-man squad within 1 Free Transfer.
+  2. `model/enrich_frontend_data.py` was calling `solve_initial_squad(budget=100.0)` for in-season gameweeks, completely discarding the user's active squad.
+  3. `MultiGwPlanner.jsx` defaulted to mock transfer data due to a property naming mismatch (`multi_horizon_roadmap` vs `multi_horizon_plan`).
+- **Implementation**:
+  - **15-Player Lineup Solver ([`model/solver.py`](file:///e:/Fantasy-Premier-League/model/solver.py))**:
+    - Created `solve_squad_lineup` to solve optimal Starting XI, bench ordering, and captaincy from a fixed 15-player squad with 0 extraneous transfers, strictly adhering to FPL positional quotas (1 GK, 3-5 DEF, 2-5 MID, 1-3 FWD).
+  - **Context-Aware Matchday Enrichment ([`model/enrich_frontend_data.py`](file:///e:/Fantasy-Premier-League/model/enrich_frontend_data.py))**:
+    - Updated `enrich_matchday_json` to detect existing in-season squads and optimize `pure_xp`, `rank_protect`, `differential_chase`, `3xc`, and `bboost` directly on the manager's 15 players while keeping `wildcard` and `freehit` as unconstrained solvers.
+    - Synchronized `multi_horizon_roadmap` and `multi_horizon_plan` fields in the generated matchday JSONs.
+  - **Client-Side Strategy Optimizer ([`frontend/src/utils/clientOptimizer.js`](file:///e:/Fantasy-Premier-League/frontend/src/utils/clientOptimizer.js))**:
+    - Added `rank_protect` and `differential_chase` support to `getPlayerScore` and `generateStrategyLineups` for live browser team sync.
+  - **5-Week Roadmap Wiring ([`frontend/src/App.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/App.jsx), [`frontend/src/components/MultiGwPlanner.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/MultiGwPlanner.jsx))**:
+    - Connected `MultiGwPlanner` cleanly to the real multi-horizon roadmap (`multi_horizon_roadmap`).
+  - **Unit Test Suite ([`model/test_solver.py`](file:///e:/Fantasy-Premier-League/model/test_solver.py))**:
+    - Added `TestSquadLineupOptimizer` suite verifying 100% squad membership invariance, formation legality, and chip multipliers on fixed squads.
+- **Verification**:
+  - `pytest`: **220 passed, 0 failed** in 105.34s.
+  - `pytest model/test_voice_and_tone.py`: **1 passed**.
+  - `python scripts/validate_okf.py`: **43 files scanned, 0 errors verified**.
+
+### 19. Accuracy Feedback Loop, Post-Transfer Display Alignment & Persistent Squad Snapshot Locking
+- **Problem**:
+  1. Prediction biases logged by `accuracy_tracker.py` into `accuracy_log.csv` were purely passive and never adjusted future projection outputs.
+  2. Gameweek completion detection in `live_manager.py` falsely evaluated to True for upcoming rounds because `event_points` held prior-GW scores from API sync fallbacks, rendering pre-transfer squads on the tactical pitch instead of recommended lineups.
+  3. When API sync encountered missing picks or incomplete historical participation (e.g. pre-GW2), `live_manager.py` silently invoked `solve_initial_squad()`, wiping out the manager's team and suggesting 15 brand-new players without transfer constraints.
+- **Implementation**:
+  - **Closed Accuracy Feedback Loop ([`model/fixture_engine.py`](file:///e:/Fantasy-Premier-League/model/fixture_engine.py))**:
+    - Implemented `load_positional_bias_corrections()` to read `accuracy_log.csv`, calculate EWMA biases per position (`GK`, `DEF`, `MID`, `FWD`), clamp corrections within $\pm 0.5$ pts, and apply additive calibration directly onto `expected_points` in `predict_gameweek_fixtures()`.
+  - **Gameweek Completion & Display Keys Fix ([`model/live_manager.py`](file:///e:/Fantasy-Premier-League/model/live_manager.py))**:
+    - Replaced points heuristic with official active round status via `detect_active_gameweek()`. Upcoming gameweeks now strictly evaluate to `is_completed = False`.
+    - Populated primary `starters` and `bench` payload keys with the solver's recommended post-transfer squad for upcoming rounds while preserving the manager's current team in `actual_starters` and `actual_bench`.
+    - Added explicit `--ft` override support to respect the manager's true transfer count.
+  - **Persistent Squad Snapshot Locking & Guardrails ([`model/live_sync.py`](file:///e:/Fantasy-Premier-League/model/live_sync.py), [`model/live_manager.py`](file:///e:/Fantasy-Premier-League/model/live_manager.py))**:
+    - Built `save_manager_squad_snapshot()` and `load_manager_squad_snapshot()` persisting authoritative 15-man squads to `data/{season}/manager_squad_{entry_id}.json` and `data/{season}/current_squad.json`.
+    - Deepened historical search in both `live_sync.py` and `live_manager.py` to traverse backwards through all prior gameweeks (`range(gw - 1, 0, -1)`).
+    - Enforced a hard guardrail in `manage_gameweek()`: for `gw > 1`, `solve_initial_squad()` is strictly blocked and raises a descriptive `RuntimeError` unless `chip in ('wildcard', 'freehit')` or `--force-new-squad` is explicitly provided.
+  - **Unit Test Suites ([`model/test_bias_correction.py`](file:///e:/Fantasy-Premier-League/model/test_bias_correction.py), [`model/test_squad_continuity.py`](file:///e:/Fantasy-Premier-League/model/test_squad_continuity.py))**:
+    - 7 unit tests verifying positional bias correction direction, clamping, and EWMA recency weighting.
+    - 6 unit tests verifying squad snapshot roundtrip, invalid squad rejection, deep backward retrieval across missing rounds, and strict guardrail enforcement.
+- **Verification**:
+  - `pytest model/`: **35 passed, 0 failed**.
+  - `npm run check-copy`: **23 files scanned, 0 errors**.
+  - `python scripts/validate_okf.py`: **43 files scanned, 0 errors verified**.
+
 ---
 
 ## Current Status & Next Horizon
 
-All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit with Reactive 4-Chip Projections**, the **Autonomous Gameweek Transition Orchestrator**, the **100% Native FPL Opta Data Engine**, **Phases 1–4 of the Multi-User Live Platform Rebuild**, the **FPL Dugout Rebranding & Complete 6-Surface Fan-Friendly Copy Transformation**, **Frontend Prop Alignment & Pipeline Unification**, **Promoted Clubs Calibration & Institutional UI Polish**, **Creator-Aligned Model Mechanics & Solver Optimizations**, and **Intuitive Tactical Cockpit Upgrades with Automated Voice/Tone Enforcement** are **complete, robust, and production-verified**.
+All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit with Reactive 4-Chip Projections**, the **Autonomous Gameweek Transition Orchestrator**, the **100% Native FPL Opta Data Engine**, **Phases 1–4 of the Multi-User Live Platform Rebuild**, the **FPL Dugout Rebranding & Complete 6-Surface Fan-Friendly Copy Transformation**, **Frontend Prop Alignment & Pipeline Unification**, **Promoted Clubs Calibration & Institutional UI Polish**, **Creator-Aligned Model Mechanics & Solver Optimizations**, **Intuitive Tactical Cockpit Upgrades with Automated Voice/Tone Enforcement**, **In-Season Squad Consistency & Transfer Feasibility Alignment**, and **Persistent Squad Snapshot Locking & Transfer Continuity Guardrails** are **complete, robust, and production-verified**.
 
 For complete operational playbooks and design standards:
 - 👉 **[DESIGN.md](file:///E:/Fantasy-Premier-League/DESIGN.md)**
 - 👉 **[docs/voice-and-tone-guide.md](file:///E:/Fantasy-Premier-League/docs/voice-and-tone-guide.md)**
 - 👉 **[docs/HANDOVER_AND_ROADMAP.md](file:///E:/Fantasy-Premier-League/docs/HANDOVER_AND_ROADMAP.md)**
+
 
 
 

@@ -1,110 +1,110 @@
 {
-  "evaluated_gw": 2,
-  "evaluated_at": "2026-09-02T10:07:37.627050+00:00",
+  "evaluated_gw": 1,
+  "evaluated_at": "2026-09-02T15:32:18.805588+00:00",
   "season": "2026-27",
-  "total_players": 620,
-  "active_players": 310,
+  "total_players": 629,
+  "active_players": 364,
   "overall_mae": 1.14,
-  "overall_rmse": 2.3,
-  "starters_mae": 2.11,
-  "starters_rmse": 3.21,
-  "rank_correlation": 0.379,
+  "overall_rmse": 2.06,
+  "starters_mae": 1.91,
+  "starters_rmse": 2.69,
+  "rank_correlation": 0.411,
   "brier_score_cs": 0.198,
   "positional": [
     {
       "pos": "GK",
-      "count": 68,
-      "mae": 0.69,
-      "rmse": 1.59,
-      "meanPred": 0.96,
-      "meanAct": 1.01,
-      "bias": -0.06,
+      "count": 71,
+      "mae": 0.65,
+      "rmse": 1.49,
+      "meanPred": 1.02,
+      "meanAct": 0.79,
+      "bias": 0.23,
       "status": "CALIBRATED"
     },
     {
       "pos": "DEF",
-      "count": 206,
-      "mae": 1.29,
-      "rmse": 2.62,
-      "meanPred": 1.25,
-      "meanAct": 1.65,
-      "bias": -0.4,
-      "status": "UNDER_PROJECTED"
+      "count": 207,
+      "mae": 1.22,
+      "rmse": 2.04,
+      "meanPred": 1.48,
+      "meanAct": 1.38,
+      "bias": 0.1,
+      "status": "CALIBRATED"
     },
     {
       "pos": "MID",
-      "count": 273,
-      "mae": 1.12,
-      "rmse": 2.29,
-      "meanPred": 1.36,
-      "meanAct": 1.63,
-      "bias": -0.27,
-      "status": "UNDER_PROJECTED"
+      "count": 278,
+      "mae": 1.15,
+      "rmse": 2.19,
+      "meanPred": 1.55,
+      "meanAct": 1.59,
+      "bias": -0.03,
+      "status": "CALIBRATED"
     },
     {
       "pos": "FWD",
       "count": 73,
-      "mae": 1.23,
-      "rmse": 1.92,
-      "meanPred": 1.62,
-      "meanAct": 1.29,
-      "bias": 0.33,
-      "status": "OVER_PROJECTED"
+      "mae": 1.35,
+      "rmse": 2.06,
+      "meanPred": 1.72,
+      "meanAct": 1.49,
+      "bias": 0.23,
+      "status": "CALIBRATED"
     }
   ],
   "outliers": [
     {
-      "player": "De Cuyper",
+      "player": "B.Fernandes",
+      "team": "Man Utd",
+      "pos": "ASSET",
+      "pred": 5.29,
+      "actual": 23,
+      "diff": "+17.7",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Cherki",
+      "team": "Man City",
+      "pos": "ASSET",
+      "pred": 4.42,
+      "actual": 14,
+      "diff": "+9.6",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Groß",
       "team": "Brighton",
       "pos": "ASSET",
-      "pred": 2.88,
-      "actual": 17,
-      "diff": "+14.1",
+      "pred": 3.44,
+      "actual": 13,
+      "diff": "+9.6",
       "reason": "High conversion or unexpected haul"
     },
     {
-      "player": "Hinshelwood",
+      "player": "Tarkowski",
+      "team": "Everton",
+      "pos": "ASSET",
+      "pred": 3.1,
+      "actual": 12,
+      "diff": "+8.9",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Scott",
+      "team": "Bournemouth",
+      "pos": "ASSET",
+      "pred": 3.15,
+      "actual": 12,
+      "diff": "+8.8",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Boscagli",
       "team": "Brighton",
       "pos": "ASSET",
-      "pred": 2.2,
-      "actual": 16,
-      "diff": "+13.8",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Mendy",
-      "team": "Hull City",
-      "pos": "ASSET",
-      "pred": 1.79,
-      "actual": 15,
-      "diff": "+13.2",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Ajayi",
-      "team": "Hull City",
-      "pos": "ASSET",
-      "pred": 1.79,
-      "actual": 14,
-      "diff": "+12.2",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "M.Sangaré",
-      "team": "Brentford",
-      "pos": "ASSET",
-      "pred": 2.18,
-      "actual": 14,
-      "diff": "+11.8",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Lindelöf",
-      "team": "Aston Villa",
-      "pos": "ASSET",
-      "pred": 1.84,
-      "actual": -2,
-      "diff": "-3.8",
+      "pred": 3.08,
+      "actual": -1,
+      "diff": "-4.1",
       "reason": "Tactical substitution or match blank"
     }
   ]

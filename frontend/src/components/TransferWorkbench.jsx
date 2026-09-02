@@ -103,20 +103,19 @@ export default function TransferWorkbench({
 
       {/* Side-by-Side Transfer Comparison Workbench */}
       {playerIn ? (
-        <div className="compare-workbench-container" style={{ margin: '24px 0', background: 'var(--bg-surface-1)', border: '1px solid var(--border-active)', borderRadius: 'var(--radius-lg)', padding: 'clamp(14px, 2vw, 20px)', boxShadow: '0 8px 24px rgba(0,0,0,0.5)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ background: 'var(--accent-emerald)', color: 'var(--text-inverse)', padding: '3px 6px', borderRadius: 'var(--radius-xs)', display: 'flex', alignItems: 'center' }}>
-                <Scales size={15} weight="bold" />
+        <div className="compare-workbench-container">
+          <div className="compare-workbench-header">
+            <div className="compare-header-title">
+              <div className="compare-icon-wrap">
+                <Scales size={16} weight="bold" />
               </div>
-              <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)' }}>
-                Player Swap Comparison
+              <span className="compare-title-text">
+                Direct Transfer Swap Comparison
               </span>
             </div>
             <button
               onClick={handleClearCompare}
-              className="pos-filter-btn"
-              style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 8px' }}
+              className="compare-close-btn font-mono"
             >
               <X size={14} weight="bold" />
               <span>Close Comparison</span>
@@ -126,16 +125,15 @@ export default function TransferWorkbench({
           <div className="compare-grid">
             {/* Player OUT Card */}
             <div className="compare-player-card out-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <span className="transfer-label out">SELLING (OUT)</span>
+              <div className="card-role-header">
+                <span className="transfer-label out font-mono">SELLING (OUT)</span>
                 <select
                   value={playerOut?.player_code || ''}
                   onChange={(e) => {
                     const found = defaultSquadList.find(p => String(p.player_code) === e.target.value);
                     if (found) setPlayerOut(found);
                   }}
-                  className="nav-select"
-                  style={{ fontSize: '11px', padding: '3px 6px' }}
+                  className="nav-select compare-player-select"
                   aria-label="Select squad player to transfer out"
                 >
                   {defaultSquadList.map(p => (
@@ -146,92 +144,99 @@ export default function TransferWorkbench({
                 </select>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                <span className={`player-position-pill ${playerOut?.position}`}>{playerOut?.position}</span>
-                <span style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>
-                  {playerOut?.web_name}
-                </span>
-                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>({playerOut?.team})</span>
+              <div className="compare-player-name-row">
+                <span className={`player-pos-tag ${playerOut?.position}`}>{playerOut?.position}</span>
+                <span className="compare-player-name">{playerOut?.web_name}</span>
+                <span className="compare-player-team font-mono">({playerOut?.team})</span>
               </div>
 
-              <div className="font-mono" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-secondary)', marginBottom: '8px' }}>
-                {xpOut.toFixed(1)} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>projected pts</span>
+              <div className="compare-xp-val font-mono">
+                {xpOut.toFixed(1)} <span className="xp-unit">xP next match</span>
               </div>
 
-              <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <div>Price: £{costOut.toFixed(1)}m</div>
-                <div>Expected Goals (xG / 90 mins): {xgOut.toFixed(2)}</div>
-                <div>Expected Assists (xA / 90 mins): {xaOut.toFixed(2)}</div>
+              <div className="compare-stats-stack font-mono">
+                <div className="compare-stat-row">
+                  <span className="stat-name">Price</span>
+                  <span className="stat-val">£{costOut.toFixed(1)}m</span>
+                </div>
+                <div className="compare-stat-row">
+                  <span className="stat-name">Goal Threat (xG / 90)</span>
+                  <span className="stat-val">{xgOut.toFixed(2)}</span>
+                </div>
+                <div className="compare-stat-row">
+                  <span className="stat-name">Assist Threat (xA / 90)</span>
+                  <span className="stat-val">{xaOut.toFixed(2)}</span>
+                </div>
               </div>
             </div>
 
-            {/* Delta Indicator (Center) */}
+            {/* Delta Indicator (Center Column) */}
             <div className="compare-delta-column">
               <div className={`delta-badge ${xpDelta >= 0 ? 'positive' : 'negative'}`}>
                 {xpDelta >= 0 ? <TrendUp size={16} weight="bold" /> : <TrendDown size={16} weight="bold" />}
-                <span>{xpDelta >= 0 ? `+${xpDelta.toFixed(1)} pts gain` : `${xpDelta.toFixed(1)} pts`}</span>
+                <span className="font-mono">{xpDelta >= 0 ? `+${xpDelta.toFixed(1)} xP Gain` : `${xpDelta.toFixed(1)} xP`}</span>
               </div>
-              <div style={{ fontSize: '11px', color: costDelta <= 0 ? 'var(--accent-emerald)' : 'var(--accent-amber)', fontFamily: 'var(--font-mono)', marginTop: '4px', fontWeight: 700 }}>
-                {costDelta <= 0 ? `Saves £${Math.abs(costDelta).toFixed(1)}m` : `Extra cost: £${costDelta.toFixed(1)}m`}
+              <div className="delta-cost-tag font-mono" style={{ color: costDelta <= 0 ? 'var(--accent-emerald)' : 'var(--accent-amber)' }}>
+                {costDelta <= 0 ? `Saves £${Math.abs(costDelta).toFixed(1)}m` : `Costs +£${costDelta.toFixed(1)}m`}
               </div>
             </div>
 
             {/* Player IN Card */}
             <div className="compare-player-card in-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <span className="transfer-label in">BUYING (IN)</span>
-                <span style={{ fontSize: '11px', color: 'var(--accent-emerald)', fontWeight: 700 }}>
-                  New Transfer Target
-                </span>
+              <div className="card-role-header">
+                <span className="transfer-label in font-mono">BUYING (IN)</span>
+                <span className="in-target-badge font-mono">TARGET ACQUISITION</span>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                <span className={`player-position-pill ${playerIn?.position}`}>{playerIn?.position}</span>
-                <span style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>
-                  {playerIn?.web_name}
-                </span>
-                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>({playerIn?.team})</span>
+              <div className="compare-player-name-row">
+                <span className={`player-pos-tag ${playerIn?.position}`}>{playerIn?.position}</span>
+                <span className="compare-player-name">{playerIn?.web_name}</span>
+                <span className="compare-player-team font-mono">({playerIn?.team})</span>
               </div>
 
-              <div className="font-mono" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--accent-emerald)', marginBottom: '8px' }}>
-                {xpIn.toFixed(1)} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>projected pts</span>
+              <div className="compare-xp-val emerald font-mono">
+                {xpIn.toFixed(1)} <span className="xp-unit">xP next match</span>
               </div>
 
-              <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <div>Price: £{costIn.toFixed(1)}m</div>
-                <div>Expected Goals (xG / 90 mins): {xgIn.toFixed(2)}</div>
-                <div>Expected Assists (xA / 90 mins): {xaIn.toFixed(2)}</div>
+              <div className="compare-stats-stack font-mono">
+                <div className="compare-stat-row">
+                  <span className="stat-name">Price</span>
+                  <span className="stat-val">£{costIn.toFixed(1)}m</span>
+                </div>
+                <div className="compare-stat-row">
+                  <span className="stat-name">Goal Threat (xG / 90)</span>
+                  <span className="stat-val">{xgIn.toFixed(2)}</span>
+                </div>
+                <div className="compare-stat-row">
+                  <span className="stat-name">Assist Threat (xA / 90)</span>
+                  <span className="stat-val">{xaIn.toFixed(2)}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       ) : (
-        <div className="compare-workbench-container" style={{ margin: '20px 0', background: 'var(--bg-surface-1)', border: '1px dashed var(--border-medium)', borderRadius: 'var(--radius-lg)', padding: '20px', textAlign: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: 'var(--accent-emerald)', marginBottom: '6px' }}>
-            <Scales size={20} weight="bold" />
-            <span style={{ fontWeight: 700, fontSize: '14px' }}>Test Any Transfer Head-to-Head</span>
+        <div className="compare-workbench-container compare-placeholder">
+          <div className="placeholder-content">
+            <Scales size={20} weight="bold" className="placeholder-icon" />
+            <span className="placeholder-title">Test Any Transfer Head-to-Head</span>
           </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '13px', margin: 0 }}>
-            Click the <strong style={{ color: 'var(--text-primary)' }}>&quot;Compare&quot;</strong> button on any player in the transfer market below to test a live swap against your squad and inspect points, budget, and goal threat differences.
+          <p className="placeholder-desc">
+            Click the <strong style={{ color: 'var(--accent-emerald)' }}>&quot;Compare&quot;</strong> button on any player in the market below to simulate a direct swap against your squad and inspect points, budget, and goal threat differences.
           </p>
         </div>
       )}
 
-      {/* Transfer Marketplace */}
+      {/* Transfer Marketplace Table with 2-Tier Filter Bar */}
       <div className="data-table-container" style={{ marginTop: '20px' }}>
-        <div className="scout-controls">
-          <div className="scout-title-group">
-            <span className="scout-title">Scout Transfer Targets</span>
-            <span className="scout-hint">(Click any row for full stats · Click &quot;Compare&quot; to test a swap)</span>
-          </div>
-
-          <div className="scout-filters">
-            {/* Search Input */}
+        <div className="scout-controls-2tier">
+          {/* Tier 1: Search, Position Filter & Sort */}
+          <div className="scout-tier-1">
             <div className="scout-search-wrap">
               <MagnifyingGlass size={14} className="scout-search-icon" />
               <input
                 type="text"
-                placeholder="Search player or club..."
+                placeholder="Search player name or club..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 aria-label="Search players by name or club"
@@ -239,7 +244,6 @@ export default function TransferWorkbench({
               />
             </div>
 
-            {/* Position Filter */}
             <div role="group" aria-label="Filter by player position" className="pos-btn-group">
               {['ALL', 'GK', 'DEF', 'MID', 'FWD'].map(pos => (
                 <button
@@ -253,9 +257,22 @@ export default function TransferWorkbench({
               ))}
             </div>
 
-            {/* Max Price Slider */}
+            <select
+              value={sortBy}
+              onChange={e => setSortBy(e.target.value)}
+              aria-label="Sort players by metric"
+              className="scout-sort-select font-mono"
+            >
+              <option value="xP">Most Expected Points</option>
+              <option value="cost_desc">Price (High to Low)</option>
+              <option value="cost_asc">Price (Low to High)</option>
+            </select>
+          </div>
+
+          {/* Tier 2: Budget Slider & Quick Presets */}
+          <div className="scout-tier-2">
             <div className="scout-price-control">
-              <span>Max Price: £{maxPrice}m</span>
+              <span className="price-label font-mono">Max Budget: £{maxPrice}m</span>
               <input
                 type="range"
                 min="4.0"
@@ -268,17 +285,24 @@ export default function TransferWorkbench({
               />
             </div>
 
-            {/* Sort Dropdown */}
-            <select
-              value={sortBy}
-              onChange={e => setSortBy(e.target.value)}
-              aria-label="Sort players by metric"
-              className="scout-sort-select"
-            >
-              <option value="xP">Most Expected Points</option>
-              <option value="cost_desc">Price (High to Low)</option>
-              <option value="cost_asc">Price (Low to High)</option>
-            </select>
+            <div className="scout-budget-presets font-mono">
+              <span className="presets-label">QUICK:</span>
+              {[
+                { label: '< £5.0m', val: 5.0 },
+                { label: '< £7.5m', val: 7.5 },
+                { label: '< £10.0m', val: 10.0 },
+                { label: 'ALL', val: 15.5 }
+              ].map(preset => (
+                <button
+                  key={preset.label}
+                  type="button"
+                  className={`preset-btn ${maxPrice === preset.val ? 'active' : ''}`}
+                  onClick={() => setMaxPrice(preset.val)}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -314,15 +338,15 @@ export default function TransferWorkbench({
                   style={{ cursor: 'pointer' }}
                   title="Click to view scouting report & underlying stats"
                 >
-                  <td style={{ position: 'sticky', left: 0, zIndex: 10, fontWeight: 700, color: 'var(--text-primary)', background: 'var(--bg-surface-1)' }}>
+                  <td style={{ position: 'sticky', left: 0, zIndex: 10, fontWeight: 800, color: 'var(--text-primary)', background: 'var(--bg-surface-1)' }}>
                     {p.web_name}
                   </td>
                   <td>
-                    <span className={`player-position-pill ${p.position}`}>{p.position}</span>
+                    <span className={`player-pos-tag ${p.position}`}>{p.position}</span>
                   </td>
-                  <td>{p.team}</td>
+                  <td className="font-mono" style={{ color: 'var(--text-secondary)' }}>{p.team}</td>
                   <td className="font-mono">£{Number(p.now_cost || p.cost || 0).toFixed(1)}m</td>
-                  <td className="font-mono" style={{ fontWeight: 700, color: 'var(--accent-emerald)' }}>
+                  <td className="font-mono" style={{ fontWeight: 800, color: 'var(--accent-emerald)' }}>
                     {Number(p.expected_points ?? p.xp ?? p.xP ?? 0).toFixed(1)} pts
                   </td>
                   <td className="font-mono">{Number(p.expected_goals_per_90 ?? p.short_form_expected_goals_90 ?? p.xg90 ?? 0).toFixed(2)}</td>
@@ -331,16 +355,14 @@ export default function TransferWorkbench({
                   <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                     <button
                       onClick={() => handleSelectCompareIn(p)}
-                      className="pos-filter-btn"
+                      className="pos-filter-btn compare-action-btn font-mono"
                       style={{
-                        padding: '3px 8px',
-                        fontSize: '11px',
                         background: playerIn?.web_name === p.web_name ? 'var(--accent-emerald)' : undefined,
                         color: playerIn?.web_name === p.web_name ? 'var(--text-inverse)' : undefined
                       }}
                       title="Compare this player against your squad"
                     >
-                      Compare
+                      {playerIn?.web_name === p.web_name ? 'Comparing' : 'Compare'}
                     </button>
                   </td>
                 </tr>
