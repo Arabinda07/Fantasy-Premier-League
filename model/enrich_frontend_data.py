@@ -21,6 +21,7 @@ if REPO_ROOT not in sys.path:
 
 from model.minutes_model import compute_player_minutes_hazard
 from model.match_simulator import compute_dixon_coles_matrix, analyze_bivariate_scoreline_matrix
+from model.solver import compute_calibrated_captaincy_confidence, compute_auto_sub_weights
 
 
 def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data_root: str = 'data') -> bool:
@@ -187,6 +188,17 @@ def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data
             # Opponent team lookup
             fix_info = fixture_prob_lookup.get(p['team'], {})
 
+            # M-05: Captaincy Bayesian Confidence (from prediction DataFrame)
+            capt_conf_val = None
+            if not row.empty:
+                try:
+                    single_df = pd.DataFrame([row.iloc[0]])
+                    conf_series = compute_calibrated_captaincy_confidence(single_df, current_gw=gw)
+                    if not conf_series.empty:
+                        capt_conf_val = round(float(conf_series.iloc[0]), 2)
+                except Exception:
+                    capt_conf_val = None
+
             p_enriched = {
                 **p,
                 'floor_p10': floor_p10,
@@ -195,11 +207,14 @@ def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data
                 'haul_prob': haul_prob,
                 'p_start': round(hazard_profile.p_start, 2),
                 'p_mins_60': round(hazard_profile.p_60_plus, 2),
+                'p_sub': round(hazard_profile.p_sub, 2),
                 'hook_hazard': round(hazard_profile.p_pre60_hook, 2),
                 'rest_days': 7,
                 'sp_pk_order': pk_order,
                 'sp_ck_order': ck_order,
                 'sp_fk_order': fk_order,
+                'capt_conf': capt_conf_val,
+                'c11_included_in_xp': False,
                 'fixture_details': {
                     'home_team': fix_info.get('home_team'),
                     'away_team': fix_info.get('away_team'),
@@ -213,6 +228,33 @@ def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data
 
     data['starters'] = enrich_player_list(data.get('starters', []), True)
     data['bench'] = enrich_player_list(data.get('bench', []), False)
+
+    # M-06: Compute dynamic auto-sub weights from squad DNP rates
+    try:
+        auto_sub_weights = compute_auto_sub_weights(preds_df)
+        weight_map = {
+            0: ('sub_gk', auto_sub_weights.get('sub_gk', 0.02)),
+            1: ('sub_1', auto_sub_weights.get('sub_1', 0.35)),
+            2: ('sub_2', auto_sub_weights.get('sub_2', 0.08)),
+            3: ('sub_3', auto_sub_weights.get('sub_3', 0.015)),
+        }
+        for idx, bp in enumerate(data.get('bench', [])):
+            slot_key, weight_val = weight_map.get(idx, ('sub_3', 0.015))
+            bp['bench_slot_weight'] = round(weight_val, 3)
+            bp['bench_slot_key'] = slot_key
+            # Qualitative auto-sub label
+            if weight_val >= 0.30:
+                bp['auto_sub_label'] = 'HIGH'
+            elif weight_val >= 0.06:
+                bp['auto_sub_label'] = 'MEDIUM'
+            else:
+                bp['auto_sub_label'] = 'LOW'
+        data['auto_sub_weights'] = auto_sub_weights
+    except Exception as e:
+        print(f"[Enrichment] Warning: Could not compute auto-sub weights: {e}")
+
+    # M-07: Official FPL scoring flag
+    data['c11_included_in_xp'] = False
 
     # 3. Add Mini-League Rival Threat Matrix from Real Standings
     from model.live_sync import fetch_fpl_league_standings, enrich_rival_entries

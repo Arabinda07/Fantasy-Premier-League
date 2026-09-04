@@ -8,7 +8,7 @@ import {
   ChartBar,
   Polygon
 } from '@phosphor-icons/react';
-import { getPenaltyTierForTeam } from '../constants/copyTokens';
+import { getPenaltyTierForTeam, getCaptaincyConfidenceTier } from '../constants/copyTokens';
 
 export default function PlayerDNAInspector({ player, onClose }) {
   const [activeView, setActiveView] = useState('chart'); // 'chart' | 'radar'
@@ -69,10 +69,6 @@ export default function PlayerDNAInspector({ player, onClose }) {
     ? Number(player.c3_saves.toFixed(2))
     : (pos === 'GK' ? 0.95 : 0.0);
 
-  const c11_dc = player.c11_defensive_contributions != null
-    ? Number(player.c11_defensive_contributions.toFixed(2))
-    : 0.20;
-
   const c4_c5_cards = (player.c4_yellow_cards != null && player.c5_red_cards != null)
     ? Number((player.c4_yellow_cards + player.c5_red_cards).toFixed(2))
     : -0.10;
@@ -85,12 +81,11 @@ export default function PlayerDNAInspector({ player, onClose }) {
     { name: 'Appearance (60+m)', value: Number(c1_c2.toFixed(2)), color: '#3B82F6', desc: 'Guaranteed 2 pts for 60+ minutes' },
     { name: 'Goal Threat (xG)', value: c8_goals, color: '#10B981', desc: `Based on ${xG90.toFixed(2)} xG/90` },
     { name: 'Assist Threat (xA)', value: c7_assists, color: '#06B6D4', desc: `Based on ${xA90.toFixed(2)} xA/90` },
-    { name: 'Clean Sheet', value: c9_cleansheet, color: '#8B5CF6', desc: 'Defensive shutout probability' },
-    { name: 'Bonus Points (BPS)', value: c6_bonus, color: '#F59E0B', desc: 'Simulated 3, 2, 1 BPS equity' },
+    { name: 'Clean Sheet', value: c9_cleansheet, color: '#8B5CF6', desc: 'Adjusted for heavy-defeat risk' },
+    { name: 'Bonus Points (BPS)', value: c6_bonus, color: '#F59E0B', desc: 'Match-balanced bonus allocation' },
     ...(pos === 'GK' || c3_saves > 0 ? [{ name: 'Goalkeeper Saves', value: c3_saves, color: '#EC4899', desc: 'Save point baseline' }] : []),
-    { name: 'Defensive Actions', value: c11_dc, color: '#14B8A6', desc: 'Ball recoveries & tackles' },
     { name: 'Discipline Risk', value: c4_c5_cards, color: '#EF4444', desc: 'Yellow / red card deductions' },
-    ...(c10_gc_penalty !== 0 ? [{ name: 'Goals Conceded', value: c10_gc_penalty, color: '#DC2626', desc: 'Deductions for 2+ goals conceded' }] : [])
+    ...(c10_gc_penalty !== 0 ? [{ name: 'Goals Conceded', value: c10_gc_penalty, color: '#DC2626', desc: 'Penalties including heavy-defeat risk' }] : [])
   ];
 
   const pMins60 = player.p_mins_60 != null ? Math.round(player.p_mins_60 * 100) : 92;
@@ -285,6 +280,26 @@ export default function PlayerDNAInspector({ player, onClose }) {
               {pMins60}%
             </div>
           </div>
+
+          {/* M-02: Hook Hazard (Pre-60 Tactical Substitution Risk) */}
+          {player.hook_hazard != null && player.hook_hazard > 0 && (
+            <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Early Sub Risk</div>
+              <div className="font-mono" style={{ fontSize: '15px', fontWeight: 800, color: player.hook_hazard > 0.15 ? 'var(--accent-amber)' : 'var(--text-secondary)', marginTop: '2px' }}>
+                {Math.round(player.hook_hazard * 100)}%
+              </div>
+            </div>
+          )}
+
+          {/* M-05: Captaincy Confidence */}
+          {player.capt_conf != null && (
+            <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Captaincy Confidence</div>
+              <div className="font-mono" style={{ fontSize: '15px', fontWeight: 800, color: getCaptaincyConfidenceTier(player.capt_conf).color, marginTop: '2px' }}>
+                {Math.round(player.capt_conf * 100)}%
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Tactical Spot-Kick Hierarchy */}

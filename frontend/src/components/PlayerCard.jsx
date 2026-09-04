@@ -1,5 +1,5 @@
 import React from 'react';
-import { getPenaltyTierForTeam } from '../constants/copyTokens';
+import { getPenaltyTierForTeam, AUTO_SUB_LABELS } from '../constants/copyTokens';
 
 // Map Premier League team names to kit stripe identifiers
 const getTeamKitClass = (teamName) => {
@@ -115,8 +115,30 @@ export default function PlayerCard({
             <span className="boost-badge" style={{ background: 'rgba(16, 185, 129, 0.2)', color: 'var(--accent-emerald, #10B981)', border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '3px', padding: '0 4px', fontSize: '9px', fontWeight: 800 }} title="Bench Boost Active · Scoring points this gameweek">🚀 BB</span>
           )}
           <span className={`player-pos-tag ${pos}`}>{pos}</span>
+          {/* M-02: Rotation/Hook Risk Indicator */}
+          {player.hook_hazard > 0.15 && (
+            <span style={{ color: 'var(--accent-amber, #F59E0B)', fontSize: '10px', fontWeight: 800, lineHeight: 1 }} title={`${Math.round(player.hook_hazard * 100)}% early sub risk`}>⚠</span>
+          )}
           {isBgw && <span className="bgw-badge" title="Blank Gameweek: No game scheduled">BLANK</span>}
           {isDgw && <span className="dgw-badge" title="Double Gameweek: 2 games scheduled">DGW</span>}
+          {/* M-06: Auto-Sub Priority Label for bench players */}
+          {player.auto_sub_label && AUTO_SUB_LABELS[player.auto_sub_label] && (
+            <span
+              style={{
+                fontSize: '8px',
+                fontWeight: 800,
+                padding: '0 3px',
+                borderRadius: '2px',
+                lineHeight: '1.3',
+                background: player.auto_sub_label === 'HIGH' ? 'rgba(16, 185, 129, 0.2)' : player.auto_sub_label === 'MEDIUM' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(100, 116, 139, 0.2)',
+                color: player.auto_sub_label === 'HIGH' ? 'var(--accent-emerald, #10B981)' : player.auto_sub_label === 'MEDIUM' ? 'var(--accent-amber, #F59E0B)' : 'var(--text-muted)',
+                border: `1px solid ${player.auto_sub_label === 'HIGH' ? 'rgba(16, 185, 129, 0.4)' : player.auto_sub_label === 'MEDIUM' ? 'rgba(245, 158, 11, 0.4)' : 'rgba(100, 116, 139, 0.3)'}`,
+              }}
+              title={AUTO_SUB_LABELS[player.auto_sub_label].tooltip}
+            >
+              {AUTO_SUB_LABELS[player.auto_sub_label].badge}
+            </span>
+          )}
         </div>
         <span className="player-cost-val font-mono">£{cost}m</span>
       </div>

@@ -693,6 +693,18 @@ export default function TacticalPitch({
                           <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                             {hasActualPoints ? 'actual pts' : 'exp pts'}
                           </div>
+                          {/* M-06: Auto-Sub Priority */}
+                          {!hasActualPoints && p.auto_sub_label && (
+                            <div style={{
+                              fontSize: '8px',
+                              fontWeight: 800,
+                              fontFamily: 'var(--font-mono)',
+                              marginTop: '2px',
+                              color: p.auto_sub_label === 'HIGH' ? 'var(--accent-emerald)' : p.auto_sub_label === 'MEDIUM' ? 'var(--accent-amber)' : 'var(--text-muted)',
+                            }}>
+                              {p.auto_sub_label} PRIORITY
+                            </div>
+                          )}
                         </div>
                       </div>
                     );

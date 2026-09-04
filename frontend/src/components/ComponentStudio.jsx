@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { SCORING_COMPONENTS } from '../constants/copyTokens';
 import {
   Flask,
   SlidersHorizontal,
@@ -120,7 +121,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
         const c9_cs = (pos === 'GK' || pos === 'DEF') ? csRate * 4.0 * homeAdvantage * p60Plus : (pos === 'MID' ? 0.35 * p60Plus : 0.0);
         const c3_saves = pos === 'GK' ? baseline.savePts90 * pApp : 0.0;
         const c6_bonus = (bayesXg * 1.5 + bayesXa * 1.2 + baseline.bonus90) * 0.8 * attackDiscount * pApp;
-        const c10_penalty = (pos === 'GK' || pos === 'DEF') ? -0.4 * pApp : 0.0;
+        const c10_penalty = (pos === 'GK' || pos === 'DEF') ? -0.4 * pApp * homeAdvantage : 0.0;
 
         const dynamicXp = Math.max(0.2, c1_c2 + c8_goals + c7_assists + c9_cs + c3_saves + c6_bonus + c10_penalty);
 
@@ -229,9 +230,9 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
               <div className="kpi-card">
                 <div className="kpi-label">Key Scoring Factors</div>
                 <div className="kpi-value font-mono">
-                  11 <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Elements</span>
+                  {SCORING_COMPONENTS.official_count} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Factors</span>
                 </div>
-                <div className="kpi-subtext">Goals, assists, clean sheets &amp; minutes</div>
+                <div className="kpi-subtext">{SCORING_COMPONENTS.note}</div>
               </div>
             </div>
 
@@ -263,7 +264,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                   <span className="slider-tick-item right">1200m (Career Record)</span>
                 </div>
                 <div className="slider-hint">
-                  Balances how much we weigh recent match form versus the player&apos;s career record in the Premier League.
+                  Recent matches count more heavily — form from 8 weeks ago counts half as much as today.
                 </div>
               </div>
 

@@ -293,4 +293,41 @@ export function getPenaltyTierForTeam(teamName) {
   return SET_PIECE_TIERS.standard;
 }
 
+// M-06: Auto-Substitution Priority Labels
+export const AUTO_SUB_LABELS = {
+  HIGH: {
+    label: 'HIGH',
+    badge: '🔄 HIGH',
+    tooltip: 'High chance of being called off the bench if a starter misses out',
+  },
+  MEDIUM: {
+    label: 'MEDIUM',
+    badge: '🔄 MED',
+    tooltip: 'Moderate chance of being called off the bench',
+  },
+  LOW: {
+    label: 'LOW',
+    badge: '🔄 LOW',
+    tooltip: 'Low chance of being called off the bench this week',
+  },
+};
 
+// M-05: Captaincy Confidence Indicators
+export const CAPTAINCY_CONFIDENCE = {
+  full: { label: 'Full Confidence', color: 'var(--accent-emerald)' },
+  moderate: { label: 'Growing Confidence', color: 'var(--accent-amber)' },
+  low: { label: 'Early Sample', color: 'var(--accent-crimson)' },
+};
+
+export function getCaptaincyConfidenceTier(captConf) {
+  if (captConf == null || captConf >= 0.90) return CAPTAINCY_CONFIDENCE.full;
+  if (captConf >= 0.60) return CAPTAINCY_CONFIDENCE.moderate;
+  return CAPTAINCY_CONFIDENCE.low;
+}
+
+// M-07: Scoring Components Reference
+export const SCORING_COMPONENTS = {
+  official_count: 10,
+  label: '10 Scoring Factors',
+  note: 'Goals, assists, clean sheets, minutes and bonus points',
+};
