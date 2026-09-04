@@ -379,3 +379,50 @@ class TestDisciplinaryCorrection:
         assert abs(pred['c4_yellow_cards'] - (-0.30)) < 1e-3
         assert abs(pred['c5_red_cards'] - (-0.15)) < 1e-3
 
+
+class TestOfficialFplScoringAndC10UnGating:
+    """Verify official FPL scoring rules and un-gating of C10 goals conceded deductions."""
+
+    def test_official_fpl_mode_excludes_c11_from_total_xp(self):
+        """In official FPL mode (default), C11 is not added to expected_points."""
+        defender = {
+            'web_name': 'Saliba',
+            'position': 'DEF',
+            'season_starts': 30,
+            'season_minutes': 2700,
+            'long_form_defensive_contribution_90': 10.0,
+            'team_long_form_xgc90': 1.0,
+        }
+
+        # Default: official FPL mode (include_c11_in_xp=False)
+        pred_fpl = predict_player_points(defender, include_c11_in_xp=False)
+        assert pred_fpl['c11_defensive_contributions'] > 0.0  # C11 is calculated and reported
+        sum_c1_to_c10 = sum([
+            pred_fpl['c1_app_1_60'], pred_fpl['c2_app_60_plus'], pred_fpl['c3_saves'],
+            pred_fpl['c4_yellow_cards'], pred_fpl['c5_red_cards'], pred_fpl['c6_bonus'],
+            pred_fpl['c7_assists'], pred_fpl['c8_goals'], pred_fpl['c9_clean_sheets'],
+            pred_fpl['c10_goals_conceded'],
+        ])
+        assert abs(pred_fpl['expected_points'] - sum_c1_to_c10) < 1e-3
+
+        # Custom league mode: include_c11_in_xp=True
+        pred_custom = predict_player_points(defender, include_c11_in_xp=True)
+        assert abs(pred_custom['expected_points'] - (sum_c1_to_c10 + pred_custom['c11_defensive_contributions'])) < 1e-3
+        assert pred_custom['expected_points'] > pred_fpl['expected_points']
+
+    def test_c10_ungated_for_early_sub_or_cameo_defenders(self):
+        """Defenders who play with early hook risk or sub cameos incur goals conceded deductions."""
+        sub_defender = {
+            'web_name': 'SubDef',
+            'position': 'DEF',
+            'season_starts': 0,
+            'season_subs': 15,
+            'fbref_subs': 15,
+            'season_minutes': 300,
+            'team_long_form_xgc90': 2.0,
+        }
+        pred = predict_player_points(sub_defender)
+        # Even if p_60_plus is near zero for a substitute, C10 must be negative (penalty incurred)
+        assert pred['p_sub'] > 0.0
+        assert pred['c10_goals_conceded'] < 0.0
+

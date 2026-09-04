@@ -31,6 +31,7 @@ from model.prediction_engine import (
     apply_empirical_bayes_shrinkage,
     POSITIONAL_PRIORS,
     DEFAULT_MINS_FILTER,
+    DEFAULT_DISPERSION_R,
     _safe_float,
 )
 from model.build_dataset import load_teams_map, build_dataset
@@ -348,6 +349,10 @@ def predict_player_fixture(
     team_nudges: Optional[Dict[str, Dict[str, float]]] = None,
     min_minutes_pct: Optional[float] = None,
     available_minutes: Optional[float] = None,
+    dispersion_r: float = DEFAULT_DISPERSION_R,
+    days_rest: int = 7,
+    european_teams: Optional[Dict[str, List[str]]] = None,
+    include_c11_in_xp: bool = False,
 ) -> Dict[str, Any]:
     """Calculate fixture-adjusted expected points for a single player in a single match.
 
@@ -363,6 +368,10 @@ def predict_player_fixture(
         team_nudges: optional dictionary of team-level multipliers.
         min_minutes_pct: optional minimum percentage of available season minutes.
         available_minutes: optional total available team minutes.
+        dispersion_r: Negative Binomial dispersion parameter r.
+        days_rest: days since previous match for European congestion adjustment.
+        european_teams: optional dictionary of European competition club rosters.
+        include_c11_in_xp: whether to include C11 (defensive contributions) in expected points.
 
     Returns:
         Dict containing fixture-adjusted expected points, component breakdown,
@@ -378,7 +387,11 @@ def predict_player_fixture(
 
     # 1. Form blending across short-form and long-form with sample-size shrinkage
     short_mins = _safe_float(player.get('short_form_minutes'))
-    long_mins = _safe_float(player.get('long_form_minutes'))
+    long_mins = _safe_float(
+        player.get('long_form_unweighted_minutes',
+        player.get('unweighted_minutes',
+        player.get('long_form_minutes')))
+    )
     season_mins = _safe_float(player.get('season_minutes'))
 
     raw_xg90 = blend_form_rates(
@@ -452,6 +465,10 @@ def predict_player_fixture(
         apply_shrinkage=False,
         min_minutes_pct=min_minutes_pct,
         available_minutes=available_minutes,
+        dispersion_r=dispersion_r,
+        days_rest=days_rest,
+        european_teams=european_teams,
+        include_c11_in_xp=include_c11_in_xp,
     )
 
     result = {
@@ -480,6 +497,8 @@ def predict_gameweek_fixtures(
     dynamic_dataset: bool = False,
     team_nudges: Optional[Dict[str, Dict[str, float]]] = None,
     min_minutes_pct: Optional[float] = None,
+    dispersion_r: float = DEFAULT_DISPERSION_R,
+    include_c11_in_xp: bool = False,
 ) -> pd.DataFrame:
     """Predict fixture-adjusted expected points for all players in a given gameweek.
 
@@ -494,6 +513,10 @@ def predict_gameweek_fixtures(
         data_root: root data directory.
         save_csv: if True, writes output to data/<season>/fixture_predictions.csv.
         dynamic_dataset: if True, dynamically builds rolling dataset as of gameweek gw (strictly prior data).
+        team_nudges: optional dictionary of team-level multipliers.
+        min_minutes_pct: optional minimum percentage of available season minutes.
+        dispersion_r: Negative Binomial dispersion parameter r.
+        include_c11_in_xp: whether to include C11 (defensive contributions) in expected points.
 
     Returns:
         pd.DataFrame containing player metadata, fixture details, and predicted xP.
@@ -591,6 +614,8 @@ def predict_gameweek_fixtures(
                 team_nudges=team_nudges,
                 min_minutes_pct=min_minutes_pct,
                 available_minutes=float(gw * 90.0),
+                dispersion_r=dispersion_r,
+                include_c11_in_xp=include_c11_in_xp,
             )
             rec = {
                 'gw': gw,
@@ -642,11 +667,15 @@ def predict_gameweek_fixtures(
                     p_start_base = _safe_float(player.get('season_starts', player.get('fbref_starts')))
                     fixture_player['season_starts'] = p_start_base * 0.90
 
+                match_days_rest = 3 if match_idx > 0 else 7
                 pred = predict_player_fixture(
                     fixture_player, fix, is_home, team_stats_map, league_avg_xg, league_avg_xgc, alpha, m0,
                     team_nudges=team_nudges,
                     min_minutes_pct=min_minutes_pct,
                     available_minutes=float(gw * 90.0),
+                    dispersion_r=dispersion_r,
+                    days_rest=match_days_rest,
+                    include_c11_in_xp=include_c11_in_xp,
                 )
                 match_preds.append(pred)
                 total_xp += pred['expected_points']
@@ -680,6 +709,12 @@ def predict_gameweek_fixtures(
 
     pred_df = pd.DataFrame(records, index=df.index)
     result_df = pd.concat([df, pred_df], axis=1)
+
+    # M-04: Apply Plackett-Luce Order-Statistic Tournament for Bonus Points (C6)
+    # Enforces exact zero-sum match conservation (~6.15 pts per fixture)
+    if fixtures and not result_df.empty:
+        from model.bps_tournament import calibrate_fixture_bonus_points
+        result_df = calibrate_fixture_bonus_points(result_df, fixtures)
 
     # Apply positional bias corrections from the accuracy feedback loop
     bias_corrections = load_positional_bias_corrections(season=season, data_root=data_root)
@@ -720,6 +755,7 @@ def main():
     parser.add_argument('--alpha', type=float, default=DEFAULT_ALPHA, help="Form blending weight for short form (default 0.35)")
     parser.add_argument('--m0', type=float, default=DEFAULT_MINS_FILTER, help="Bayesian shrinkage minutes filter (default 500)")
     parser.add_argument('--data-root', default='data', help="Root data directory")
+    parser.add_argument('--include-c11-in-xp', action='store_true', default=False, help="Include C11 (defensive contributions) in expected points (custom league mode)")
     args = parser.parse_args()
 
     predict_gameweek_fixtures(
@@ -729,6 +765,7 @@ def main():
         m0=args.m0,
         data_root=args.data_root,
         save_csv=True,
+        include_c11_in_xp=args.include_c11_in_xp,
     )
 
 

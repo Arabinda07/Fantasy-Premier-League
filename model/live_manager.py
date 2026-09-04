@@ -166,8 +166,10 @@ def manage_gameweek(
         # First check persistent snapshot from disk
         snapshot = load_manager_squad_snapshot(entry_id=team_id, season=season, data_root=data_root)
         if snapshot and len(snapshot.get('squad_codes', [])) == 15:
-            current_squad_codes = [int(c) for c in snapshot['squad_codes']]
-            print(f"[*] Loaded existing 15-man squad from persistent snapshot ({len(current_squad_codes)} players)")
+            snap_gw = int(snapshot.get('last_updated_gw', 1))
+            if gw > 1 or snap_gw <= 1:
+                current_squad_codes = [int(c) for c in snapshot['squad_codes']]
+                print(f"[*] Loaded existing 15-man squad from persistent snapshot ({len(current_squad_codes)} players)")
 
         # Deep backwards search across all historical gameweeks
         if not current_squad_codes and gw > 1:

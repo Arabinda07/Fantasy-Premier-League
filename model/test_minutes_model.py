@@ -148,3 +148,95 @@ class TestMinutesHazardMath:
         # Martinelli (frequent sub) should have higher hook hazard than Raya
         martinelli_row = res[res['web_name'] == 'Martinelli'].iloc[0]
         assert martinelli_row['p_pre60_hook'] > raya_row['p_pre60_hook']
+
+    def test_gk_european_rest_immunity(self):
+        """Goalkeepers on European clubs are immune to midweek fatigue rotation."""
+        gk = {
+            'player_code': 101,
+            'web_name': 'Raya',
+            'team': 'Arsenal',
+            'position': 'GK',
+            'short_form_starts': 6,
+            'short_form_matches': 6,
+            'short_form_minutes': 540,
+            'status': 'a',
+            'chance_of_playing_next_round': 100,
+        }
+        prof_fresh = compute_player_minutes_hazard(gk, days_rest=7)
+        prof_fatigued = compute_player_minutes_hazard(gk, days_rest=3)
+
+        # Goalkeeper starting probability does NOT decrease with 3 days rest
+        assert prof_fatigued.p_start == prof_fresh.p_start
+        assert prof_fatigued.expected_minutes == prof_fresh.expected_minutes
+
+    def test_defender_sub_base_is_lower_than_outfield(self):
+        """Defenders have significantly lower cameo sub appearance probability than midfielders/attackers."""
+        defender = {
+            'player_code': 102,
+            'web_name': 'RotationDef',
+            'team': 'Chelsea',
+            'position': 'DEF',
+            'short_form_starts': 4,
+            'short_form_matches': 5,
+            'short_form_minutes': 360,
+            'status': 'a',
+            'chance_of_playing_next_round': 100,
+        }
+        midfielder = {
+            'player_code': 103,
+            'web_name': 'RotationMid',
+            'team': 'Chelsea',
+            'position': 'MID',
+            'short_form_starts': 4,
+            'short_form_matches': 5,
+            'short_form_minutes': 360,
+            'status': 'a',
+            'chance_of_playing_next_round': 100,
+        }
+        prof_def = compute_player_minutes_hazard(defender, days_rest=7)
+        prof_mid = compute_player_minutes_hazard(midfielder, days_rest=7)
+
+        # Defender sub probability should be ~0.016 (< 0.04), while Midfielder is ~0.09 (> 0.06)
+        assert prof_def.p_sub < prof_mid.p_sub
+        assert prof_def.p_sub < 0.04
+        assert prof_mid.p_sub >= 0.05
+
+    def test_substitute_cameo_decontamination_of_starter_mins(self):
+        """Substitute appearances must not contaminate starter minutes or suppress hook hazard."""
+        # Player starts 2 games (60 mins each = 120 mins) and makes 6 sub cameos (20 mins each = 120 mins)
+        # Total minutes = 240, Starts = 2, Subs = 6.
+        player_with_subs = {
+            'player_code': 104,
+            'web_name': 'CameoStarter',
+            'team': 'Arsenal',
+            'position': 'MID',
+            'season_starts': 2,
+            'season_subs': 6,
+            'season_minutes': 240,
+            'status': 'a',
+            'chance_of_playing_next_round': 100,
+        }
+        prof = compute_player_minutes_hazard(player_with_subs)
+        # avg_starter_mins should be ~60.0 (not 120.0 or 92.0)
+        assert abs(prof.avg_starter_mins - 60.0) < 5.0
+        # Pre-60 hook hazard must reflect the ~60 min starter duration (not suppressed to 0.02)
+        assert prof.p_pre60_hook > 0.10
+
+    def test_veteran_rotation_prior_preservation(self):
+        """A veteran starter with 2500+ mins who is rested for 1 game in early season maintains strong start prior."""
+        # Veteran started 2 out of 3 games
+        veteran = {
+            'player_code': 105,
+            'web_name': 'VeteranStar',
+            'team': 'Liverpool',
+            'position': 'MID',
+            'season_starts': 2,
+            'matches': 3,
+            'season_minutes': 180,
+            'long_form_unweighted_minutes': 2800.0,
+            'status': 'a',
+            'chance_of_playing_next_round': 100,
+        }
+        prof = compute_player_minutes_hazard(veteran)
+        # Veteran start prior should be protected (>= 0.75) despite starting 2/3 games
+        assert prof.p_start >= 0.75

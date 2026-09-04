@@ -18,6 +18,20 @@ from model.live_manager import (
 class TestLiveManager:
     """Verify live injury dampening and live matchday management."""
 
+    @pytest.fixture(autouse=True)
+    def clean_env(self):
+        squad_path = os.path.join('data', '2026-27', 'current_squad.json')
+        orig_content = None
+        if os.path.exists(squad_path):
+            with open(squad_path, 'r', encoding='utf-8', newline='') as f:
+                orig_content = f.read()
+        try:
+            yield
+        finally:
+            if orig_content is not None:
+                with open(squad_path, 'w', encoding='utf-8', newline='') as f:
+                    f.write(orig_content)
+
     def test_injury_dampening(self):
         sample_df = pd.DataFrame([
             {'player_code': 100, 'web_name': 'FitPlayer', 'expected_points': 6.0, 'p_start': 0.9, 'p_app': 0.95},

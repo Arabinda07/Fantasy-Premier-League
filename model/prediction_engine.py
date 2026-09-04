@@ -122,7 +122,7 @@ def poisson_exact_gc_penalty(xgc90: float, max_goals: int = 10) -> float:
     - 10+ goals conceded -> -5 pts
 
     Formula:
-        E[Penalty] = - sum_{m=1}^{5} m * (P(X = 2m) + P(X = 2m + 1))
+        E[Penalty] = - [ sum_{m=1}^{4} m * (P(X = 2m) + P(X = 2m + 1)) + 5.0 * P(X >= 10) ]
 
     Args:
         xgc90: Expected goals conceded per 90 minutes.
@@ -135,12 +135,94 @@ def poisson_exact_gc_penalty(xgc90: float, max_goals: int = 10) -> float:
         return 0.0
 
     expected_penalty = 0.0
-    for m in range(1, (max_goals // 2) + 1):
+    for m in range(1, 5):
         g1 = 2 * m
         g2 = 2 * m + 1
         p_g1 = poisson_pmf(g1, xgc90)
-        p_g2 = poisson_pmf(g2, xgc90) if g2 <= max_goals else 0.0
+        p_g2 = poisson_pmf(g2, xgc90)
         expected_penalty += float(m) * (p_g1 + p_g2)
+
+    # Top tier absorbs entire upper tail: P(X >= 10) = 1 - sum_{k=0}^9 P(X = k)
+    p_under_10 = sum(poisson_pmf(k, xgc90) for k in range(10))
+    p_10_plus = max(0.0, 1.0 - p_under_10)
+    expected_penalty += 5.0 * p_10_plus
+
+    return -1.0 * expected_penalty
+
+
+# ---------------------------------------------------------------------------
+# Negative Binomial Distribution Helpers (M-01 Overdispersion)
+# ---------------------------------------------------------------------------
+
+DEFAULT_DISPERSION_R: float = 6.0
+
+
+def negative_binomial_pmf(k: int, mu: float, r: float = DEFAULT_DISPERSION_R) -> float:
+    """Calculate Negative Binomial probability P(X = k) with mean mu and dispersion r.
+
+    Parameterization:
+        p = r / (r + mu)
+        P(X = k) = [Gamma(k + r) / (k! * Gamma(r))] * p^r * (1 - p)^k
+    When r is very large (r >= 50.0 or r <= 0), falls back to Poisson PMF.
+    """
+    if mu <= 0.0:
+        return 1.0 if k == 0 else 0.0
+    if k < 0:
+        return 0.0
+    if r is None or r <= 0.0 or r >= 50.0:
+        return poisson_pmf(k, mu)
+
+    # Use log-gamma to avoid numerical overflow
+    log_coef = math.lgamma(k + r) - math.lgamma(r) - math.lgamma(k + 1)
+    p = r / (r + mu)
+    log_prob = log_coef + (r * math.log(p)) + (k * math.log(1.0 - p))
+    return math.exp(log_prob)
+
+
+def negative_binomial_clean_sheet_prob(xgc90: float, r: float = DEFAULT_DISPERSION_R) -> float:
+    """P(Clean Sheet) = P(X = 0) = (1 + mu/r)^(-r) under Negative Binomial."""
+    if xgc90 <= 0.0:
+        return 1.0
+    if r is None or r <= 0.0 or r >= 50.0:
+        return poisson_clean_sheet_prob(xgc90)
+    return math.pow(1.0 + (xgc90 / r), -r)
+
+
+def negative_binomial_exact_gc_penalty(
+    xgc90: float,
+    r: float = DEFAULT_DISPERSION_R,
+    max_goals: int = 10,
+) -> float:
+    """Calculate exact discrete expectation for 2+ goals conceded penalty (C10) under Negative Binomial.
+
+    In FPL:
+    - 0 or 1 goal conceded -> 0 penalty
+    - 2 or 3 goals conceded -> -1 pt
+    - 4 or 5 goals conceded -> -2 pts
+    - 6 or 7 goals conceded -> -3 pts
+    - 8 or 9 goals conceded -> -4 pts
+    - 10+ goals conceded -> -5 pts
+
+    Formula:
+        E[Penalty] = - [ sum_{m=1}^{4} m * (P_NB(X = 2m) + P_NB(X = 2m + 1)) + 5.0 * P_NB(X >= 10) ]
+    """
+    if xgc90 <= 0.0:
+        return 0.0
+    if r is None or r <= 0.0 or r >= 50.0:
+        return poisson_exact_gc_penalty(xgc90, max_goals=max_goals)
+
+    expected_penalty = 0.0
+    for m in range(1, 5):
+        g1 = 2 * m
+        g2 = 2 * m + 1
+        p_g1 = negative_binomial_pmf(g1, xgc90, r=r)
+        p_g2 = negative_binomial_pmf(g2, xgc90, r=r)
+        expected_penalty += float(m) * (p_g1 + p_g2)
+
+    # Top tier absorbs entire upper tail: P(X >= 10) = 1 - sum_{k=0}^9 P(X = k)
+    p_under_10 = sum(negative_binomial_pmf(k, xgc90, r=r) for k in range(10))
+    p_10_plus = max(0.0, 1.0 - p_under_10)
+    expected_penalty += 5.0 * p_10_plus
 
     return -1.0 * expected_penalty
 
@@ -307,6 +389,10 @@ def predict_player_points(
     apply_shrinkage: bool = True,
     min_minutes_pct: Optional[float] = None,
     available_minutes: Optional[float] = None,
+    dispersion_r: float = DEFAULT_DISPERSION_R,
+    days_rest: int = 7,
+    european_teams: Optional[Dict[str, List[str]]] = None,
+    include_c11_in_xp: bool = False,
 ) -> Dict[str, float]:
     """Calculate the 11-component point prediction breakdown for a single player.
 
@@ -315,12 +401,18 @@ def predict_player_points(
         apply_shrinkage: if True, applies Empirical Bayes shrinkage to raw rates.
         min_minutes_pct: optional minimum percentage of available minutes (e.g. 0.10 for 10%).
         available_minutes: optional total available team minutes (e.g. gw * 90.0).
+        dispersion_r: Negative Binomial dispersion parameter r (default DEFAULT_DISPERSION_R).
+        days_rest: days since previous competitive match for European congestion adjustment.
+        european_teams: optional dictionary of European competition club rosters.
+        include_c11_in_xp: if True, adds C11 (defensive contributions) into expected_points.
+            Defaults to False to strictly conform to official Fantasy Premier League scoring.
 
     Returns:
         Dict with keys:
             c1_app_1_60, c2_app_60_plus, c3_saves, c4_yellow_cards, c5_red_cards,
             c6_bonus, c7_assists, c8_goals, c9_clean_sheets, c10_goals_conceded,
-            c11_defensive_contributions, expected_points, p_start, p_app, p_60_plus
+            c11_defensive_contributions, expected_points, p_start, p_sub, p_app,
+            p_60_plus, expected_minutes, active_ratio
     """
     position = str(player.get('position', 'MID') if player.get('position') is not None and not (isinstance(player.get('position'), float) and math.isnan(player.get('position'))) else 'MID').upper()
     if position not in ('GK', 'DEF', 'MID', 'FWD'):
@@ -329,10 +421,7 @@ def predict_player_points(
     # Extract minutes and participation stats
     total_minutes = _safe_float(player.get('season_minutes', player.get('long_form_minutes')))
     starts = _safe_float(player.get('season_starts', player.get('fbref_starts')))
-    subs = _safe_float(player.get('fbref_subs'))
-    unused_subs = _safe_float(player.get('fbref_unused_subs'))
     cost = _safe_float(player.get('now_cost', player.get('cost', 0.0)))
-    status = str(player.get('status', 'a'))
 
     # Dynamic minutes filter threshold (zeros out inactive bench fodder below fraction of season)
     if min_minutes_pct is not None and available_minutes is not None and available_minutes > 0:
@@ -352,24 +441,26 @@ def predict_player_points(
                 'c11_defensive_contributions': 0.0,
                 'expected_points': 0.0,
                 'p_start': 0.0,
+                'p_sub': 0.0,
                 'p_app': 0.0,
                 'p_60_plus': 0.0,
+                'expected_minutes': 0.0,
+                'active_ratio': 0.0,
             }
 
-    # Probabilities
-    probs = estimate_playing_probabilities(
-        starts=starts,
-        subs=subs,
-        unused_subs=unused_subs,
-        total_minutes=total_minutes,
-        position=position,
-        cost=cost,
-        status=status,
+    # Canonical Continuous Minutes Survival Hazard Profile (M-02)
+    from model.minutes_model import compute_player_minutes_hazard
+    minutes_profile = compute_player_minutes_hazard(
+        player_row=player,
+        days_rest=days_rest,
+        european_teams=european_teams,
     )
-    p_start = probs['p_start']
-    p_app = probs['p_app']
-    p_60_plus = probs['p_60_plus']
-    active_ratio = probs['active_ratio']
+    p_start = minutes_profile.p_start
+    p_sub = minutes_profile.p_sub
+    p_app = minutes_profile.p_app
+    p_60_plus = minutes_profile.p_60_plus
+    active_ratio = minutes_profile.active_ratio
+    expected_mins_60_plus = minutes_profile.expected_mins_60_plus
 
     # Inactive player early return
     if p_app <= 0.0 and active_ratio <= 0.0:
@@ -387,8 +478,11 @@ def predict_player_points(
             'c11_defensive_contributions': 0.0,
             'expected_points': 0.0,
             'p_start': 0.0,
+            'p_sub': 0.0,
             'p_app': 0.0,
             'p_60_plus': 0.0,
+            'expected_minutes': 0.0,
+            'active_ratio': 0.0,
         }
 
     # Rates per 90
@@ -414,10 +508,14 @@ def predict_player_points(
         team_pk_rate = get_team_pk_rate(team_name)
         pk_equity = team_pk_rate * PK_XG_VALUE * 0.25  # ~25% absent-primary equity
 
-    # Apply Empirical Bayes shrinkage toward positional priors (Dowman fix)
+    # Apply Empirical Bayes shrinkage toward positional priors (Dowman fix & M-03 P1 decoupling)
     if apply_shrinkage:
         priors = POSITIONAL_PRIORS.get(position, POSITIONAL_PRIORS['MID'])
-        sample_mins = _safe_float(player.get('long_form_minutes'))
+        sample_mins = _safe_float(
+            player.get('long_form_unweighted_minutes',
+            player.get('unweighted_minutes',
+            player.get('long_form_minutes')))
+        )
         if sample_mins <= 0.0:
             sample_mins = total_minutes
 
@@ -450,7 +548,11 @@ def predict_player_points(
     if apply_shrinkage:
         bonus90 = apply_empirical_bayes_shrinkage(
             _safe_float(player.get('long_form_bonus_90')),
-            sample_mins if 'sample_mins' in dir() else _safe_float(player.get('long_form_minutes', total_minutes)),
+            sample_mins if 'sample_mins' in dir() else _safe_float(
+                player.get('long_form_unweighted_minutes',
+                player.get('unweighted_minutes',
+                player.get('long_form_minutes', total_minutes)))
+            ),
             priors.get('bonus90', 0.40),
         )
     else:
@@ -467,24 +569,46 @@ def predict_player_points(
 
     # 9. C9: Clean Sheets (4 pts GK/DEF, 1 pt MID)
     cs_pts = CLEAN_SHEET_POINTS.get(position, 0.0)
-    p_cs = poisson_clean_sheet_prob(team_xgc90)
+    # Scale expected goals conceded by pitch exposure conditional on 60+ mins qualification.
+    # In FPL, defenders subbed off at 60-75 mins retain clean sheet points if 0 goals were conceded
+    # while on pitch (goals conceded post-substitution do not deduct clean sheet points).
+    cs_exposure = min(1.0, max(0.667, expected_mins_60_plus / 90.0)) if expected_mins_60_plus > 0 else 1.0
+    effective_team_xgc = team_xgc90 * cs_exposure
+    p_cs = negative_binomial_clean_sheet_prob(effective_team_xgc, r=dispersion_r)
     c9 = cs_pts * p_cs * p_60_plus if cs_pts > 0.0 else 0.0
 
     # 10. C10: Exact Discrete Expected Penalty for 2+ Goals Conceded
     if position in ('GK', 'DEF'):
-        penalty_expectation = poisson_exact_gc_penalty(team_xgc90)
-        c10 = penalty_expectation * p_60_plus
+        # In FPL, defenders/GKs lose 1 pt per 2 goals conceded while on the pitch,
+        # evaluated separately over starter duration and substitute exposure (un-gated from p_60_plus).
+        exp_starter_mins = minutes_profile.avg_starter_mins if minutes_profile.avg_starter_mins > 0 else 90.0
+        xgc_starter = team_xgc90 * min(1.0, max(0.1, exp_starter_mins / 90.0))
+        penalty_starter = negative_binomial_exact_gc_penalty(xgc_starter, r=dispersion_r)
+
+        xgc_sub = team_xgc90 * (20.0 / 90.0)
+        penalty_sub = negative_binomial_exact_gc_penalty(xgc_sub, r=dispersion_r)
+
+        c10 = (penalty_starter * p_start) + (penalty_sub * p_sub)
     else:
         c10 = 0.0
 
     # 11. C11: Defensive Contributions (1 pt for >=10, 2 pts for >=15)
-    # F-01 fix: gated on p_60_plus like C9/C10, since DC points require 60+ mins
-    p_dc_10 = poisson_dc_hit_prob(dc90 * active_ratio, threshold=10)
-    p_dc_15 = poisson_dc_hit_prob(dc90 * active_ratio, threshold=15)
+    # M-02 & M-07 fix: Rate is normalized conditional on playing 60+ minutes (no double-discounting),
+    # then gated once on p_60_plus for qualification.
+    exposure_60_plus = expected_mins_60_plus / 90.0
+    lambda_dc_60 = dc90 * exposure_60_plus
+    p_dc_10 = poisson_dc_hit_prob(lambda_dc_60, threshold=10)
+    p_dc_15 = poisson_dc_hit_prob(lambda_dc_60, threshold=15)
     c11 = ((1.0 * p_dc_10) + (1.0 * p_dc_15)) * p_60_plus
 
     # Total Expected Points
-    total_expected = c1 + c2 + c3 + c4 + c5 + c6 + c7 + c8 + c9 + c10 + c11
+    # Under official FPL scoring (include_c11_in_xp=False, default), C11 (defensive contributions)
+    # does not award direct fantasy points (C1-C10 only).
+    # When include_c11_in_xp=True, C11 is added to total_expected for custom draft leagues.
+    if include_c11_in_xp:
+        total_expected = c1 + c2 + c3 + c4 + c5 + c6 + c7 + c8 + c9 + c10 + c11
+    else:
+        total_expected = c1 + c2 + c3 + c4 + c5 + c6 + c7 + c8 + c9 + c10
 
     return {
         'c1_app_1_60': round(c1, 4),
@@ -500,8 +624,11 @@ def predict_player_points(
         'c11_defensive_contributions': round(c11, 4),
         'expected_points': round(total_expected, 4),
         'p_start': round(p_start, 4),
+        'p_sub': round(p_sub, 4),
         'p_app': round(p_app, 4),
         'p_60_plus': round(p_60_plus, 4),
+        'expected_minutes': round(minutes_profile.expected_minutes, 2),
+        'active_ratio': round(active_ratio, 4),
     }
 
 
@@ -513,6 +640,7 @@ def predict_all_players(
     season: Optional[str] = None,
     min_minutes_pct: Optional[float] = None,
     available_minutes: Optional[float] = None,
+    include_c11_in_xp: bool = False,
 ) -> pd.DataFrame:
     """Generate baseline expected point predictions for all players in a season or given DataFrame."""
     if season is not None:
@@ -545,6 +673,7 @@ def predict_all_players(
             apply_shrinkage=True,
             min_minutes_pct=min_minutes_pct,
             available_minutes=avail_mins,
+            include_c11_in_xp=include_c11_in_xp,
         )
         predictions.append(pred)
 
@@ -576,9 +705,16 @@ def main():
     parser.add_argument('--season', default='2026-27', help="Season string (e.g. 2026-27)")
     parser.add_argument('--gw', type=int, default=1, help="Current gameweek number")
     parser.add_argument('--data-root', default='data', help="Root data directory")
+    parser.add_argument('--include-c11-in-xp', action='store_true', default=False, help="Include C11 (defensive contributions) in expected points (custom league mode)")
     args = parser.parse_args()
 
-    predict_all_players(season_or_df=args.season, gw=args.gw, data_root=args.data_root, save_csv=True)
+    predict_all_players(
+        season_or_df=args.season,
+        gw=args.gw,
+        data_root=args.data_root,
+        save_csv=True,
+        include_c11_in_xp=args.include_c11_in_xp,
+    )
 
 
 if __name__ == '__main__':

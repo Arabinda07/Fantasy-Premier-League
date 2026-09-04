@@ -269,7 +269,7 @@ def build_dataset(
     preferred_order = [
         'player_code', 'web_name', 'team_name', 'position',
         'season_minutes', 'season_starts', 'fbref_subs', 'fbref_unused_subs',
-        'long_form_minutes', 'long_form_expected_goals_90', 'long_form_expected_assists_90',
+        'long_form_minutes', 'long_form_unweighted_minutes', 'long_form_expected_goals_90', 'long_form_expected_assists_90',
         'long_form_expected_goals_conceded_90', 'long_form_defensive_contribution_90', 'long_form_bonus_90',
         'short_form_minutes', 'short_form_expected_goals_90', 'short_form_expected_assists_90',
         'short_form_expected_goals_conceded_90', 'short_form_defensive_contribution_90', 'short_form_bonus_90',

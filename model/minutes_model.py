@@ -107,6 +107,25 @@ class MinutesDistributionProfile:
     expected_starter_minutes: float # Expected minutes conditional on starting
     appearance_xp: float    # Expected appearance points (1 * P(1<=M<60) + 2 * P(M>=60))
     hazard_flags: List[str] = field(default_factory=list)
+    avg_starter_mins: float = 90.0
+
+    @property
+    def p_app(self) -> float:
+        """Probability of making any appearance (start or sub)."""
+        return float(min(1.0, max(0.0, self.p_start + self.p_sub)))
+
+    @property
+    def active_ratio(self) -> float:
+        """Expected playing time exposure ratio over 90 minutes."""
+        starter_exposure = (self.avg_starter_mins / 90.0) if self.avg_starter_mins > 0 else 0.0
+        sub_exposure = 20.0 / 90.0
+        return float(min(1.0, max(0.0, self.p_start * starter_exposure + self.p_sub * sub_exposure)))
+
+    @property
+    def expected_mins_60_plus(self) -> float:
+        """Expected minutes played conditional on qualifying for 60+ minutes (no early hook)."""
+        return float(max(60.0, min(92.0, self.avg_starter_mins))) if self.avg_starter_mins > 0 else 0.0
+
 
 
 # ---------------------------------------------------------------------------
@@ -214,21 +233,79 @@ def compute_player_minutes_hazard(
             expected_starter_minutes=0.0,
             appearance_xp=0.0,
             hazard_flags=hazard_flags,
+            avg_starter_mins=0.0,
         )
 
     # 2. Historical Baseline Start & Appearance Rates
-    # Read long-form and short-form starts / appearances
-    starts_short = _safe_float(player_row.get('short_form_starts', player_row.get('starts', 0.0)))
-    matches_short = _safe_float(player_row.get('short_form_matches', player_row.get('matches', 0.0)))
-    total_mins_short = _safe_float(player_row.get('short_form_minutes', player_row.get('minutes', 0.0)))
+    starts_cnt = _safe_float(
+        player_row.get('short_form_starts',
+        player_row.get('season_starts',
+        player_row.get('fbref_starts',
+        player_row.get('starts'))))
+    )
+    matches_cnt = _safe_float(
+        player_row.get('short_form_matches',
+        player_row.get('fbref_squads_made',
+        player_row.get('matches')))
+    )
+    if matches_cnt <= 0.0:
+        season_starts_val = _safe_float(player_row.get('season_starts', player_row.get('starts', 0.0)))
+        season_subs_val = _safe_float(player_row.get('season_subs', player_row.get('fbref_subs', 0.0)))
+        unused_subs_val = _safe_float(player_row.get('fbref_unused_subs', 0.0))
+        squads_sum = season_starts_val + season_subs_val + unused_subs_val
+        if squads_sum > 0.0:
+            matches_cnt = squads_sum
+
+    total_mins = _safe_float(
+        player_row.get('short_form_minutes',
+        player_row.get('season_minutes',
+        player_row.get('minutes',
+        player_row.get('long_form_unweighted_minutes',
+        player_row.get('unweighted_minutes',
+        player_row.get('long_form_minutes'))))))
+    )
+
+    long_mins = _safe_float(
+        player_row.get('long_form_unweighted_minutes',
+        player_row.get('unweighted_minutes',
+        player_row.get('long_form_minutes', 0.0)))
+    )
+
+    subs_cnt = _safe_float(
+        player_row.get('short_form_subs',
+        player_row.get('season_subs',
+        player_row.get('fbref_subs',
+        player_row.get('subs', 0.0))))
+    )
 
     # Empirical baseline start rate
-    if matches_short > 0:
-        raw_start_rate = starts_short / max(1.0, matches_short)
-        avg_starter_mins = total_mins_short / max(1.0, starts_short) if starts_short > 0 else 75.0
+    if matches_cnt > 0:
+        raw_start_rate = starts_cnt / max(1.0, matches_cnt)
+        if matches_cnt < 4.0:
+            is_veteran_starter = (long_mins >= 1800.0)
+            if is_veteran_starter and (starts_cnt == matches_cnt):
+                raw_start_rate = 0.95 if is_gk else 0.90
+            else:
+                if is_veteran_starter:
+                    start_prior = 0.95 if is_gk else 0.90
+                else:
+                    start_prior = 0.90 if is_gk else 0.75
+                m_squads = 3.0
+                raw_start_rate = (matches_cnt / (matches_cnt + m_squads)) * raw_start_rate + (m_squads / (matches_cnt + m_squads)) * start_prior
+        if starts_cnt > 0:
+            # Decontaminate total_mins by removing estimated substitute cameo minutes
+            sub_mins_est = subs_cnt * SUB_MINUTES_MEAN
+            pure_starter_mins = max(45.0 * starts_cnt, total_mins - sub_mins_est)
+            avg_starter_mins = pure_starter_mins / starts_cnt
+        else:
+            avg_starter_mins = 90.0 if is_gk else 75.0
+    elif total_mins > 0:
+        est_starts = min(38.0, total_mins / 75.0)
+        raw_start_rate = min(1.0, est_starts / 38.0)
+        avg_starter_mins = total_mins / max(1.0, est_starts)
     else:
         # Prior for unseeded / newly transferred players based on cost
-        cost = _safe_float(player_row.get('cost', player_row.get('now_cost', 50.0)))
+        cost = _safe_float(player_row.get('cost', player_row.get('now_cost', 0.0)))
         cost_m = cost / 10.0 if cost > 25.0 else cost
         if cost_m >= 10.0:
             raw_start_rate = 0.92
@@ -239,20 +316,19 @@ def compute_player_minutes_hazard(
         elif cost_m >= 5.5:
             raw_start_rate = 0.65
             avg_starter_mins = 75.0
-        elif cost_m >= 4.5:
-            raw_start_rate = 0.40
-            avg_starter_mins = 70.0
         else:
-            raw_start_rate = 0.10
-            avg_starter_mins = 65.0
+            raw_start_rate = 0.0
+            avg_starter_mins = 0.0
 
-    avg_starter_mins = float(np.clip(avg_starter_mins, 45.0, 92.0))
+    avg_starter_mins = float(np.clip(avg_starter_mins, 45.0, 92.0)) if raw_start_rate > 0.0 else 0.0
 
     # 3. Apply Midweek European Rest Hazard
     is_european_club = any(team_name in clubs for clubs in european_teams.values())
     midweek_mult = 1.00
     if is_european_club:
-        if days_rest <= 3:
+        if is_gk:
+            midweek_mult = 1.00  # Premier League goalkeepers are not rotated for fatigue post-Europe
+        elif days_rest <= 3:
             midweek_mult = 0.82 if team_name in ROTATION_HEAVY_MANAGERS else 0.88
             hazard_flags.append(f"MIDWEEK_CONGESTION ({days_rest}d rest, {midweek_mult:.2f}x)")
         elif days_rest <= 4:
@@ -267,15 +343,24 @@ def compute_player_minutes_hazard(
         hazard_flags.append(f"FLAGGED ({chance_val}% chance, {p_start_mult:.2f}x)")
 
     # Effective P(Start)
-    p_start = float(np.clip(raw_start_rate * midweek_mult * p_start_mult, 0.0, 0.98))
+    p_start = float(np.clip(raw_start_rate * midweek_mult * p_start_mult, 0.0, 1.0))
 
     # Probability of appearing as substitute if not starting
-    # Bench players with high sub appearance rate
-    if p_start < 0.95:
-        p_sub_base = 0.45 if (not is_gk) else 0.01  # Backup GKs rarely sub on (<1%)
+    # Positionally differentiated: GKs rarely sub (<1%), CBs/defenders rarely sub (~8%),
+    # attacking midfielders/wingers/forwards sub frequently (~45%)
+    has_activity = (raw_start_rate > 0.0 or matches_cnt > 0 or total_mins > 0)
+    if p_start < 0.95 and has_activity:
+        if is_gk:
+            p_sub_base = 0.01
+        elif is_def:
+            p_sub_base = 0.08
+        else:
+            p_sub_base = 0.45
         p_sub = float(np.clip((1.0 - p_start) * p_sub_base * p_app_mult, 0.0, 1.0 - p_start))
+    elif p_start >= 0.95:
+        p_sub = float(min(max(0.0, 1.0 - p_start), 0.01))
     else:
-        p_sub = 0.01
+        p_sub = 0.0
 
     p_dnp = float(max(0.0, 1.0 - p_start - p_sub))
 
@@ -301,7 +386,7 @@ def compute_player_minutes_hazard(
     # Starter expected minutes:
     # If not hooked: ~avg_starter_mins (e.g. 85-90)
     # If hooked early: ~52 mins
-    exp_starter_mins = (1.0 - p_hook_given_start) * avg_starter_mins + p_hook_given_start * 52.0
+    exp_starter_mins = ((1.0 - p_hook_given_start) * avg_starter_mins + p_hook_given_start * 52.0) if avg_starter_mins > 0 else 0.0
     exp_sub_mins = SUB_MINUTES_MEAN
 
     expected_minutes = float(p_start * exp_starter_mins + p_sub * exp_sub_mins)
@@ -325,6 +410,7 @@ def compute_player_minutes_hazard(
         expected_starter_minutes=round(exp_starter_mins, 2),
         appearance_xp=round(appearance_xp, 4),
         hazard_flags=hazard_flags,
+        avg_starter_mins=round(avg_starter_mins, 2),
     )
 
 

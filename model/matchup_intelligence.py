@@ -267,7 +267,11 @@ def enrich_predictions_with_matchup_intelligence(
         h2h_mins = 0.0
         h2h_xg = 0.0
         h2h_xa = 0.0
-        career_mins = _safe_float(row.get('long_form_minutes', 0.0))
+        career_mins = _safe_float(
+            row.get('long_form_unweighted_minutes',
+            row.get('unweighted_minutes',
+            row.get('long_form_minutes', 0.0)))
+        )
         career_xg = _safe_float(row.get('long_form_expected_goals', 0.0))
         career_xa = _safe_float(row.get('long_form_expected_assists', 0.0))
 

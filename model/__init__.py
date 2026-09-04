@@ -105,3 +105,11 @@ from model.minutes_model import (
     calculate_pre60_hook_probability,
     MinutesDistributionProfile,
 )
+
+from model.bps_tournament import (
+    compute_player_bps_propensity,
+    solve_plackett_luce_tournament,
+    calibrate_fixture_bonus_points,
+    DEFAULT_BPS_TEMPERATURE,
+    DEFAULT_TIE_INFLATION,
+)

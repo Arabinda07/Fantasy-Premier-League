@@ -21,7 +21,26 @@ The fixture & form engine ([model/fixture_engine.py](/computations/adjust-fixtur
 
 ---
 
-## 1. Short-Form Blending with Sample-Size Shrinkage
+## 1. Exponential Recency Decay (EWMA) in Rolling Form (M-03)
+
+Historical match statistics from `merged_gw.csv` are aggregated using an Exponentially Weighted Moving Average (EWMA) decay with half-life $t_{1/2} = 8.0\text{ gameweeks}$ to eliminate window cliff edges and prioritize recent form:
+
+$$\Delta t_i = \begin{cases}
+GW_{\text{eval}} - GW_i & \text{if } S_i == S_{\text{eval}} \\
+GW_{\text{eval}} + (38 - GW_i) & \text{if } S_i \text{ is prior season } (S_{\text{eval}} - 1) \\
+GW_{\text{eval}} + 38 \cdot k + (38 - GW_i) & \text{if } S_i \text{ is } k+1 \text{ seasons prior}
+\end{cases}$$
+
+$$w_i = 2^{-\frac{\Delta t_i}{t_{1/2}}} = \exp\left(-\frac{\ln(2)}{t_{1/2}} \Delta t_i\right) \quad (\text{with } t_{1/2} = 8.0)$$
+
+Effective minutes and decayed per-90 rates:
+
+$$M_{\text{weighted}} = \sum_i w_i \cdot m_i$$
+$$\text{rate}_{c, 90} = \frac{\sum_i w_i \cdot x_{i, c}}{M_{\text{weighted}} / 90.0}$$
+
+---
+
+## 2. Short-Form Blending with Sample-Size Shrinkage
 
 Short-term form (last 6 calendar gameweeks) is blended into long-form baseline rates with sample-size shrinkage ($M_{\text{threshold}} = 450.0\text{ mins}$ / 5 full games) to prevent noisy cameos from distorting projections:[^phase3-spec]
 
@@ -33,7 +52,7 @@ Blending is applied to `xg90`, `xa90`, `dc90`, and `bonus90`. If $M_{\text{short
 
 ---
 
-## 2. Conjugate Symmetric Venue Factors & Goal Conservation
+## 3. Conjugate Symmetric Venue Factors & Goal Conservation
 
 To preserve mathematical goal conservation ($\mathbb{E}[\text{Scored}] \equiv \mathbb{E}[\text{Conceded}]$ across any fixture), venue multipliers use exact multiplicative inverses ($1.08 \longleftrightarrow 1 / 1.08 \approx 0.9259$):
 

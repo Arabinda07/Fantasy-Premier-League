@@ -67,11 +67,11 @@ Players with $\text{Cost} < \pounds 5.5\text{M}$ and 0 historical minutes receiv
 
 ### $C_1$: Appearance Points (1-60 mins)
 $$C_1 = 1.0 \cdot P(\text{App})$$
-where $P(\text{App}) = P(\text{Start}) + P(\text{Sub})$.
+where $P(\text{App}) = P(\text{Start}) + P(\text{Sub})$ is calculated canonically by the 3-regime continuous survival hazard engine ([`model/minutes_model.py`](file:///e:/Fantasy-Premier-League/model/minutes_model.py)).
 
 ### $C_2$: Appearance Points (60+ mins)
 $$C_2 = 1.0 \cdot P(60+)$$
-where $P(60+) = P(\text{Start}) \cdot \frac{\max(0, \text{mins\_per\_start} - 60.0)}{30.0}$.
+where $P(60+) = P(\text{Start}) \cdot (1.0 - P(\text{Hook} \mid \text{Start})) + P(\text{Sub}) \cdot 0.005$ incorporates manager tactical hook propensities and continuous substitution hazard.
 
 *A player appearing for 60+ minutes earns $C_1 + C_2 = 2$ appearance points (1 for any appearance + 1 bonus for 60+ mins).*
 
@@ -100,24 +100,30 @@ $$C_8 = \text{GoalPts}(\text{POS}) \cdot xG90_{\text{adj}} \cdot \text{active\_r
 where $\text{GoalPts}(\text{FWD}) = 4.0$, $\text{GoalPts}(\text{MID}) = 5.0$, $\text{GoalPts}(\text{DEF/GK}) = 6.0$.
 
 ### $C_9$: Clean Sheets
-Under a Poisson distribution for opponent goals conceded with rate parameter $\lambda = xGC90$:
-$$P(GC = 0) = e^{-\lambda}$$
-$$C_9 = \text{CleanSheetPts}(\text{POS}) \cdot P(60+) \cdot e^{-\lambda}$$
+Under a Negative Binomial distribution for opponent goals conceded with rate $\mu = xGC90$ and dispersion parameter $r = 6.0$ (calibrated via historical EPL fixtures):
+
+$$P(GC = 0) = \left( 1 + \frac{\mu}{r} \right)^{-r}$$
+$$C_9 = \text{CleanSheetPts}(\text{POS}) \cdot P(60+) \cdot \left( 1 + \frac{\mu}{r} \right)^{-r}$$
+
 where $\text{CleanSheetPts}(\text{GK/DEF}) = 4.0$, $\text{CleanSheetPts}(\text{MID}) = 1.0$, $\text{CleanSheetPts}(\text{FWD}) = 0.0$.
+When $r \to \infty$, this smoothly collapses to the classical Poisson model $P(GC=0) = e^{-\mu}$. The finite $r=6.0$ captures the observed zero-inflation (clean sheets occur ~2.5% more frequently than Poisson predicts for elite defenses).
 
-### $C_{10}$: Exact Discrete Poisson Goals Conceded Penalty (DEF / GK Only)
-FPL deducts $-1\text{ pt}$ for every 2 goals conceded ($GC \in \{2, 3\} \implies -1$, $GC \in \{4, 5\} \implies -2$, etc.).
-Exact expected deduction under Poisson distribution with parameter $\lambda = xGC90$:
+### $C_{10}$: Exact Discrete Negative Binomial Goals Conceded Penalty (DEF / GK Only)
+FPL deducts $-1\text{ pt}$ for every 2 goals conceded while the player is on the pitch ($GC \in \{2, 3\} \implies -1$, $GC \in \{4, 5\} \implies -2$, etc.).
+Crucially, official FPL rules do NOT require 60 minutes on the pitch to receive a goals-conceded deduction. $C_{10}$ is therefore evaluated separately over starter duration and substitute cameo duration:
 
-$$\mathbb{E}[\text{Penalty}] = -\sum_{m=1}^5 m \cdot \left( P(X = 2m) + P(X = 2m + 1) \right)$$
-$$C_{10} = P(60+) \cdot \mathbb{E}[\text{Penalty}]$$
+$$\mathbb{E}[\text{Penalty}(\mu)] = -\sum_{m=1}^5 m \cdot \left( P(X = 2m \mid \mu, r) + P(X = 2m + 1 \mid \mu, r) \right)$$
+$$\mu_{\text{starter}} = \text{xGC90} \cdot \frac{\mathbb{E}[M_{\text{starter}}]}{90.0}, \quad \mu_{\text{sub}} = \text{xGC90} \cdot \frac{20.0}{90.0}$$
+$$C_{10} = P(\text{Start}) \cdot \mathbb{E}[\text{Penalty}(\mu_{\text{starter}})] + P(\text{Sub}) \cdot \mathbb{E}[\text{Penalty}(\mu_{\text{sub}})]$$
+
+*Note: Decoupling $C_{10}$ from the 60-minute gate eliminates the distortion where early-subbed defenders or late defensive substitutes falsely evaded goals conceded penalties.*
 
 ### $C_{11}$: Defensive Contributions (DC)
-FPL awards 1 pt for $\ge 10$ defensive contributions and an additional 1 pt for $\ge 15$ DC in a match. Under a Poisson distribution with rate $\lambda = dc90_{\text{adj}} \cdot \text{active\_ratio}$:
+Modeled for draft leagues and custom rulesets awarding fantasy points for defensive volume ($\ge 10$ and $\ge 15$ DC). Under Poisson conditional distribution with rate $\lambda_{\text{DC} \mid 60+} = dc90_{\text{adj}} \cdot \frac{\mathbb{E}[M \mid 60+]}{90.0}$:
 
-$$C_{11} = \left( P(\text{DC} \ge 10) + P(\text{DC} \ge 15) \right) \cdot P(60+)$$
+$$C_{11} = \left( P(\text{DC} \ge 10 \mid 60+) + P(\text{DC} \ge 15 \mid 60+) \right) \cdot P(60+)$$
 
-*Note: Gated on $P(60+)$ because DC points are only awarded for 60+ minute appearances.*
+*Official FPL Scoring Note: Under official FPL scoring, defensive actions feed the Bonus Points System (BPS) rather than awarding direct fantasy points. Hence, by default (`include_c11_in_xp=False`), $\text{xP} = \sum_{k=1}^{10} C_k$. Setting `--include-c11-in-xp` sums all 11 components for custom draft scoring.*
 
 ---
 
@@ -125,6 +131,9 @@ $$C_{11} = \left( P(\text{DC} \ge 10) + P(\text{DC} \ge 15) \right) \cdot P(60+)
 
 | Date | Finding ID | Change |
 |------|-----------|--------|
+| 2026-09-04 | M-01..M-07 P1 | Un-gated $C_{10}$ from $P(60+)$ and partitioned into starter duration and substitute cameo duration. Introduced explicit `include_c11_in_xp` flag defaulting to `False` to strictly match official FPL scoring ($C_1 \dots C_{10}$). Decontaminated substitute cameos from starter minutes in `minutes_model.py`. Preserved veteran rotation starter priors ($\ge 1800$ mins $\implies \pi_0 \ge 0.90$). Eliminated BPS event double-counting. Converted captaincy empirical Bayes decay to player-specific season minute evidence. |
+| 2026-09-04 | M-02 | Formally integrated continuous minutes survival hazard engine (`minutes_model.py`) into $C_1$, $C_2$, and $C_{11}$. Eliminated DC double-discounting with conditional 60+ minute rate normalization. |
+| 2026-09-04 | M-01 | Upgraded $C_9$ and $C_{10}$ from Poisson to Negative Binomial distribution with overdispersion $r=6.0$ to resolve zero-inflation and fat-tail blowout under-penalization. |
 | 2026-08-26 | F-17 | Renumbered all components to match code (C1-C11 ordering: app -> 60+ -> saves -> YC -> RC -> bonus -> assists -> goals -> CS -> GC -> DC) |
 | 2026-08-26 | F-18 | Updated C11 formula from linear `0.05 * dc90 * active_ratio` to Poisson threshold `P(DC>=10) + P(DC>=15)` |
 | 2026-08-26 | F-02 | Updated C4 to remove `- 2.0 * rc90` correction (FPL awards both deductions) |
@@ -136,3 +145,4 @@ $$C_{11} = \left( P(\text{DC} \ge 10) + P(\text{DC} \ge 15) \right) \cdot P(60+)
 [^pred-engine-src]: `model/prediction_engine.py`
 [^journey-log]: `JOURNEY.md`
 [^phase2-spec]: `docs/superpowers/specs/2026-08-24-fpl-point-prediction-engine-design.md`
+

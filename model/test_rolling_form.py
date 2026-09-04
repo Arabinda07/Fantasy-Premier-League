@@ -56,8 +56,9 @@ class TestPlayerFormHaaland:
     """
 
     def test_long_form_two_seasons(self):
-        """Long-form (full season(s) to date at GW38) for Haaland."""
+        """Long-form unweighted (full season(s) to date at GW38) for Haaland."""
         result = compute_player_form(SEASON, MAX_GW, window_gws=None,
+                                      half_life=None,
                                       data_root=DATA_ROOT)
         assert not result.empty
         haaland = result[result['code'] == 223094]
@@ -71,12 +72,13 @@ class TestPlayerFormHaaland:
         assert abs(row['expected_assists_90'] - 0.0745) < 0.01
 
     def test_short_form_last_6_gws(self):
-        """Short-form (last 6 calendar gameweeks) for Haaland.
+        """Short-form unweighted (last 6 calendar gameweeks) for Haaland.
 
         GWs 33-38: Haaland's actual appearances are in GW33(x2), 35, 36(x2),
         37, 38. He missed GW34. Minutes = 450.
         """
         result = compute_player_form(SEASON, MAX_GW, window_gws=6,
+                                      half_life=None,
                                       data_root=DATA_ROOT)
         assert not result.empty
         haaland = result[result['code'] == 223094]
@@ -89,13 +91,28 @@ class TestPlayerFormHaaland:
 
     def test_single_season_only(self):
         """When window_gws covers just 2025-26, Haaland should have
-        2953 minutes (not the combined 5689).
+        2953 minutes (not the combined 5689) in unweighted form.
         """
         result = compute_player_form(SEASON, MAX_GW, window_gws=38,
+                                      half_life=None,
                                       data_root=DATA_ROOT)
         haaland = result[result['code'] == 223094]
         assert len(haaland) == 1
         assert haaland.iloc[0]['minutes'] == 2953
+
+    def test_haaland_ewma_decay(self):
+        """Under M-03 EWMA decay (half_life=8.0), historical minutes are discounted."""
+        result = compute_player_form(SEASON, MAX_GW, window_gws=None,
+                                      half_life=8.0,
+                                      data_root=DATA_ROOT)
+        haaland = result[result['code'] == 223094]
+        assert len(haaland) == 1
+        row = haaland.iloc[0]
+        # Weighted effective minutes are substantially discounted from 5689
+        assert row['minutes'] < 1200
+        assert row['unweighted_minutes'] == 5689
+        # Per-90 rate remains high-performing and positive
+        assert row['expected_goals_90'] > 0.60
 
 
 class TestZeroMinutesPlayer:
@@ -131,6 +148,7 @@ class TestTeamFormSingleSeason:
 
     def test_liverpool_single_season(self):
         result = compute_team_form(SEASON, MAX_GW, window_gws=38,
+                                    half_life=None,
                                     data_root=DATA_ROOT)
         assert not result.empty
         lvp = result[result['team'] == 'Liverpool']

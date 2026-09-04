@@ -222,12 +222,197 @@ def calculate_fpl_selling_price(
     return round(purchase_price + share_tenths / 10.0, 1)
 
 
+# ---------------------------------------------------------------------------
+# M-05: Early-Season Captaincy Bayesian Confidence Calibration
+# ---------------------------------------------------------------------------
+
+CAPTAINCY_TARGET_MATURITY_MINS: float = 720.0  # ~8 full 90-minute matches
+CAPTAINCY_LONG_NORM_UNWEIGHTED: float = 1800.0  # 20 full matches for established starters
+CAPTAINCY_LONG_NORM_DECAYED: float = 1100.0     # Decayed EWMA starter benchmark
+
+
+def compute_calibrated_captaincy_confidence(
+    df: pd.DataFrame,
+    current_gw: Optional[int] = None,
+    target_maturity_mins: float = CAPTAINCY_TARGET_MATURITY_MINS,
+    long_form_norm_unweighted: float = CAPTAINCY_LONG_NORM_UNWEIGHTED,
+    long_form_norm_decayed: float = CAPTAINCY_LONG_NORM_DECAYED,
+) -> pd.Series:
+    """Compute Bayesian-calibrated captaincy confidence regularizer (M-05).
+
+    Eliminates premature captaincy penalties in early-season gameweeks (GW1–GW4)
+    by blending current-season minutes with historical long-form minutes via
+    Empirical Bayes sample-size weighting, while preserving protection against
+    low-minute fringe cameos.
+
+    Mathematical Formulation:
+        1. Resolve Gameweek Horizon:
+           M_horizon = min(M_target, max(M_season_max, 90.0 * max(0, GW - 1)))
+        2. Bayesian Prior Weight:
+           w_prior = max(0.0, 1.0 - M_horizon / M_target)
+        3. Prior-Equivalent Maturity:
+           M_prior_equiv = min(M_target, M_target * (M_long / M_long_norm))
+        4. Calibrated Effective Minutes:
+           M_calibrated = min(M_target, M_season + w_prior * M_prior_equiv) if w_prior > 0 else M_season
+        5. Captaincy Confidence:
+           capt_conf = clip((M_calibrated / M_target) * P(Start) + Cost / 25.0, 0.20, 1.0)
+
+    Args:
+        df: DataFrame containing player records and projections.
+        current_gw: Target gameweek integer (1 to 38). If None, resolved from
+            df['gw'] or inferred from season data.
+        target_maturity_mins: Sample maturity threshold in minutes (default 720.0, ~8 matches).
+        long_form_norm_unweighted: Benchmark minutes for established starters in unweighted window (default 1800.0).
+        long_form_norm_decayed: Benchmark minutes if only decayed EWMA minutes are available (default 1100.0).
+
+    Returns:
+        pd.Series of confidence scalars in [0.20, 1.0] indexed to df.
+    """
+    if df.empty:
+        return pd.Series(dtype=float, index=df.index)
+
+    # 1. Resolve current season minutes
+    has_season_col = ('season_minutes' in df.columns) or ('minutes' in df.columns)
+    if 'season_minutes' in df.columns:
+        season_mins = pd.to_numeric(df['season_minutes'], errors='coerce').fillna(0.0)
+    elif 'minutes' in df.columns:
+        season_mins = pd.to_numeric(df['minutes'], errors='coerce').fillna(0.0)
+    else:
+        # Fallback for synthetic/minimal test fixtures without minutes columns
+        season_mins = pd.Series(900.0, index=df.index)
+
+    # 2. Resolve historical long-form minutes
+    if 'long_form_unweighted_minutes' in df.columns:
+        long_mins = pd.to_numeric(df['long_form_unweighted_minutes'], errors='coerce').fillna(0.0)
+        norm_mins = long_form_norm_unweighted
+    elif 'long_form_minutes' in df.columns:
+        long_mins = pd.to_numeric(df['long_form_minutes'], errors='coerce').fillna(0.0)
+        norm_mins = long_form_norm_decayed
+    else:
+        long_mins = pd.Series(0.0, index=df.index)
+        norm_mins = long_form_norm_unweighted
+
+    # If dataset has neither season nor long-form minutes columns, preserve full confidence for synthetic fixtures
+    if not has_season_col and 'long_form_minutes' not in df.columns and 'long_form_unweighted_minutes' not in df.columns:
+        m_calibrated = season_mins  # 900.0
+    else:
+        # 3. Resolve target gameweek horizon and clean early-season minutes
+        resolved_gw = current_gw
+        if resolved_gw is None and 'gw' in df.columns:
+            valid_gws = pd.to_numeric(df['gw'], errors='coerce').dropna()
+            if not valid_gws.empty:
+                resolved_gw = int(valid_gws.iloc[0])
+
+        if resolved_gw is not None:
+            theoretical_max = 90.0 * max(0, resolved_gw - 1)
+            # Guard against uncleaned prior-season data contaminating early gameweeks
+            effective_season_mins = np.minimum(season_mins, theoretical_max)
+        else:
+            effective_season_mins = season_mins
+
+        # 4. Individualized Empirical Bayes Prior Weight & Blended Minutes
+        # Each player's prior weight decays as their individual season sample matures (M_season -> 720),
+        # ensuring returning injured stars in later GWs retain their long-form pedigree.
+        prior_ratio = np.clip(long_mins / norm_mins, 0.0, 1.0)
+        m_prior_equiv = target_maturity_mins * prior_ratio
+
+        w_prior_indiv = np.maximum(0.0, 1.0 - (effective_season_mins / target_maturity_mins))
+        m_calibrated = np.minimum(target_maturity_mins, effective_season_mins + w_prior_indiv * m_prior_equiv)
+
+    # 5. Probability of starting and cost regularizer
+    if 'p_start' in df.columns:
+        p_start_val = pd.to_numeric(df['p_start'], errors='coerce').fillna(1.0)
+    else:
+        p_start_val = pd.Series(1.0, index=df.index)
+
+    cost_val = pd.to_numeric(df['cost'] if 'cost' in df.columns else df.get('now_cost', 5.0), errors='coerce').fillna(5.0)
+    # Ensure cost is in £M (if given in tenths e.g. 105 -> 10.5)
+    cost_val = cost_val.apply(lambda c: c / 10.0 if c > 25.0 else c)
+
+    capt_conf = np.minimum(1.0, np.maximum(0.20, (m_calibrated / target_maturity_mins) * p_start_val + (cost_val / 25.0)))
+    return capt_conf
+
+
+# ---------------------------------------------------------------------------
+# M-06: Expected Auto-Substitution Valuation in Solver Objective
+# ---------------------------------------------------------------------------
+
+def compute_auto_sub_weights(
+    df: Optional[pd.DataFrame] = None,
+    chip: Optional[str] = None,
+) -> Dict[str, float]:
+    """Compute Binomial expected auto-substitution probabilities for bench slots (M-06).
+
+    Accounts for starter DNP (Did Not Play) probability to value the 1st outfield
+    bench asset appropriately during rotation risk, while penalizing budget waste
+    on deep bench slots (slot 3 and bench GK).
+
+    Mathematical Formulation:
+        q_avg = mean(1.0 - p_app) across outfield candidates (bounded in [0.02, 0.15])
+        w_sub1 = 1.0 - (1.0 - q_avg)^10  (Prob of >= 1 outfield starter DNP)
+        w_sub2 = 1.0 - (1.0 - q_avg)^10 - 10 * q_avg * (1.0 - q_avg)^9 (Prob >= 2)
+        w_sub3 = w_sub2 - 45 * q_avg^2 * (1.0 - q_avg)^8 (Prob >= 3)
+        w_gk = mean(1.0 - p_app_gk) (bounded in [0.01, 0.05])
+
+    Args:
+        df: DataFrame containing player projections with 'p_app' or 'p_start'.
+        chip: Active chip ('bboost', 'freehit', '3xc', 'wildcard').
+
+    Returns:
+        Dict with keys 'sub_1', 'sub_2', 'sub_3', 'sub_gk'.
+    """
+    if chip == 'bboost':
+        return {'sub_1': 1.0, 'sub_2': 1.0, 'sub_3': 1.0, 'sub_gk': 1.0}
+    if chip == 'freehit':
+        return {'sub_1': 0.10, 'sub_2': 0.02, 'sub_3': 0.005, 'sub_gk': 0.01}
+
+    # Default baseline starter DNP rate
+    q_avg = 0.05
+    q_gk = 0.02
+
+    if df is not None and not df.empty:
+        outfield_df = df[df['position'].isin(['DEF', 'MID', 'FWD'])] if 'position' in df.columns else df
+        gk_df = df[df['position'] == 'GK'] if 'position' in df.columns else pd.DataFrame()
+
+        # Compute empirical DNP rate from p_app or p_start
+        if 'p_app' in outfield_df.columns:
+            p_app_vals = pd.to_numeric(outfield_df['p_app'], errors='coerce').dropna()
+            if not p_app_vals.empty:
+                active_p_app = p_app_vals[p_app_vals >= 0.20]
+                if not active_p_app.empty:
+                    q_avg = float(np.clip(np.mean(1.0 - active_p_app), 0.02, 0.15))
+        elif 'p_start' in outfield_df.columns:
+            p_start_vals = pd.to_numeric(outfield_df['p_start'], errors='coerce').dropna()
+            active_p_start = p_start_vals[p_start_vals >= 0.20]
+            if not active_p_start.empty:
+                q_avg = float(np.clip(np.mean(1.0 - (active_p_start * 0.95 + 0.03)), 0.02, 0.15))
+
+        if not gk_df.empty and 'p_app' in gk_df.columns:
+            gk_p_app = pd.to_numeric(gk_df['p_app'], errors='coerce').dropna()
+            active_gk = gk_p_app[gk_p_app >= 0.50]
+            if not active_gk.empty:
+                q_gk = float(np.clip(np.mean(1.0 - active_gk), 0.01, 0.05))
+
+    # Binomial cumulative probabilities across 10 outfield starters
+    p_all_play = math.pow(1.0 - q_avg, 10)
+    p_exactly_1 = 10.0 * q_avg * math.pow(1.0 - q_avg, 9)
+    p_exactly_2 = 45.0 * math.pow(q_avg, 2) * math.pow(1.0 - q_avg, 8)
+
+    w_sub1 = float(np.clip(1.0 - p_all_play, 0.20, 0.65))
+    w_sub2 = float(np.clip(1.0 - p_all_play - p_exactly_1, 0.04, 0.25))
+    w_sub3 = float(np.clip(1.0 - p_all_play - p_exactly_1 - p_exactly_2, 0.008, 0.08))
+    w_gk = float(np.clip(q_gk, 0.01, 0.05))
+
+    return {'sub_1': round(w_sub1, 4), 'sub_2': round(w_sub2, 4), 'sub_3': round(w_sub3, 4), 'sub_gk': round(w_gk, 4)}
+
+
 def prepare_solver_dataframe(
     df: pd.DataFrame,
     season: str = '2026-27',
     data_root: str = 'data',
     strategy: str = 'pure_xp',
     lambda_risk: float = 0.0,
+    current_gw: Optional[int] = None,
 ) -> pd.DataFrame:
     """Prepares and cleans dataframe for optimization solvers with risk adjustment.
 
@@ -237,6 +422,7 @@ def prepare_solver_dataframe(
         data_root: root data directory.
         strategy: 'pure_xp', 'rank_protect', or 'differential_chase'.
         lambda_risk: CVaR risk aversion parameter (>0 penalizes downside, <0 rewards upside).
+        current_gw: optional target gameweek number for early-season calibration.
 
     Returns:
         Cleaned DataFrame ready for ILP formulation.
@@ -320,21 +506,10 @@ def prepare_solver_dataframe(
         else:
             df['opt_points'] = df['opt_points'] + abs(eff_lambda) * upside_reward
 
-    # Captaincy Bayesian Confidence regularizer: prevents low-minute fringe cameos from usurping captaincy
-    if 'season_minutes' in df.columns:
-        season_mins = pd.to_numeric(df['season_minutes'], errors='coerce').fillna(900.0)
-    elif 'minutes' in df.columns:
-        season_mins = pd.to_numeric(df['minutes'], errors='coerce').fillna(900.0)
-    else:
-        season_mins = pd.Series(900.0, index=df.index)
-
-    if 'p_start' in df.columns:
-        p_start_val = pd.to_numeric(df['p_start'], errors='coerce').fillna(1.0)
-    else:
-        p_start_val = pd.Series(1.0, index=df.index)
-
-    cost_val = pd.to_numeric(df['cost'], errors='coerce').fillna(5.0)
-    capt_conf = np.minimum(1.0, np.maximum(0.20, (season_mins / 720.0) * p_start_val + (cost_val / 25.0)))
+    # Captaincy Bayesian Confidence regularizer (M-05):
+    # Blends current-season minutes with long-form historical minutes in early gameweeks (GW1-GW4)
+    # to prevent premature captaincy penalties for proven talismans while suppressing low-minute fringe cameos.
+    capt_conf = compute_calibrated_captaincy_confidence(df, current_gw=current_gw)
     df['captain_points'] = df['opt_points'] * capt_conf
 
     return df.reset_index(drop=True)
@@ -362,6 +537,7 @@ def solve_initial_squad(
     max_premium_count: Optional[int] = None,
     premium_cost_threshold: float = 10.0,
     min_spend: Optional[float] = None,
+    current_gw: Optional[int] = None,
 ) -> SquadSolution:
     """Solve for the optimal 15-man squad, starting XI, captain, and bench.
 
@@ -386,14 +562,21 @@ def solve_initial_squad(
         max_premium_count: maximum number of premium players allowed (cost >= premium_cost_threshold).
         premium_cost_threshold: price threshold in £M defining premium tier (default 10.0).
         min_spend: optional minimum budget expenditure constraint (e.g. 98.5) to prevent idle bank leaks.
+        current_gw: optional target gameweek number for early-season calibration.
 
     Returns:
         SquadSolution object.
     """
-    df = prepare_solver_dataframe(df, season=season, data_root=data_root, strategy=strategy, lambda_risk=lambda_risk)
+    df = prepare_solver_dataframe(df, season=season, data_root=data_root, strategy=strategy, lambda_risk=lambda_risk, current_gw=current_gw)
 
     prob = pulp.LpProblem("FPL_Initial_Squad_Optimization", pulp.LpMaximize)
     indices = list(df.index)
+
+    gk_indices = list(df[df['position'] == 'GK'].index)
+    def_indices = list(df[df['position'] == 'DEF'].index)
+    mid_indices = list(df[df['position'] == 'MID'].index)
+    fwd_indices = list(df[df['position'] == 'FWD'].index)
+    outfield_indices = list(df[df['position'].isin(['DEF', 'MID', 'FWD'])].index)
 
     # Decision variables
     x = {i: pulp.LpVariable(f"squad_{i}", cat=pulp.LpBinary) for i in indices}
@@ -401,31 +584,47 @@ def solve_initial_squad(
     c = {i: pulp.LpVariable(f"captain_{i}", cat=pulp.LpBinary) for i in indices}
     v = {i: pulp.LpVariable(f"vice_{i}", cat=pulp.LpBinary) for i in indices}
 
+    # Tiered bench variables (M-06)
+    b1 = {i: pulp.LpVariable(f"bench1_{i}", cat=pulp.LpBinary) for i in outfield_indices}
+    b2 = {i: pulp.LpVariable(f"bench2_{i}", cat=pulp.LpBinary) for i in outfield_indices}
+    b3 = {i: pulp.LpVariable(f"bench3_{i}", cat=pulp.LpBinary) for i in outfield_indices}
+    bgk = {i: pulp.LpVariable(f"bench_gk_{i}", cat=pulp.LpBinary) for i in gk_indices}
+
     # Chip modifiers
     is_bench_boost = (chip == 'bboost')
     is_triple_captain = (chip == '3xc')
     is_free_hit = (chip == 'freehit')
 
     capt_multiplier = 2.0 if is_triple_captain else 1.0  # +2x bonus for 3xC, +1x for standard
-    bench_weight = 1.0 if is_bench_boost else (0.0 if is_free_hit else 0.05)
     bench_cost_penalty = 0.01 if is_free_hit else 0.0
 
+    # Auto-sub probabilities (M-06)
+    sub_weights = compute_auto_sub_weights(df, chip=chip)
+    w_sub1 = sub_weights['sub_1']
+    w_sub2 = sub_weights['sub_2']
+    w_sub3 = sub_weights['sub_3']
+    w_sub_gk = sub_weights['sub_gk']
+
     # Objective function with tiny bank-utilization tiebreaker on starters
-    prob += pulp.lpSum(
-        df.loc[i, 'opt_points'] * s[i] +
-        capt_multiplier * df.loc[i, 'captain_points'] * c[i] +
-        bench_weight * df.loc[i, 'opt_points'] * (x[i] - s[i]) -
-        bench_cost_penalty * df.loc[i, 'cost'] * (x[i] - s[i]) +
-        0.0001 * df.loc[i, 'cost'] * s[i]
-        for i in indices
-    )
+    if is_bench_boost:
+        prob += (
+            pulp.lpSum(df.loc[i, 'opt_points'] * s[i] for i in indices) +
+            pulp.lpSum(capt_multiplier * df.loc[i, 'captain_points'] * c[i] for i in indices) +
+            pulp.lpSum(0.0001 * df.loc[i, 'cost'] * s[i] for i in indices)
+        )
+    else:
+        prob += (
+            pulp.lpSum(df.loc[i, 'opt_points'] * s[i] for i in indices) +
+            pulp.lpSum(capt_multiplier * df.loc[i, 'captain_points'] * c[i] for i in indices) +
+            pulp.lpSum(w_sub1 * df.loc[i, 'opt_points'] * b1[i] for i in outfield_indices) +
+            pulp.lpSum(w_sub2 * df.loc[i, 'opt_points'] * b2[i] for i in outfield_indices) +
+            pulp.lpSum(w_sub3 * df.loc[i, 'opt_points'] * b3[i] for i in outfield_indices) +
+            pulp.lpSum(w_sub_gk * df.loc[i, 'opt_points'] * bgk[i] for i in gk_indices) -
+            pulp.lpSum(bench_cost_penalty * df.loc[i, 'cost'] * (x[i] - s[i]) for i in indices) +
+            pulp.lpSum(0.0001 * df.loc[i, 'cost'] * s[i] for i in indices)
+        )
 
     # 1. Positional Quotas in 15-Man Squad
-    gk_indices = df[df['position'] == 'GK'].index
-    def_indices = df[df['position'] == 'DEF'].index
-    mid_indices = df[df['position'] == 'MID'].index
-    fwd_indices = df[df['position'] == 'FWD'].index
-
     prob += pulp.lpSum(x[i] for i in gk_indices) == 2, "Squad_GK_Quota"
     prob += pulp.lpSum(x[i] for i in def_indices) == 5, "Squad_DEF_Quota"
     prob += pulp.lpSum(x[i] for i in mid_indices) == 5, "Squad_MID_Quota"
@@ -449,6 +648,17 @@ def solve_initial_squad(
         prob += pulp.lpSum(s[i] for i in mid_indices) <= 5, "Starting_MID_Max"
         prob += pulp.lpSum(s[i] for i in fwd_indices) >= 1, "Starting_FWD_Min"
         prob += pulp.lpSum(s[i] for i in fwd_indices) <= 3, "Starting_FWD_Max"
+
+        # Bench Partition Constraints (M-06)
+        for i in outfield_indices:
+            prob += s[i] + b1[i] + b2[i] + b3[i] == x[i], f"Partition_Outfield_{i}"
+        for i in gk_indices:
+            prob += s[i] + bgk[i] == x[i], f"Partition_GK_{i}"
+
+        prob += pulp.lpSum(b1[i] for i in outfield_indices) == 1, "Bench_Slot_1_Count"
+        prob += pulp.lpSum(b2[i] for i in outfield_indices) == 1, "Bench_Slot_2_Count"
+        prob += pulp.lpSum(b3[i] for i in outfield_indices) == 1, "Bench_Slot_3_Count"
+        prob += pulp.lpSum(bgk[i] for i in gk_indices) == 1, "Bench_GK_Count"
 
     # 3. Budget Constraint
     prob += pulp.lpSum(df.loc[i, 'cost'] * x[i] for i in indices) <= budget, "Total_Budget_Limit"
@@ -655,6 +865,7 @@ def solve_squad_lineup(
     lambda_risk: float = 0.0,
     forced_captain_code: Optional[Union[int, str]] = None,
     forced_vice_captain_code: Optional[Union[int, str]] = None,
+    current_gw: Optional[int] = None,
 ) -> SquadSolution:
     """Solve optimal 11-man starting lineup and captaincy for a fixed 15-player squad.
 
@@ -669,39 +880,62 @@ def solve_squad_lineup(
         lambda_risk: CVaR risk aversion parameter.
         forced_captain_code: player code or name for forced captaincy.
         forced_vice_captain_code: player code or name for forced vice-captaincy.
+        current_gw: optional target gameweek number for early-season calibration.
 
     Returns:
         SquadSolution with optimal starting XI, ordered bench, and captaincy.
     """
-    df = prepare_solver_dataframe(squad_df, season=season, data_root=data_root, strategy=strategy, lambda_risk=lambda_risk)
+    df = prepare_solver_dataframe(squad_df, season=season, data_root=data_root, strategy=strategy, lambda_risk=lambda_risk, current_gw=current_gw)
     indices = list(df.index)
 
     prob = pulp.LpProblem("FPL_Squad_Lineup_Optimization", pulp.LpMaximize)
+
+    gk_indices = list(df[df['position'] == 'GK'].index)
+    def_indices = list(df[df['position'] == 'DEF'].index)
+    mid_indices = list(df[df['position'] == 'MID'].index)
+    fwd_indices = list(df[df['position'] == 'FWD'].index)
+    outfield_indices = list(df[df['position'].isin(['DEF', 'MID', 'FWD'])].index)
 
     # Decision variables: starting XI, captain, vice-captain
     s = {i: pulp.LpVariable(f"starter_{i}", cat=pulp.LpBinary) for i in indices}
     c = {i: pulp.LpVariable(f"captain_{i}", cat=pulp.LpBinary) for i in indices}
     v = {i: pulp.LpVariable(f"vice_{i}", cat=pulp.LpBinary) for i in indices}
 
+    # Tiered bench variables (M-06)
+    b1 = {i: pulp.LpVariable(f"bench1_{i}", cat=pulp.LpBinary) for i in outfield_indices}
+    b2 = {i: pulp.LpVariable(f"bench2_{i}", cat=pulp.LpBinary) for i in outfield_indices}
+    b3 = {i: pulp.LpVariable(f"bench3_{i}", cat=pulp.LpBinary) for i in outfield_indices}
+    bgk = {i: pulp.LpVariable(f"bench_gk_{i}", cat=pulp.LpBinary) for i in gk_indices}
+
     # Chip flags
     is_triple_captain = (chip == '3xc')
     is_bench_boost = (chip == 'bboost')
 
     capt_multiplier = 2.0 if is_triple_captain else 1.0
-    bench_weight = 1.0 if is_bench_boost else 0.10
+
+    # Auto-sub probabilities (M-06)
+    sub_weights = compute_auto_sub_weights(df, chip=chip)
+    w_sub1 = sub_weights['sub_1']
+    w_sub2 = sub_weights['sub_2']
+    w_sub3 = sub_weights['sub_3']
+    w_sub_gk = sub_weights['sub_gk']
 
     # Objective
-    prob += pulp.lpSum(
-        df.loc[i, 'opt_points'] * s[i] +
-        capt_multiplier * df.loc[i, 'captain_points'] * c[i] +
-        bench_weight * df.loc[i, 'opt_points'] * (1 - s[i])
-        for i in indices
-    )
-
-    gk_indices = df[df['position'] == 'GK'].index
-    def_indices = df[df['position'] == 'DEF'].index
-    mid_indices = df[df['position'] == 'MID'].index
-    fwd_indices = df[df['position'] == 'FWD'].index
+    if is_bench_boost:
+        prob += pulp.lpSum(
+            df.loc[i, 'opt_points'] * s[i] +
+            capt_multiplier * df.loc[i, 'captain_points'] * c[i]
+            for i in indices
+        )
+    else:
+        prob += (
+            pulp.lpSum(df.loc[i, 'opt_points'] * s[i] for i in indices) +
+            pulp.lpSum(capt_multiplier * df.loc[i, 'captain_points'] * c[i] for i in indices) +
+            pulp.lpSum(w_sub1 * df.loc[i, 'opt_points'] * b1[i] for i in outfield_indices) +
+            pulp.lpSum(w_sub2 * df.loc[i, 'opt_points'] * b2[i] for i in outfield_indices) +
+            pulp.lpSum(w_sub3 * df.loc[i, 'opt_points'] * b3[i] for i in outfield_indices) +
+            pulp.lpSum(w_sub_gk * df.loc[i, 'opt_points'] * bgk[i] for i in gk_indices)
+        )
 
     if is_bench_boost:
         for i in indices:
@@ -715,6 +949,16 @@ def solve_squad_lineup(
         prob += pulp.lpSum(s[i] for i in mid_indices) <= 5, "Starting_MID_Max"
         prob += pulp.lpSum(s[i] for i in fwd_indices) >= 1, "Starting_FWD_Min"
         prob += pulp.lpSum(s[i] for i in fwd_indices) <= 3, "Starting_FWD_Max"
+
+        for i in outfield_indices:
+            prob += s[i] + b1[i] + b2[i] + b3[i] == 1, f"Partition_Outfield_{i}"
+        for i in gk_indices:
+            prob += s[i] + bgk[i] == 1, f"Partition_GK_{i}"
+
+        prob += pulp.lpSum(b1[i] for i in outfield_indices) == 1, "Bench_Slot_1_Count"
+        prob += pulp.lpSum(b2[i] for i in outfield_indices) == 1, "Bench_Slot_2_Count"
+        prob += pulp.lpSum(b3[i] for i in outfield_indices) == 1, "Bench_Slot_3_Count"
+        prob += pulp.lpSum(bgk[i] for i in gk_indices) == 1, "Bench_GK_Count"
 
     # Captain and Vice-Captain constraints
     prob += pulp.lpSum(c[i] for i in indices) == 1, "One_Captain"
@@ -836,9 +1080,10 @@ def solve_weekly_transfers(
     max_player_cost: Optional[float] = None,
     max_premium_count: Optional[int] = None,
     premium_cost_threshold: float = 10.0,
+    current_gw: Optional[int] = None,
 ) -> TransferSolution:
     """Solve for optimal transfers in/out from an existing 15-man squad."""
-    df = prepare_solver_dataframe(df, season=season, data_root=data_root, strategy=strategy, lambda_risk=lambda_risk)
+    df = prepare_solver_dataframe(df, season=season, data_root=data_root, strategy=strategy, lambda_risk=lambda_risk, current_gw=current_gw)
     indices = list(df.index)
 
     owned_set = set(int(c) for c in current_squad_codes)
@@ -861,10 +1106,23 @@ def solve_weekly_transfers(
     prob = pulp.LpProblem("FPL_Weekly_Transfer_Optimization", pulp.LpMaximize)
 
     # Decision variables
+    gk_indices = list(df[df['position'] == 'GK'].index)
+    def_indices = list(df[df['position'] == 'DEF'].index)
+    mid_indices = list(df[df['position'] == 'MID'].index)
+    fwd_indices = list(df[df['position'] == 'FWD'].index)
+    outfield_indices = list(df[df['position'].isin(['DEF', 'MID', 'FWD'])].index)
+
+    # Decision variables
     x = {i: pulp.LpVariable(f"squad_{i}", cat=pulp.LpBinary) for i in indices}
     s = {i: pulp.LpVariable(f"starter_{i}", cat=pulp.LpBinary) for i in indices}
     c = {i: pulp.LpVariable(f"captain_{i}", cat=pulp.LpBinary) for i in indices}
     v = {i: pulp.LpVariable(f"vice_{i}", cat=pulp.LpBinary) for i in indices}
+
+    # Tiered bench variables (M-06)
+    b1 = {i: pulp.LpVariable(f"bench1_{i}", cat=pulp.LpBinary) for i in outfield_indices}
+    b2 = {i: pulp.LpVariable(f"bench2_{i}", cat=pulp.LpBinary) for i in outfield_indices}
+    b3 = {i: pulp.LpVariable(f"bench3_{i}", cat=pulp.LpBinary) for i in outfield_indices}
+    bgk = {i: pulp.LpVariable(f"bench_gk_{i}", cat=pulp.LpBinary) for i in gk_indices}
 
     transfer_in = {i: pulp.LpVariable(f"trans_in_{i}", cat=pulp.LpBinary) for i in indices}
     transfer_out = {i: pulp.LpVariable(f"trans_out_{i}", cat=pulp.LpBinary) for i in indices}
@@ -878,18 +1136,37 @@ def solve_weekly_transfers(
 
     effective_ft = 15 if is_wildcard else free_transfers
     capt_multiplier = 2.0 if is_triple_captain else 1.0
-    bench_weight = 1.0 if is_bench_boost else 0.10
+
+    # Auto-sub probabilities (M-06)
+    sub_weights = compute_auto_sub_weights(df, chip=chip)
+    w_sub1 = sub_weights['sub_1']
+    w_sub2 = sub_weights['sub_2']
+    w_sub3 = sub_weights['sub_3']
+    w_sub_gk = sub_weights['sub_gk']
 
     # Objective
-    prob += (
-        pulp.lpSum(
-            df.loc[i, 'opt_points'] * s[i] +
-            capt_multiplier * df.loc[i, 'captain_points'] * c[i] +
-            bench_weight * df.loc[i, 'opt_points'] * (x[i] - s[i])
-            for i in indices
+    if is_bench_boost:
+        prob += (
+            pulp.lpSum(
+                df.loc[i, 'opt_points'] * s[i] +
+                capt_multiplier * df.loc[i, 'captain_points'] * c[i]
+                for i in indices
+            )
+            - (0.0 if is_wildcard else hit_cost) * hits
         )
-        - (0.0 if is_wildcard else hit_cost) * hits
-    )
+    else:
+        prob += (
+            pulp.lpSum(
+                df.loc[i, 'opt_points'] * s[i] +
+                capt_multiplier * df.loc[i, 'captain_points'] * c[i]
+                for i in indices
+            ) +
+            pulp.lpSum(w_sub1 * df.loc[i, 'opt_points'] * b1[i] for i in outfield_indices) +
+            pulp.lpSum(w_sub2 * df.loc[i, 'opt_points'] * b2[i] for i in outfield_indices) +
+            pulp.lpSum(w_sub3 * df.loc[i, 'opt_points'] * b3[i] for i in outfield_indices) +
+            pulp.lpSum(w_sub_gk * df.loc[i, 'opt_points'] * bgk[i] for i in gk_indices)
+            - (0.0 if is_wildcard else hit_cost) * hits
+        )
 
     for i in indices:
         prob += x[i] == is_owned[i] + transfer_in[i] - transfer_out[i], f"Transfer_Balance_{i}"
@@ -900,11 +1177,6 @@ def solve_weekly_transfers(
     if not is_wildcard:
         prob += pulp.lpSum(transfer_in[i] for i in indices) <= max_transfers, "Max_Transfers_Limit"
     prob += hits >= pulp.lpSum(transfer_in[i] for i in indices) - effective_ft, "Hits_Lower_Bound"
-
-    gk_indices = df[df['position'] == 'GK'].index
-    def_indices = df[df['position'] == 'DEF'].index
-    mid_indices = df[df['position'] == 'MID'].index
-    fwd_indices = df[df['position'] == 'FWD'].index
 
     prob += pulp.lpSum(x[i] for i in gk_indices) == 2, "Squad_GK_Quota"
     prob += pulp.lpSum(x[i] for i in def_indices) == 5, "Squad_DEF_Quota"
@@ -927,6 +1199,17 @@ def solve_weekly_transfers(
         prob += pulp.lpSum(s[i] for i in mid_indices) <= 5, "Starting_MID_Max"
         prob += pulp.lpSum(s[i] for i in fwd_indices) >= 1, "Starting_FWD_Min"
         prob += pulp.lpSum(s[i] for i in fwd_indices) <= 3, "Starting_FWD_Max"
+
+        # Bench Partition Constraints (M-06)
+        for i in outfield_indices:
+            prob += s[i] + b1[i] + b2[i] + b3[i] == x[i], f"Partition_Outfield_{i}"
+        for i in gk_indices:
+            prob += s[i] + bgk[i] == x[i], f"Partition_GK_{i}"
+
+        prob += pulp.lpSum(b1[i] for i in outfield_indices) == 1, "Bench_Slot_1_Count"
+        prob += pulp.lpSum(b2[i] for i in outfield_indices) == 1, "Bench_Slot_2_Count"
+        prob += pulp.lpSum(b3[i] for i in outfield_indices) == 1, "Bench_Slot_3_Count"
+        prob += pulp.lpSum(bgk[i] for i in gk_indices) == 1, "Bench_GK_Count"
 
     # Budget constraint using true purchase / sell prices
     prob += pulp.lpSum(df.loc[i, 'cost'] * x[i] for i in indices) <= total_available_budget, "Budget_Limit"
@@ -1168,7 +1451,10 @@ def solve_multi_horizon_transfers(
     # 1. Prepare player pools across time
     pools: List[pd.DataFrame] = []
     for t, df in enumerate(horizon_dfs):
-        pool_t = prepare_solver_dataframe(df, season=season, data_root=data_root, strategy=strategy, lambda_risk=lambda_risk)
+        current_t_gw = (start_gw + t) if start_gw is not None else None
+        pool_t = prepare_solver_dataframe(
+            df, season=season, data_root=data_root, strategy=strategy, lambda_risk=lambda_risk, current_gw=current_t_gw
+        )
         pools.append(pool_t)
 
     # Union of all player codes across horizon
@@ -1227,14 +1513,19 @@ def solve_multi_horizon_transfers(
 
     # Multi-period Objective Function
     obj_terms = []
-    base_bench_weight = 0.10  # Dynamic auto-sub bench valuation
 
     for t in range(horizon):
         discount = discount_factor ** t
         pool_t_map = {int(r['player_code']): float(r['opt_points']) for _, r in pools[t].iterrows()}
         pool_t_capt_map = {int(r['player_code']): float(r.get('captain_points', r['opt_points'])) for _, r in pools[t].iterrows()}
 
-        cur_bench_weight = 1.0 if (t == 0 and chip == 'bboost') else base_bench_weight
+        chip_t = chip if t == 0 else None
+        sub_weights_t = compute_auto_sub_weights(pools[t], chip=chip_t)
+        avg_sub_weight = (
+            sub_weights_t['sub_1'] + sub_weights_t['sub_2'] + sub_weights_t['sub_3'] + sub_weights_t['sub_gk']
+        ) / 4.0
+
+        cur_bench_weight = 1.0 if (t == 0 and chip == 'bboost') else avg_sub_weight
         cur_capt_mult = 2.0 if (t == 0 and chip == '3xc') else 1.0
 
         for c in all_codes_set:

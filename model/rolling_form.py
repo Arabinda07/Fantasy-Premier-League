@@ -7,7 +7,9 @@ This is a pure function of the files on disk plus the parameters — it does
 not persist a historical table. It only answers "what are the rates right
 now", not a full historical time series.
 """
+import math
 import os
+from typing import Optional, Dict, Any, List, Tuple
 import pandas as pd
 
 
@@ -21,6 +23,62 @@ PLAYER_RATE_COLS = [
     'bonus',
     'bps',
 ]
+
+# Default exponential half-life for retrospective form aggregation (M-03)
+DEFAULT_HALF_LIFE: float = 8.0
+
+# Default inter-season summer break gap in equivalent gameweeks (~90 days off-season)
+DEFAULT_SUMMER_BREAK_GAP: int = 4
+
+
+def calculate_gw_lag(
+    match_season: str,
+    match_gw: int,
+    current_season: str,
+    current_gw: int,
+    summer_gap: int = DEFAULT_SUMMER_BREAK_GAP,
+) -> int:
+    """Calculate the elapsed gameweek distance between a historical match and evaluation point.
+
+    Args:
+        match_season: season of the historical match (e.g. '2024-25').
+        match_gw: gameweek number of the historical match (1 to 38).
+        current_season: season at evaluation time (e.g. '2025-26').
+        current_gw: gameweek number at evaluation time (1 to 38).
+        summer_gap: effective gameweeks elapsed during inter-season summer break (default 4).
+
+    Returns:
+        Non-negative integer gameweek lag.
+    """
+    try:
+        curr_start = int(str(current_season).split('-')[0])
+        match_start = int(str(match_season).split('-')[0])
+    except (ValueError, AttributeError, IndexError):
+        return max(0, int(current_gw) - int(match_gw))
+
+    season_diff = curr_start - match_start
+    if season_diff == 0:
+        return max(0, int(current_gw) - int(match_gw))
+    elif season_diff > 0:
+        # Include summer break gap to account for 3 months of off-season attrition/transfers
+        return max(0, int(current_gw) + (38 - int(match_gw)) + (season_diff - 1) * 38 + int(summer_gap))
+    else:
+        return 0
+
+
+def compute_ewma_weight(lag_gws: int, half_life: Optional[float] = DEFAULT_HALF_LIFE) -> float:
+    """Compute exponential decay weight 2^(-lag / half_life).
+
+    Args:
+        lag_gws: non-negative gameweek lag.
+        half_life: half-life in gameweeks (default 8.0). If None or <= 0, returns 1.0.
+
+    Returns:
+        Float weight in (0.0, 1.0].
+    """
+    if half_life is None or half_life <= 0:
+        return 1.0
+    return math.pow(2.0, -float(lag_gws) / float(half_life))
 
 
 def _load_merged_gw(season, data_root='data'):
@@ -180,8 +238,8 @@ def _filter_window(df, season, gw, window_gws, data_root='data'):
     return result
 
 
-def compute_player_form(season, gw, window_gws=None, data_root='data'):
-    """Compute per-player rolling form metrics.
+def compute_player_form(season, gw, window_gws=None, half_life=DEFAULT_HALF_LIFE, data_root='data'):
+    """Compute per-player rolling form metrics with exponential recency decay.
 
     Aggregates by 'code' (the cross-season-stable player identifier) so
     that multi-season windows correctly combine the same player's data
@@ -192,11 +250,13 @@ def compute_player_form(season, gw, window_gws=None, data_root='data'):
         gw: current gameweek number.
         window_gws: number of gameweeks in the window. None means "full
                     season(s) to date" (long-form).
+        half_life: half-life in gameweeks for EWMA decay (default DEFAULT_HALF_LIFE = 8.0).
+                   If None or <= 0, flat unweighted aggregation is used.
         data_root: root data directory.
 
     Returns:
         pd.DataFrame with columns:
-            code, minutes, expected_goals, expected_assists, ...,
+            code, minutes, unweighted_minutes, expected_goals, expected_assists, ...,
             expected_goals_90, expected_assists_90, ...
         Keyed by 'code' (the cross-season stable player code).
         Also carries 'element' (the most recent season's element ID)
@@ -206,21 +266,58 @@ def compute_player_form(season, gw, window_gws=None, data_root='data'):
     if window_df.empty:
         return pd.DataFrame()
 
-    # Coerce rate columns to numeric
+    # Coerce rate columns and minutes to numeric
     for col in PLAYER_RATE_COLS + ['minutes']:
         if col in window_df.columns:
             window_df[col] = pd.to_numeric(window_df[col], errors='coerce').fillna(0)
 
-    # Aggregate per player by 'code' (cross-season stable)
-    # Also keep the most recent element ID for downstream joins
-    agg_dict = {'minutes': 'sum', 'element': 'last'}
+    # Compute EWMA weight per match row
+    if half_life is not None and half_life > 0:
+        match_seasons = window_df['season'] if 'season' in window_df.columns else [season] * len(window_df)
+        match_gws = window_df['GW'] if 'GW' in window_df.columns else [gw] * len(window_df)
+        window_df['gw_lag'] = [
+            calculate_gw_lag(s, g, season, gw)
+            for s, g in zip(match_seasons, match_gws)
+        ]
+        window_df['form_weight'] = [
+            compute_ewma_weight(lag, half_life) for lag in window_df['gw_lag']
+        ]
+    else:
+        window_df['form_weight'] = 1.0
+
+    # Calculate weighted metrics per row
+    window_df['w_minutes'] = window_df['minutes'] * window_df['form_weight']
     for col in PLAYER_RATE_COLS:
         if col in window_df.columns:
+            window_df['w_' + col] = window_df[col] * window_df['form_weight']
+
+    # Aggregate per player by 'code' (cross-season stable)
+    # Also keep the most recent element ID for downstream joins
+    agg_dict = {
+        'w_minutes': 'sum',
+        'minutes': 'sum',
+        'element': 'last',
+    }
+    for col in PLAYER_RATE_COLS:
+        if col in window_df.columns:
+            agg_dict['w_' + col] = 'sum'
             agg_dict[col] = 'sum'
 
     grouped = window_df.groupby('code').agg(agg_dict).reset_index()
 
-    # Compute per-90 rates
+    # If half_life was used, minutes is weighted effective minutes,
+    # and unweighted_minutes stores raw physical minutes
+    if half_life is not None and half_life > 0:
+        grouped['unweighted_minutes'] = grouped['minutes']
+        grouped['minutes'] = grouped['w_minutes'].round(1)
+        for col in PLAYER_RATE_COLS:
+            if col in grouped.columns:
+                grouped['unweighted_' + col] = grouped[col]
+                grouped[col] = grouped['w_' + col].round(4)
+    else:
+        grouped['unweighted_minutes'] = grouped['minutes']
+
+    # Compute per-90 rates: col / (minutes / 90.0)
     for col in PLAYER_RATE_COLS:
         if col in grouped.columns:
             col_90 = col + '_90'
@@ -230,29 +327,32 @@ def compute_player_form(season, gw, window_gws=None, data_root='data'):
                 axis=1
             )
 
+    # Drop temporary w_ columns
+    drop_cols = [c for c in grouped.columns if c.startswith('w_')]
+    grouped = grouped.drop(columns=drop_cols, errors='ignore')
+
     return grouped
 
 
-def compute_team_form(season, gw, window_gws=None, data_root='data'):
-    """Compute per-team rolling form (xG and xGC per 90).
+def compute_team_form(season, gw, window_gws=None, half_life=DEFAULT_HALF_LIFE, data_root='data'):
+    """Compute per-team rolling form (xG and xGC per 90) with exponential recency decay.
 
-    Uses merged_gw.csv team-level aggregation rather than Understat CSVs,
-    since the merged_gw data has expected_goals and expected_goals_conceded
-    per player per match.
-
-    For team-level xG per match: sum all players' expected_goals on that team.
-    For team-level xGC per match: take the max of expected_goals_conceded
-    across players on the team (xGC is minutes-prorated per player in FPL
-    data, so the player who played 90 min has the full-match xGC value).
+    Uses merged_gw.csv team-level aggregation:
+    - Match-level xG: sum of expected_goals across all players on that team in that match.
+    - Match-level xGC: max expected_goals_conceded across players on that team in that match
+      (since FPL prorates xGC by minutes played, the 90-min defender has full-match value).
+    - Match-level weight: 2^(-lag / half_life).
 
     Args:
         season: current season string.
         gw: current gameweek number.
         window_gws: window size or None for full season(s).
+        half_life: half-life in gameweeks for EWMA decay (default DEFAULT_HALF_LIFE = 8.0).
+                   If None or <= 0, flat unweighted aggregation is used.
         data_root: root data directory.
 
     Returns:
-        pd.DataFrame with columns: team, team_minutes, team_xg, team_xgc,
+        pd.DataFrame with columns: team, matches, team_minutes, team_xg, team_xgc,
         team_xg90, team_xgc90.
     """
     window_df = _filter_window(None, season, gw, window_gws, data_root)
@@ -263,60 +363,89 @@ def compute_team_form(season, gw, window_gws=None, data_root='data'):
         if col in window_df.columns:
             window_df[col] = pd.to_numeric(window_df[col], errors='coerce').fillna(0)
 
-    # Team xG: sum of all players' xG on that team
-    team_xg = window_df.groupby('team')['expected_goals'].sum().reset_index()
-    team_xg.columns = ['team', 'team_xg']
-
-    # Team xGC: per match, take the max xGC across players (the 90-min
-    # player has the full-match value, since FPL prorates xGC by minutes).
     gw_col = 'GW'
-    if 'season' in window_df.columns:
-        match_key = ['team', gw_col, 'season']
-    else:
-        match_key = ['team', gw_col]
+    match_key = ['team', gw_col, 'season'] if 'season' in window_df.columns else ['team', gw_col]
 
+    # Match-level xG and xGC
+    match_xg = window_df.groupby(match_key)['expected_goals'].sum().reset_index()
     match_xgc = window_df.groupby(match_key)['expected_goals_conceded'].max().reset_index()
-    team_xgc = match_xgc.groupby('team')['expected_goals_conceded'].sum().reset_index()
-    team_xgc.columns = ['team', 'team_xgc']
+    matches_df = match_xg.merge(match_xgc, on=match_key, how='inner')
 
-    # Team minutes: total player-minutes (for per-90 calculation, use
-    # match count * 90 since we want team-level per-match-90 rates)
-    if 'season' in window_df.columns:
-        matches_per_team = window_df.groupby('team')[['GW', 'season']].apply(
-            lambda g: g.drop_duplicates().shape[0]
-        ).reset_index()
+    # Compute match weight
+    if half_life is not None and half_life > 0:
+        match_seasons = matches_df['season'] if 'season' in matches_df.columns else [season] * len(matches_df)
+        match_gws = matches_df['GW'] if 'GW' in matches_df.columns else [gw] * len(matches_df)
+        matches_df['gw_lag'] = [
+            calculate_gw_lag(s, g, season, gw)
+            for s, g in zip(match_seasons, match_gws)
+        ]
+        matches_df['form_weight'] = [
+            compute_ewma_weight(lag, half_life) for lag in matches_df['gw_lag']
+        ]
     else:
-        matches_per_team = window_df.groupby('team')['GW'].nunique().reset_index()
-    matches_per_team.columns = ['team', 'matches']
+        matches_df['form_weight'] = 1.0
 
-    result = team_xg.merge(team_xgc, on='team', how='outer')
-    result = result.merge(matches_per_team, on='team', how='outer')
-    result['team_minutes'] = result['matches'] * 90
+    matches_df['w_xg'] = matches_df['expected_goals'] * matches_df['form_weight']
+    matches_df['w_xgc'] = matches_df['expected_goals_conceded'] * matches_df['form_weight']
 
-    result['team_xg90'] = result.apply(
-        lambda r: round(r['team_xg'] / (r['team_minutes'] / 90.0), 4)
-        if r['team_minutes'] > 0 else 0.0,
-        axis=1
-    )
-    result['team_xgc90'] = result.apply(
-        lambda r: round(r['team_xgc'] / (r['team_minutes'] / 90.0), 4)
-        if r['team_minutes'] > 0 else 0.0,
-        axis=1
-    )
+    team_summary = matches_df.groupby('team').agg({
+        'form_weight': 'sum',
+        'expected_goals': 'sum',
+        'expected_goals_conceded': 'sum',
+        'w_xg': 'sum',
+        'w_xgc': 'sum',
+    }).reset_index()
 
-    return result[['team', 'matches', 'team_minutes', 'team_xg', 'team_xgc',
-                    'team_xg90', 'team_xgc90']]
+    # Match count
+    raw_counts = matches_df.groupby('team')[gw_col].count().reset_index().rename(columns={gw_col: 'matches'})
+    team_summary = team_summary.merge(raw_counts, on='team', how='left')
+
+    if half_life is not None and half_life > 0:
+        team_summary['team_xg'] = team_summary['w_xg'].round(4)
+        team_summary['team_xgc'] = team_summary['w_xgc'].round(4)
+        team_summary['team_minutes'] = (team_summary['form_weight'] * 90.0).round(1)
+        team_summary['team_xg90'] = team_summary.apply(
+            lambda r: round(r['team_xg'] / (r['team_minutes'] / 90.0), 4)
+            if r['team_minutes'] > 0 else 0.0,
+            axis=1
+        )
+        team_summary['team_xgc90'] = team_summary.apply(
+            lambda r: round(r['team_xgc'] / (r['team_minutes'] / 90.0), 4)
+            if r['team_minutes'] > 0 else 0.0,
+            axis=1
+        )
+    else:
+        team_summary['team_xg'] = team_summary['expected_goals'].round(4)
+        team_summary['team_xgc'] = team_summary['expected_goals_conceded'].round(4)
+        team_summary['team_minutes'] = team_summary['matches'] * 90
+        team_summary['team_xg90'] = team_summary.apply(
+            lambda r: round(r['team_xg'] / (r['team_minutes'] / 90.0), 4)
+            if r['team_minutes'] > 0 else 0.0,
+            axis=1
+        )
+        team_summary['team_xgc90'] = team_summary.apply(
+            lambda r: round(r['team_xgc'] / (r['team_minutes'] / 90.0), 4)
+            if r['team_minutes'] > 0 else 0.0,
+            axis=1
+        )
+
+    return team_summary[['team', 'matches', 'team_minutes', 'team_xg', 'team_xgc',
+                         'team_xg90', 'team_xgc90']]
 
 
 def build_player_form_dataset(season, gw, short_form_window=6,
+                               half_life_long=DEFAULT_HALF_LIFE,
+                               half_life_short=None,
                                data_root='data'):
-    """Build the complete player form dataset with both long-form and
-    short-form metrics, keyed by player code.
+    """Build the complete player form dataset with both long-form (EWMA decayed)
+    and short-form metrics, keyed by player code.
 
     Args:
         season: current season, e.g. '2025-26'.
         gw: current gameweek number.
         short_form_window: number of gameweeks for short-form (default 6).
+        half_life_long: half-life in GWs for long-form EWMA decay (default 8.0).
+        half_life_short: half-life in GWs for short-form EWMA decay (default None = flat).
         data_root: root data directory.
 
     Returns:
@@ -328,12 +457,14 @@ def build_player_form_dataset(season, gw, short_form_window=6,
     # Load the ID map for the target season
     id_map = _load_id_map(season, data_root)
 
-    # Long-form: full season(s) to date
+    # Long-form: full season(s) to date with EWMA decay
     long_form = compute_player_form(season, gw, window_gws=None,
+                                     half_life=half_life_long,
                                      data_root=data_root)
 
     # Short-form: last N gameweeks
     short_form = compute_player_form(season, gw, window_gws=short_form_window,
+                                      half_life=half_life_short,
                                       data_root=data_root)
 
     # Join id_map to get player code
@@ -371,13 +502,17 @@ def build_player_form_dataset(season, gw, short_form_window=6,
 
 
 def build_team_form_dataset(season, gw, short_form_window=6,
+                             half_life_long=DEFAULT_HALF_LIFE,
+                             half_life_short=None,
                              data_root='data'):
-    """Build team-level form with long-form and short-form xG/xGC rates.
+    """Build team-level form with long-form (EWMA decayed) and short-form xG/xGC rates.
 
     Args:
         season: current season.
         gw: current gameweek.
         short_form_window: short-form window size.
+        half_life_long: half-life in GWs for long-form EWMA decay (default 8.0).
+        half_life_short: half-life in GWs for short-form EWMA decay (default None = flat).
         data_root: root data directory.
 
     Returns:
@@ -385,8 +520,10 @@ def build_team_form_dataset(season, gw, short_form_window=6,
         team_long_form_xgc90, team_short_form_xg90, team_short_form_xgc90.
     """
     long_team = compute_team_form(season, gw, window_gws=None,
+                                   half_life=half_life_long,
                                    data_root=data_root)
     short_team = compute_team_form(season, gw, window_gws=short_form_window,
+                                    half_life=half_life_short,
                                     data_root=data_root)
 
     if long_team.empty and short_team.empty:

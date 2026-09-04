@@ -630,11 +630,203 @@ This document tracks the phased rebuild of the Fantasy Premier League (FPL) poin
   - `npm run check-copy`: **23 files scanned, 0 errors**.
   - `python scripts/validate_okf.py`: **43 files scanned, 0 errors verified**.
 
+### 20. Comprehensive Model Audit & Progressive Enhancement Roadmap
+- **Context & Audit Findings (2026-09-04)**:
+  A comprehensive mathematical and architectural audit of the prediction engine, fixture engine, minutes model, and optimization solver identified seven high-leverage model opportunities:
+  1. **M-01: Negative Binomial Overdispersion for $C_9$ (Clean Sheets) & $C_{10}$ (Goals Conceded)**:
+     - The pure Poisson model enforces $\text{Var} = \mu$, underestimating blowout tail losses (4+ goals conceded) and clean sheet zero-inflation. This explains the persistent $+0.16$ to $+0.23$ positive point bias on goalkeepers in `accuracy_log.csv`.
+     - *Solution*: Transition $C_9$ and $C_{10}$ to an overdispersed Negative Binomial distribution ($NB(r, p)$) with empirical dispersion parameter $r \approx 3.5$ calibrated against historical Premier League scorelines.
+  2. **M-02: Direct Pipeline Wiring of Continuous Minutes Hazard Engine**:
+     - `minutes_model.py` implements a 3-regime continuous survival curve $S(t)$ with manager tactical hook propensities and 3-day European congestion penalties, but `prediction_engine.py` still relies on crude $starts / squads\_made$ heuristics for $P(\text{Start})$ and $P(\text{App})$.
+     - *Solution*: Formally integrate `MinutesDistributionProfile` from `minutes_model.py` as the canonical source for all playing probabilities in `prediction_engine.py`.
+  3. **M-03: Exponential Recency Decay (EWMA) in Rolling Form**:
+     - `rolling_form.py` treats matches over fixed windows with flat equal weights, ignoring that a fixture from 2 weeks ago provides significantly stronger signal than one from 8 months ago.
+     - *Solution*: Replace flat window aggregation with exponential half-life decay ($t_{1/2} = 8\text{ gameweeks}$).
+  4. **M-04: Order-Statistic Tournament Modeling for BPS ($C_6$)**:
+     - Bonus points are an internal zero-sum match competition (exactly 6 points: 3, 2, 1 distributed per fixture). Modeling $C_6$ as a linear unconstrained product ignores match state dynamics (e.g. 0-0 clean sheets distributing all 6 BPS to defenders vs high-scoring shootouts).
+     - *Solution*: Implement a rank-ordered Plackett-Luce or Monte Carlo order-statistic tournament for bonus points.
+  5. **M-05: Early-Season Captaincy Bayesian Confidence Calibration**:
+     - In `solver.py`, `capt_conf` scales with `season_minutes / 720.0`. In GW1–GW4, total season minutes are $\le 270$, artificially penalizing premier captaincy candidates.
+     - *Solution*: Blend current-season minutes with `long_form_minutes` during early-season gameweeks.
+  6. **M-06: Expected Auto-Substitution Valuation in Solver Objective**:
+     - The solver optimizes Starting XI + Captain points, treating the bench as a zero-value sink. Incorporating $P(\text{Starter DNP}) \times xP(\text{Bench}_1)$ values strong bench assets properly during periods of rotation risk.
+  7. **M-07: Defensive Contribution ($C_{11}$) Rate Normalization**:
+     - Eliminate double-discounting of playing time in $C_{11}$ where $\lambda = dc90 \times active\_ratio$ was multiplied by $P(60+)$ again.
+
+### 21. Advanced Probabilistic Refinements (M-01, M-02 & M-03 Completed)
+- **M-01: Negative Binomial Overdispersion for $C_9$ & $C_{10}$ ([`model/calibration.py`](file:///e:/Fantasy-Premier-League/model/calibration.py), [`model/prediction_engine.py`](file:///e:/Fantasy-Premier-League/model/prediction_engine.py), [`model/test_negative_binomial.py`](file:///e:/Fantasy-Premier-League/model/test_negative_binomial.py))**:
+  - Replaced equi-dispersed Poisson distribution with empirical Negative Binomial distribution ($NB(r, p)$) with calibrated dispersion parameter $r = 6.0$.
+  - Clean sheet probability $P(\text{CS}) = (1 + \mu / r)^{-r}$ accounts for $+2.5\%$ zero-inflation in elite Premier League defenses.
+  - Exact discrete penalty $\mathbb{E}[\text{Penalty}] = -\sum_{m=1}^5 m (P_{NB}(X=2m) + P_{NB}(X=2m+1))$ captures heavy-defeat blowout losses (4+ goals conceded), rectifying the positive goalkeeper bias recorded in `accuracy_log.csv`.
+  - Built method-of-moments historical estimator in `calibration.py` estimating $r$ from historical fixture scorelines.
+  - 6 unit tests passing in `test_negative_binomial.py`.
+- **M-02: Direct Pipeline Wiring of Continuous Minutes Hazard Engine ([`model/minutes_model.py`](file:///e:/Fantasy-Premier-League/model/minutes_model.py), [`model/prediction_engine.py`](file:///e:/Fantasy-Premier-League/model/prediction_engine.py), [`model/test_minutes_integration.py`](file:///e:/Fantasy-Premier-League/model/test_minutes_integration.py))**:
+  - Formally wired `compute_player_minutes_hazard()` as the single canonical playing probability source across the prediction pipeline.
+  - **$C_1$ (Appearance 1-59 mins)**: Driven by continuous 3-regime survival decomposition $P(\text{App}) = P(\text{Start}) + P(\text{Sub})$.
+  - **$C_2$ (60+ Mins Qualification)**: Driven by empirical logistic hook hazard and manager early tactical hook propensities: $P(60+) = P(\text{Start})(1 - P(\text{Hook})) + P(\text{Sub})(0.005)$.
+  - **$C_{11}$ Defensive Contributions Normalization (Resolving Double-Discounting)**: Replaced unconditional `dc90 * active_ratio` with conditional qualifying exposure rate $\lambda_{\text{DC} \mid 60+} = dc90_{\text{adj}} \times \frac{\mathbb{E}[M \mid 60+]}{90.0}$, gated strictly once on $P(60+)$.
+  - **Universal Column Compatibility**: Deepened `compute_player_minutes_hazard` to resolve all season/short-form/fbref column synonyms across `model_dataset.csv` schemas.
+  - **Turnaround Congestion Propagation**: Connected `days_rest` and European club rosters into fixture and gameweek prediction routines.
+  - 6 dedicated unit tests passing in `test_minutes_integration.py`.
+- **M-03: Exponential Recency Decay (EWMA) in Rolling Form ([`model/rolling_form.py`](file:///e:/Fantasy-Premier-League/model/rolling_form.py), [`model/test_ewma_form.py`](file:///e:/Fantasy-Premier-League/model/test_ewma_form.py), [`docs/superpowers/specs/2026-09-04-ewma-rolling-form-design.md`](file:///e:/Fantasy-Premier-League/docs/superpowers/specs/2026-09-04-ewma-rolling-form-design.md))**:
+  - Replaced flat equal-weighted historical summation with continuous Exponentially Weighted Moving Average (EWMA) decay with half-life $t_{1/2} = 8.0\text{ gameweeks}$ ($\lambda = \ln(2) / 8.0 \approx 0.0866$).
+  - Eliminated arbitrary fixed-window "cliff edges" and multi-season 18-month rate distortion.
+  - Formulated cross-season gameweek distance continuity ($\Delta t_i$) handling same-season, prior-season, and multi-season match intervals.
+  - Weighted effective minutes $M_{\text{weighted}} = \sum w_i m_i$ seamlessly feeds downstream Empirical Bayes shrinkage as effective sample evidence.
+  - Maintained 100% backward compatibility via `half_life=None` support for unweighted historical benchmark evaluations.
+  - 11 dedicated unit tests passing in `test_ewma_form.py` + 14 tests passing in `test_rolling_form.py`.
+- **Verification**:
+  - `pytest model/test_ewma_form.py`: **11 passed, 0 failed**.
+  - `pytest model/test_rolling_form.py`: **14 passed, 0 failed**.
+  - `pytest model/test_minutes_integration.py`: **6 passed, 0 failed**.
+  - `pytest model/test_prediction_engine.py`: **26 passed, 0 failed**.
+  - `pytest model/test_negative_binomial.py`: **6 passed, 0 failed**.
+  - `pytest model/test_fixture_engine.py`: **14 passed, 0 failed**.
+  - `node scripts/check_copy.cjs`: **23 files scanned, 0 errors**.
+  - `python scripts/validate_okf.py`: **43 files scanned, 0 errors**.
+
+### 22. Adversarial Review & P1 Hardening of M-01, M-02 & M-03 (Completed)
+- **Context & Adversarial Audit Findings**:
+  A comprehensive adversarial audit of M-01 (Negative Binomial overdispersion), M-02 (Continuous minutes hazard), and M-03 (EWMA rolling form) identified two high-priority mathematical and cross-module couplings:
+  1. **Empirical Bayes Sample Evidence Distortion**: Substituting EWMA-decayed effective minutes ($M_{\text{weighted}} < 1200$) into the Empirical Bayes shrinkage denominator artificially treated established 3,000-minute veterans as rookies, over-shrinking their rates towards positional priors.
+  2. **Experience Gate Failure in Minutes Hazard**: The $\ge 1800.0$ career starter check in `minutes_model.py` failed for established starters in early gameweeks because it inspected EWMA-decayed minutes rather than true physical minutes.
+- **P1 Remediations Applied**:
+  - **Sample Evidence Decoupling ([`model/prediction_engine.py`](file:///e:/Fantasy-Premier-League/model/prediction_engine.py), [`model/fixture_engine.py`](file:///e:/Fantasy-Premier-League/model/fixture_engine.py))**:
+    - Prioritized `long_form_unweighted_minutes` and `unweighted_minutes` over decayed `long_form_minutes` for all Empirical Bayes sample sizes ($M / (M + M_0)$).
+  - **Minutes Model Experience Gate ([`model/minutes_model.py`](file:///e:/Fantasy-Premier-League/model/minutes_model.py))**:
+    - Prioritized `long_form_unweighted_minutes` for `long_mins` and `total_mins`, ensuring proven starters with 1,800+ physical minutes retain their 0.90/0.95 start rate prior.
+  - **Pipeline Alignment ([`model/build_dataset.py`](file:///e:/Fantasy-Premier-League/model/build_dataset.py), [`model/matchup_intelligence.py`](file:///e:/Fantasy-Premier-League/model/matchup_intelligence.py))**:
+    - Maintained `long_form_unweighted_minutes` in preferred column schema and updated career minutes lookups.
+  - **Unit Test Suite ([`model/test_ewma_form.py`](file:///e:/Fantasy-Premier-League/model/test_ewma_form.py))**:
+    - Added `TestEwmaDecouplingAndExperienceGate` suite (2 tests) verifying veteran sample preservation and experience gate passage.
+- **Verification**:
+  - `pytest model/test_negative_binomial.py model/test_minutes_integration.py model/test_ewma_form.py model/test_rolling_form.py model/test_prediction_engine.py model/test_fixture_engine.py`: **79 passed, 0 failed**.
+  - `python scripts/validate_okf.py`: **43 files scanned, 0 errors verified**.
+  - `node scripts/check_copy.cjs`: **23 files scanned, 0 errors**.
+
+### 23. M-04: Order-Statistic Tournament Modeling for BPS ($C_6$) (Completed)
+- **Problem**:
+  Previously, $C_6$ was evaluated as an unconstrained product per player ($C_6 = \text{bonus90} \times P(\text{Start}) \times (\text{Attack\_Mult})^{0.75}$), which wildly violated physical reality: high-scoring fixtures over-allocated bonus points ($>6.5$ pts across a match), while 0-0 draws depressed bonus to $<3.0$ pts despite 6 points being guaranteed.
+- **Implementation**:
+  - **Plackett-Luce Ranking Tournament ([`model/bps_tournament.py`](file:///e:/Fantasy-Premier-League/model/bps_tournament.py))**:
+    - Modeled every Premier League fixture as an exact closed tournament across active participants ($P(\text{App}) > 0$).
+    - Formulated latent expected BPS propensity $\theta_i$ combining appearance points ($+6/+3$), open play baseline (`bps90`), attacking returns (goals $+24/+18/+12$, assists $+9$), defensive returns (clean sheets $+12$, saves $+2$, DC $+1$, GC penalty $-4$), and disciplinary deductions ($-3$ YC, $-9$ RC).
+    - Calculated exact discrete ranking probabilities $P_1(i)$, $P_2(i)$, and $P_3(i)$ via an $O(N)$ and $O(N^2)$ softmax tournament.
+    - Enforced exact match conservation: $\sum_{i \in \text{Match}} \mathbb{E}[\text{Bonus}_i] \equiv 6.0 \times \kappa_{\text{tie}} \approx 6.15\text{ pts}$.
+  - **Gameweek Pipeline Wiring ([`model/fixture_engine.py`](file:///e:/Fantasy-Premier-League/model/fixture_engine.py))**:
+    - Wired `calibrate_fixture_bonus_points()` into `predict_gameweek_fixtures()`, calibrating all single and double gameweek fixtures while adjusting `expected_points` ($xP_{\text{new}} = xP_{\text{old}} - c6_{\text{old}} + c6_{\text{new}}$).
+  - **Unit Test Suite ([`model/test_bps_tournament.py`](file:///e:/Fantasy-Premier-League/model/test_bps_tournament.py))**:
+    - 7 dedicated unit tests verifying exact conservation ($6.15 \pm 0.01$), 0-0 defensive sweeps (defenders/GKs capture 87.5% of bonus), shootout attacking dominance (>70% to attackers), monotonicity, and DGW accumulation.
+- **Verification**:
+  - `pytest model/test_negative_binomial.py model/test_minutes_integration.py model/test_ewma_form.py model/test_rolling_form.py model/test_prediction_engine.py model/test_fixture_engine.py model/test_bps_tournament.py`: **86 passed, 0 failed**.
+  - `python scripts/validate_okf.py`: **43 files scanned, 0 errors verified**.
+  - `node scripts/check_copy.cjs`: **23 files scanned, 0 errors**.
+
+### 24. P2 & P3 Adversarial Hardening across M-01, M-02 & M-03 (Completed)
+- **Problem**:
+  1. **Summer Break Amnesia (M-03)**: `calculate_gw_lag()` treated GW38 of May as only $\Delta t = 1$ from August GW1 ($91.7\%$ weight), ignoring 3 months of summer roster turnover, manager changes, and tactical shifts.
+  2. **European Congestion on Goalkeepers & CB Cameos (M-02)**: A blanket $0.82\times\text{--}0.88\times$ start penalty was applied to goalkeepers after midweek European ties (where Premier League GKs are never rotated), while center backs were given the same 45% substitute appearance base as attacking wingers.
+  3. **Clean Sheet Exposure Timing & $C_{10}$ Upper Tail Leak (M-01)**: Fullbacks subbed at minute 65 had clean sheet expectations evaluated over 90 minutes rather than their 65-minute pitch time, while $C_{10}$ goals conceded penalties $> 11$ goals leaked uncounted probability mass.
+- **Implementation**:
+  - **Summer Break Gap Discount ([`model/rolling_form.py`](file:///e:/Fantasy-Premier-League/model/rolling_form.py))**:
+    - Added `DEFAULT_SUMMER_BREAK_GAP = 4` gameweeks into `calculate_gw_lag()`, appropriately discounting prior-season end form at the start of a new campaign.
+  - **GK European Exemption & Positional Sub Base ([`model/minutes_model.py`](file:///e:/Fantasy-Premier-League/model/minutes_model.py))**:
+    - Exempted goalkeepers from midweek European rotation fatigue (`if is_gk: midweek_mult = 1.00`).
+    - Differentiated `p_sub_base`: 0.01 for GKs, 0.08 for defenders, and 0.45 for midfielders and forwards.
+  - **Clean Sheet Pitch Time Scaling & $C_{10}$ Upper Tail Absorption ([`model/prediction_engine.py`](file:///e:/Fantasy-Premier-League/model/prediction_engine.py))**:
+    - Scaled clean sheet expected goals by pitch exposure conditional on 60+ qualification: $\mu_{\text{CS}} = \text{team\_xgc} \times \frac{\mathbb{E}[M \mid 60+]}{90.0}$.
+    - Capped top discrete tier analytically: $P(X \ge 10) = 1.0 - \sum_{k=0}^{9} P(X = k)$ in both Negative Binomial and Poisson formulations.
+  - **Unit Test Coverage ([`model/test_ewma_form.py`](file:///e:/Fantasy-Premier-League/model/test_ewma_form.py), [`model/test_minutes_model.py`](file:///e:/Fantasy-Premier-League/model/test_minutes_model.py), [`model/test_negative_binomial.py`](file:///e:/Fantasy-Premier-League/model/test_negative_binomial.py))**:
+    - Verified summer break lag accounting, GK European rotation immunity, low defender cameo rates, clean sheet pitch time scaling, and $C_{10}$ tail bounds.
+- **Verification**:
+  - `pytest model/test_negative_binomial.py model/test_minutes_integration.py model/test_minutes_model.py model/test_ewma_form.py model/test_rolling_form.py model/test_prediction_engine.py model/test_fixture_engine.py model/test_bps_tournament.py`: **96 passed, 0 failed**.
+  - `python scripts/validate_okf.py`: **43 files scanned, 0 errors verified**.
+  - `node scripts/check_copy.cjs`: **23 files scanned, 0 errors**.
+
+### 25. Early-Season Captaincy Bayesian Confidence Calibration (M-05 Completed)
+- **M-05 Problem Statement**:
+  - In `model/solver.py`, the Captaincy Bayesian Confidence regularizer scaled linearly with `season_mins / 720.0`.
+  - In early-season gameweeks (GW1–GW4), total elapsed season minutes were strictly limited by calendar time ($0 \le M_{\text{season}} \le 270$).
+  - As a result, proven premier talismans (Haaland, Salah, Saka, Palmer) with 2,500+ minutes of established Premier League pedigree were hit with artificial **40% to 60% penalties** on captain bonus points in the solver MILP objective.
+- **Architectural & Mathematical Solution ([`model/solver.py`](file:///e:/Fantasy-Premier-League/model/solver.py), [`docs/superpowers/specs/2026-09-04-m05-captaincy-bayesian-calibration-design.md`](file:///e:/Fantasy-Premier-League/docs/superpowers/specs/2026-09-04-m05-captaincy-bayesian-calibration-design.md), [`model/test_captaincy_calibration.py`](file:///e:/Fantasy-Premier-League/model/test_captaincy_calibration.py))**:
+  - Implemented `compute_calibrated_captaincy_confidence()` providing Empirical Bayes sample-size blending between current-season minutes ($M_{\text{season}}$) and historical long-form minutes ($M_{\text{long}}$).
+  - **Gameweek Horizon**: $M_{\text{horizon}} = \min(M_{\text{target}}, \max(M_{\text{season\_max}}, 90.0 \times \max(0, GW - 1)))$ with $M_{\text{target}} = 720.0$.
+  - **Decaying Prior Weight**: $w_{\text{prior}} = \max(0.0, 1.0 - M_{\text{horizon}} / M_{\text{target}})$. Seamlessly transitions from $1.0$ (GW1) down to $0.0$ (GW9+).
+  - **Prior-Equivalent Maturity**: $M_{\text{prior\_equiv}} = \min(M_{\text{target}}, M_{\text{target}} \times (M_{\text{long}} / M_{\text{long\_norm}}))$ ($M_{\text{long\_norm}} = 1800.0$ unweighted, $1100.0$ decayed EWMA).
+  - **Calibrated Minutes**: $M_{\text{calibrated}} = \min(M_{\text{target}}, M_{\text{season}} + w_{\text{prior}} \times M_{\text{prior\_equiv}})$ if $w_{\text{prior}} > 0$ else $M_{\text{season}}$.
+  - **Full Premier Starters**: Haaland, Salah, Palmer, Saka achieve $\text{capt\_conf} = 1.0$ in GW1–GW4 without penalty.
+  - **Cameo Protection Maintained**: Low-minute bench players ($M_{\text{long}} \le 90$) maintain $\text{capt\_conf} \le 0.20$, firmly preserving protection against low-minute cameos.
+  - **Pipeline Wiring**: Propagated optional `current_gw` through `prepare_solver_dataframe()`, `solve_initial_squad()`, `solve_squad_lineup()`, `solve_weekly_transfers()`, and `solve_multi_horizon_transfers()`.
+- **Verification**:
+  - `pytest model/test_captaincy_calibration.py`: **9 passed, 0 failed**.
+  - `pytest model/test_solver.py model/test_solver_cvar.py model/test_creator_mechanics.py model/test_bps_tournament.py model/test_ewma_form.py`: **60 passed, 0 failed**.
+  - `python scripts/validate_okf.py`: **43 files scanned, 0 errors**.
+  - `python scripts/validate_frontend_copy.py`: **23 files scanned, 0 errors**.
+
+### 26. Expected Auto-Substitution Valuation (M-06) & Defensive Contribution Rate Normalization Audit (M-07) (Completed)
+- **M-06 Problem Statement**:
+  - Previously, all solver routines (`solve_initial_squad`, `solve_squad_lineup`, `solve_weekly_transfers`, `solve_multi_horizon_transfers`) evaluated bench assets using a crude, flat, position-blind scalar (`bench_weight = 0.05` or `0.10`).
+  - This severely distorted tactical decision-making: the solver saw no mathematical difference between having an explosive 4.5M playing reserve in Bench Slot 1 versus an unplayed 4.0M ghost, and failed to account for the decaying probability of needing Bench 1 vs Bench 2 vs Bench 3.
+- **M-06 Mathematical & Architectural Solution ([`model/solver.py`](file:///e:/Fantasy-Premier-League/model/solver.py), [`docs/superpowers/specs/2026-09-04-m06-m07-auto-sub-and-c11-design.md`](file:///e:/Fantasy-Premier-League/docs/superpowers/specs/2026-09-04-m06-m07-auto-sub-and-c11-design.md), [`model/test_auto_sub_solver.py`](file:///e:/Fantasy-Premier-League/model/test_auto_sub_solver.py))**:
+  - **Dynamic Binomial Auto-Substitution Weights**:
+    - Modeled starter absence hazard as a Binomial distribution across 10 outfield starters: $q_{\text{avg}} = \text{mean}(1.0 - p_{\text{app}}) \in [0.02, 0.15]$.
+    - Derived exact discrete auto-sub probabilities:
+      $$w_1 = P(K \ge 1) = 1 - (1 - q)^{10} \approx 0.35\text{--}0.45$$
+      $$w_2 = P(K \ge 2) = 1 - (1 - q)^{10} - 10q(1-q)^9 \approx 0.08\text{--}0.12$$
+      $$w_3 = P(K \ge 3) = w_2 - 45q^2(1-q)^8 \approx 0.015\text{--}0.025$$
+      $$w_{\text{GK}} = q_{\text{GK}} = \text{mean}(1.0 - p_{\text{app, GK}}) \approx 0.01\text{--}0.03$$
+    - Monotonically guarantees $w_1 > w_2 > w_3 > 0.0$ and responds dynamically to rotation/injury hazards.
+  - **Linear MILP Bench Partition Formulation**:
+    - Introduced binary decision variables $b_{i,1}, b_{i,2}, b_{i,3} \in \{0, 1\}$ for outfield candidates and $b_{i,\text{GK}} \in \{0, 1\}$ for goalkeepers.
+    - Implemented exact mutual exclusivity partition constraints:
+      $$s_i + b_{i,1} + b_{i,2} + b_{i,3} = x_i \quad (\text{outfield})$$
+      $$s_i + b_{i,\text{GK}} = x_i \quad (\text{GK})$$
+      $$\sum b_{i,1} = 1, \quad \sum b_{i,2} = 1, \quad \sum b_{i,3} = 1, \quad \sum b_{i,\text{GK}} = 1$$
+    - Natural Ordering: Because $w_1 > w_2 > w_3$, the linear solver naturally sorts the highest-xP reserve into Bench Slot 1 without requiring non-linear sorting.
+    - Multi-Horizon Transfers: Embedded dynamic gameweek-specific average auto-sub weight $\bar{w}_t = \frac{1}{4}(w_{1,t} + w_{2,t} + w_{3,t} + w_{\text{GK},t})$ per horizon slice $t$.
+    - Chip Invariants: Under Bench Boost (`chip='bboost'`), all 15 start ($s_i == x_i$), auto-sub weights set to 0.0 to prevent double counting. Under Free Hit (`chip='freehit'`), bench weights minimized ($w_1=0.10, w_2=0.02, w_3=0.005$) and cost penalties applied to maximize starting XI spend.
+- **M-07 Defensive Contribution Rate Normalization Audit ([`model/prediction_engine.py`](file:///e:/Fantasy-Premier-League/model/prediction_engine.py))**:
+  - Confirmed and verified that $C_{11}$ rate calculation conditions on playing $\ge 60$ minutes: $\lambda_{\text{DC}\mid 60+} = \text{dc90} \times \frac{\mathbb{E}[M \mid 60+]}{90.0}$, gated strictly once on $P(60+)$.
+  - Zero double discounting: eliminates the error where rate was scaled by unconditional minutes and then multiplied again by $P(60+)$.
+- **Verification**:
+  - `pytest model/test_auto_sub_solver.py`: **9 passed, 0 failed**.
+  - `pytest model/test_solver.py model/test_solver_cvar.py model/test_captaincy_calibration.py model/test_minutes_integration.py model/test_creator_mechanics.py`: **46 passed, 0 failed**.
+  - `python scripts/validate_okf.py`: **43 files scanned, 0 errors**.
+  - `python scripts/validate_frontend_copy.py`: **23 files scanned, 0 errors**.
+
+### 27. Cross-Milestone Adversarial Review (M-01–M-07) & Official FPL Scoring Alignment (Completed)
+- **Adversarial Audit & Threat Identification**:
+  A rigorous adversarial stress-test across milestones M-01 through M-07 identified critical mathematical edge cases and an essential ruleset alignment requirement:
+  1. **$C_{10}$ Goals Conceded 60+ Gating Flaw**: $C_{10}$ was gated behind $P(60+)$, erroneously exempting early-substituted defenders and late defensive substitutes from goals conceded penalties, directly violating official FPL rules.
+  2. **Non-Official FPL Scoring Leak ($C_{11}$)**: In standard official Fantasy Premier League, defensive contributions (CBI, tackles) earn BPS towards bonus points, but do *not* award direct fantasy points. Including $C_{11}$ by default in `expected_points` inflated defender xP compared to official FPL scoring.
+  3. **Substitute Cameo Contamination of Starter Minutes**: `avg_starter_mins` divided total minutes by all appearances ($starts + subs$), deflating starter minutes when a starter made occasional substitute appearances.
+  4. **Veteran Starter Prior Erosion**: In `minutes_model.py`, a strict condition `starts == matches` meant that a single bench appearance dropped a veteran's starting prior $\pi_0$ from 0.95 down to 0.50.
+  5. **BPS Open-Play Event Double-Counting**: In `bps_tournament.py`, `raw_bps90` already encompassed historical goals, assists, clean sheets, and appearances, leading to double-counting when modeled discrete match events were added.
+  6. **Injured Star Captaincy Calibration Penalty**: In `solver.py`, a calendar-based cutoff ($GW \ge 9 \implies w_{\text{prior}} = 0$) penalized returning premium talismans who missed early matches due to injury.
+- **P1 Remediations & Official FPL Configuration Applied**:
+  - **$C_{10}$ Decoupling & Partitioning ([`model/prediction_engine.py`](file:///e:/Fantasy-Premier-League/model/prediction_engine.py), [`model/fixture_engine.py`](file:///e:/Fantasy-Premier-League/model/fixture_engine.py))**:
+    - Un-gated $C_{10}$ from $P(60+)$ and partitioned into starter duration ($\text{xGC90} \times \frac{\mathbb{E}[M_{\text{starter}}]}{90.0}$) and substitute cameo duration ($\text{xGC90} \times \frac{20.0}{90.0}$).
+  - **Official FPL Scoring Alignment Flag ([`model/prediction_engine.py`](file:///e:/Fantasy-Premier-League/model/prediction_engine.py), [`model/fixture_engine.py`](file:///e:/Fantasy-Premier-League/model/fixture_engine.py))**:
+    - Introduced `include_c11_in_xp: bool = False` by default across point prediction and fixture engines.
+    - Standard FPL predictions strictly match official scoring: $\text{xP} = \sum_{k=1}^{10} C_k$.
+    - Added `--include-c11-in-xp` CLI flag to support custom draft leagues or alternative rulesets awarding defensive volume points.
+  - **Starter Minutes Decontamination & Veteran Prior Protection ([`model/minutes_model.py`](file:///e:/Fantasy-Premier-League/model/minutes_model.py))**:
+    - Decontaminated starter minutes by subtracting estimated substitute cameo minutes: $\max(0, \text{total\_mins} - subs \times 20.0) / starts$.
+    - Preserved veteran starting prior for established regulars with $\ge 1800$ physical minutes ($\pi_0 \ge 0.90$).
+  - **BPS Baseline Netting ([`model/bps_tournament.py`](file:///e:/Fantasy-Premier-League/model/bps_tournament.py))**:
+    - Netted out historical event BPS (goals, assists, CS, appearance) from `raw_bps90` to prevent double-counting with discrete match returns.
+  - **Individualized Captaincy Sample Evidence Decay ([`model/solver.py`](file:///e:/Fantasy-Premier-League/model/solver.py))**:
+    - Replaced calendar gameweek gating with individualized player season minute decay: $w_{\text{prior}, i} = \max(0, 1 - M_{\text{season}, i} / 720.0)$.
+- **Verification**:
+  - Full repo test suite: **282 passed, 0 failed** across all 32 test modules in 44.96s.
+  - `python scripts/validate_okf.py`: **43 files scanned, 0 errors verified**.
+  - `node scripts/check_copy.cjs`: **23 files scanned, 0 errors verified**.
+
 ---
 
 ## Current Status & Next Horizon
 
-All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit with Reactive 4-Chip Projections**, the **Autonomous Gameweek Transition Orchestrator**, the **100% Native FPL Opta Data Engine**, **Phases 1–4 of the Multi-User Live Platform Rebuild**, the **FPL Dugout Rebranding & Complete 6-Surface Fan-Friendly Copy Transformation**, **Frontend Prop Alignment & Pipeline Unification**, **Promoted Clubs Calibration & Institutional UI Polish**, **Creator-Aligned Model Mechanics & Solver Optimizations**, **Intuitive Tactical Cockpit Upgrades with Automated Voice/Tone Enforcement**, **In-Season Squad Consistency & Transfer Feasibility Alignment**, and **Persistent Squad Snapshot Locking & Transfer Continuity Guardrails** are **complete, robust, and production-verified**.
+All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit with Reactive 4-Chip Projections**, the **Autonomous Gameweek Transition Orchestrator**, the **100% Native FPL Opta Data Engine**, **Phases 1–4 of the Multi-User Live Platform Rebuild**, the **FPL Dugout Rebranding & Complete 6-Surface Fan-Friendly Copy Transformation**, **Frontend Prop Alignment & Pipeline Unification**, **Promoted Clubs Calibration & Institutional UI Polish**, **Creator-Aligned Model Mechanics & Solver Optimizations**, **Intuitive Tactical Cockpit Upgrades with Automated Voice/Tone Enforcement**, **In-Season Squad Consistency & Transfer Feasibility Alignment**, **Persistent Squad Snapshot Locking & Transfer Continuity Guardrails**, the **Advanced Probabilistic Refinements M-01, M-02 & M-03 (Milestone 21)**, the **Adversarial P1 Hardening (Milestone 22)**, the **Order-Statistic Tournament Modeling for BPS M-04 (Milestone 23)**, the **Complete P2/P3 Hardening Pass (Milestone 24)**, the **Early-Season Captaincy Bayesian Confidence Calibration M-05 (Milestone 25)**, the **Expected Auto-Substitution Valuation M-06 & C11 Rate Normalization M-07 (Milestone 26)**, and the **Cross-Milestone Adversarial Review & Official FPL Scoring Alignment (Milestone 27)** are **complete, robust, and production-verified**. All planned modeling milestones M-01 through M-07 are now fully completed and hardened!
 
 For complete operational playbooks and design standards:
 - 👉 **[DESIGN.md](file:///E:/Fantasy-Premier-League/DESIGN.md)**

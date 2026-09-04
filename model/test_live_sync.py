@@ -21,6 +21,28 @@ from model.live_manager import manage_gameweek
 class TestLiveSyncUnit:
     """Test unit functionality of live FPL API parsers and transformers."""
 
+    @pytest.fixture(autouse=True)
+    def clean_env(self):
+        squad_path = os.path.join('data', '2026-27', 'current_squad.json')
+        orig_content = None
+        if os.path.exists(squad_path):
+            with open(squad_path, 'r', encoding='utf-8', newline='') as f:
+                orig_content = f.read()
+        try:
+            yield
+        finally:
+            if orig_content is not None:
+                with open(squad_path, 'w', encoding='utf-8', newline='') as f:
+                    f.write(orig_content)
+            for tid in (77777, 88888, 99999):
+                tpath = os.path.join('data', '2026-27', f'manager_squad_{tid}.json')
+                if os.path.exists(tpath):
+                    try:
+                        os.remove(tpath)
+                    except Exception:
+                        pass
+
+
     def test_element_to_code_mapping(self):
         elem_to_code = load_element_to_code_map(season='2026-27', data_root='data')
         assert isinstance(elem_to_code, dict)
