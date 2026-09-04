@@ -364,16 +364,28 @@ def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data
                 result.append(d)
             return result
 
-        # Check if an existing 15-man squad is present in the matchday data
-        existing_squad_picks = data.get('actual_starters', []) + data.get('actual_bench', [])
-        if not existing_squad_picks or len(existing_squad_picks) != 15:
-            existing_squad_picks = data.get('starters', []) + data.get('bench', [])
+        # Check if an authoritative squad snapshot or post-transfer squad is present
+        current_squad_path = os.path.join(REPO_ROOT, data_root, season, 'current_squad.json')
+        squad_codes = []
+        if os.path.exists(current_squad_path):
+            try:
+                with open(current_squad_path, 'r', encoding='utf-8') as sf:
+                    snap_data = json.load(sf)
+                    if snap_data.get('squad_codes') and len(snap_data['squad_codes']) == 15:
+                        squad_codes = [int(c) for c in snap_data['squad_codes']]
+            except Exception:
+                pass
 
-        has_existing_squad = len(existing_squad_picks) == 15
+        if not squad_codes:
+            existing_squad_picks = data.get('starters', []) + data.get('bench', [])
+            if not existing_squad_picks or len(existing_squad_picks) != 15:
+                existing_squad_picks = data.get('actual_starters', []) + data.get('actual_bench', [])
+            squad_codes = [int(p.get('player_code', p.get('code', 0))) for p in existing_squad_picks if p.get('player_code') or p.get('code')]
+
+        has_existing_squad = len(squad_codes) == 15
 
         if has_existing_squad:
             # Build squad DataFrame containing the manager's 15 players
-            squad_codes = [int(p.get('player_code', p.get('code', 0))) for p in existing_squad_picks if p.get('player_code') or p.get('code')]
             squad_mask = preds_df['player_code'].astype(int).isin(set(squad_codes))
             squad_df = preds_df[squad_mask].copy()
 
