@@ -1,21 +1,21 @@
 {
-  "entry_id": null,
-  "manager_name": "Manager",
-  "team_name": "Team",
+  "entry_id": 9500404,
+  "manager_name": "Arabinda Saha",
+  "team_name": "Fuljhore Giants",
   "season": "2026-27",
-  "last_updated_gw": 2,
+  "last_updated_gw": 3,
   "squad_codes": [
+    475168,
     80201,
     141746,
     586309,
+    465730,
     424876,
     201658,
     154561,
     244851,
     466075,
-    210156,
     226597,
-    95658,
     169528,
     446008,
     177815,
@@ -23,12 +23,12 @@
   ],
   "starter_codes": [
     141746,
+    586309,
+    465730,
     424876,
     201658,
     154561,
-    244851,
     466075,
-    210156,
     226597,
     446008,
     177815,
@@ -36,12 +36,12 @@
   ],
   "bench_codes": [
     80201,
-    586309,
-    95658,
-    169528
+    244851,
+    169528,
+    475168
   ],
-  "captain_code": 446008,
-  "vice_captain_code": 141746,
-  "bank": 0.0,
-  "updated_at": "2026-09-04 05:38:17 UTC"
+  "captain_code": 141746,
+  "vice_captain_code": 424876,
+  "bank": 0.7,
+  "updated_at": "2026-09-04 10:06:54 UTC"
 }
