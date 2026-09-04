@@ -340,6 +340,7 @@ def compute_calibrated_captaincy_confidence(
 def compute_auto_sub_weights(
     df: Optional[pd.DataFrame] = None,
     chip: Optional[str] = None,
+    bench_mode: str = 'hybrid',
 ) -> Dict[str, float]:
     """Compute Binomial expected auto-substitution probabilities for bench slots (M-06).
 
@@ -354,9 +355,16 @@ def compute_auto_sub_weights(
         w_sub3 = w_sub2 - 45 * q_avg^2 * (1.0 - q_avg)^8 (Prob >= 3)
         w_gk = mean(1.0 - p_app_gk) (bounded in [0.01, 0.05])
 
+    Bench Mode Presets:
+        - 'hybrid' (default): w_sub1 and w_sub2 are active, but w_sub3 = 0.0 and w_sub_gk = 0.0,
+          forcing the solver to eliminate capital leaks on the backup goalkeeper and 3rd sub.
+        - 'ultra_thin': all bench weights are 0.0, mimicking pure-starting-XI optimization.
+        - 'standard': full legacy auto-sub valuation across all four bench slots.
+
     Args:
         df: DataFrame containing player projections with 'p_app' or 'p_start'.
         chip: Active chip ('bboost', 'freehit', '3xc', 'wildcard').
+        bench_mode: Bench optimization strategy ('hybrid', 'standard', 'ultra_thin').
 
     Returns:
         Dict with keys 'sub_1', 'sub_2', 'sub_3', 'sub_gk'.
@@ -365,6 +373,8 @@ def compute_auto_sub_weights(
         return {'sub_1': 1.0, 'sub_2': 1.0, 'sub_3': 1.0, 'sub_gk': 1.0}
     if chip == 'freehit':
         return {'sub_1': 0.10, 'sub_2': 0.02, 'sub_3': 0.005, 'sub_gk': 0.01}
+    if bench_mode == 'ultra_thin':
+        return {'sub_1': 0.0, 'sub_2': 0.0, 'sub_3': 0.0, 'sub_gk': 0.0}
 
     # Default baseline starter DNP rate
     q_avg = 0.05
@@ -402,6 +412,10 @@ def compute_auto_sub_weights(
     w_sub2 = float(np.clip(1.0 - p_all_play - p_exactly_1, 0.04, 0.25))
     w_sub3 = float(np.clip(1.0 - p_all_play - p_exactly_1 - p_exactly_2, 0.008, 0.08))
     w_gk = float(np.clip(q_gk, 0.01, 0.05))
+
+    if bench_mode == 'hybrid':
+        # Middle ground: Active Sub 1 & Sub 2, zero out Sub 3 and Sub GK
+        return {'sub_1': round(w_sub1, 4), 'sub_2': round(w_sub2, 4), 'sub_3': 0.0, 'sub_gk': 0.0}
 
     return {'sub_1': round(w_sub1, 4), 'sub_2': round(w_sub2, 4), 'sub_3': round(w_sub3, 4), 'sub_gk': round(w_gk, 4)}
 
@@ -538,6 +552,7 @@ def solve_initial_squad(
     premium_cost_threshold: float = 10.0,
     min_spend: Optional[float] = None,
     current_gw: Optional[int] = None,
+    bench_mode: str = 'hybrid',
 ) -> SquadSolution:
     """Solve for the optimal 15-man squad, starting XI, captain, and bench.
 
@@ -563,6 +578,7 @@ def solve_initial_squad(
         premium_cost_threshold: price threshold in £M defining premium tier (default 10.0).
         min_spend: optional minimum budget expenditure constraint (e.g. 98.5) to prevent idle bank leaks.
         current_gw: optional target gameweek number for early-season calibration.
+        bench_mode: bench optimization mode ('hybrid', 'standard', 'ultra_thin').
 
     Returns:
         SquadSolution object.
@@ -596,10 +612,10 @@ def solve_initial_squad(
     is_free_hit = (chip == 'freehit')
 
     capt_multiplier = 2.0 if is_triple_captain else 1.0  # +2x bonus for 3xC, +1x for standard
-    bench_cost_penalty = 0.01 if is_free_hit else 0.0
+    bench_cost_penalty = 0.01 if is_free_hit else (0.001 if bench_mode in ('hybrid', 'ultra_thin') else 0.0)
 
     # Auto-sub probabilities (M-06)
-    sub_weights = compute_auto_sub_weights(df, chip=chip)
+    sub_weights = compute_auto_sub_weights(df, chip=chip, bench_mode=bench_mode)
     w_sub1 = sub_weights['sub_1']
     w_sub2 = sub_weights['sub_2']
     w_sub3 = sub_weights['sub_3']
@@ -866,6 +882,7 @@ def solve_squad_lineup(
     forced_captain_code: Optional[Union[int, str]] = None,
     forced_vice_captain_code: Optional[Union[int, str]] = None,
     current_gw: Optional[int] = None,
+    bench_mode: str = 'hybrid',
 ) -> SquadSolution:
     """Solve optimal 11-man starting lineup and captaincy for a fixed 15-player squad.
 
@@ -881,6 +898,7 @@ def solve_squad_lineup(
         forced_captain_code: player code or name for forced captaincy.
         forced_vice_captain_code: player code or name for forced vice-captaincy.
         current_gw: optional target gameweek number for early-season calibration.
+        bench_mode: bench optimization mode ('hybrid', 'standard', 'ultra_thin').
 
     Returns:
         SquadSolution with optimal starting XI, ordered bench, and captaincy.
@@ -914,7 +932,7 @@ def solve_squad_lineup(
     capt_multiplier = 2.0 if is_triple_captain else 1.0
 
     # Auto-sub probabilities (M-06)
-    sub_weights = compute_auto_sub_weights(df, chip=chip)
+    sub_weights = compute_auto_sub_weights(df, chip=chip, bench_mode=bench_mode)
     w_sub1 = sub_weights['sub_1']
     w_sub2 = sub_weights['sub_2']
     w_sub3 = sub_weights['sub_3']
@@ -1081,6 +1099,7 @@ def solve_weekly_transfers(
     max_premium_count: Optional[int] = None,
     premium_cost_threshold: float = 10.0,
     current_gw: Optional[int] = None,
+    bench_mode: str = 'hybrid',
 ) -> TransferSolution:
     """Solve for optimal transfers in/out from an existing 15-man squad."""
     df = prepare_solver_dataframe(df, season=season, data_root=data_root, strategy=strategy, lambda_risk=lambda_risk, current_gw=current_gw)
@@ -1138,7 +1157,7 @@ def solve_weekly_transfers(
     capt_multiplier = 2.0 if is_triple_captain else 1.0
 
     # Auto-sub probabilities (M-06)
-    sub_weights = compute_auto_sub_weights(df, chip=chip)
+    sub_weights = compute_auto_sub_weights(df, chip=chip, bench_mode=bench_mode)
     w_sub1 = sub_weights['sub_1']
     w_sub2 = sub_weights['sub_2']
     w_sub3 = sub_weights['sub_3']
@@ -1155,16 +1174,19 @@ def solve_weekly_transfers(
             - (0.0 if is_wildcard else hit_cost) * hits
         )
     else:
+        bench_cost_penalty = 0.001 if (is_wildcard or bench_mode in ('hybrid', 'ultra_thin')) else 0.0
         prob += (
             pulp.lpSum(
                 df.loc[i, 'opt_points'] * s[i] +
-                capt_multiplier * df.loc[i, 'captain_points'] * c[i]
+                capt_multiplier * df.loc[i, 'captain_points'] * c[i] +
+                0.0001 * df.loc[i, 'cost'] * s[i]
                 for i in indices
             ) +
             pulp.lpSum(w_sub1 * df.loc[i, 'opt_points'] * b1[i] for i in outfield_indices) +
             pulp.lpSum(w_sub2 * df.loc[i, 'opt_points'] * b2[i] for i in outfield_indices) +
             pulp.lpSum(w_sub3 * df.loc[i, 'opt_points'] * b3[i] for i in outfield_indices) +
             pulp.lpSum(w_sub_gk * df.loc[i, 'opt_points'] * bgk[i] for i in gk_indices)
+            - pulp.lpSum(bench_cost_penalty * df.loc[i, 'cost'] * (x[i] - s[i]) for i in indices)
             - (0.0 if is_wildcard else hit_cost) * hits
         )
 
@@ -1407,6 +1429,7 @@ def solve_multi_horizon_transfers(
     max_player_cost: Optional[float] = None,
     max_premium_count: Optional[int] = None,
     premium_cost_threshold: float = 10.0,
+    bench_mode: str = 'hybrid',
 ) -> MultiHorizonSolution:
     """Solve multi-gameweek lookahead optimization across H gameweeks (H=3..5).
 
@@ -1437,6 +1460,7 @@ def solve_multi_horizon_transfers(
         max_player_cost: maximum individual player cost allowed across horizon.
         max_premium_count: maximum number of premium players allowed per gameweek.
         premium_cost_threshold: price threshold in £M defining premium tier (default 10.0).
+        bench_mode: bench optimization mode ('hybrid', 'standard', 'ultra_thin').
 
     Returns:
         MultiHorizonSolution containing step-by-step transfer schedule and lineups.
@@ -1520,7 +1544,7 @@ def solve_multi_horizon_transfers(
         pool_t_capt_map = {int(r['player_code']): float(r.get('captain_points', r['opt_points'])) for _, r in pools[t].iterrows()}
 
         chip_t = chip if t == 0 else None
-        sub_weights_t = compute_auto_sub_weights(pools[t], chip=chip_t)
+        sub_weights_t = compute_auto_sub_weights(pools[t], chip=chip_t, bench_mode=bench_mode)
         avg_sub_weight = (
             sub_weights_t['sub_1'] + sub_weights_t['sub_2'] + sub_weights_t['sub_3'] + sub_weights_t['sub_gk']
         ) / 4.0

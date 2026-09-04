@@ -28,14 +28,28 @@ from model.prediction_engine import predict_player_points
 class TestAutoSubWeights:
     """Test suite for compute_auto_sub_weights helper."""
 
-    def test_weights_monotonicity_and_bounds(self):
-        """Weights must be strictly decreasing across outfield slots: w1 > w2 > w3 > 0."""
+    def test_hybrid_weights_default(self):
+        """Default hybrid mode must activate sub_1 and sub_2 while zeroing sub_3 and sub_gk."""
+        df = pd.DataFrame({
+            'position': ['DEF'] * 5 + ['MID'] * 5 + ['FWD'] * 3 + ['GK'] * 2,
+            'p_app': [0.95] * 15,
+        })
+        weights = compute_auto_sub_weights(df)  # Default bench_mode='hybrid'
+
+        assert weights['sub_1'] > weights['sub_2'] > 0.0
+        assert 0.20 <= weights['sub_1'] <= 0.65
+        assert 0.04 <= weights['sub_2'] <= 0.25
+        assert weights['sub_3'] == 0.0
+        assert weights['sub_gk'] == 0.0
+
+    def test_standard_weights_monotonicity_and_bounds(self):
+        """Standard mode weights must be strictly decreasing across outfield slots: w1 > w2 > w3 > 0."""
         # Baseline pool with typical starter probability p_app ~ 0.95 (q = 0.05)
         df = pd.DataFrame({
             'position': ['DEF'] * 5 + ['MID'] * 5 + ['FWD'] * 3 + ['GK'] * 2,
             'p_app': [0.95] * 15,
         })
-        weights = compute_auto_sub_weights(df)
+        weights = compute_auto_sub_weights(df, bench_mode='standard')
 
         w1 = weights['sub_1']
         w2 = weights['sub_2']
@@ -48,8 +62,17 @@ class TestAutoSubWeights:
         assert 0.008 <= w3 <= 0.08
         assert 0.01 <= wgk <= 0.05
 
+    def test_ultra_thin_weights(self):
+        """Ultra-thin mode zeroes out all bench weights."""
+        df = pd.DataFrame({
+            'position': ['DEF'] * 5 + ['MID'] * 5 + ['FWD'] * 3 + ['GK'] * 2,
+            'p_app': [0.95] * 15,
+        })
+        weights = compute_auto_sub_weights(df, bench_mode='ultra_thin')
+        assert weights == {'sub_1': 0.0, 'sub_2': 0.0, 'sub_3': 0.0, 'sub_gk': 0.0}
+
     def test_responsiveness_to_rotation_risk(self):
-        """Higher starter rotation hazard (lower p_app) must increase all auto-sub weights."""
+        """Higher starter rotation hazard (lower p_app) must increase sub_1 and sub_2 weights."""
         df_low_risk = pd.DataFrame({
             'position': ['DEF'] * 5 + ['MID'] * 5 + ['FWD'] * 3 + ['GK'] * 2,
             'p_app': [0.98] * 15,
@@ -64,7 +87,13 @@ class TestAutoSubWeights:
 
         assert weights_high['sub_1'] > weights_low['sub_1']
         assert weights_high['sub_2'] > weights_low['sub_2']
-        assert weights_high['sub_3'] > weights_low['sub_3']
+        assert weights_high['sub_3'] == 0.0
+        assert weights_high['sub_gk'] == 0.0
+
+        # In standard mode, sub_3 also increases
+        std_low = compute_auto_sub_weights(df_low_risk, bench_mode='standard')
+        std_high = compute_auto_sub_weights(df_high_risk, bench_mode='standard')
+        assert std_high['sub_3'] > std_low['sub_3']
 
     def test_chip_overrides(self):
         """Bench Boost sets weights to 1.0; Free Hit minimizes bench valuation."""
@@ -124,6 +153,15 @@ class TestAutoSubSolverIntegration:
         # Highest xP on bench must be Slot 1
         for i in range(len(outfield_bench) - 1):
             assert outfield_bench[i].expected_points >= outfield_bench[i + 1].expected_points
+
+    def test_hybrid_bench_forces_minimum_gk_and_sub3(self, player_pool):
+        """In hybrid mode, backup GK must be minimum-cost (£4.0m) and Sub 3 should be low-cost enabler."""
+        sol = solve_initial_squad(player_pool, budget=100.0, bench_mode='hybrid')
+        assert sol.status == "Optimal"
+        bench_gks = [p for p in sol.bench if p.position == 'GK']
+        assert len(bench_gks) == 1
+        # Fabianski is the £4.0m keeper in player_pool
+        assert bench_gks[0].cost == 4.0
 
     def test_solve_squad_lineup_bench_ordering(self, player_pool):
         """Lineup solver on 15 fixed players places highest-xP reserve in Bench 1."""
