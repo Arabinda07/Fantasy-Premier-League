@@ -64,8 +64,8 @@ class TestSolverCvarMath:
         ]
         df = pd.DataFrame(players)
 
-        # Solve initial squad with generous budget (105.0m) to allow selecting DEF5_PlayingBench
-        sol = solve_initial_squad(df, budget=105.0)
+        # Solve initial squad with generous budget (105.0m) and standard bench weighting to allow selecting DEF5_PlayingBench
+        sol = solve_initial_squad(df, budget=105.0, bench_mode='standard')
         assert sol.status == "Optimal"
         assert len(sol.squad) == 15
         assert len(sol.starters) == 11

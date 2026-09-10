@@ -17,6 +17,7 @@ This is the **only** tier that should be used for ongoing predictions, solver op
 | [`model/rotation_intelligence.py`](file:///e:/Fantasy-Premier-League/model/rotation_intelligence.py) | Midweek European Congestion & Press News Dampening | `compute_news_dampening(...)` |
 | [`model/set_pieces.py`](file:///e:/Fantasy-Premier-League/model/set_pieces.py) | Team-Specific Penalty Frequencies & Set-Piece Hierarchy | `compute_set_piece_equity(...)` |
 | [`model/accuracy_tracker.py`](file:///e:/Fantasy-Premier-League/model/accuracy_tracker.py) | Post-Gameweek Calibration & Accuracy Metric Logger | `evaluate_gameweek_accuracy(...)` |
+| [`model/data_store.py`](file:///e:/Fantasy-Premier-League/model/data_store.py) | Unified Data Access Seam & Dataset Registry | `DataStore(data_root=...)` |
 | [`model/pipeline_automation.py`](file:///e:/Fantasy-Premier-League/model/pipeline_automation.py) | End-to-End Daily / Weekly Pipeline Orchestrator | CLI entry point |
 | [`data/2026-27/`](file:///e:/Fantasy-Premier-League/data/2026-27/) | Active Season Dataset (`players_raw.csv`, live matchday JSONs) | Single Source of Truth for 2026-27 |
 | [`frontend/`](file:///e:/Fantasy-Premier-League/frontend/) | React + Vite Production Matchday Cockpit (Vercel Deployed) | User Interface & Client-Side Solver |
@@ -33,7 +34,7 @@ These files are used strictly for model backtesting, historical validation, and 
 | :--- | :--- | :--- |
 | [`data/2025-26/`](file:///e:/Fantasy-Premier-League/data/2025-26/) | Complete 38-GW historical season dataset | Read-only for `model/backtester.py` validation |
 | `data/2016-17/` to `data/2024-25/` | Multi-season historical training data | Read-only historical archive |
-| [`reference/original_excel/`](file:///e:/Fantasy-Premier-League/reference/original_excel/) | Original Excel spreadsheets and mathematical prototypes | Preserved reference archive |
+| `reference/original_excel/` | Local reference Excel workbooks (gitignored & untracked) | Local reference archive |
 
 ---
 

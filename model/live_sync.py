@@ -74,21 +74,9 @@ def load_element_to_code_map(
     season: str = '2026-27',
     data_root: str = 'data',
 ) -> Dict[int, int]:
-    """Map season-specific FPL element ID -> permanent Opta/FPL player code.
-
-    Reads players_raw.csv in data/<season>/ to ensure 100% accurate reconciliation.
-    """
-    players_raw_path = os.path.join(data_root, season, 'players_raw.csv')
-    if not os.path.exists(players_raw_path):
-        return {}
-
-    try:
-        df = pd.read_csv(players_raw_path)
-        if 'id' in df.columns and 'code' in df.columns:
-            return dict(zip(df['id'].astype(int), df['code'].astype(int)))
-    except Exception:
-        pass
-    return {}
+    """Map season-specific FPL element ID -> permanent Opta/FPL player code via DataStore."""
+    from model.data_store import DataStore
+    return DataStore(data_root=data_root).get_element_to_code_map(season)
 
 
 def load_code_to_element_map(

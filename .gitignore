@@ -1,15 +1,42 @@
-.vscode
+# Virtual environments
+.venv/
+env/
+venv/
+ENV/
+
+# Python caches and build artifacts
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
 .pytest_cache/
 .coverage
 htmlcov/
 dist/
 build/
 *.egg-info/
+
+# Heavy binary reference spreadsheets
+reference/
+*.xlsx
+*.xlsm
+
+# Temporary scratch and experiment scripts
+scratch/
+scripts/scratch_*
+reports/
+*.pdf
+
+# Editor & IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data caches
+data/*/cache/
+cache/
+
+# Legacy temporary folders
 team_1518207_data23_24
 9a869765af0698fd4fa934ca90029fc8-67e70e7a0e8419139bf9225136e256f7f6d81474/
 FPL 2026-27-20260824T104026Z-1-001/
-data/*/cache/
-cache/

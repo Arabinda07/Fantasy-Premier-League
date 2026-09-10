@@ -39,7 +39,7 @@ def normalize_name(text: str) -> str:
 
 
 def load_teams_map(season: str, data_root: str = 'data') -> dict:
-    """Load team ID -> team name mapping from teams.csv.
+    """Load team ID -> team name mapping from teams.csv via DataStore.
 
     Args:
         season: season string e.g. '2026-27'.
@@ -48,11 +48,8 @@ def load_teams_map(season: str, data_root: str = 'data') -> dict:
     Returns:
         dict mapping int team_id to str team_name.
     """
-    teams_path = os.path.join(data_root, season, 'teams.csv')
-    if not os.path.exists(teams_path):
-        return {}
-    df = pd.read_csv(teams_path, usecols=['id', 'name'])
-    return dict(zip(df['id'], df['name']))
+    from model.data_store import DataStore
+    return DataStore(data_root=data_root).get_teams_map(season)
 
 
 def compute_native_participation(
