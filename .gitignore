@@ -25,6 +25,9 @@ scratch/
 scripts/scratch_*
 reports/
 *.pdf
+*.db
+*.sqlite
+*.sqlite3
 
 # Editor & IDE files
 .vscode/

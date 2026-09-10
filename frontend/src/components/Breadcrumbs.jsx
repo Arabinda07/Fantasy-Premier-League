@@ -8,7 +8,8 @@ export default function Breadcrumbs({ activeTab, onNavigateTab, subItem, onClear
     rivals: 'Mini-Leagues & Rivals',
     fixtures: 'Fixture Ticker',
     market: 'Price Trends',
-    math: 'Points Forecaster'
+    math: 'Points Forecaster',
+    vault: 'Historical Vault'
   };
 
   if (!subItem) {

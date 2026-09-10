@@ -18,6 +18,7 @@ export const NAV_TABS = {
   fixtures: { id: 'fixtures', label: 'Fixture Ticker', shortLabel: 'Fixtures', desc: '38-week difficulty schedule & match odds' },
   prices: { id: 'market', label: 'Price Trends', shortLabel: 'Prices', desc: 'Daily midnight rises/falls & chip guide' },
   forecaster: { id: 'studio', label: 'Points Forecaster', shortLabel: 'Forecaster', desc: 'Projection formula & accuracy scorecard' },
+  vault: { id: 'vault', label: 'Historical Vault', shortLabel: 'Vault', desc: '10-season archive, Dream Teams & all-time records' },
 };
 
 export const CHIP_ADVICE = {

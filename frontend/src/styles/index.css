@@ -126,6 +126,13 @@
   --scope-accent: var(--accent-emerald);
 }
 
+.surface-scope-vault {
+  --scope-surface-bg: var(--bg-surface-1);
+  --scope-card-bg: var(--bg-surface-2);
+  --scope-border: var(--border-subtle);
+  --scope-accent: var(--accent-amber);
+}
+
 /* Base Reset & Safe Areas */
 *, *::before, *::after {
   box-sizing: border-box;

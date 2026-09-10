@@ -7,7 +7,8 @@ import {
   Flask,
   UsersThree,
   User,
-  Gear
+  Gear,
+  ClockCounterClockwise
 } from '@phosphor-icons/react';
 
 export default function Header({
@@ -64,6 +65,12 @@ export default function Header({
       label: 'Points Forecaster',
       shortLabel: 'Forecaster',
       icon: Flask
+    },
+    {
+      id: 'vault',
+      label: 'Historical Vault',
+      shortLabel: 'Vault',
+      icon: ClockCounterClockwise
     }
   ];
 

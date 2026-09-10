@@ -11,6 +11,7 @@ import LiveTeamSyncModal from './components/LiveTeamSyncModal';
 import OnboardingModal from './components/OnboardingModal';
 import FixtureProbabilityDrawer from './components/FixtureProbabilityDrawer';
 import ErrorBoundary from './components/ErrorBoundary';
+import HistoricalVault from './components/HistoricalVault';
 import Footer from './components/Footer';
 
 // Lazy-load Recharts heavy charting component on demand
@@ -32,7 +33,8 @@ const TAB_TO_HASH = {
   rivals: 'rivals',
   fixtures: 'fixtures',
   market: 'market',
-  math: 'studio'
+  math: 'studio',
+  vault: 'vault'
 };
 
 const HASH_TO_TAB = {
@@ -46,7 +48,11 @@ const HASH_TO_TAB = {
   market: 'market',
   studio: 'math',
   methodology: 'math',
-  math: 'math'
+  math: 'math',
+  vault: 'vault',
+  history: 'vault',
+  archive: 'vault',
+  timemachine: 'vault'
 };
 
 export default function App() {
@@ -428,6 +434,15 @@ export default function App() {
                     onInspectPlayer={handleInspectPlayer}
                   />
                 </div>
+              </ErrorBoundary>
+            )}
+
+            {/* View 7: 10-Season Historical Vault & Time Machine */}
+            {activeTab === 'vault' && (
+              <ErrorBoundary componentName="Historical Vault">
+                <HistoricalVault
+                  onInspectPlayer={handleInspectPlayer}
+                />
               </ErrorBoundary>
             )}
           </>

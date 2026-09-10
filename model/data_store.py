@@ -50,8 +50,9 @@ class DataStore:
         return self.season_dir(season).joinpath(*parts)
 
     def season_exists(self, season: str) -> bool:
-        """Check if season folder exists."""
-        return self.season_dir(season).is_dir()
+        """Check if season folder exists and contains valid data."""
+        sdir = self.season_dir(season)
+        return sdir.is_dir() and (sdir / "players_raw.csv").is_file()
 
     # -----------------------------------------------------------------------
     # Ingest / Core Datasets
