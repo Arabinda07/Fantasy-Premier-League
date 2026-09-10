@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="./favicon.ico" />
+    <!-- Preload is necessary because we show these images when we disconnect from the server,
+    but at that point we cannot load these images from the server -->
+    <link rel="preload" href="./assets/gradient-yHQUC_QB.png" as="image" />
+    <link rel="preload" href="./assets/noise-60BoTA8O.png" as="image" />
+    <!-- Preload the fonts -->
+    <link rel="preload" href="./assets/Lora-VariableFont_wght-CZceb_kH.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href="./assets/PTSans-Regular-Bam3NpBI.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href="./assets/PTSans-Bold-C_DwAp7Z.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href="./assets/FiraMono-Regular-CEsLFVD9.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href="./assets/FiraMono-Medium-D5MAsWEG.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href="./assets/FiraMono-Bold-C6PDArdf.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="a marimo app" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <link rel="manifest" href="./manifest.json" />
+
+    <script data-marimo="true">
+      function __resizeIframe(obj) {
+        const scrollbarHeight = 20; // Max between windows, mac, and linux
+
+        function setHeight() {
+          // Guard against race condition where iframe isn't ready
+          if (!obj.contentWindow?.document?.documentElement) {
+            return;
+          }
+          const element = obj.contentWindow.document.documentElement;
+          // If there is no vertical scrollbar, we don't need to resize the iframe
+          if (element.scrollHeight === element.clientHeight) {
+            return;
+          }
+
+          // Create a new height that includes the scrollbar height if it's visible
+          const hasHorizontalScrollbar = element.scrollWidth > element.clientWidth;
+          const newHeight = element.scrollHeight + (hasHorizontalScrollbar ? scrollbarHeight : 0);
+
+          // Only update the height if it's different from the current height
+          if (obj.style.height !== `${newHeight}px`) {
+            obj.style.height = `${newHeight}px`;
+          }
+        }
+
+        // Resize the iframe to the height of the content and bottom scrollbar height
+        setHeight();
+
+        // Resize the iframe when the content changes
+        const resizeObserver = new ResizeObserver((_entries) => {
+          setHeight();
+        });
+        // Only observe if iframe content is ready
+        if (obj.contentWindow?.document?.body) {
+          resizeObserver.observe(obj.contentWindow.document.body);
+        }
+      }
+    </script>
+    <marimo-filename hidden>notebook.py</marimo-filename>
+    <!-- TODO(Trevor): Legacy, required by VS Code plugin. Remove when plugin is updated (see marimo/server/_templates/template.py) -->
+    <marimo-version data-version="{{ version }}" hidden></marimo-version>
+    <marimo-user-config data-config="{{ user_config }}" hidden></marimo-user-config>
+    <marimo-server-token data-token="{{ server_token }}" hidden></marimo-server-token>
+    <!-- /TODO -->
+    <title>historical vault lab</title>
+    <script type="module" crossorigin src="./assets/index-D73cl2ti.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/preload-helper-TXkS1QI3.js">
+    <link rel="modulepreload" crossorigin href="./assets/objects-BlG0ZrO0.js">
+    <link rel="modulepreload" crossorigin href="./assets/chunk-LvLJmgfZ.js">
+    <link rel="modulepreload" crossorigin href="./assets/react-Bj1aDYRI.js">
+    <link rel="modulepreload" crossorigin href="./assets/compiler-runtime-B3qBwwSJ.js">
+    <link rel="modulepreload" crossorigin href="./assets/jsx-runtime-Blw4afVn.js">
+    <link rel="modulepreload" crossorigin href="./assets/useEventListener-B_w3A283.js">
+    <link rel="modulepreload" crossorigin href="./assets/defaultLocale-DOVIEEPN.js">
+    <link rel="modulepreload" crossorigin href="./assets/precisionRound-i2ImZxgc.js">
+    <link rel="modulepreload" crossorigin href="./assets/defaultLocale-BUCH2FMc.js">
+    <link rel="modulepreload" crossorigin href="./assets/vega-loader.browser-Dun7Qe4B.js">
+    <link rel="modulepreload" crossorigin href="./assets/tooltip-HLb6RxVp.js">
+    <link rel="modulepreload" crossorigin href="./assets/clsx-XrBBnd7s.js">
+    <link rel="modulepreload" crossorigin href="./assets/cn-DYvqRARy.js">
+    <link rel="modulepreload" crossorigin href="./assets/badge-B92a4ePY.js">
+    <link rel="modulepreload" crossorigin href="./assets/button-eIihcbUw.js">
+    <link rel="modulepreload" crossorigin href="./assets/react-dom-CSu739Rf.js">
+    <link rel="modulepreload" crossorigin href="./assets/fullscreen-dUjPYOmm.js">
+    <link rel="modulepreload" crossorigin href="./assets/menu-items-DbSLBfXR.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-ByVeMWkr.js">
+    <link rel="modulepreload" crossorigin href="./assets/createLucideIcon-w-Qo9n0R.js">
+    <link rel="modulepreload" crossorigin href="./assets/check-rzLRd0j9.js">
+    <link rel="modulepreload" crossorigin href="./assets/x-C-Eq0ag8.js">
+    <link rel="modulepreload" crossorigin href="./assets/select-B5TFNjmU.js">
+    <link rel="modulepreload" crossorigin href="./assets/tooltip-CFX4fYHU.js">
+    <link rel="modulepreload" crossorigin href="./assets/use-toast-BwJoaaDM.js">
+    <link rel="modulepreload" crossorigin href="./assets/useEvent-D91BmmQi.js">
+    <link rel="modulepreload" crossorigin href="./assets/invariant-CkiqGLcK.js">
+    <link rel="modulepreload" crossorigin href="./assets/isObject-DvLSfCY5.js">
+    <link rel="modulepreload" crossorigin href="./assets/_baseFor-DKD1r8uL.js">
+    <link rel="modulepreload" crossorigin href="./assets/merge-_9WLTEyt.js">
+    <link rel="modulepreload" crossorigin href="./assets/zod-H_cgTO0M.js">
+    <link rel="modulepreload" crossorigin href="./assets/utils-Z80SV4_d.js">
+    <link rel="modulepreload" crossorigin href="./assets/Deferred-D2igisxY.js">
+    <link rel="modulepreload" crossorigin href="./assets/uuid-ImXS-885.js">
+    <link rel="modulepreload" crossorigin href="./assets/DeferredRequestRegistry-C8EV1PoE.js">
+    <link rel="modulepreload" crossorigin href="./assets/constants-CDyU_g2F.js">
+    <link rel="modulepreload" crossorigin href="./assets/session-CEFnN9Cq.js">
+    <link rel="modulepreload" crossorigin href="./assets/config-BbOTTCYY.js">
+    <link rel="modulepreload" crossorigin href="./assets/requests-9-v2bhoi.js">
+    <link rel="modulepreload" crossorigin href="./assets/useLifecycle-lLOBhc-1.js">
+    <link rel="modulepreload" crossorigin href="./assets/useNonce-CbdaHKzX.js">
+    <link rel="modulepreload" crossorigin href="./assets/useTheme-KXqAyDPC.js">
+    <link rel="modulepreload" crossorigin href="./assets/arrays-DbOq36rN.js">
+    <link rel="modulepreload" crossorigin href="./assets/strings-Djnbwmfl.js">
+    <link rel="modulepreload" crossorigin href="./assets/once-CGKw_kwj.js">
+    <link rel="modulepreload" crossorigin href="./assets/capabilities-B09j1Eor.js">
+    <link rel="modulepreload" crossorigin href="./assets/createReducer-C7kZ8zEe.js">
+    <link rel="modulepreload" crossorigin href="./assets/paths-BKO-pHK6.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-12S8I4CH.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-DYEuVkEX.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-BCMBu0rO.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-BJZAIIze.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-aRc_dRed.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-DnjsPBRJ.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-DcwTQG1A.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-CPjTeT8p.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-DI1-Z60I.js">
+    <link rel="modulepreload" crossorigin href="./assets/stex-FMMSUPAS.js">
+    <link rel="modulepreload" crossorigin href="./assets/toDate-Ct2FT81-.js">
+    <link rel="modulepreload" crossorigin href="./assets/purify.es-CWmnYhGI.js">
+    <link rel="modulepreload" crossorigin href="./assets/cjs-D5tzp-Y6.js">
+    <link rel="modulepreload" crossorigin href="./assets/isSymbol-BT6B8Bon.js">
+    <link rel="modulepreload" crossorigin href="./assets/now-CsYTPAhW.js">
+    <link rel="modulepreload" crossorigin href="./assets/debounce-OiXznToA.js">
+    <link rel="modulepreload" crossorigin href="./assets/database-zap-CKO8g4BU.js">
+    <link rel="modulepreload" crossorigin href="./assets/main-BNL5rxQw.js">
+    <link rel="modulepreload" crossorigin href="./assets/cells-Cf7bHHq3.js">
+    <link rel="modulepreload" crossorigin href="./assets/kbd-C5HnBH5U.js">
+    <link rel="modulepreload" crossorigin href="./assets/useInstallPackage-BRbUAUFn.js">
+    <link rel="modulepreload" crossorigin href="./assets/alert-dialog-BXegNC0I.js">
+    <link rel="modulepreload" crossorigin href="./assets/dialog-D1DEsRZ2.js">
+    <link rel="modulepreload" crossorigin href="./assets/useDebounce-JDKr83KO.js">
+    <link rel="modulepreload" crossorigin href="./assets/numbers-CeeaFKqu.js">
+    <link rel="modulepreload" crossorigin href="./assets/SSRProvider-BUSmWJKC.js">
+    <link rel="modulepreload" crossorigin href="./assets/context-BFPaAUK_.js">
+    <link rel="modulepreload" crossorigin href="./assets/useNumberFormatter-4-Qvf4uR.js">
+    <link rel="modulepreload" crossorigin href="./assets/usePress-5hBv4sjD.js">
+    <link rel="modulepreload" crossorigin href="./assets/input-CqrUjynb.js">
+    <link rel="modulepreload" crossorigin href="./assets/ImperativeModal-BIavOiUv.js">
+    <link rel="modulepreload" crossorigin href="./assets/cell-link-DqBkyAFe.js">
+    <link rel="modulepreload" crossorigin href="./assets/config-COUOIPEq.js">
+    <link rel="modulepreload" crossorigin href="./assets/alert-jlwhGxSb.js">
+    <link rel="modulepreload" crossorigin href="./assets/chevron-right-BS_NcSch.js">
+    <link rel="modulepreload" crossorigin href="./assets/dropdown-menu-BFZLnWeO.js">
+    <link rel="modulepreload" crossorigin href="./assets/links-wcQA1Np1.js">
+    <link rel="modulepreload" crossorigin href="./assets/useRunCells-CSSF_mJ0.js">
+    <link rel="modulepreload" crossorigin href="./assets/copy-BtTOqPTS.js">
+    <link rel="modulepreload" crossorigin href="./assets/copy-3iHFdt22.js">
+    <link rel="modulepreload" crossorigin href="./assets/copy-icon-C2pG0ZNK.js">
+    <link rel="modulepreload" crossorigin href="./assets/RenderHTML-BCvU9dYz.js">
+    <link rel="modulepreload" crossorigin href="./assets/datasource-ySAiC9gr.js">
+    <link rel="modulepreload" crossorigin href="./assets/state-DBzEQtWz.js">
+    <link rel="modulepreload" crossorigin href="./assets/hat-glasses-BttHlyvs.js">
+    <link rel="modulepreload" crossorigin href="./assets/package-Bxz_8e44.js">
+    <link rel="modulepreload" crossorigin href="./assets/sparkles-DUCpRFlS.js">
+    <link rel="modulepreload" crossorigin href="./assets/MarimoErrorOutput-DO2k2fA5.js">
+    <link rel="modulepreload" crossorigin href="./assets/ErrorBoundary-C7_5jjWi.js">
+    <link rel="modulepreload" crossorigin href="./assets/eye-off-BOZA7gbn.js">
+    <link rel="modulepreload" crossorigin href="./assets/refresh-cw-CYq4mK5a.js">
+    <link rel="modulepreload" crossorigin href="./assets/tree-actions-CsC2XmGo.js">
+    <link rel="modulepreload" crossorigin href="./assets/spinner-D-V4psAa.js">
+    <link rel="modulepreload" crossorigin href="./assets/html-to-image-CwmX28T9.js">
+    <link rel="modulepreload" crossorigin href="./assets/focus-DiEyfiAG.js">
+    <link rel="modulepreload" crossorigin href="./assets/useAsyncData-Bg5iAViP.js">
+    <link rel="modulepreload" crossorigin href="./assets/LazyAnyLanguageCodeMirror-sVm_hz8A.js">
+    <link rel="modulepreload" crossorigin href="./assets/micromark-factory-space-Dx_STMJD.js">
+    <link rel="modulepreload" crossorigin href="./assets/chunk-5FQGJX7Z-Cp0LZT-a.js">
+    <link rel="modulepreload" crossorigin href="./assets/markdown-renderer-QvXG0CRk.js">
+    <link rel="modulepreload" crossorigin href="./assets/command-CAJLPEBq.js">
+    <link rel="modulepreload" crossorigin href="./assets/field-BeZbVzXA.js">
+    <link rel="modulepreload" crossorigin href="./assets/popover-DrHQ3KEt.js">
+    <link rel="modulepreload" crossorigin href="./assets/errors-PgHhDa-M.js">
+    <link rel="modulepreload" crossorigin href="./assets/download-BomYt3nl.js">
+    <link rel="modulepreload" crossorigin href="./assets/table-CH2plyy9.js">
+    <link rel="modulepreload" crossorigin href="./assets/useIframeCapabilities-Ccb4fvKc.js">
+    <link rel="modulepreload" crossorigin href="./assets/error-banner-B6eIlxzg.js">
+    <link rel="modulepreload" crossorigin href="./assets/formats-ClEFGPy-.js">
+    <link rel="modulepreload" crossorigin href="./assets/utils-CCTAhdFi.js">
+    <link rel="modulepreload" crossorigin href="./assets/en-US-CjNeNXDB.js">
+    <link rel="modulepreload" crossorigin href="./assets/isValid-D7naiWNs.js">
+    <link rel="modulepreload" crossorigin href="./assets/dates-D-kIKDYA.js">
+    <link rel="modulepreload" crossorigin href="./assets/extends-B9D0JO9U.js">
+    <link rel="modulepreload" crossorigin href="./assets/emotion-is-prop-valid.esm-lG8j6oqk.js">
+    <link rel="modulepreload" crossorigin href="./assets/useDateFormatter-rtpVEy3J.js">
+    <link rel="modulepreload" crossorigin href="./assets/react-icons.esm-D4GMDkIf.js">
+    <link rel="modulepreload" crossorigin href="./assets/RSPContexts-CgC81f0I.js">
+    <link rel="modulepreload" crossorigin href="./assets/table-D-tcnZC7.js">
+    <link rel="modulepreload" crossorigin href="./assets/ellipsis-C_B8Ux9M.js">
+    <link rel="modulepreload" crossorigin href="./assets/external-link-BOlXZUla.js">
+    <link rel="modulepreload" crossorigin href="./assets/message-circle-dL5J5ZsZ.js">
+    <link rel="modulepreload" crossorigin href="./assets/plus-AgXtozBz.js">
+    <link rel="modulepreload" crossorigin href="./assets/trash-2-72W0TZ3L.js">
+    <link rel="modulepreload" crossorigin href="./assets/react-resizable-panels.browser.esm-Z-MD3n3J.js">
+    <link rel="modulepreload" crossorigin href="./assets/JsonOutput-DnGSkLeP.js">
+    <link rel="modulepreload" crossorigin href="./assets/chart-no-axes-column-iDRxid4h.js">
+    <link rel="modulepreload" crossorigin href="./assets/square-function-DNNRTPQJ.js">
+    <link rel="modulepreload" crossorigin href="./assets/spec-CzqcmYQk.js">
+    <link rel="modulepreload" crossorigin href="./assets/column-preview-BgZLUEOj.js">
+    <link rel="modulepreload" crossorigin href="./assets/icons-CIPE8AIY.js">
+    <link rel="modulepreload" crossorigin href="./assets/radio-group-CLBjGkt5.js">
+    <link rel="modulepreload" crossorigin href="./assets/floating-outline-wz-WSRgP.js">
+    <link rel="modulepreload" crossorigin href="./assets/switch-CvweaCXq.js">
+    <link rel="modulepreload" crossorigin href="./assets/objectWithoutPropertiesLoose-CboCOq4o.js">
+    <link rel="modulepreload" crossorigin href="./assets/esm-BL7jQmzn.js">
+    <link rel="modulepreload" crossorigin href="./assets/readonly-python-code-CW_G5e4E.js">
+    <link rel="modulepreload" crossorigin href="./assets/file-headphone-DAu6VO6j.js">
+    <link rel="modulepreload" crossorigin href="./assets/file-CJH9JNGH.js">
+    <link rel="modulepreload" crossorigin href="./assets/image-5XI2VU-q.js">
+    <link rel="modulepreload" crossorigin href="./assets/file-icons-Cb54mIL8.js">
+    <link rel="modulepreload" crossorigin href="./assets/events-90X9nql5.js">
+    <link rel="modulepreload" crossorigin href="./assets/share-CYpcX4N4.js">
+    <link rel="modulepreload" crossorigin href="./assets/blob-C3EfaMOb.js">
+    <link rel="modulepreload" crossorigin href="./assets/memoize-Tp7rARFe.js">
+    <link rel="modulepreload" crossorigin href="./assets/get-C-qh_et5.js">
+    <link rel="modulepreload" crossorigin href="./assets/_baseSet-CsW0tABf.js">
+    <link rel="modulepreload" crossorigin href="./assets/state-BXbiRXZk.js">
+    <link rel="modulepreload" crossorigin href="./assets/label-BElwWzf0.js">
+    <link rel="modulepreload" crossorigin href="./assets/textarea-CpFfEUet.js">
+    <link rel="modulepreload" crossorigin href="./assets/refresh-ccw-sLaKP2vj.js">
+    <link rel="modulepreload" crossorigin href="./assets/form-CgWNb44_.js">
+    <link rel="modulepreload" crossorigin href="./assets/renderShortcut-BZLr8D7H.js">
+    <link rel="modulepreload" crossorigin href="./assets/useBoolean-D89u30n-.js">
+    <link rel="modulepreload" crossorigin href="./assets/useDeepCompareMemoize-CSMoa-ga.js">
+    <link rel="modulepreload" crossorigin href="./assets/types-jdbI9Q8O.js">
+    <link rel="modulepreload" crossorigin href="./assets/semaphore-DtBYRzWS.js">
+    <link rel="modulepreload" crossorigin href="./assets/fileToBase64-C2Yy-YXq.js">
+    <link rel="modulepreload" crossorigin href="./assets/pathUtils-Bfcp5m-a.js">
+    <link rel="modulepreload" crossorigin href="./assets/prop-types-C638SUfx.js">
+    <link rel="modulepreload" crossorigin href="./assets/es-1D83cgiu.js">
+    <link rel="modulepreload" crossorigin href="./assets/_hasPath-hMc_3QZy.js">
+    <link rel="modulepreload" crossorigin href="./assets/hasIn-CSsM95b1.js">
+    <link rel="modulepreload" crossorigin href="./assets/flatten-Bd5tsfm_.js">
+    <link rel="modulepreload" crossorigin href="./assets/pick-D1xb4gl6.js">
+    <link rel="modulepreload" crossorigin href="./assets/code-xml-aSiY8T7C.js">
+    <link rel="modulepreload" crossorigin href="./assets/house-DS0r7dNZ.js">
+    <link rel="modulepreload" crossorigin href="./assets/square-DFICx2Qv.js">
+    <link rel="modulepreload" crossorigin href="./assets/triangle-alert-BL4YVsPy.js">
+    <link rel="modulepreload" crossorigin href="./assets/bundle.esm-D0TWQ6iT.js">
+    <link rel="stylesheet" crossorigin href="./assets/cells-BVzo2MHf.css">
+    <link rel="stylesheet" crossorigin href="./assets/markdown-renderer-DdDKmWlR.css">
+    <link rel="stylesheet" crossorigin href="./assets/JsonOutput-BQtz7-np.css">
+    <link rel="stylesheet" crossorigin href="./assets/index-BjlEpvLC.css">
+  <marimo-wasm hidden=""></marimo-wasm>
+    <script>
+        if (window.location.protocol === 'file:') {
+            alert('Warning: This file must be served by an HTTP server to function correctly.');
+        }
+    </script>
+    
+    <style>
+        #save-button {
+            display: none !important;
+        }
+        #filename-input {
+            display: none !important;
+        }
+    </style>
+    
+<script data-marimo="true">
+    Object.defineProperty(window, "__MARIMO_EXPORT_CONTEXT__", {
+        value: Object.freeze({
+            trusted: true,
+            notebookCode: "import marimo\n\n__generated_with = \"0.23.15\"\napp = marimo.App(width=\"medium\")\n\n\n@app.cell\ndef _():\n    import json\n    import marimo as mo\n\n    return json, mo\n\n\n@app.cell\ndef _(mo):\n    mo.md(\"\"\"\n    # \ud83c\udfdf\ufe0f Premier League Historical Vault \u2014 Interactive Simulation Lab\n    **Client-Side Python \u0026 SQL Sandbox (WebAssembly / Pyodide)**\n\n    This laboratory runs entirely in your browser using WebAssembly. No remote Python server or backend API is required.\n    Adjust scoring models, simulate counterfactual captaincy rules, or run SQL queries across 10 seasons of Premier League data.\n    \"\"\")\n    return\n\n\n@app.cell\ndef _(json):\n    # Embedded compact historical dataset for instantaneous client-side execution\n    import urllib.request\n\n    try:\n        req = urllib.request.urlopen(\"/src/data/historical_vault.json\")\n        vault_data = json.loads(req.read().decode(\"utf-8\"))\n    except Exception:\n        # Fallback inline minimal dataset if accessed outside Vite root\n        vault_data = {\n            \"seasons\": [\n                {\"season\": \"2024-25\", \"total_goals\": 1081, \"top_scorer_name\": \"M.Salah\", \"top_scorer_goals\": 29, \"top_points_name\": \"M.Salah\", \"top_points\": 344},\n                {\"season\": \"2023-24\", \"total_goals\": 1196, \"top_scorer_name\": \"Haaland\", \"top_scorer_goals\": 27, \"top_points_name\": \"Palmer\", \"top_points\": 244},\n                {\"season\": \"2022-23\", \"total_goals\": 1038, \"top_scorer_name\": \"Haaland\", \"top_scorer_goals\": 36, \"top_points_name\": \"Haaland\", \"top_points\": 272},\n                {\"season\": \"2021-22\", \"total_goals\": 1037, \"top_scorer_name\": \"Son\", \"top_scorer_goals\": 23, \"top_points_name\": \"Salah\", \"top_points\": 265},\n                {\"season\": \"2020-21\", \"total_goals\": 986, \"top_scorer_name\": \"Kane\", \"top_scorer_goals\": 23, \"top_points_name\": \"Fernandes\", \"top_points\": 244},\n                {\"season\": \"2019-20\", \"total_goals\": 1001, \"top_scorer_name\": \"Vardy\", \"top_scorer_goals\": 23, \"top_points_name\": \"De Bruyne\", \"top_points\": 251},\n                {\"season\": \"2018-19\", \"total_goals\": 1038, \"top_scorer_name\": \"Aubameyang\", \"top_scorer_goals\": 22, \"top_points_name\": \"Salah\", \"top_points\": 259},\n                {\"season\": \"2017-18\", \"total_goals\": 988, \"top_scorer_name\": \"Salah\", \"top_scorer_goals\": 32, \"top_points_name\": \"Salah\", \"top_points\": 303},\n                {\"season\": \"2016-17\", \"total_goals\": 1029, \"top_scorer_name\": \"Kane\", \"top_scorer_goals\": 29, \"top_points_name\": \"S\u00e1nchez\", \"top_points\": 264}\n            ]\n        }\n    return (vault_data,)\n\n\n@app.cell\ndef _(mo, vault_data):\n    seasons_list = [s[\"season\"] for s in vault_data.get(\"seasons\", [])]\n    season_picker = mo.ui.dropdown(\n        options=seasons_list,\n        value=seasons_list[0] if seasons_list else \"2024-25\",\n        label=\"Campaign Season\"\n    )\n    captain_mult = mo.ui.slider(\n        start=1,\n        stop=4,\n        step=1,\n        value=2,\n        label=\"Captaincy Multiplier\"\n    )\n    goal_pts = mo.ui.slider(\n        start=4,\n        stop=8,\n        step=1,\n        value=5,\n        label=\"MID Goal Points\"\n    )\n\n    mo.md(\n        f\"\"\"\n        ### \u2699\ufe0f Tactical Parameters\n        {mo.as_html(mo.hstack([season_picker, captain_mult, goal_pts], justify='start', gap=2))}\n        \"\"\"\n    )\n    return captain_mult, season_picker\n\n\n@app.cell\ndef _(captain_mult, mo, season_picker, vault_data):\n    s_meta = next((s for s in vault_data.get(\"seasons\", []) if s[\"season\"] == season_picker.value), None)\n\n    if s_meta:\n        top_pts = s_meta[\"top_points\"]\n        simulated_pts = top_pts + (s_meta[\"top_points\"] // 4) * (captain_mult.value - 2)\n        summary_md = f\"\"\"\n        ### \ud83d\udcca Simulation Output: `{season_picker.value}`\n        - **Golden Boot Winner**: **{s_meta['top_scorer_name']}** ({s_meta['top_scorer_goals']} goals)\n        - **Official MVP**: **{s_meta['top_points_name']}** ({top_pts} pts)\n        - **Simulated MVP Output ({captain_mult.value}x Captaincy)**: **~{simulated_pts} pts**\n        - **League Total Goals**: {s_meta['total_goals']:,} goals\n        \"\"\"\n    else:\n        summary_md = \"Select a valid season above.\"\n\n    mo.md(summary_md)\n    return\n\n\n@app.cell\ndef _(mo):\n    mo.md(\"\"\"\n    ---\n    ### \ud83d\udd0d In-Browser SQL Explorer (SQLite)\n    Run queries across historical Premier League records directly in WebAssembly:\n    \"\"\")\n    return\n\n\n@app.cell\ndef _(mo, vault_data):\n    import sqlite3\n\n    conn = sqlite3.connect(\":memory:\")\n    cursor = conn.cursor()\n    cursor.execute(\"CREATE TABLE seasons (season TEXT, total_goals INT, top_scorer TEXT, goals INT, mvp TEXT, points INT);\")\n\n    for s in vault_data.get(\"seasons\", []):\n        cursor.execute(\n            \"INSERT INTO seasons VALUES (?, ?, ?, ?, ?, ?)\",\n            (s[\"season\"], s[\"total_goals\"], s.get(\"top_scorer_name\", \"\"), s.get(\"top_scorer_goals\", 0), s.get(\"top_points_name\", \"\"), s.get(\"top_points\", 0))\n        )\n    conn.commit()\n\n    query_input = mo.ui.text_area(\n        value=\"SELECT season, mvp, points, top_scorer, goals FROM seasons ORDER BY points DESC LIMIT 5;\",\n        label=\"Arbitrary SQL Query\",\n        rows=3\n    )\n    query_input\n    return conn, query_input\n\n\n@app.cell\ndef _(conn, mo, query_input):\n    try:\n        cur = conn.cursor()\n        cur.execute(query_input.value)\n        rows = cur.fetchall()\n        cols = [desc[0] for desc in cur.description] if cur.description else []\n        table_html = mo.ui.table([dict(zip(cols, r)) for r in rows])\n    except Exception as err:\n        table_html = mo.md(f\"\u26a0\ufe0f **SQL Error**: `{err}`\")\n\n    table_html\n    return\n\n\nif __name__ == \"__main__\":\n    app.run()\n",
+        }),
+        writable: false,
+        configurable: false,
+    });
+</script>
+<marimo-code hidden="">import%20marimo%0A%0A__generated_with%20%3D%20%220.23.15%22%0Aapp%20%3D%20marimo.App(width%3D%22medium%22)%0A%0A%0A%40app.cell%0Adef%20_()%3A%0A%20%20%20%20import%20json%0A%20%20%20%20import%20marimo%20as%20mo%0A%0A%20%20%20%20return%20json%2C%20mo%0A%0A%0A%40app.cell%0Adef%20_(mo)%3A%0A%20%20%20%20mo.md(%22%22%22%0A%20%20%20%20%23%20%F0%9F%8F%9F%EF%B8%8F%20Premier%20League%20Historical%20Vault%20%E2%80%94%20Interactive%20Simulation%20Lab%0A%20%20%20%20**Client-Side%20Python%20%26%20SQL%20Sandbox%20(WebAssembly%20%2F%20Pyodide)**%0A%0A%20%20%20%20This%20laboratory%20runs%20entirely%20in%20your%20browser%20using%20WebAssembly.%20No%20remote%20Python%20server%20or%20backend%20API%20is%20required.%0A%20%20%20%20Adjust%20scoring%20models%2C%20simulate%20counterfactual%20captaincy%20rules%2C%20or%20run%20SQL%20queries%20across%2010%20seasons%20of%20Premier%20League%20data.%0A%20%20%20%20%22%22%22)%0A%20%20%20%20return%0A%0A%0A%40app.cell%0Adef%20_(json)%3A%0A%20%20%20%20%23%20Embedded%20compact%20historical%20dataset%20for%20instantaneous%20client-side%20execution%0A%20%20%20%20import%20urllib.request%0A%0A%20%20%20%20try%3A%0A%20%20%20%20%20%20%20%20req%20%3D%20urllib.request.urlopen(%22%2Fsrc%2Fdata%2Fhistorical_vault.json%22)%0A%20%20%20%20%20%20%20%20vault_data%20%3D%20json.loads(req.read().decode(%22utf-8%22))%0A%20%20%20%20except%20Exception%3A%0A%20%20%20%20%20%20%20%20%23%20Fallback%20inline%20minimal%20dataset%20if%20accessed%20outside%20Vite%20root%0A%20%20%20%20%20%20%20%20vault_data%20%3D%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22seasons%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%22season%22%3A%20%222024-25%22%2C%20%22total_goals%22%3A%201081%2C%20%22top_scorer_name%22%3A%20%22M.Salah%22%2C%20%22top_scorer_goals%22%3A%2029%2C%20%22top_points_name%22%3A%20%22M.Salah%22%2C%20%22top_points%22%3A%20344%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%22season%22%3A%20%222023-24%22%2C%20%22total_goals%22%3A%201196%2C%20%22top_scorer_name%22%3A%20%22Haaland%22%2C%20%22top_scorer_goals%22%3A%2027%2C%20%22top_points_name%22%3A%20%22Palmer%22%2C%20%22top_points%22%3A%20244%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%22season%22%3A%20%222022-23%22%2C%20%22total_goals%22%3A%201038%2C%20%22top_scorer_name%22%3A%20%22Haaland%22%2C%20%22top_scorer_goals%22%3A%2036%2C%20%22top_points_name%22%3A%20%22Haaland%22%2C%20%22top_points%22%3A%20272%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%22season%22%3A%20%222021-22%22%2C%20%22total_goals%22%3A%201037%2C%20%22top_scorer_name%22%3A%20%22Son%22%2C%20%22top_scorer_goals%22%3A%2023%2C%20%22top_points_name%22%3A%20%22Salah%22%2C%20%22top_points%22%3A%20265%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%22season%22%3A%20%222020-21%22%2C%20%22total_goals%22%3A%20986%2C%20%22top_scorer_name%22%3A%20%22Kane%22%2C%20%22top_scorer_goals%22%3A%2023%2C%20%22top_points_name%22%3A%20%22Fernandes%22%2C%20%22top_points%22%3A%20244%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%22season%22%3A%20%222019-20%22%2C%20%22total_goals%22%3A%201001%2C%20%22top_scorer_name%22%3A%20%22Vardy%22%2C%20%22top_scorer_goals%22%3A%2023%2C%20%22top_points_name%22%3A%20%22De%20Bruyne%22%2C%20%22top_points%22%3A%20251%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%22season%22%3A%20%222018-19%22%2C%20%22total_goals%22%3A%201038%2C%20%22top_scorer_name%22%3A%20%22Aubameyang%22%2C%20%22top_scorer_goals%22%3A%2022%2C%20%22top_points_name%22%3A%20%22Salah%22%2C%20%22top_points%22%3A%20259%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%22season%22%3A%20%222017-18%22%2C%20%22total_goals%22%3A%20988%2C%20%22top_scorer_name%22%3A%20%22Salah%22%2C%20%22top_scorer_goals%22%3A%2032%2C%20%22top_points_name%22%3A%20%22Salah%22%2C%20%22top_points%22%3A%20303%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%22season%22%3A%20%222016-17%22%2C%20%22total_goals%22%3A%201029%2C%20%22top_scorer_name%22%3A%20%22Kane%22%2C%20%22top_scorer_goals%22%3A%2029%2C%20%22top_points_name%22%3A%20%22S%C3%A1nchez%22%2C%20%22top_points%22%3A%20264%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20return%20(vault_data%2C)%0A%0A%0A%40app.cell%0Adef%20_(mo%2C%20vault_data)%3A%0A%20%20%20%20seasons_list%20%3D%20%5Bs%5B%22season%22%5D%20for%20s%20in%20vault_data.get(%22seasons%22%2C%20%5B%5D)%5D%0A%20%20%20%20season_picker%20%3D%20mo.ui.dropdown(%0A%20%20%20%20%20%20%20%20options%3Dseasons_list%2C%0A%20%20%20%20%20%20%20%20value%3Dseasons_list%5B0%5D%20if%20seasons_list%20else%20%222024-25%22%2C%0A%20%20%20%20%20%20%20%20label%3D%22Campaign%20Season%22%0A%20%20%20%20)%0A%20%20%20%20captain_mult%20%3D%20mo.ui.slider(%0A%20%20%20%20%20%20%20%20start%3D1%2C%0A%20%20%20%20%20%20%20%20stop%3D4%2C%0A%20%20%20%20%20%20%20%20step%3D1%2C%0A%20%20%20%20%20%20%20%20value%3D2%2C%0A%20%20%20%20%20%20%20%20label%3D%22Captaincy%20Multiplier%22%0A%20%20%20%20)%0A%20%20%20%20goal_pts%20%3D%20mo.ui.slider(%0A%20%20%20%20%20%20%20%20start%3D4%2C%0A%20%20%20%20%20%20%20%20stop%3D8%2C%0A%20%20%20%20%20%20%20%20step%3D1%2C%0A%20%20%20%20%20%20%20%20value%3D5%2C%0A%20%20%20%20%20%20%20%20label%3D%22MID%20Goal%20Points%22%0A%20%20%20%20)%0A%0A%20%20%20%20mo.md(%0A%20%20%20%20%20%20%20%20f%22%22%22%0A%20%20%20%20%20%20%20%20%23%23%23%20%E2%9A%99%EF%B8%8F%20Tactical%20Parameters%0A%20%20%20%20%20%20%20%20%7Bmo.as_html(mo.hstack(%5Bseason_picker%2C%20captain_mult%2C%20goal_pts%5D%2C%20justify%3D'start'%2C%20gap%3D2))%7D%0A%20%20%20%20%20%20%20%20%22%22%22%0A%20%20%20%20)%0A%20%20%20%20return%20captain_mult%2C%20season_picker%0A%0A%0A%40app.cell%0Adef%20_(captain_mult%2C%20mo%2C%20season_picker%2C%20vault_data)%3A%0A%20%20%20%20s_meta%20%3D%20next((s%20for%20s%20in%20vault_data.get(%22seasons%22%2C%20%5B%5D)%20if%20s%5B%22season%22%5D%20%3D%3D%20season_picker.value)%2C%20None)%0A%0A%20%20%20%20if%20s_meta%3A%0A%20%20%20%20%20%20%20%20top_pts%20%3D%20s_meta%5B%22top_points%22%5D%0A%20%20%20%20%20%20%20%20simulated_pts%20%3D%20top_pts%20%2B%20(s_meta%5B%22top_points%22%5D%20%2F%2F%204)%20*%20(captain_mult.value%20-%202)%0A%20%20%20%20%20%20%20%20summary_md%20%3D%20f%22%22%22%0A%20%20%20%20%20%20%20%20%23%23%23%20%F0%9F%93%8A%20Simulation%20Output%3A%20%60%7Bseason_picker.value%7D%60%0A%20%20%20%20%20%20%20%20-%20**Golden%20Boot%20Winner**%3A%20**%7Bs_meta%5B'top_scorer_name'%5D%7D**%20(%7Bs_meta%5B'top_scorer_goals'%5D%7D%20goals)%0A%20%20%20%20%20%20%20%20-%20**Official%20MVP**%3A%20**%7Bs_meta%5B'top_points_name'%5D%7D**%20(%7Btop_pts%7D%20pts)%0A%20%20%20%20%20%20%20%20-%20**Simulated%20MVP%20Output%20(%7Bcaptain_mult.value%7Dx%20Captaincy)**%3A%20**~%7Bsimulated_pts%7D%20pts**%0A%20%20%20%20%20%20%20%20-%20**League%20Total%20Goals**%3A%20%7Bs_meta%5B'total_goals'%5D%3A%2C%7D%20goals%0A%20%20%20%20%20%20%20%20%22%22%22%0A%20%20%20%20else%3A%0A%20%20%20%20%20%20%20%20summary_md%20%3D%20%22Select%20a%20valid%20season%20above.%22%0A%0A%20%20%20%20mo.md(summary_md)%0A%20%20%20%20return%0A%0A%0A%40app.cell%0Adef%20_(mo)%3A%0A%20%20%20%20mo.md(%22%22%22%0A%20%20%20%20---%0A%20%20%20%20%23%23%23%20%F0%9F%94%8D%20In-Browser%20SQL%20Explorer%20(SQLite)%0A%20%20%20%20Run%20queries%20across%20historical%20Premier%20League%20records%20directly%20in%20WebAssembly%3A%0A%20%20%20%20%22%22%22)%0A%20%20%20%20return%0A%0A%0A%40app.cell%0Adef%20_(mo%2C%20vault_data)%3A%0A%20%20%20%20import%20sqlite3%0A%0A%20%20%20%20conn%20%3D%20sqlite3.connect(%22%3Amemory%3A%22)%0A%20%20%20%20cursor%20%3D%20conn.cursor()%0A%20%20%20%20cursor.execute(%22CREATE%20TABLE%20seasons%20(season%20TEXT%2C%20total_goals%20INT%2C%20top_scorer%20TEXT%2C%20goals%20INT%2C%20mvp%20TEXT%2C%20points%20INT)%3B%22)%0A%0A%20%20%20%20for%20s%20in%20vault_data.get(%22seasons%22%2C%20%5B%5D)%3A%0A%20%20%20%20%20%20%20%20cursor.execute(%0A%20%20%20%20%20%20%20%20%20%20%20%20%22INSERT%20INTO%20seasons%20VALUES%20(%3F%2C%20%3F%2C%20%3F%2C%20%3F%2C%20%3F%2C%20%3F)%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20(s%5B%22season%22%5D%2C%20s%5B%22total_goals%22%5D%2C%20s.get(%22top_scorer_name%22%2C%20%22%22)%2C%20s.get(%22top_scorer_goals%22%2C%200)%2C%20s.get(%22top_points_name%22%2C%20%22%22)%2C%20s.get(%22top_points%22%2C%200))%0A%20%20%20%20%20%20%20%20)%0A%20%20%20%20conn.commit()%0A%0A%20%20%20%20query_input%20%3D%20mo.ui.text_area(%0A%20%20%20%20%20%20%20%20value%3D%22SELECT%20season%2C%20mvp%2C%20points%2C%20top_scorer%2C%20goals%20FROM%20seasons%20ORDER%20BY%20points%20DESC%20LIMIT%205%3B%22%2C%0A%20%20%20%20%20%20%20%20label%3D%22Arbitrary%20SQL%20Query%22%2C%0A%20%20%20%20%20%20%20%20rows%3D3%0A%20%20%20%20)%0A%20%20%20%20query_input%0A%20%20%20%20return%20conn%2C%20query_input%0A%0A%0A%40app.cell%0Adef%20_(conn%2C%20mo%2C%20query_input)%3A%0A%20%20%20%20try%3A%0A%20%20%20%20%20%20%20%20cur%20%3D%20conn.cursor()%0A%20%20%20%20%20%20%20%20cur.execute(query_input.value)%0A%20%20%20%20%20%20%20%20rows%20%3D%20cur.fetchall()%0A%20%20%20%20%20%20%20%20cols%20%3D%20%5Bdesc%5B0%5D%20for%20desc%20in%20cur.description%5D%20if%20cur.description%20else%20%5B%5D%0A%20%20%20%20%20%20%20%20table_html%20%3D%20mo.ui.table(%5Bdict(zip(cols%2C%20r))%20for%20r%20in%20rows%5D)%0A%20%20%20%20except%20Exception%20as%20err%3A%0A%20%20%20%20%20%20%20%20table_html%20%3D%20mo.md(f%22%E2%9A%A0%EF%B8%8F%20**SQL%20Error**%3A%20%60%7Berr%7D%60%22)%0A%0A%20%20%20%20table_html%0A%20%20%20%20return%0A%0A%0Aif%20__name__%20%3D%3D%20%22__main__%22%3A%0A%20%20%20%20app.run()%0A</marimo-code></head>
+  <body>
+    <div id="root"></div>
+    <script data-marimo="true">
+      Object.defineProperty(window, "__MARIMO_MOUNT_CONFIG__", {
+        value: Object.freeze({
+            "filename": "notebook.py",
+            "cwd": "",
+            "lspWorkspace": null,
+            "mode": "read",
+            "version": "0.23.15",
+            "serverToken": "unused",
+            "config": {"ai": {"custom_providers": {}, "enabled": true, "models": {"custom_models": [], "displayed_models": []}}, "completion": {"activate_on_typing": true, "auto_close_pairs": true, "copilot": false, "signature_hint_on_typing": false}, "diagnostics": {"sql_linter": true}, "display": {"cell_output": "below", "code_editor_font_size": 14, "dataframes": "rich", "default_table_max_columns": 50, "default_table_page_size": 10, "default_width": "medium", "reference_highlighting": true, "theme": "system"}, "formatting": {"line_length": 79}, "keymap": {"overrides": {}, "preset": "default"}, "language_servers": {"pylsp": {"enable_flake8": false, "enable_mypy": true, "enable_pydocstyle": false, "enable_pyflakes": false, "enable_pylint": false, "enable_ruff": true, "enabled": false}}, "mcp": {"mcpServers": {}, "presets": []}, "package_management": {"manager": "pip"}, "runtime": {"auto_instantiate": false, "auto_reload": "off", "default_csv_encoding": "utf-8", "default_sql_output": "auto", "on_cell_change": "autorun", "output_max_bytes": 8000000, "reactive_tests": true, "show_tracebacks": false, "std_stream_max_bytes": 1000000, "watcher_on_save": "lazy"}, "save": {"autosave": "off", "autosave_delay": 1000, "format_on_save": false}, "server": {"browser": "default", "follow_symlink": false}, "snippets": {"custom_paths": [], "include_default_snippets": true}},
+            "configOverrides": {},
+            "appConfig": {"sql_output": "auto", "width": "medium"},
+            "view": {"showAppCode": false},
+            "notebook": null,
+            "session": null,
+            "runtimeConfig": null,
+        }),
+        writable: false,
+        configurable: false,
+      });
+    </script>
+  </body>
+</html>
