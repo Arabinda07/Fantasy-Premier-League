@@ -171,6 +171,14 @@ export default function HistoricalVault({ onInspectPlayer }) {
               <Calendar size={13} weight={activeTab === 'comparison' ? 'fill' : 'bold'} />
               <span>10-Season Overview</span>
             </button>
+            <button
+              type="button"
+              className={`hud-segment-btn ${activeTab === 'lab' ? 'active' : ''}`}
+              onClick={() => setActiveTab('lab')}
+            >
+              <Terminal size={13} weight={activeTab === 'lab' ? 'fill' : 'bold'} />
+              <span>Marimo & SQL Lab</span>
+            </button>
           </div>
         </div>
       </div>
@@ -755,6 +763,72 @@ export default function HistoricalVault({ onInspectPlayer }) {
                 })}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {/* Tab View 4: In-Browser Marimo & SQL WASM Laboratory */}
+        {activeTab === 'lab' && (
+          <div style={{
+            backgroundColor: 'var(--bg-surface-1)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '20px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Terminal size={18} weight="bold" style={{ color: 'var(--accent-amber)' }} />
+                  <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
+                    Client-Side Python & SQL Sandbox (WebAssembly / Pyodide)
+                  </h3>
+                </div>
+                <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: '4px 0 0 0' }}>
+                  Runs completely inside your browser via WebAssembly with zero server dependencies. Adjust scoring parameters and execute live SQL queries.
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <a
+                  href="/lab.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hud-segment-btn"
+                  style={{
+                    backgroundColor: 'var(--bg-surface-2)',
+                    color: 'var(--text-primary)',
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '6px 12px',
+                    fontSize: '11px',
+                    fontWeight: 700
+                  }}
+                >
+                  <ArrowUpRight size={13} weight="bold" />
+                  <span>Open Full Lab in New Tab</span>
+                </a>
+              </div>
+            </div>
+
+            <div style={{
+              borderRadius: 'var(--radius-md)',
+              overflow: 'hidden',
+              border: '1px solid var(--border-subtle)',
+              height: '700px',
+              backgroundColor: '#090D16'
+            }}>
+              <iframe
+                src="/lab.html"
+                title="Marimo WebAssembly Laboratory"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  border: 'none',
+                  display: 'block'
+                }}
+              />
+            </div>
           </div>
         )}
 

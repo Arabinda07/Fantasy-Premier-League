@@ -29,6 +29,9 @@ reports/
 *.sqlite
 *.sqlite3
 
+# Generated WebAssembly vendor assets
+frontend/public/assets/
+
 # Editor & IDE files
 .vscode/
 .idea/
