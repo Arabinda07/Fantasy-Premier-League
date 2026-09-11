@@ -87,7 +87,10 @@ def verify_json_receipt(json_path: Path, max_budget: float = 100.0) -> list:
             errors.append(f"Club limit violation: Team '{team}' has {count} players (max allowed: 3)")
 
     # 5. Financial limit
-    total_cost = sum(float(p.get("cost", 0.0)) for p in squad)
+    raw_costs = [float(p.get("cost", 0.0)) for p in squad]
+    total_cost = sum(raw_costs)
+    if total_cost > 200.0:  # FPL raw API units (tenths of £M, e.g. 998 = £99.8M)
+        total_cost /= 10.0
     bank = float(data.get("manager_profile", {}).get("bank", 0.0))
     if total_cost > max_budget + bank + 1e-4:
         errors.append(f"Financial budget violation: Total squad cost £{total_cost:.1f}M exceeds allowable limit £{max_budget + bank:.1f}M")

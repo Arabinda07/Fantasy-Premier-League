@@ -2,6 +2,9 @@
 
 Instructions for any coding agent (or human) working in this repository. Applies regardless of which tool you're using.
 
+> [!IMPORTANT]
+> **Project Constitution**: All agents and contributors must abide by the ratified [Project Constitution](file:///e:/Fantasy-Premier-League/CONSTITUTION.md) (`CONSTITUTION.md`), which synthesizes codebase boundaries, Open Knowledge Format (OKF v0.2) rules, mathematical invariants, and user-facing voice guidelines into our formal Spec-Driven Development framework.
+
 ## What this repo is
 
 Two things living side by side:

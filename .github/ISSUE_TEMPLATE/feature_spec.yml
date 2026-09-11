@@ -1,0 +1,92 @@
+name: "Feature Specification Proposal"
+description: "Propose a new feature specification conforming to Spec-Driven Development (SDD) and CONSTITUTION.md"
+title: "[Spec]: <Feature Title>"
+labels: ["spec", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### 📋 Spec-Driven Development (SDD) Feature Proposal
+        Before writing code or opening pull requests, specify the **What** and **Why** of the proposed feature.
+        All proposals must strictly abide by the [Project Constitution](CONSTITUTION.md) and [OKF v0.2 Catalog](knowledge/index.md).
+
+  - type: input
+    id: feature_slug
+    attributes:
+      label: "Feature Identifier / Slug"
+      description: "Short hyphenated identifier for the feature specification enclave (e.g. `client-optimizer-benchmarks`, `live-sync-resilience`)."
+      placeholder: "e.g. live-captaincy-recalibration"
+    validations:
+      required: true
+
+  - type: textarea
+    id: user_story
+    attributes:
+      label: "User Story & Value Proposition"
+      description: "Describe the user perspective: As an FPL manager, I want [capability], so that [tactical benefit / mini-league rank outcome]."
+      placeholder: "As an FPL manager, I want to see real-time transfer point tradeoffs against mini-league rivals, so that I can decide whether a -4 point hit is justified before the Saturday deadline."
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem_statement
+    attributes:
+      label: "Problem Statement & Context"
+      description: "What limitation, friction, or inaccuracy currently exists? Why is this feature necessary now?"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: architectural_tier
+    attributes:
+      label: "Primary Codebase Tier Impacted"
+      description: "Per CONSTITUTION.md Article I, select the primary architectural tier."
+      options:
+        - "Tier 1: Active Production Pipeline (model/, frontend/, data/2026-27/)"
+        - "Tier 2: Historical Archives & Backtesting Vault (data/2016-17/ to 2025-26/)"
+        - "Tier 3 / Scraper Maintenance (collector.py, global_scraper.py)"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: okf_and_models
+    attributes:
+      label: "Open Knowledge Format (OKF v0.2) Scope"
+      description: "Which mathematical models, schemas, or computation contracts will this feature touch?"
+      options:
+        - label: "11-Component Point Prediction ($C_1 \\dots C_{11}$) (`knowledge/models/points-model.md`)"
+        - label: "Dixon-Coles Bivariate Poisson Fixture Engine (`knowledge/models/fixture-model.md`)"
+        - label: "Mixed-Integer Linear Programming (MILP) Squad Solver (`knowledge/models/solver-model.md`)"
+        - label: "Minutes Survival Hazard & Rotation Intelligence (`knowledge/models/minutes-model.md`)"
+        - label: "Attested Datasets (`players_raw.csv`, `merged_gw.csv`, `predictions.csv`)"
+        - label: "Frontend Matchday Cockpit & Client Solver (`frontend/`)"
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: "Acceptance Criteria (Measurable & Verifiable)"
+      description: "List explicit, checkable criteria required for this spec to be verified as complete."
+      placeholder: |
+        - [ ] Criterion 1: Computes transfer delta in < 250ms on mobile client
+        - [ ] Criterion 2: Covered by unit tests in model/test_*.py
+        - [ ] Criterion 3: Zero banned words from docs/voice-and-tone-guide.md
+        - [ ] Criterion 4: Passes python scripts/validate_okf.py
+    validations:
+      required: true
+
+  - type: textarea
+    id: anti_goals
+    attributes:
+      label: "Anti-Goals & Out-of-Scope"
+      description: "What will this feature explicitly NOT do? (Define clear boundaries)"
+      placeholder: "Will not retroactively modify historical gameweek archives or alter legacy scraper schemas."
+
+  - type: checkboxes
+    id: constitutional_pledge
+    attributes:
+      label: "Constitutional Compliance"
+      options:
+        - label: "I have reviewed CONSTITUTION.md and verified this feature complies with all articles."
+          required: true
+        - label: "I will use frontend/src/constants/copyTokens.js for all user-facing strings."
+          required: true

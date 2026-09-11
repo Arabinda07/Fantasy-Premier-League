@@ -1,0 +1,74 @@
+name: Constitutional CI & Quality Gates
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python-constitutional-gates:
+    name: Python Quality Gates (OKF, Attestation, Voice & Tone)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: "Gate 1: OKF v0.2 Schema & Link Conformance"
+        run: |
+          python scripts/validate_okf.py
+
+      - name: "Gate 2: Voice, Tone & Copy Linter (Python Test Suite)"
+        run: |
+          python scripts/validate_frontend_copy.py
+          pytest model/test_voice_and_tone.py
+
+      - name: "Gate 3: Mathematical Attestation & Invariant Contracts"
+        run: |
+          python knowledge/references/attesters/verify_schema.py --season 2026-27 --gw 2
+          python knowledge/references/attesters/verify_solver.py --season 2026-27 --gw 2
+
+      - name: "Gate 4: Python Unit Test Suite"
+        run: |
+          pytest -v
+
+  frontend-constitutional-gates:
+    name: Frontend Quality Gates (Copy Check & Production Build)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: "Gate 2: Frontend Copy Linter (check-copy)"
+        working-directory: frontend
+        run: npm run check-copy
+
+      - name: "Gate 4: Production Build Verification"
+        working-directory: frontend
+        run: npm run build
