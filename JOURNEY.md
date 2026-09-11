@@ -824,6 +824,22 @@ This document tracks the phased rebuild of the Fantasy Premier League (FPL) poin
 
 ---
 
+### 23. Historical Campaign Club Assignment Fix (Feature 001)
+- **Problem**: In the Historical Vault (`HistoricalVault.jsx`), the SQLite archive (`data/pl_history.db`), and the cached frontend data (`frontend/src/data/historical_vault.json`), club names for seasons prior to 2019–20 were misassigned. Because `data/2016-17/teams.csv`, `data/2017-18/teams.csv`, and `data/2018-19/teams.csv` were absent, the compiler defaulted to a static 2016–17 alphabetical table. This caused 2018–19 Liverpool players (Salah, Mané, van Dijk, Alisson, Robertson, Alexander-Arnold) to be displayed as "Middlesbrough" (team ID 12), Hazard as "Everton" (team ID 6), and 2017–18 Salah as "Man City" (team ID 10).
+- **Implementation**:
+  - **Canonical Season Team Mapping Datasets**: Added canonical, verified `teams.csv` files for `2016-17`, `2017-18`, and `2018-19` with official annual team IDs ($1 \dots 20$) and permanent FPL global `team_code` mappings.
+  - **Compiler Robustness & Multi-Season Fallbacks ([`scripts/compile_pl_history.py`](file:///e:/Fantasy-Premier-League/scripts/compile_pl_history.py))**: Upgraded `get_teams_map` to primary `teams.csv`, secondary `raw.json` (`teams` list), tertiary `SEASON_TEAMS_FALLBACK` lookup, and individual player `team_code` fallback via `GLOBAL_TEAM_CODES`.
+  - **Automated Frontend Vault Sync (`export_vault_json`)**: Embedded atomic export of `frontend/src/data/historical_vault.json` directly into the compiler, serializing season summaries, full dream teams (starters + bench with detailed stats), and all-time Hall of Fame leaderboards (points and goals).
+  - **Regression Shield ([`tests/test_compile_pl_history.py`](file:///e:/Fantasy-Premier-League/tests/test_compile_pl_history.py))**: Added assertions confirming Salah (Liverpool), Hazard (Chelsea), Sterling (Man City), and 0 occurrences of Middlesbrough in the 2018–19 Dream Team across both SQLite and the JSON vault.
+- **Verification**:
+  - `pytest tests/test_compile_pl_history.py`: **3 / 3 passed**.
+  - Gate 1 (OKF Conformance): `python scripts/validate_okf.py`: **43 files scanned, 0 errors**.
+  - Gate 2 (Copy & Voice Check): `npm run check-copy --prefix frontend` and `pytest model/test_voice_and_tone.py`: **0 violations**.
+  - Gate 3 (Mathematical Attestation): `verify_schema.py` and `verify_solver.py`: **Attestation successful, all invariants satisfied**.
+  - Gate 4 (Test Suite & Build): **307 passed** across all test suites in 120s; `npm run build` compiled cleanly in 36.4s.
+
+---
+
 ## Current Status & Next Horizon
 
 All core phases, the Advanced Strategy Layer, the **Elite Enhancements Layer**, the **Matchup Intelligence Engine**, the **Live Data Pipeline Automation Engine**, the **Dixon-Coles Match Simulator**, the **Continuous Minutes Hazard Engine**, the **Risk-Adjusted CVaR & Auto-Sub Solver**, **Historical Backtesting with Chip Automation**, the **Next-Gen Frontend Cockpit with Reactive 4-Chip Projections**, the **Autonomous Gameweek Transition Orchestrator**, the **100% Native FPL Opta Data Engine**, **Phases 1–4 of the Multi-User Live Platform Rebuild**, the **FPL Dugout Rebranding & Complete 6-Surface Fan-Friendly Copy Transformation**, **Frontend Prop Alignment & Pipeline Unification**, **Promoted Clubs Calibration & Institutional UI Polish**, **Creator-Aligned Model Mechanics & Solver Optimizations**, **Intuitive Tactical Cockpit Upgrades with Automated Voice/Tone Enforcement**, **In-Season Squad Consistency & Transfer Feasibility Alignment**, **Persistent Squad Snapshot Locking & Transfer Continuity Guardrails**, the **Advanced Probabilistic Refinements M-01, M-02 & M-03 (Milestone 21)**, the **Adversarial P1 Hardening (Milestone 22)**, the **Order-Statistic Tournament Modeling for BPS M-04 (Milestone 23)**, the **Complete P2/P3 Hardening Pass (Milestone 24)**, the **Early-Season Captaincy Bayesian Confidence Calibration M-05 (Milestone 25)**, the **Expected Auto-Substitution Valuation M-06 & C11 Rate Normalization M-07 (Milestone 26)**, and the **Cross-Milestone Adversarial Review & Official FPL Scoring Alignment (Milestone 27)** are **complete, robust, and production-verified**. All planned modeling milestones M-01 through M-07 are now fully completed and hardened!
