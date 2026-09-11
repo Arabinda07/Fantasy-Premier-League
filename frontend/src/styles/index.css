@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 /* ==========================================================================
-   FPL QUANTITATIVE ANALYTICS TERMINAL — DESIGN SYSTEM TOKENS
+   FPL QUANTITATIVE ANALYTICS TERMINAL - DESIGN SYSTEM TOKENS
    Strict Anti-Slop, High-Density Institutional Theme
    Full Multi-Device Responsive Architecture ($impeccable adapt)
    ========================================================================== */
@@ -230,7 +230,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0 clamp(16px, 2.5vw, 32px) 40px;
 }
 
-/* Fluid view wrapper — used by non-pitch views for consistent full-width layout */
+/* Fluid view wrapper - used by non-pitch views for consistent full-width layout */
 .view-fluid {
   display: flex;
   flex-direction: column;
@@ -243,16 +243,14 @@ h1, h2, h3, h4, h5, h6 {
    ========================================================================== */
 
 .top-nav {
-  background: rgba(17, 23, 38, 0.90);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: var(--bg-surface-1);
   border-bottom: 1px solid var(--border-subtle);
   position: sticky;
   top: 0;
   z-index: 50;
   margin-bottom: 16px;
   width: 100%;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .top-nav-inner {
@@ -287,7 +285,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .brand-title {
@@ -336,7 +334,7 @@ h1, h2, h3, h4, h5, h6 {
 .brand-gw-select:focus {
   border-color: var(--accent-emerald);
   background: #1E293B;
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .nav-tabs-wrapper {
@@ -470,7 +468,7 @@ h1, h2, h3, h4, h5, h6 {
 .live-manager-chip:hover {
   border-color: var(--accent-emerald);
   background: #182035;
-  box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
   transform: translateY(-1px);
 }
 
@@ -691,7 +689,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .active-chip-tile {
   border-color: rgba(245, 158, 11, 0.4);
-  box-shadow: 0 0 12px rgba(245, 158, 11, 0.12);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 /* Tile 3: Tactical Directive */
@@ -1123,7 +1121,7 @@ h1, h2, h3, h4, h5, h6 {
   }
   50% {
     transform: scale(1.25);
-    box-shadow: 0 0 12px var(--accent-emerald), 0 0 4px rgba(16, 185, 129, 0.8);
+    box-shadow: 0 0 0 1px var(--accent-emerald);
   }
 }
 
@@ -1234,14 +1232,11 @@ h1, h2, h3, h4, h5, h6 {
    ========================================================================== */
 
 .player-pitch-card {
-  background: rgba(15, 21, 35, 0.94);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  border-top: 3px solid #3B82F6; /* Default accent kit stripe */
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 6px 8px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  padding: 8px 8px 6px 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   flex: 1 1 0;
   max-width: 136px;
   min-width: 64px;
@@ -1250,12 +1245,23 @@ h1, h2, h3, h4, h5, h6 {
   transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s ease, box-shadow 0.18s ease;
   position: relative;
   user-select: none;
+  overflow: hidden;
+}
+
+.player-pitch-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--kit-stripe, #3B82F6);
 }
 
 .player-pitch-card:hover {
   transform: translateY(-3px) scale(1.02);
   border-color: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 14px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
 }
 
 .player-pitch-card:active {
@@ -1264,7 +1270,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .player-pitch-card.sub-target {
   border-color: var(--accent-emerald) !important;
-  box-shadow: 0 0 16px rgba(16, 185, 129, 0.5) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
 }
 
 .player-pitch-card.bench-boosted {
@@ -1272,27 +1278,27 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Premier League Club Kit Stripe Accents */
-.player-pitch-card.kit-arsenal { border-top-color: #EF0107; }
-.player-pitch-card.kit-aston-villa { border-top-color: #95BFE5; }
-.player-pitch-card.kit-bournemouth { border-top-color: #DA291C; }
-.player-pitch-card.kit-brentford { border-top-color: #E30613; }
-.player-pitch-card.kit-brighton { border-top-color: #0057B8; }
-.player-pitch-card.kit-chelsea { border-top-color: #034694; }
-.player-pitch-card.kit-crystal-palace { border-top-color: #1B458F; }
-.player-pitch-card.kit-everton { border-top-color: #003399; }
-.player-pitch-card.kit-fulham { border-top-color: #CC0000; }
-.player-pitch-card.kit-ipswich { border-top-color: #0053A0; }
-.player-pitch-card.kit-leicester { border-top-color: #003090; }
-.player-pitch-card.kit-liverpool { border-top-color: #C8102E; }
-.player-pitch-card.kit-man-city { border-top-color: #6CABDD; }
-.player-pitch-card.kit-man-utd { border-top-color: #DA291C; }
-.player-pitch-card.kit-newcastle { border-top-color: #241F20; }
-.player-pitch-card.kit-nottingham-forest { border-top-color: #DD0000; }
-.player-pitch-card.kit-southampton { border-top-color: #D71920; }
-.player-pitch-card.kit-tottenham { border-top-color: #132257; }
-.player-pitch-card.kit-west-ham { border-top-color: #7A263A; }
-.player-pitch-card.kit-wolves { border-top-color: #FDB913; }
-.player-pitch-card.kit-generic { border-top-color: #3B82F6; }
+.player-pitch-card.kit-arsenal { --kit-stripe: #EF0107; }
+.player-pitch-card.kit-aston-villa { --kit-stripe: #95BFE5; }
+.player-pitch-card.kit-bournemouth { --kit-stripe: #DA291C; }
+.player-pitch-card.kit-brentford { --kit-stripe: #E30613; }
+.player-pitch-card.kit-brighton { --kit-stripe: #0057B8; }
+.player-pitch-card.kit-chelsea { --kit-stripe: #034694; }
+.player-pitch-card.kit-crystal-palace { --kit-stripe: #1B458F; }
+.player-pitch-card.kit-everton { --kit-stripe: #003399; }
+.player-pitch-card.kit-fulham { --kit-stripe: #CC0000; }
+.player-pitch-card.kit-ipswich { --kit-stripe: #0053A0; }
+.player-pitch-card.kit-leicester { --kit-stripe: #003090; }
+.player-pitch-card.kit-liverpool { --kit-stripe: #C8102E; }
+.player-pitch-card.kit-man-city { --kit-stripe: #6CABDD; }
+.player-pitch-card.kit-man-utd { --kit-stripe: #DA291C; }
+.player-pitch-card.kit-newcastle { --kit-stripe: #241F20; }
+.player-pitch-card.kit-nottingham-forest { --kit-stripe: #DD0000; }
+.player-pitch-card.kit-southampton { --kit-stripe: #D71920; }
+.player-pitch-card.kit-tottenham { --kit-stripe: #132257; }
+.player-pitch-card.kit-west-ham { --kit-stripe: #7A263A; }
+.player-pitch-card.kit-wolves { --kit-stripe: #FDB913; }
+.player-pitch-card.kit-generic { --kit-stripe: #3B82F6; }
 
 /* Card Internal Rows */
 .player-card-top-row {
@@ -1310,8 +1316,100 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 9.5px;
   padding: 1px 5px;
   border-radius: var(--radius-xs);
-  box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   letter-spacing: 0.02em;
+}
+
+.diff-badge {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--accent-amber);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: var(--radius-xs);
+  padding: 0 4px;
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.shield-badge {
+  background: rgba(6, 182, 212, 0.15);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  border-radius: var(--radius-xs);
+  padding: 0 4px;
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.boost-badge {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--accent-emerald);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: var(--radius-xs);
+  padding: 0 4px;
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.hook-hazard-badge {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--accent-amber);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: var(--radius-xs);
+  padding: 0 3px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.auto-sub-badge {
+  font-size: 8px;
+  font-weight: 800;
+  padding: 0 3px;
+  border-radius: var(--radius-xs);
+  line-height: 1.2;
+}
+
+.auto-sub-badge.high {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--accent-emerald);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.auto-sub-badge.medium {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--accent-amber);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.auto-sub-badge.low {
+  background: rgba(100, 116, 139, 0.15);
+  color: var(--text-muted);
+  border: 1px solid rgba(100, 116, 139, 0.25);
+}
+
+.pk-tier-badge {
+  background: rgba(239, 68, 68, 0.15);
+  color: #F87171;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: var(--radius-xs);
+  padding: 0 4px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+.bonus-pts-pill {
+  font-size: 9px;
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--accent-amber);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: var(--radius-xs);
+  padding: 0 3px;
+  font-weight: 700;
 }
 
 .captain-badge.triple {
@@ -1321,7 +1419,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 9.5px;
   padding: 1px 5px;
   border-radius: var(--radius-xs);
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   letter-spacing: 0.02em;
 }
 
@@ -1477,7 +1575,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .bench-item.is-selected {
   border-color: var(--accent-emerald);
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .bench-slot-tag {
@@ -1630,7 +1728,7 @@ h1, h2, h3, h4, h5, h6 {
 .multi-gw-column-card.active-horizon {
   border-color: var(--accent-emerald);
   background: var(--bg-surface-2);
-  box-shadow: 0 0 18px rgba(16, 185, 129, 0.25), inset 0 1px 0 rgba(16, 185, 129, 0.3);
+  box-shadow: inset 0 1px 0 rgba(16, 185, 129, 0.3);
   transform: translateY(-2px);
 }
 
@@ -1891,11 +1989,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .compare-player-card.out-card {
-  border-left: 3px solid #EF4444;
+  border-color: rgba(239, 68, 68, 0.35);
 }
 
 .compare-player-card.in-card {
-  border-left: 3px solid #10B981;
+  border-color: rgba(16, 185, 129, 0.35);
 }
 
 .card-role-header {
@@ -2367,7 +2465,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 3px 9px;
   border-radius: var(--radius-xs);
   letter-spacing: 0.02em;
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.12);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .slider-input-wrapper {
@@ -2402,13 +2500,13 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--accent-emerald);
   border: 2px solid #ffffff;
   cursor: pointer;
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6), 0 2px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .studio-range-input::-webkit-slider-thumb:hover {
   transform: scale(1.15);
-  box-shadow: 0 0 14px rgba(16, 185, 129, 0.8), 0 2px 6px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
 .studio-range-input::-moz-range-thumb {
@@ -2418,7 +2516,7 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--accent-emerald);
   border: 2px solid #ffffff;
   cursor: pointer;
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .slider-ticks {
@@ -2592,7 +2690,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
-   PRICE ALERTS VIEW — CSS CLASSES (replaces inline styles in MarketVelocityTicker)
+   PRICE ALERTS VIEW - CSS CLASSES (replaces inline styles in MarketVelocityTicker)
    ========================================================================== */
 
 .market-panels-grid {
@@ -3401,12 +3499,12 @@ h1, h2, h3, h4, h5, h6 {
 
 .player-pitch-card.sub-target {
   border-color: var(--accent-emerald);
-  box-shadow: 0 0 14px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .player-pitch-card.bench-boosted {
   border-color: var(--accent-emerald);
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }
 
 .player-card-top-row {
@@ -3430,7 +3528,7 @@ h1, h2, h3, h4, h5, h6 {
 .captain-badge.triple {
   background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
   color: #000;
-  box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .vice-captain-badge {
@@ -3546,7 +3644,7 @@ h1, h2, h3, h4, h5, h6 {
 .sync-team-nav-btn:hover {
   background: var(--accent-emerald);
   color: var(--text-inverse);
-  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .sync-modal-content {
@@ -4350,7 +4448,7 @@ h1, h2, h3, h4, h5, h6 {
 .matrix-cell.hovered {
   border-color: var(--accent-emerald);
   transform: scale(1.05);
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
   z-index: 10;
   position: relative;
 }
@@ -4402,7 +4500,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .multi-gw-column-card.active-horizon {
   border-color: var(--accent-emerald);
-  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
 }
 
 .gw-column-header {
@@ -4942,14 +5040,16 @@ h1, h2, h3, h4, h5, h6 {
 
 .velocity-thermometer-fill {
   height: 100%;
+  width: 100%;
+  transform-origin: left;
   background: rgba(16, 185, 129, 0.65);
   border-radius: var(--radius-xs);
-  transition: width 0.3s ease;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
 .velocity-thermometer-fill.saturated {
   background: var(--accent-emerald);
-  box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
 }
 
 .velocity-thermometer-fill.falling {
@@ -4958,7 +5058,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .velocity-thermometer-fill.saturated-falling {
   background: var(--accent-crimson);
-  box-shadow: 0 0 6px rgba(239, 68, 68, 0.8);
 }
 
 .market-asset-trend {
@@ -5099,7 +5198,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .multi-gw-column-card.active-horizon {
   border-color: var(--accent-emerald);
-  box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
   background: var(--bg-surface-2);
 }
 
@@ -5675,7 +5774,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .player-pitch-card.is-dgw {
   border-color: rgba(16, 185, 129, 0.35);
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* ==========================================================================
@@ -5918,8 +6017,9 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   .hud-segment-btn {
-    padding: 4px 5px;
-    font-size: 10.5px;
+    padding: 6px 8px;
+    font-size: 11px;
+    min-height: 38px;
   }
 
   .hud-score-val {
@@ -6226,7 +6326,7 @@ h1, h2, h3, h4, h5, h6 {
 .deck-search-box:focus-within {
   border-color: var(--accent-emerald);
   background: var(--bg-surface-subtle);
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 0 0 1px var(--accent-emerald);
 }
 
 .deck-search-icon {
@@ -6323,7 +6423,7 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--bg-surface-1);
   border: 1px solid rgba(245, 158, 11, 0.25);
   border-radius: var(--radius-md);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(245, 158, 11, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -6608,8 +6708,7 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: center;
   padding: 24px;
   z-index: 10;
-  backdrop-filter: blur(4px);
-  background: rgba(10, 15, 29, 0.45);
+  background: rgba(10, 15, 29, 0.88);
 }
 
 .empty-pitch-card {
@@ -6828,7 +6927,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-inverse) !important;
   border-color: var(--accent-amber) !important;
   font-weight: 800 !important;
-  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.35);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .vault-season-nav-btn {

@@ -172,7 +172,7 @@ export default function FixtureHeatmap({
             </div>
             <div className="legend-chip legend-fdr-blank">
               <span className="legend-dot" style={{ background: 'var(--border-subtle)' }} />
-              <span className="legend-fdr-num font-mono">—</span>
+              <span className="legend-fdr-num font-mono">-</span>
               <span className="legend-text">Blank GW</span>
             </div>
           </div>

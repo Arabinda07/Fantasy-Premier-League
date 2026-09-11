@@ -302,7 +302,7 @@ export default function RivalThreatMatrix({
                       </td>
                       <td className="font-mono">{overlapCount}/15 shared ({overlapPctVal}%)</td>
                       <td>
-                        <span className={`threat-badge ${threatClass}`}>{r.threat_level === 'HIGH' ? '🔥 HIGH' : r.threat_level === 'LOW' ? '🛡️ LOW' : '⚡ MEDIUM'}</span>
+                        <span className={`threat-badge ${threatClass}`}>{r.threat_level === 'HIGH' ? 'HIGH' : r.threat_level === 'LOW' ? 'LOW' : 'MEDIUM'}</span>
                       </td>
                       <td>
                         <button

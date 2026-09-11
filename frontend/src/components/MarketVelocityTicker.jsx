@@ -167,7 +167,7 @@ export default function MarketVelocityTicker({ allPlayers, allPlayersData, liveD
                   <div className="velocity-thermometer-track">
                     <div
                       className={`velocity-thermometer-fill ${p.progress >= 100 ? 'saturated' : ''}`}
-                      style={{ width: `${Math.min(100, p.progress)}%` }}
+                      style={{ transform: `scaleX(${Math.min(1, p.progress / 100)})` }}
                     />
                   </div>
                 </div>
@@ -218,7 +218,7 @@ export default function MarketVelocityTicker({ allPlayers, allPlayersData, liveD
                   <div className="velocity-thermometer-track">
                     <div
                       className={`velocity-thermometer-fill falling ${p.progress >= 100 ? 'saturated-falling' : ''}`}
-                      style={{ width: `${Math.min(100, p.progress)}%` }}
+                      style={{ transform: `scaleX(${Math.min(1, p.progress / 100)})` }}
                     />
                   </div>
                 </div>

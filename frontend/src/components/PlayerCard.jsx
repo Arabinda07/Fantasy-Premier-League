@@ -45,7 +45,7 @@ export default function PlayerCard({
   const pos = (player.position || 'MID').toUpperCase();
   const cost = Number(player.cost || player.now_cost || 0).toFixed(1);
 
-  // Matchup info — derive opponent correctly for both home and away players
+  // Matchup info: derive opponent correctly for both home and away players
   const fd = player.fixture_details;
   let opponent = player.fixture_opponent || null;
   let venue = player.fixture_venue || '';
@@ -80,14 +80,25 @@ export default function PlayerCard({
 
   const kitClass = getTeamKitClass(player.team);
 
+  const handleAction = () => {
+    if (onSelectSub) {
+      onSelectSub(player);
+    } else if (onInspect) {
+      onInspect(player);
+    }
+  };
+
   return (
     <div
       className={`player-pitch-card ${kitClass} ${isSubTarget ? 'sub-target' : ''} ${isBoosted ? 'bench-boosted' : ''} ${isBgw ? 'is-bgw' : ''} ${isDgw ? 'is-dgw' : ''} ${hasActualPoints ? 'has-actuals' : ''}`}
-      onClick={() => {
-        if (onSelectSub) {
-          onSelectSub(player);
-        } else if (onInspect) {
-          onInspect(player);
+      tabIndex={0}
+      role="button"
+      aria-label={`${player.web_name}, ${pos}, £${cost}m, ${displayPts} ${unit}`}
+      onClick={handleAction}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleAction();
         }
       }}
       onDoubleClick={() => {
@@ -106,34 +117,25 @@ export default function PlayerCard({
             <span className="vice-captain-badge" title="Vice Captain">V</span>
           ) : null}
           {strategyBadge === 'DIFF' && (
-            <span className="diff-badge" style={{ background: 'rgba(245, 158, 11, 0.2)', color: 'var(--accent-amber, #F59E0B)', border: '1px solid rgba(245, 158, 11, 0.4)', borderRadius: '3px', padding: '0 4px', fontSize: '9px', fontWeight: 800 }} title="Differential pick — owned by under 20% of managers">⚡ DIFF</span>
+            <span className="diff-badge font-mono" title="Differential pick: owned by under 20% of managers">DIFF</span>
           )}
           {strategyBadge === 'SHIELD' && (
-            <span className="shield-badge" style={{ background: 'rgba(6, 182, 212, 0.2)', color: 'var(--accent-cyan, #06B6D4)', border: '1px solid rgba(6, 182, 212, 0.4)', borderRadius: '3px', padding: '0 4px', fontSize: '9px', fontWeight: 800 }} title="Popular pick — high ownership to protect your rank">🛡️ TEMPLATE</span>
+            <span className="shield-badge font-mono" title="Popular pick: high ownership to protect your rank">CORE</span>
           )}
           {isBoosted && player.is_bench_asset && (
-            <span className="boost-badge" style={{ background: 'rgba(16, 185, 129, 0.2)', color: 'var(--accent-emerald, #10B981)', border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '3px', padding: '0 4px', fontSize: '9px', fontWeight: 800 }} title="Bench Boost Active · Scoring points this gameweek">🚀 BB</span>
+            <span className="boost-badge font-mono" title="Bench Boost Active: Scoring points this gameweek">BB</span>
           )}
           <span className={`player-pos-tag ${pos}`}>{pos}</span>
           {/* M-02: Rotation/Hook Risk Indicator */}
           {player.hook_hazard > 0.15 && (
-            <span style={{ color: 'var(--accent-amber, #F59E0B)', fontSize: '10px', fontWeight: 800, lineHeight: 1 }} title={`${Math.round(player.hook_hazard * 100)}% early sub risk`}>⚠</span>
+            <span className="hook-hazard-badge font-mono" title={`${Math.round(player.hook_hazard * 100)}% early sub risk`}>RISK</span>
           )}
           {isBgw && <span className="bgw-badge" title="Blank Gameweek: No game scheduled">BLANK</span>}
           {isDgw && <span className="dgw-badge" title="Double Gameweek: 2 games scheduled">DGW</span>}
           {/* M-06: Auto-Sub Priority Label for bench players */}
           {player.auto_sub_label && AUTO_SUB_LABELS[player.auto_sub_label] && (
             <span
-              style={{
-                fontSize: '8px',
-                fontWeight: 800,
-                padding: '0 3px',
-                borderRadius: '2px',
-                lineHeight: '1.3',
-                background: player.auto_sub_label === 'HIGH' ? 'rgba(16, 185, 129, 0.2)' : player.auto_sub_label === 'MEDIUM' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(100, 116, 139, 0.2)',
-                color: player.auto_sub_label === 'HIGH' ? 'var(--accent-emerald, #10B981)' : player.auto_sub_label === 'MEDIUM' ? 'var(--accent-amber, #F59E0B)' : 'var(--text-muted)',
-                border: `1px solid ${player.auto_sub_label === 'HIGH' ? 'rgba(16, 185, 129, 0.4)' : player.auto_sub_label === 'MEDIUM' ? 'rgba(245, 158, 11, 0.4)' : 'rgba(100, 116, 139, 0.3)'}`,
-              }}
+              className={`auto-sub-badge font-mono ${player.auto_sub_label.toLowerCase()}`}
               title={AUTO_SUB_LABELS[player.auto_sub_label].tooltip}
             >
               {AUTO_SUB_LABELS[player.auto_sub_label].badge}
@@ -169,17 +171,6 @@ export default function PlayerCard({
         <div className="player-tactical-badges-strip" style={{ display: 'flex', justifyContent: 'center', margin: '3px 0 2px 0' }}>
           <span
             className="pk-tier-badge font-mono"
-            style={{
-              background: 'rgba(239, 68, 68, 0.18)',
-              color: '#F87171',
-              border: '1px solid rgba(239, 68, 68, 0.4)',
-              borderRadius: '3px',
-              padding: '0 3px',
-              fontSize: '8px',
-              fontWeight: 800,
-              letterSpacing: '0.02em',
-              lineHeight: '1.2'
-            }}
             title={penaltyTier.tooltip}
           >
             {penaltyTier.badge}
@@ -194,16 +185,7 @@ export default function PlayerCard({
         </span>
         {hasActualPoints && Number(player.actual_bonus) > 0 && (
           <span
-            className="font-mono"
-            style={{
-              fontSize: '9px',
-              background: 'rgba(245, 158, 11, 0.2)',
-              color: 'var(--accent-amber, #F59E0B)',
-              border: '1px solid rgba(245, 158, 11, 0.4)',
-              borderRadius: '2px',
-              padding: '0 3px',
-              fontWeight: 700
-            }}
+            className="bonus-pts-pill font-mono"
             title={`${player.actual_bonus} Bonus Points Awarded`}
           >
             +{player.actual_bonus}

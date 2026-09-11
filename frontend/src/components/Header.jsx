@@ -57,7 +57,7 @@ export default function Header({
       label: 'Price Trends',
       shortLabel: 'Prices',
       icon: TrendUp,
-      badge: '🔥',
+      badge: 'LIVE',
       badgeType: 'alert'
     },
     {

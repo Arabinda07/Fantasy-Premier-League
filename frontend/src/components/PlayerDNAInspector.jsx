@@ -81,9 +81,9 @@ export default function PlayerDNAInspector({ player, onClose }) {
     { name: 'Appearance (60+m)', value: Number(c1_c2.toFixed(2)), color: '#3B82F6', desc: 'Guaranteed 2 pts for 60+ minutes' },
     { name: 'Goal Threat (xG)', value: c8_goals, color: '#10B981', desc: `Based on ${xG90.toFixed(2)} xG/90` },
     { name: 'Assist Threat (xA)', value: c7_assists, color: '#06B6D4', desc: `Based on ${xA90.toFixed(2)} xA/90` },
-    { name: 'Clean Sheet', value: c9_cleansheet, color: '#8B5CF6', desc: 'Adjusted for heavy-defeat risk' },
+    { name: 'Clean Sheet', value: c9_cleansheet, color: '#3B82F6', desc: 'Adjusted for heavy-defeat risk' },
     { name: 'Bonus Points (BPS)', value: c6_bonus, color: '#F59E0B', desc: 'Match-balanced bonus allocation' },
-    ...(pos === 'GK' || c3_saves > 0 ? [{ name: 'Goalkeeper Saves', value: c3_saves, color: '#EC4899', desc: 'Save point baseline' }] : []),
+    ...(pos === 'GK' || c3_saves > 0 ? [{ name: 'Goalkeeper Saves', value: c3_saves, color: '#F59E0B', desc: 'Save point baseline' }] : []),
     { name: 'Discipline Risk', value: c4_c5_cards, color: '#EF4444', desc: 'Yellow / red card deductions' },
     ...(c10_gc_penalty !== 0 ? [{ name: 'Goals Conceded', value: c10_gc_penalty, color: '#DC2626', desc: 'Penalties including heavy-defeat risk' }] : [])
   ];

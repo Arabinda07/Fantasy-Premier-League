@@ -264,7 +264,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                   <span className="slider-tick-item right">1200m (Career Record)</span>
                 </div>
                 <div className="slider-hint">
-                  Recent matches count more heavily — form from 8 weeks ago counts half as much as today.
+                  Recent matches count more heavily: form from 8 weeks ago counts half as much as today.
                 </div>
               </div>
 

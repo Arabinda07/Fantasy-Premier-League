@@ -372,7 +372,7 @@ export default function HistoricalVault({ onInspectPlayer }) {
             </div>
             <div className="hud-directive-text" style={{ padding: '2px 0' }}>
               <span className="hud-highlight-text" style={{ fontSize: '15px', color: 'var(--accent-crimson)', fontWeight: 800 }}>
-                {currentSeasonMeta?.top_scorer_name || '—'}
+                {currentSeasonMeta?.top_scorer_name || '-'}
               </span>
               <span className="hud-sub-text font-mono" style={{ fontSize: '11px', marginTop: '2px' }}>
                 Top goalscorer in Premier League
@@ -385,7 +385,7 @@ export default function HistoricalVault({ onInspectPlayer }) {
             <div className="hud-tile-header">
               <span className="hud-tile-eyebrow font-mono">SEASON MVP</span>
               <span className="hud-squad-status font-mono" style={{ color: 'var(--accent-amber)' }}>
-                {currentSeasonMeta?.top_points_name || '—'}
+                {currentSeasonMeta?.top_points_name || '-'}
               </span>
             </div>
             <div className="hud-scorecard-body">
@@ -1333,7 +1333,7 @@ function HistoricalPlayerDetailModal({ player, onClose }) {
             <div style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', padding: '10px 12px' }}>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 700 }}>MINUTES PLAYED</div>
               <div className="font-mono" style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-secondary)', marginTop: '2px' }}>
-                {player.minutes ? Number(player.minutes).toLocaleString() : '—'}
+                {player.minutes ? Number(player.minutes).toLocaleString() : '-'}
               </div>
             </div>
           </div>

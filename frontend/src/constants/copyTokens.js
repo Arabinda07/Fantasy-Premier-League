@@ -8,7 +8,7 @@ export const APP_BRAND = {
   name: 'FPL Dugout',
   shortName: 'Dugout',
   tagline: 'Smart Squad & Matchday Planner',
-  metaDescription: 'Smart Premier League fantasy planner — expected points, optimal starting XI, 5-gameweek transfer roadmap, and live mini-league tracker.',
+  metaDescription: 'Smart Premier League fantasy planner: expected points, optimal starting XI, 5-gameweek transfer roadmap, and live mini-league tracker.',
 };
 
 export const NAV_TABS = {
@@ -66,19 +66,19 @@ export const CHIP_ADVICE = {
 
 export const STRATEGY_BADGES = {
   differential: {
-    badge: '⚡ DIFF',
+    badge: 'DIFF',
     label: 'Differential',
-    tooltip: 'Differential pick — owned by under 20% of managers in your league',
+    tooltip: 'Differential pick: owned by under 20% of managers in your league',
   },
   template: {
-    badge: '🛡️ TEMPLATE',
+    badge: 'CORE',
     label: 'Template Pick',
-    tooltip: 'Popular pick — high ownership to protect your mini-league rank',
+    tooltip: 'Popular pick: high ownership to protect your mini-league rank',
   },
   benchBoost: {
-    badge: '🚀 BB',
+    badge: 'BB',
     label: 'Bench Boost Active',
-    tooltip: 'Bench Boost Active · Scoring points this gameweek',
+    tooltip: 'Bench Boost Active: Scoring points this gameweek',
   },
 };
 
@@ -137,7 +137,7 @@ export const VALIDATION_MESSAGES = {
 export const CAPTAINCY_DECISION_BRIEF = {
   title: "Manager's Decision Brief",
   subtitle: 'Why Bruno Fernandes (C) is your best captain pick this week',
-  badge: '👑 CAPTAINCY BRIEF',
+  badge: 'CAPTAINCY BRIEF',
   selectedCaptain: {
     name: 'Bruno Fernandes',
     shortName: 'B.Fernandes',
@@ -173,7 +173,7 @@ export const CAPTAINCY_DECISION_BRIEF = {
       id: 'higher_ev',
       icon: 'TrendUp',
       title: 'Highest Projected Points (11.2 pts as C)',
-      summary: 'Projected for 5.6 points (11.2 with the armband)—the safest and highest captain pick this gameweek.',
+      summary: 'Projected for 5.6 points (11.2 with the armband): the safest and highest captain pick this gameweek.',
       badge: '11.2 Exp Pts',
     },
   ],
@@ -245,9 +245,9 @@ export const SET_PIECE_TIERS = {
     rate: 0.18,
     rateFormatted: '0.18 pk/90',
     label: 'High PK',
-    badge: '🎯 High PK',
-    desc: 'Top Penalty Team (~7–9 penalties a season)',
-    tooltip: 'Penalty Taker: Team wins lots of spot-kicks in the box (~7–9 per season)',
+    badge: 'High PK',
+    desc: 'Top Penalty Team (~7-9 penalties a season)',
+    tooltip: 'Penalty Taker: Team wins lots of spot-kicks in the box (~7-9 per season)',
     teams: ['Man City', 'Chelsea', 'Arsenal', 'Liverpool', 'Man Utd'],
   },
   standard: {
@@ -255,9 +255,9 @@ export const SET_PIECE_TIERS = {
     rate: 0.12,
     rateFormatted: '0.12 pk/90',
     label: 'Std PK',
-    badge: '🎯 Std PK',
-    desc: 'Average Penalty Team (~4–5 penalties a season)',
-    tooltip: 'Penalty Taker: Team wins an average number of spot-kicks (~4–5 per season)',
+    badge: 'Std PK',
+    desc: 'Average Penalty Team (~4-5 penalties a season)',
+    tooltip: 'Penalty Taker: Team wins an average number of spot-kicks (~4-5 per season)',
     teams: ['Aston Villa', 'Newcastle', 'Spurs', 'Brighton', 'Brentford', 'West Ham', 'Crystal Palace', 'Fulham', 'Bournemouth'],
   },
   low: {
@@ -265,17 +265,17 @@ export const SET_PIECE_TIERS = {
     rate: 0.07,
     rateFormatted: '0.07 pk/90',
     label: 'Low PK',
-    badge: '🎯 Low PK',
-    desc: 'Low Penalty Team (~2–3 penalties a season)',
-    tooltip: 'Penalty Taker: Team rarely wins penalties in the box (~2–3 per season)',
+    badge: 'Low PK',
+    desc: 'Low Penalty Team (~2-3 penalties a season)',
+    tooltip: 'Penalty Taker: Team rarely wins penalties in the box (~2-3 per season)',
     teams: ['Everton', "Nott'm Forest", 'Wolves', 'Leicester', 'Ipswich Town', 'Southampton', 'Sunderland'],
   },
 };
 
 export const DEFCON_BADGES = {
   awayDefcon: {
-    badge: '🛡️ Away Defcon (+5%)',
-    shortBadge: '🛡️ DEFCON',
+    badge: 'Away Defcon (+5%)',
+    shortBadge: 'DEFCON',
     label: 'Away Defcon (+5%)',
     desc: 'More tackles and ball recoveries in away games (+5% defensive points)',
     tooltip: 'Away Match Bonus: Defenders under away pressure make more tackles and recoveries, boosting baseline points (+5%).',
@@ -298,17 +298,17 @@ export function getPenaltyTierForTeam(teamName) {
 export const AUTO_SUB_LABELS = {
   HIGH: {
     label: 'HIGH',
-    badge: '🔄 HIGH',
+    badge: 'HIGH',
     tooltip: 'High chance of being called off the bench if a starter misses out',
   },
   MEDIUM: {
     label: 'MEDIUM',
-    badge: '🔄 MED',
+    badge: 'MED',
     tooltip: 'Moderate chance of being called off the bench',
   },
   LOW: {
     label: 'LOW',
-    badge: '🔄 LOW',
+    badge: 'LOW',
     tooltip: 'Low chance of being called off the bench this week',
   },
 };
