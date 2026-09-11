@@ -11,7 +11,6 @@ import {
   CaretDown,
   Medal,
   Sparkle,
-  Database,
   Terminal,
   ArrowsLeftRight,
   ArrowUpRight,
@@ -177,23 +176,6 @@ export default function HistoricalVault({ onInspectPlayer }) {
       <div className="vault-hero-bar">
         <div className="vault-hero-inner">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-              <span className="font-mono" style={{
-                fontSize: '10px',
-                fontWeight: 800,
-                color: 'var(--accent-amber)',
-                backgroundColor: 'rgba(245, 158, 11, 0.12)',
-                border: '1px solid rgba(245, 158, 11, 0.25)',
-                padding: '3px 8px',
-                borderRadius: 'var(--radius-xs)',
-                letterSpacing: '0.06em'
-              }}>
-                HISTORICAL VAULT · 10 SEASONS ARCHIVE
-              </span>
-              <span className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                2016-17 to 2025-26
-              </span>
-            </div>
             <h1 style={{
               fontSize: 'clamp(18px, 2.2vw, 22px)',
               fontWeight: 800,
@@ -1075,42 +1057,6 @@ export default function HistoricalVault({ onInspectPlayer }) {
             </div>
           </div>
         )}
-
-        {/* 8. Footer Architecture Integration Strip (Datasette & Marimo Guidance) */}
-        <div style={{
-          marginTop: '24px',
-          backgroundColor: 'var(--bg-surface-1)',
-          border: '1px solid var(--border-subtle)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '16px 20px',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '16px'
-        }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px', color: 'var(--accent-cyan)' }}>
-              <Database size={16} weight="bold" />
-              <span className="font-mono" style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.04em' }}>
-                DATASETTE PUBLIC SQL
-              </span>
-            </div>
-            <p style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
-              The client-side frontend delivers instantaneous visual exploration with zero server overhead. If you wish to enable arbitrary SQL queries for public analysts, deploy <code className="font-mono" style={{ color: 'var(--accent-emerald)' }}>data/pl_history.db</code> via Datasette on Vercel or Fly.io.
-            </p>
-          </div>
-
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px', color: 'var(--accent-amber)' }}>
-              <Terminal size={16} weight="bold" />
-              <span className="font-mono" style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.04em' }}>
-                MARIMO INTERACTIVE LAB
-              </span>
-            </div>
-            <p style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
-              Marimo reactive notebooks run Python simulations on <code className="font-mono" style={{ color: 'var(--accent-emerald)' }}>pl_history.db</code>. Export notebooks as client-side WebAssembly (<code className="font-mono">marimo export html-wasm</code>) to embed interactive what-if sliders directly in this dashboard.
-            </p>
-          </div>
-        </div>
       </div>
 
       {/* 9. Dedicated Historical Player Detail Modal (Retrospective Achievements) */}

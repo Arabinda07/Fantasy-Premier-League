@@ -411,33 +411,33 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Tab Notification Pips */
 .tab-pip {
-  font-size: 9.5px;
-  font-weight: 800;
+  font-size: 9px;
+  font-weight: 700;
   padding: 1px 5px;
-  border-radius: 9999px;
+  border-radius: var(--radius-xs);
   line-height: 1.1;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
 .tab-pip.chip {
-  background: rgba(16, 185, 129, 0.22);
+  background: rgba(16, 185, 129, 0.12);
   color: #34D399;
-  border: 1px solid rgba(16, 185, 129, 0.45);
+  border: 1px solid rgba(16, 185, 129, 0.25);
 }
 
 .tab-pip.alert {
-  background: rgba(245, 158, 11, 0.22);
+  background: rgba(245, 158, 11, 0.12);
   color: #FBBF24;
-  border: 1px solid rgba(245, 158, 11, 0.45);
+  border: 1px solid rgba(245, 158, 11, 0.25);
 }
 
 .tab-pip.neutral {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
   color: var(--text-muted);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .nav-controls {
@@ -775,13 +775,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hud-formation-pill {
-  background: var(--bg-surface-2);
+  background: transparent;
   border: 1px solid var(--border-subtle);
-  color: var(--text-secondary);
+  color: var(--text-muted);
+  font-family: var(--font-mono, monospace);
   font-size: 11px;
-  font-weight: 700;
-  padding: 3px 8px;
+  font-weight: 600;
+  padding: 2px 7px;
   border-radius: var(--radius-xs);
+  letter-spacing: 0.02em;
 }
 
 .directive-structured-text {
@@ -1015,9 +1017,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .action-pill.chip-pill {
-  background: var(--accent-emerald);
-  color: #06261C;
-  font-weight: 800;
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--accent-emerald);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  font-weight: 700;
 }
 
 .action-desc {
@@ -6923,11 +6926,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .vault-season-pill.active {
-  background-color: var(--accent-amber) !important;
-  color: var(--text-inverse) !important;
-  border-color: var(--accent-amber) !important;
-  font-weight: 800 !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  background-color: rgba(245, 158, 11, 0.14) !important;
+  color: var(--accent-amber) !important;
+  border-color: rgba(245, 158, 11, 0.45) !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
 }
 
 .vault-season-nav-btn {

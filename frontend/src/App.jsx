@@ -56,7 +56,21 @@ const HASH_TO_TAB = {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('pitch');
+  const [activeTab, setActiveTab] = useState(() => {
+    try {
+      const hashStr = window.location.hash.replace(/^#\/?/, '').split('?')[0];
+      if (hashStr && HASH_TO_TAB[hashStr]) {
+        return HASH_TO_TAB[hashStr];
+      }
+      const savedEntryId = localStorage.getItem('fpl_synced_entry_id');
+      if (savedEntryId) {
+        return 'pitch';
+      }
+    } catch (e) {
+      console.warn('Initial tab determination error:', e);
+    }
+    return 'vault';
+  });
   const [inspectedPlayer, setInspectedPlayer] = useState(null);
   const [activeChip, setActiveChip] = useState('none');
 
@@ -124,6 +138,8 @@ export default function App() {
     setStarters(fullPayload.starters || []);
     setBench(fullPayload.bench || []);
     setSelectedSwapPlayer(null);
+    setActiveTab('pitch');
+    window.location.hash = 'lineup';
   };
 
   const handleExploreDemo = () => {

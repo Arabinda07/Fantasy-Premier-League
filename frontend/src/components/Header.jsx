@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   SoccerBall,
   ArrowsLeftRight,
@@ -23,58 +23,70 @@ export default function Header({
   onSelectStrategy,
   activeChip = 'none'
 }) {
-  const tabs = [
-    {
-      id: 'pitch',
-      label: 'My Lineup',
-      shortLabel: 'Lineup',
-      icon: SoccerBall,
-      badge: activeChip !== 'none' ? activeChip.toUpperCase() : null,
-      badgeType: 'chip'
-    },
-    {
-      id: 'transfers',
-      label: 'Transfer Planner',
-      shortLabel: 'Planner',
-      icon: ArrowsLeftRight,
-      badge: '1 FT',
-      badgeType: 'neutral'
-    },
-    {
-      id: 'rivals',
-      label: 'Mini-Leagues',
-      shortLabel: 'Rivals',
-      icon: UsersThree
-    },
-    {
-      id: 'fixtures',
-      label: 'Fixture Ticker',
-      shortLabel: 'Fixtures',
-      icon: GridNine
-    },
-    {
-      id: 'market',
-      label: 'Price Trends',
-      shortLabel: 'Prices',
-      icon: TrendUp,
-      badge: 'LIVE',
-      badgeType: 'alert'
-    },
-    {
-      id: 'math',
-      label: 'Points Forecaster',
-      shortLabel: 'Forecaster',
-      icon: Flask
-    },
-    {
-      id: 'vault',
-      label: 'Historical Vault',
-      shortLabel: 'Vault',
-      icon: ClockCounterClockwise
-    }
-  ];
-
   const manager = liveData?.manager_profile;
+  const isSynced = Boolean(
+    manager?.entry_id ||
+    (typeof window !== 'undefined' && localStorage.getItem('fpl_synced_entry_id'))
+  );
+
+  const tabs = useMemo(() => {
+    const tabMap = {
+      pitch: {
+        id: 'pitch',
+        label: 'My Lineup',
+        shortLabel: 'Lineup',
+        icon: SoccerBall,
+        badge: activeChip !== 'none' ? activeChip.toUpperCase() : null,
+        badgeType: 'chip'
+      },
+      transfers: {
+        id: 'transfers',
+        label: 'Transfer Planner',
+        shortLabel: 'Planner',
+        icon: ArrowsLeftRight,
+        badge: isSynced ? '1 FT' : null,
+        badgeType: 'neutral'
+      },
+      rivals: {
+        id: 'rivals',
+        label: 'Mini-Leagues',
+        shortLabel: 'Rivals',
+        icon: UsersThree
+      },
+      fixtures: {
+        id: 'fixtures',
+        label: 'Fixture Ticker',
+        shortLabel: 'Fixtures',
+        icon: GridNine
+      },
+      market: {
+        id: 'market',
+        label: 'Price Trends',
+        shortLabel: 'Prices',
+        icon: TrendUp,
+        badge: 'LIVE',
+        badgeType: 'alert'
+      },
+      math: {
+        id: 'math',
+        label: 'Points Forecaster',
+        shortLabel: 'Forecaster',
+        icon: Flask
+      },
+      vault: {
+        id: 'vault',
+        label: 'Historical Vault',
+        shortLabel: 'Vault',
+        icon: ClockCounterClockwise
+      }
+    };
+
+    const order = isSynced
+      ? ['pitch', 'transfers', 'rivals', 'fixtures', 'market', 'math', 'vault']
+      : ['vault', 'fixtures', 'market', 'math', 'pitch', 'transfers', 'rivals'];
+
+    return order.map(id => tabMap[id]);
+  }, [isSynced, activeChip]);
 
   return (
     <header className="top-nav">
