@@ -7,6 +7,14 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DB_PATH = REPO_ROOT / "data" / "pl_history.db"
 
 
+@pytest.fixture(scope="session", autouse=True)
+def ensure_db_exists():
+    """Ensure pl_history.db exists, compiling a lightweight copy if absent in CI."""
+    if not DB_PATH.is_file():
+        from scripts.compile_pl_history import compile_history
+        compile_history(db_path=DB_PATH, skip_gws=True, export_json_path=None)
+
+
 def test_pl_history_database_exists_and_valid():
     """Verify that pl_history.db exists and contains all 10 seasons."""
     assert DB_PATH.is_file(), f"Database not found at {DB_PATH}"
