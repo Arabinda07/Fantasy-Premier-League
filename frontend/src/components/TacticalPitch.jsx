@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import PlayerCard from './PlayerCard';
+import { formatFplPrice } from '../constants/copyTokens';
 import {
   ShieldCheck,
   Cards,
@@ -181,9 +182,9 @@ export default function TacticalPitch({
   ];
 
   const strategyOptions = [
-    { id: 'pure_xp', label: 'Max Points', icon: Target, desc: 'Pick the best possible starting XI for maximum points' },
-    { id: 'rank_protect', label: 'Protect Lead', icon: ShieldCheck, desc: 'Back popular picks to defend your rank and protect your lead' },
-    { id: 'differential_chase', label: 'Climb Rank', icon: Lightning, desc: 'Back low-ownership punts to gain ground on your mini-league rivals' }
+    { id: 'pure_xp', label: 'Max Points', shortLabel: 'Max Pts', icon: Target, desc: 'Pick the best possible starting XI for maximum points' },
+    { id: 'rank_protect', label: 'Protect Lead', shortLabel: 'Protect', icon: ShieldCheck, desc: 'Back popular picks to defend your rank and protect your lead' },
+    { id: 'differential_chase', label: 'Climb Rank', shortLabel: 'Climb', icon: Lightning, desc: 'Back low-ownership punts to gain ground on your mini-league rivals' }
   ];
 
   const renderTransferPills = (summary) => {
@@ -256,6 +257,7 @@ export default function TacticalPitch({
 
   return (
     <div>
+      <h1 className="sr-only">Gameweek {liveData?.gameweek || 1} Tactical Pitch &amp; Matchday Lineup</h1>
       {/* Tactical Dugout Command HUD Ribbon (4 Modular HUD Tiles) */}
       <div className="tactical-hud-ribbon">
         {/* Tile 1: Tactical Objective Strategy */}
@@ -295,7 +297,8 @@ export default function TacticalPitch({
                     title={opt.desc}
                   >
                     <Icon size={12} weight={isSelected ? 'fill' : 'bold'} />
-                    <span>{opt.label}</span>
+                    <span className="hud-label-full">{opt.label}</span>
+                    <span className="hud-label-short">{opt.shortLabel || opt.label}</span>
                   </button>
                 );
               })}
@@ -549,7 +552,7 @@ export default function TacticalPitch({
               <div className="panel-header">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <RocketLaunch size={15} weight="fill" color="var(--accent-emerald)" />
-                  <span className="panel-title">BENCH BOOST</span>
+                  <h2 className="panel-title" style={{ margin: 0, fontSize: 'inherit', fontWeight: 'inherit', display: 'inline' }}>BENCH BOOST</h2>
                 </div>
                 <span className="panel-badge font-mono" style={{ whiteSpace: 'nowrap' }}>
                   15 SCORING
@@ -626,7 +629,7 @@ export default function TacticalPitch({
           ) : (
             <div className="sidebar-panel">
               <div className="panel-header">
-                <span className="panel-title">
+                <h2 className="panel-title" style={{ margin: 0, fontSize: 'inherit', fontWeight: 'inherit', display: 'inline' }}>
                   {isNonParticipating
                     ? 'Substitutes'
                     : isCompletedGw
@@ -638,7 +641,7 @@ export default function TacticalPitch({
                     : activeChip === '3xc'
                     ? 'TRIPLE CAPTAIN BENCH'
                     : 'Substitutes'}
-                </span>
+                </h2>
                 <span className="panel-badge font-mono">
                   {isNonParticipating ? '0 on bench' : `${displayBench.length} on bench`}
                 </span>
@@ -669,7 +672,7 @@ export default function TacticalPitch({
                         }}
                         tabIndex={0}
                         role="button"
-                        aria-label={`Bench ${slotLabel}: ${p.web_name}, ${p.position}, £${Number(p.cost || 0).toFixed(1)}M, ${displayBenchPts} points`}
+                        aria-label={`Bench ${slotLabel}: ${p.web_name}, ${p.position}, £${formatFplPrice(p.cost ?? p.now_cost ?? p.selling_price ?? 0)}M, ${displayBenchPts} points`}
                         title="Click to swap with starter · Double-click for player stats"
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
@@ -682,7 +685,7 @@ export default function TacticalPitch({
                               {p.web_name}
                             </div>
                             <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                              {p.team} · £{Number(p.cost || 0).toFixed(1)}m
+                              {p.team} · £{formatFplPrice(p.cost ?? p.now_cost ?? p.selling_price ?? 0)}m
                             </div>
                           </div>
                         </div>

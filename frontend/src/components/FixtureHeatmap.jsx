@@ -10,12 +10,30 @@ export default function FixtureHeatmap({
   onOpenFixture,
   onOpenMatchup
 }) {
-  const [gwWindow, setGwWindow] = useState(6);
+  const [horizon, setHorizon] = useState('5');
   const [showFormulaTooltip, setShowFormulaTooltip] = useState(false);
 
   const activeFixtures = fixtures || fixturesData || [];
   const activeTeams = teams || teamsData || [];
   const handleOpen = onOpenFixture || onOpenMatchup;
+  const currentGw = Number(selectedGw || 2);
+  const effectiveWindow = horizon === 'all' ? 5 : Number(horizon);
+
+  // Compute visible gameweeks based on active horizon filter
+  const visibleGws = useMemo(() => {
+    if (horizon === 'all') {
+      return Array.from({ length: 38 }, (_, i) => i + 1);
+    }
+    const count = Number(horizon);
+    const gws = [];
+    for (let i = 0; i < count; i++) {
+      const gw = currentGw + i;
+      if (gw <= 38) {
+        gws.push(gw);
+      }
+    }
+    return gws;
+  }, [horizon, currentGw]);
 
   // Build matrix: team_name -> [GW1, GW2, ... GW38]
   const matrix = useMemo(() => {
@@ -73,8 +91,7 @@ export default function FixtureHeatmap({
         }
       }
 
-      const currentGw = Number(selectedGw || 2);
-      const nextN = teamFixtures.slice(Math.max(0, currentGw - 1), currentGw - 1 + gwWindow);
+      const nextN = teamFixtures.slice(Math.max(0, currentGw - 1), currentGw - 1 + effectiveWindow);
       const avgDiff = nextN.reduce((acc, f) => acc + (f.diff || 3), 0) / (nextN.length || 1);
 
       return {
@@ -86,7 +103,7 @@ export default function FixtureHeatmap({
 
     // Sort by easiest upcoming run
     return result.sort((a, b) => a.avgDiff - b.avgDiff);
-  }, [activeFixtures, activeTeams, gwWindow, selectedGw]);
+  }, [activeFixtures, activeTeams, effectiveWindow, currentGw]);
 
   const fdrClass = (diff) => {
     if (diff === 1) return 'fdr-1';
@@ -107,33 +124,42 @@ export default function FixtureHeatmap({
     });
   };
 
+  const horizonOptions = [
+    { id: '3', label: 'Next 3 GWs' },
+    { id: '5', label: 'Next 5 GWs' },
+    { id: '8', label: 'Next 8 GWs' },
+    { id: 'all', label: 'All 38 GWs' }
+  ];
+
   return (
     <div className="view-fluid">
       {/* Ticker Header & Controls Bar */}
       <div className="ticker-controls-bar">
         <div className="ticker-title-group">
-          <h3 className="ticker-title">
+          <h1 className="ticker-title">
             <GridNine size={18} weight="bold" />
             <span>Fixture Difficulty &amp; Schedule Ticker</span>
-          </h3>
+          </h1>
           <div className="ticker-subtitle">
-            Teams sorted from easiest to toughest fixture run over the next {gwWindow} gameweeks (GW{selectedGw} to GW{Math.min(38, Number(selectedGw) + gwWindow - 1)}). Click any match to view clean sheet chances and scoreline odds.
+            {horizon === 'all'
+              ? `Full 38-gameweek season view with completed matchdays shaded. Teams sorted from easiest to toughest fixture run over the next 5 gameweeks (GW${currentGw} to GW${Math.min(38, currentGw + 4)}). Click any match to view clean sheet chances and scoreline odds.`
+              : `Teams sorted from easiest to toughest fixture run over the next ${effectiveWindow} gameweeks (GW${currentGw} to GW${Math.min(38, currentGw + effectiveWindow - 1)}). Click any match to view clean sheet chances and scoreline odds.`}
           </div>
         </div>
 
-        <div className="ticker-window-controls" role="group" aria-label="Select fixture run lookahead">
-          <span className="ticker-window-label font-mono">Lookahead</span>
+        <div className="ticker-window-controls" role="group" aria-label="Select fixture planning horizon">
+          <span className="ticker-window-label font-mono">Horizon</span>
           <div className="segmented-chip-rail">
-            {[3, 5, 8, 12].map(w => (
+            {horizonOptions.map(h => (
               <button
-                key={w}
+                key={h.id}
                 type="button"
-                onClick={() => setGwWindow(w)}
-                aria-label={`Lookahead window: ${w} gameweeks`}
-                aria-pressed={gwWindow === w}
-                className={`segmented-chip-btn ${gwWindow === w ? 'active' : ''}`}
+                onClick={() => setHorizon(h.id)}
+                aria-label={`Planning horizon: ${h.label}`}
+                aria-pressed={horizon === h.id}
+                className={`segmented-chip-btn ${horizon === h.id ? 'active' : ''}`}
               >
-                <span>{w} GWs</span>
+                <span>{h.label}</span>
               </button>
             ))}
           </div>
@@ -146,27 +172,27 @@ export default function FixtureHeatmap({
           <span className="legend-label font-mono">FDR DIFFICULTY:</span>
           <div className="legend-items">
             <div className="legend-chip legend-fdr-1">
-              <span className="legend-dot" style={{ background: '#1B5E20' }} />
+              <span className="legend-dot" style={{ background: 'var(--fdr-1)' }} />
               <span className="legend-fdr-num font-mono">1</span>
               <span className="legend-text">Very Easy (Home vs Promoted)</span>
             </div>
             <div className="legend-chip legend-fdr-2">
-              <span className="legend-dot" style={{ background: '#00796B' }} />
+              <span className="legend-dot" style={{ background: 'var(--fdr-2)' }} />
               <span className="legend-fdr-num font-mono">2</span>
               <span className="legend-text">Easy (Home vs Lower Half)</span>
             </div>
             <div className="legend-chip legend-fdr-3">
-              <span className="legend-dot" style={{ background: '#455A64' }} />
+              <span className="legend-dot" style={{ background: 'var(--fdr-3)' }} />
               <span className="legend-fdr-num font-mono">3</span>
               <span className="legend-text">Moderate (Mid-table)</span>
             </div>
             <div className="legend-chip legend-fdr-4">
-              <span className="legend-dot" style={{ background: '#E65100' }} />
+              <span className="legend-dot" style={{ background: 'var(--fdr-4)' }} />
               <span className="legend-fdr-num font-mono">4</span>
               <span className="legend-text">Tough (Away vs Top 6)</span>
             </div>
             <div className="legend-chip legend-fdr-5">
-              <span className="legend-dot" style={{ background: '#B71C1C' }} />
+              <span className="legend-dot" style={{ background: 'var(--fdr-5)' }} />
               <span className="legend-fdr-num font-mono">5</span>
               <span className="legend-text">Very Tough (Away vs Title Contenders)</span>
             </div>
@@ -175,13 +201,18 @@ export default function FixtureHeatmap({
               <span className="legend-fdr-num font-mono">-</span>
               <span className="legend-text">Blank GW</span>
             </div>
+            <div className="legend-chip legend-fdr-past">
+              <span className="legend-dot" style={{ background: 'var(--text-muted)', opacity: 0.6 }} />
+              <span className="legend-fdr-num font-mono">✓</span>
+              <span className="legend-text">Completed Matchday</span>
+            </div>
           </div>
         </div>
 
         <div className="legend-formula-group font-mono">
           <span className="formula-tag">
             <Info size={13} weight="bold" />
-            <span>Avg Difficulty = (Σ FDR over {gwWindow} GWs) / {gwWindow}</span>
+            <span>Avg Difficulty = (Σ FDR over next {effectiveWindow} GWs) / {effectiveWindow}</span>
           </span>
           <span className="formula-subtext">Sorted ascending: lower score = easier run</span>
         </div>
@@ -190,24 +221,34 @@ export default function FixtureHeatmap({
       {/* Heatmap Matrix Table */}
       <div className="data-table-container">
         <div className="table-scroll-wrapper">
-          <table className="heatmap-table" aria-label="Premier League 38 Gameweek Fixture Difficulty Table">
+          <table
+            className={`heatmap-table ${horizon !== 'all' ? 'horizon-focused' : 'horizon-all'}`}
+            aria-label="Premier League Fixture Difficulty Table"
+          >
             <thead>
               <tr>
                 <th className="sticky-col team-col">Team</th>
-                <th className="avg-col font-mono" title={`Mathematical average of FDR ratings over the next ${gwWindow} gameweeks. Lower score indicates an easier schedule.`}>
-                  Avg Difficulty ({gwWindow} GWs)
+                <th className="avg-col font-mono" title={`Mathematical average of FDR ratings over the next ${effectiveWindow} gameweeks. Lower score indicates an easier schedule.`}>
+                  Avg Difficulty ({effectiveWindow} GWs)
                 </th>
-                {Array.from({ length: 38 }, (_, i) => i + 1).map(gw => (
-                  <th key={gw} className={`gw-col font-mono ${gw === Number(selectedGw) ? 'current-gw-header' : ''}`}>
-                    GW{gw}
-                  </th>
-                ))}
+                {visibleGws.map(gw => {
+                  const isPast = gw < currentGw;
+                  const isCurrent = gw === currentGw;
+                  return (
+                    <th
+                      key={gw}
+                      className={`gw-col font-mono ${isPast ? 'past-gw-header' : ''} ${isCurrent ? 'current-gw-header' : ''}`}
+                    >
+                      GW{gw}
+                    </th>
+                  );
+                })}
               </tr>
             </thead>
             <tbody>
               {matrix.length === 0 ? (
                 <tr>
-                  <td colSpan={40} style={{ padding: '24px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                  <td colSpan={visibleGws.length + 2} style={{ padding: '24px', textAlign: 'center', color: 'var(--text-muted)' }}>
                     Loading fixture schedule &amp; difficulty data...
                   </td>
                 </tr>
@@ -223,12 +264,21 @@ export default function FixtureHeatmap({
                         {team.avgDiff.toFixed(2)}
                       </span>
                     </td>
-                    {team.fixtures.map(f => {
+                    {visibleGws.map(gw => {
+                      const f = team.fixtures[gw - 1] || team.fixtures.find(m => m.gw === gw);
+                      if (!f) return <td key={gw} className="fdr-cell" />;
                       const isInteractive = f.oppShort !== 'BLANK' && Boolean(handleOpen);
+                      const isPast = f.gw < currentGw;
+                      const isCurrent = f.gw === currentGw;
+                      const cellTitle = isInteractive
+                        ? (isPast
+                            ? `Matchday GW${f.gw} (Completed): ${f.home_team} vs ${f.away_team}`
+                            : `Click to view ${f.home_team} vs ${f.away_team} match odds & clean sheet chances (GW${f.gw})`)
+                        : undefined;
                       return (
                         <td
                           key={f.gw}
-                          className={`fdr-cell ${fdrClass(f.diff)} ${f.gw === Number(selectedGw) ? 'current-gw-col' : ''}`}
+                          className={`fdr-cell ${fdrClass(f.diff)} ${isPast ? 'past-gw' : ''} ${isCurrent ? 'current-gw-col' : ''}`}
                           onClick={() => handleCellClick(f)}
                           onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
@@ -239,7 +289,7 @@ export default function FixtureHeatmap({
                           tabIndex={isInteractive ? 0 : undefined}
                           role={isInteractive ? 'button' : undefined}
                           style={{ cursor: isInteractive ? 'pointer' : 'default' }}
-                          title={isInteractive ? `Click to view ${f.home_team} vs ${f.away_team} match odds & clean sheet chances (GW${f.gw})` : undefined}
+                          title={cellTitle}
                         >
                           <div className="fdr-cell-content">
                             <span className="opp-name font-mono">{f.oppShort}</span>

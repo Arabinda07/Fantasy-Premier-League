@@ -311,8 +311,10 @@ export function reconcileSquad(squadPicks = [], allPlayers = []) {
     const isViceCaptain = Boolean(pick.is_vice_captain);
     const benchOrder = !isStarter ? (posSlot > 11 ? posSlot - 11 : idx - 10) : null;
 
-    const baseCost = pick.selling_price != null ? Number(pick.selling_price) : (rawMatch?.now_cost || 5.0);
-    const purchaseCost = pick.purchase_price != null ? Number(pick.purchase_price) : baseCost;
+    const rawBaseCost = pick.selling_price != null ? Number(pick.selling_price) : Number(rawMatch?.cost || rawMatch?.now_cost || 5.0);
+    const baseCost = rawBaseCost > 20 ? rawBaseCost / 10.0 : rawBaseCost;
+    const rawPurchaseCost = pick.purchase_price != null ? Number(pick.purchase_price) : baseCost;
+    const purchaseCost = rawPurchaseCost > 20 ? rawPurchaseCost / 10.0 : rawPurchaseCost;
 
     if (rawMatch) {
       return {
@@ -1132,23 +1134,29 @@ export function analyzeRivals(rivalsData = [], userSquad = [], allPlayers = []) 
 
     const userDiffCards = userSquad
       .filter((p) => !rivalCodes.has(Number(p.player_code || p.code)))
-      .map((p) => ({
-        name: p.web_name,
-        pos: p.position,
-        team: p.team,
-        cost: Number(p.cost || p.now_cost || 6.0),
-        xp: Number(Number(p.expected_points || 4.5).toFixed(1)),
-      }));
+      .map((p) => {
+        const rawC = Number(p.cost || p.now_cost || 6.0);
+        return {
+          name: p.web_name,
+          pos: p.position,
+          team: p.team,
+          cost: rawC > 20 ? Number((rawC / 10).toFixed(1)) : Number(rawC.toFixed(1)),
+          xp: Number(Number(p.expected_points || 4.5).toFixed(1)),
+        };
+      });
 
     const rivalDiffCards = rivalSquad
       .filter((p) => !userCodes.has(Number(p.player_code || p.code)))
-      .map((p) => ({
-        name: p.web_name,
-        pos: p.position,
-        team: p.team,
-        cost: Number(p.now_cost || p.cost || 6.0),
-        xp: Number(Number(p.expected_points || 4.5).toFixed(1)),
-      }));
+      .map((p) => {
+        const rawC = Number(p.now_cost || p.cost || 6.0);
+        return {
+          name: p.web_name,
+          pos: p.position,
+          team: p.team,
+          cost: rawC > 20 ? Number((rawC / 10).toFixed(1)) : Number(rawC.toFixed(1)),
+          xp: Number(Number(p.expected_points || 4.5).toFixed(1)),
+        };
+      });
 
     const yourUpside = Number(userDiffCards.reduce((acc, p) => acc + p.xp, 0).toFixed(1));
     const rivalUpside = Number(rivalDiffCards.reduce((acc, p) => acc + p.xp, 0).toFixed(1));

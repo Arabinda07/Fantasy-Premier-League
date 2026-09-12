@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { formatFplPrice } from '../constants/copyTokens';
 import {
   UsersThree,
   ShieldCheck,
@@ -213,10 +214,10 @@ export default function RivalThreatMatrix({
           Track your mini-league rivals in real time. See who they are captaining, find your rank-climbing differentials, and watch out for danger players.
         </p>
 
-        {/* Top Metric Strip */}
-        <div className="kpi-strip">
+        {/* Top Metric Strip: Asymmetric Hierarchy */}
+        <div className="kpi-strip rivals-kpi-asymmetric">
           <div className="kpi-card">
-            <div className="kpi-label">Your Captain</div>
+            <div className="kpi-label font-mono" style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>Your Captain</div>
             <div className="kpi-value" style={{ color: 'var(--accent-amber)' }}>
               {myCaptain}
               <Crown size={16} weight="fill" />
@@ -226,7 +227,7 @@ export default function RivalThreatMatrix({
             </div>
           </div>
           <div className="kpi-card">
-            <div className="kpi-label">Your Differentials</div>
+            <div className="kpi-label font-mono" style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>Your Differentials</div>
             <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
               {userDiffNames.length} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Unique Players</span>
             </div>
@@ -234,9 +235,10 @@ export default function RivalThreatMatrix({
               {userDiffNames.slice(0, 5).join(', ')}{userDiffNames.length > 5 ? '...' : ''}
             </div>
           </div>
-          <div className="kpi-card">
-            <div className="kpi-label">Biggest Threat to Your Rank</div>
-            <div className="kpi-value" style={{ color: 'var(--accent-crimson)' }}>
+          <div className="kpi-card kpi-threat-hero-card">
+            <span className="kpi-threat-badge font-mono">DANGER RIVAL PICK</span>
+            <div className="kpi-label font-mono" style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>Biggest Threat to Your Rank</div>
+            <div className="kpi-value kpi-threat-value" style={{ color: 'var(--accent-crimson)' }}>
               {topThreatPlayer}
             </div>
             <div className="kpi-subtext">
@@ -424,7 +426,7 @@ export default function RivalThreatMatrix({
                           {p.team && <span className="h2h-team-tag font-mono">{p.team}</span>}
                         </div>
                         <div className="h2h-player-stats font-mono">
-                          <span className="h2h-cost">£{Number(p.cost || 6.0).toFixed(1)}m</span>
+                          <span className="h2h-cost">£{formatFplPrice(p.cost)}m</span>
                           <span className="h2h-xp green">+{Number(p.xp || 4.5).toFixed(1)}</span>
                         </div>
                       </div>
@@ -466,7 +468,7 @@ export default function RivalThreatMatrix({
                           {p.team && <span className="h2h-team-tag font-mono">{p.team}</span>}
                         </div>
                         <div className="h2h-player-stats font-mono">
-                          <span className="h2h-cost">£{Number(p.cost || 6.0).toFixed(1)}m</span>
+                          <span className="h2h-cost">£{formatFplPrice(p.cost)}m</span>
                           <span className="h2h-xp red">+{Number(p.xp || 4.5).toFixed(1)}</span>
                         </div>
                       </div>

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import {
   SoccerBall,
   ArrowsLeftRight,
@@ -88,6 +88,43 @@ export default function Header({
     return order.map(id => tabMap[id]);
   }, [isSynced, activeChip]);
 
+  const handleTabKeyDown = (e, currentIndex) => {
+    let nextIndex = null;
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      nextIndex = (currentIndex + 1) % tabs.length;
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      nextIndex = 0;
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      nextIndex = tabs.length - 1;
+    }
+
+    if (nextIndex !== null) {
+      const nextTab = tabs[nextIndex];
+      setActiveTab(nextTab.id);
+      setTimeout(() => {
+        document.getElementById(`tab-${nextTab.id}`)?.focus();
+      }, 0);
+    }
+  };
+
+  // Keep active tab centered in the scrollable navigation rail
+  useEffect(() => {
+    try {
+      const activeEl = document.getElementById(`tab-${activeTab}`);
+      if (activeEl) {
+        activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    } catch {
+      // Ignore scroll errors in unsupported environments
+    }
+  }, [activeTab]);
+
   return (
     <header className="top-nav">
       <div className="top-nav-inner">
@@ -123,7 +160,7 @@ export default function Header({
         {/* Tier 2: Center navigation tabs (Full-width scroll rail on mobile) */}
         <div className="nav-tabs-wrapper">
           <nav className="nav-tabs segmented-nav-rail" role="tablist" aria-label="Main Navigation">
-            {tabs.map(tab => {
+            {tabs.map((tab, index) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
               return (
@@ -131,10 +168,12 @@ export default function Header({
                   key={tab.id}
                   id={`tab-${tab.id}`}
                   role="tab"
+                  tabIndex={isActive ? 0 : -1}
                   aria-selected={isActive}
                   aria-controls={`panel-${tab.id}`}
                   className={`nav-tab-btn ${isActive ? 'active' : ''}`}
                   onClick={() => setActiveTab(tab.id)}
+                  onKeyDown={(e) => handleTabKeyDown(e, index)}
                 >
                   <Icon size={15} weight={isActive ? "fill" : "bold"} />
                   <span className="tab-label-full">{tab.label}</span>

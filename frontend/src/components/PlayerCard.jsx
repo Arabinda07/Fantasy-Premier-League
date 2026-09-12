@@ -1,5 +1,5 @@
 import React from 'react';
-import { getPenaltyTierForTeam, AUTO_SUB_LABELS } from '../constants/copyTokens';
+import { getPenaltyTierForTeam, AUTO_SUB_LABELS, formatFplPrice } from '../constants/copyTokens';
 
 // Map Premier League team names to kit stripe identifiers
 const getTeamKitClass = (teamName) => {
@@ -43,7 +43,7 @@ export default function PlayerCard({
 
   const xp = Number(player.dynamicXp || player.expected_points || 4.5);
   const pos = (player.position || 'MID').toUpperCase();
-  const cost = Number(player.cost || player.now_cost || 0).toFixed(1);
+  const cost = formatFplPrice(player.cost ?? player.now_cost ?? player.selling_price ?? 0);
 
   // Matchup info: derive opponent correctly for both home and away players
   const fd = player.fixture_details;

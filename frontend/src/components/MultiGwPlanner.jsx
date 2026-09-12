@@ -127,33 +127,38 @@ export default function MultiGwPlanner({
             <div className="studio-hero-header">
               <span className="studio-version font-mono">{`NEXT ${activeRoadmap.length} GAMEWEEKS · GW${startGw} TO GW${endGw}`}</span>
             </div>
-            <h2 className="studio-title">5-Gameweek Transfer Planner &amp; Bank Strategy</h2>
+            <h1 className="studio-title">5-Gameweek Transfer Planner &amp; Bank Strategy</h1>
             <p className="studio-description">
               Plan your transfers in advance, bank free transfers, and preview your points over the next 5 gameweeks.
             </p>
 
-            {/* Horizon Metric Strip */}
-            <div className="kpi-strip">
-              <div className="kpi-card">
+            {/* Horizon Metric Strip: Asymmetric Hero Layout */}
+            <div className="kpi-strip planner-kpi-asymmetric">
+              <div className="kpi-card kpi-hero-card">
+                <span className="kpi-hero-badge font-mono">PRIMARY PROJECTION</span>
                 <div className="kpi-label">5-Week Expected Total</div>
-                <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
-                  {totalHorizonXp.toFixed(1)} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
+                <div className="kpi-value font-mono kpi-hero-value" style={{ color: 'var(--accent-emerald)' }}>
+                  {totalHorizonXp.toFixed(1)} <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>pts</span>
                 </div>
-                <div className="kpi-subtext">Projected score across 5 gameweeks</div>
+                <div className="kpi-subtext">
+                  Projected score across {activeRoadmap.length} gameweeks · ~{(totalHorizonXp / Math.max(1, activeRoadmap.length)).toFixed(1)} pts/GW
+                </div>
               </div>
               <div className="kpi-card">
                 <div className="kpi-label">Point Hits Planned</div>
                 <div className="kpi-value font-mono" style={{ color: totalHits === 0 ? 'var(--accent-emerald)' : 'var(--accent-amber)' }}>
                   {totalHits} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>(-{totalHits * 4} pts)</span>
                 </div>
-                <div className="kpi-subtext">No transfer penalties needed</div>
+                <div className="kpi-subtext">
+                  {totalHits === 0 ? 'Optimal: 0 transfer penalties' : `${totalHits} transfer hit planned`}
+                </div>
               </div>
               <div className="kpi-card">
                 <div className="kpi-label">Bank Balance</div>
                 <div className="kpi-value font-mono">
                   £{Number(activeRoadmap[activeGwIndex]?.bank || 0.0).toFixed(1)}m
                 </div>
-                <div className="kpi-subtext">Available in your bank for upcoming transfers</div>
+                <div className="kpi-subtext">Available in bank for upcoming moves</div>
               </div>
             </div>
           </div>

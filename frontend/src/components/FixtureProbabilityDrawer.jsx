@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   X,
   SoccerBall,
@@ -172,6 +172,19 @@ export default function FixtureProbabilityDrawer({
     }
     return { matrix: grid, maxProb: highest || 0.15 };
   }, [lambda, mu]);
+
+  // Keyboard accessibility: Close drawer on Escape key (A11y WCAG 2.1.2)
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   // Conditional early return AFTER all hooks
   if (!isOpen) return null;

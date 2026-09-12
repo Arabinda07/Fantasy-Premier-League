@@ -332,3 +332,11 @@ export const SCORING_COMPONENTS = {
   label: '10 Scoring Factors',
   note: 'Goals, assists, clean sheets, minutes and bonus points',
 };
+
+// Central Price Formatter (normalizes raw tenths-of-million integer vs float)
+export function formatFplPrice(val) {
+  const num = Number(val || 0);
+  if (isNaN(num)) return '0.0';
+  const price = num > 20 ? num / 10 : num;
+  return price.toFixed(1);
+}

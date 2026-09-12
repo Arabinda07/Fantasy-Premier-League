@@ -197,7 +197,12 @@ export default function App() {
       const [routePart, queryPart] = hashStr.split('?');
       const targetTab = HASH_TO_TAB[routePart];
       if (targetTab) {
-        setActiveTab(targetTab);
+        setActiveTab(prev => {
+          if (prev !== targetTab) {
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+          }
+          return targetTab;
+        });
       }
 
       if (queryPart) {
@@ -226,6 +231,7 @@ export default function App() {
     const hashRoute = TAB_TO_HASH[newTab] || 'lineup';
     const chipQuery = activeChip !== 'none' ? `?chip=${activeChip}` : '';
     window.location.hash = `${hashRoute}${chipQuery}`;
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   };
 
   const handleChipChange = (newChip) => {
@@ -316,6 +322,11 @@ export default function App() {
 
   return (
     <div className="app-layout">
+      {/* Accessible Skip-to-Content Link (WCAG 2.4.1) */}
+      <a href="#main-content" className="skip-to-content">
+        Skip to main content
+      </a>
+
       {/* Institutional Top Navigation */}
       <Header
         activeTab={activeTab}
@@ -344,7 +355,7 @@ export default function App() {
       />
 
       {/* Main Analytical Viewports */}
-      <main className="main-content">
+      <main id="main-content" className="main-content" tabIndex={-1}>
         {isDataLoading && (!allPlayersData || allPlayersData.length === 0) ? (
           <div style={{ padding: '32px', textAlign: 'center' }}>
             <div className="skeleton" style={{ height: '300px', maxWidth: '1200px', margin: '0 auto' }}></div>
@@ -354,7 +365,7 @@ export default function App() {
             {/* View 1: Tactical Pitch & Matchday Projections */}
             {activeTab === 'pitch' && (
               <ErrorBoundary componentName="Tactical Pitch">
-                <div className="surface-scope-pitch">
+                <div className="surface-scope-pitch" role="tabpanel" id="panel-pitch" aria-labelledby="tab-pitch">
                   <TacticalPitch
                     liveData={liveData}
                     starters={starters}
@@ -378,7 +389,7 @@ export default function App() {
             {/* View 2: Unified Transfer Studio & 5-Week Strategic Planner */}
             {activeTab === 'transfers' && (
               <ErrorBoundary componentName="Multi-GW Planner">
-                <div className="surface-scope-planner">
+                <div className="surface-scope-planner" role="tabpanel" id="panel-transfers" aria-labelledby="tab-transfers">
                   <MultiGwPlanner
                     roadmap={liveData?.multi_horizon_roadmap || liveData?.multi_horizon_plan || liveData?.transfer_roadmap || []}
                     squadPlayers={[...(starters || []), ...(bench || [])]}
@@ -398,7 +409,7 @@ export default function App() {
             {/* View 3: Rival Threat Matrix & Game Theory View */}
             {activeTab === 'rivals' && (
               <ErrorBoundary componentName="Rival Radar">
-                <div className="surface-scope-rivals">
+                <div className="surface-scope-rivals" role="tabpanel" id="panel-rivals" aria-labelledby="tab-rivals">
                   <RivalThreatMatrix
                     managerProfile={liveData?.manager_profile || liveData?.manager}
                     starters={starters.length ? starters : (liveData?.starters || [])}
@@ -416,7 +427,7 @@ export default function App() {
             {/* View 4: Fixture Heatmap & Schedule Dynamics */}
             {activeTab === 'fixtures' && (
               <ErrorBoundary componentName="Fixture Heatmap">
-                <div className="surface-scope-fixtures">
+                <div className="surface-scope-fixtures" role="tabpanel" id="panel-fixtures" aria-labelledby="tab-fixtures">
                   <FixtureHeatmap
                     fixturesData={fixturesData}
                     teamsData={teamsData}
@@ -430,7 +441,7 @@ export default function App() {
             {/* View 5: Market Price Velocity Ticker */}
             {activeTab === 'market' && (
               <ErrorBoundary componentName="Market Velocity Ticker">
-                <div className="surface-scope-market">
+                <div className="surface-scope-market" role="tabpanel" id="panel-market" aria-labelledby="tab-market">
                   <MarketVelocityTicker
                     allPlayers={allPlayersData}
                     allPlayersData={allPlayersData}
@@ -444,7 +455,7 @@ export default function App() {
             {/* View 6: 11-Component Mathematical Studio */}
             {activeTab === 'math' && (
               <ErrorBoundary componentName="Mathematical Studio">
-                <div className="surface-scope-studio">
+                <div className="surface-scope-studio" role="tabpanel" id="panel-math" aria-labelledby="tab-math">
                   <ComponentStudio
                     players={allPlayersData}
                     onInspectPlayer={handleInspectPlayer}
@@ -456,9 +467,11 @@ export default function App() {
             {/* View 7: 10-Season Historical Vault & Time Machine */}
             {activeTab === 'vault' && (
               <ErrorBoundary componentName="Historical Vault">
-                <HistoricalVault
-                  onInspectPlayer={handleInspectPlayer}
-                />
+                <div className="surface-scope-vault" role="tabpanel" id="panel-vault" aria-labelledby="tab-vault">
+                  <HistoricalVault
+                    onInspectPlayer={handleInspectPlayer}
+                  />
+                </div>
               </ErrorBoundary>
             )}
           </>

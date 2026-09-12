@@ -128,14 +128,15 @@ export default function MarketVelocityTicker({ allPlayers, allPlayersData, liveD
 
   return (
     <div className="view-fluid">
+      <h1 className="sr-only">Transfer Market Velocity &amp; Price Trends</h1>
       <div className="market-panels-grid">
         {/* Rising Assets Radar */}
         <div className="sidebar-panel">
           <div className="panel-header">
-            <span className="market-section-title rising">
+            <h2 className="market-section-title rising" style={{ margin: 0, fontSize: 'inherit', fontWeight: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <TrendUp size={16} weight="bold" />
               <span>Players Set to Rise Tonight (+£0.1m)</span>
-            </span>
+            </h2>
           </div>
 
           <div className="market-asset-list">
@@ -183,10 +184,10 @@ export default function MarketVelocityTicker({ allPlayers, allPlayersData, liveD
         {/* Falling Assets Radar */}
         <div className="sidebar-panel">
           <div className="panel-header">
-            <span className="market-section-title falling">
+            <h2 className="market-section-title falling" style={{ margin: 0, fontSize: 'inherit', fontWeight: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <TrendDown size={16} weight="bold" />
               <span>Players Set to Fall Tonight (-£0.1m)</span>
-            </span>
+            </h2>
           </div>
 
           <div className="market-asset-list">
@@ -235,10 +236,10 @@ export default function MarketVelocityTicker({ allPlayers, allPlayersData, liveD
       {/* Season Chip Optimization Guide */}
       <div className="chip-guide-panel">
         <div className="panel-header">
-          <span className="market-section-title">
+          <h2 className="market-section-title" style={{ margin: 0, fontSize: 'inherit', fontWeight: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <CalendarCheck size={16} weight="bold" />
             <span>Season Chip Strategy &amp; Double Gameweek Guide</span>
-          </span>
+          </h2>
         </div>
 
         <div className="chip-guide-grid">
