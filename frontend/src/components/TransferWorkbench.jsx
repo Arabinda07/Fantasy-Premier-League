@@ -310,15 +310,15 @@ export default function TransferWorkbench({
           <table className="data-table">
             <thead>
               <tr>
-                <th style={{ position: 'sticky', left: 0, zIndex: 20 }}>Player</th>
-                <th>Pos</th>
-                <th>Club</th>
-                <th>Price</th>
-                <th>Exp Pts</th>
-                <th>xG / 90</th>
-                <th>xA / 90</th>
-                <th>Start %</th>
-                <th style={{ textAlign: 'center' }}>Compare</th>
+                <th scope="col" style={{ position: 'sticky', left: 0, zIndex: 20 }}>Player</th>
+                <th scope="col">Pos</th>
+                <th scope="col">Club</th>
+                <th scope="col">Price</th>
+                <th scope="col">Exp Pts</th>
+                <th scope="col">xG / 90</th>
+                <th scope="col">xA / 90</th>
+                <th scope="col">Start %</th>
+                <th scope="col" style={{ textAlign: 'center' }}>Compare</th>
               </tr>
             </thead>
             <tbody>
@@ -338,9 +338,9 @@ export default function TransferWorkbench({
                   style={{ cursor: 'pointer' }}
                   title="Click to view scouting report & underlying stats"
                 >
-                  <td style={{ position: 'sticky', left: 0, zIndex: 10, fontWeight: 800, color: 'var(--text-primary)', background: 'var(--bg-surface-1)' }}>
+                  <th scope="row" style={{ position: 'sticky', left: 0, zIndex: 10, fontWeight: 800, textAlign: 'left', color: 'var(--text-primary)', background: 'var(--bg-surface-1)' }}>
                     {p.web_name}
-                  </td>
+                  </th>
                   <td>
                     <span className={`player-pos-tag ${p.position}`}>{p.position}</span>
                   </td>

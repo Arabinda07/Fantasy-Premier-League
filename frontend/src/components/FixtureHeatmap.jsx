@@ -227,8 +227,8 @@ export default function FixtureHeatmap({
           >
             <thead>
               <tr>
-                <th className="sticky-col team-col">Team</th>
-                <th className="avg-col font-mono" title={`Mathematical average of FDR ratings over the next ${effectiveWindow} gameweeks. Lower score indicates an easier schedule.`}>
+                <th scope="col" className="sticky-col team-col">Team</th>
+                <th scope="col" className="avg-col font-mono" title={`Mathematical average of FDR ratings over the next ${effectiveWindow} gameweeks. Lower score indicates an easier schedule.`}>
                   Avg Difficulty ({effectiveWindow} GWs)
                 </th>
                 {visibleGws.map(gw => {
@@ -237,6 +237,7 @@ export default function FixtureHeatmap({
                   return (
                     <th
                       key={gw}
+                      scope="col"
                       className={`gw-col font-mono ${isPast ? 'past-gw-header' : ''} ${isCurrent ? 'current-gw-header' : ''}`}
                     >
                       GW{gw}
@@ -255,10 +256,10 @@ export default function FixtureHeatmap({
               ) : (
                 matrix.map((team, idx) => (
                   <tr key={team.id || team.name}>
-                    <td className="sticky-col team-cell">
+                    <th scope="row" className="sticky-col team-cell" style={{ fontWeight: 'normal', textAlign: 'left' }}>
                       <span className="rank-num font-mono">{idx + 1}</span>
                       <span className="team-name">{team.name}</span>
-                    </td>
+                    </th>
                     <td className="avg-cell font-mono">
                       <span className="avg-badge" style={{ color: team.avgDiff <= 2.6 ? 'var(--accent-emerald)' : team.avgDiff >= 3.6 ? 'var(--accent-crimson)' : 'var(--text-primary)' }}>
                         {team.avgDiff.toFixed(2)}

@@ -257,132 +257,136 @@ export default function HistoricalVault({ onInspectPlayer }) {
       </div>
 
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 clamp(12px, 2vw, 20px)' }}>
-        {/* 2. Season Selector Rail (Auto-centering Pills & Responsive Buttons) */}
-        <div className="vault-season-rail-container">
-          {/* Left Arrow: Moves to Newer Seasons (left in the visual array) */}
-          <button
-            type="button"
-            className="vault-season-nav-btn"
-            onClick={handleNewerSeason}
-            disabled={currentSeasonIndex <= 0}
-            title="Newer Season"
-            aria-label="Navigate to newer season"
-          >
-            <CaretLeft size={14} weight="bold" />
-            <span>Newer</span>
-          </button>
+        {/* 2 & 3. Season Selector Rail & Season KPI Deck (Only relevant for Dream Team Pitch) */}
+        {activeTab === 'pitch' && (
+          <>
+            <div className="vault-season-rail-container">
+              {/* Left Arrow: Moves to Newer Seasons (left in the visual array) */}
+              <button
+                type="button"
+                className="vault-season-nav-btn"
+                onClick={handleNewerSeason}
+                disabled={currentSeasonIndex <= 0}
+                title="Newer Season"
+                aria-label="Navigate to newer season"
+              >
+                <CaretLeft size={14} weight="bold" />
+                <span>Newer</span>
+              </button>
 
-          {/* Season Pills Scroll Track */}
-          <div className="vault-season-scroll-track" ref={trackRef}>
-            {seasonsList.map(s => {
-              const isSelected = s.season === selectedSeason;
-              return (
-                <button
-                  key={s.season}
-                  ref={el => { pillRefs.current[s.season] = el; }}
-                  type="button"
-                  onClick={() => setSelectedSeason(s.season)}
-                  className={`vault-season-pill ${isSelected ? 'active' : ''}`}
-                  aria-pressed={isSelected}
-                  aria-label={`Select season ${s.season}`}
-                >
-                  {s.season}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Right Arrow: Moves to Older Seasons (right in the visual array) */}
-          <button
-            type="button"
-            className="vault-season-nav-btn"
-            onClick={handleOlderSeason}
-            disabled={currentSeasonIndex >= seasonsList.length - 1}
-            title="Older Season"
-            aria-label="Navigate to older season"
-          >
-            <span>Older</span>
-            <CaretRight size={14} weight="bold" />
-          </button>
-        </div>
-
-        {/* 3. Season KPI Deck (Adaptive HUD Ribbon: 4-col desktop, 2x2 tablet & mobile) */}
-        <div className="vault-hud-ribbon">
-          {/* Tile 1: Campaign Profile */}
-          <div className="hud-tile hud-tile-strategy">
-            <div className="hud-tile-header">
-              <span className="hud-tile-eyebrow font-mono">CAMPAIGN PROFILE</span>
-              <span className="hud-strategy-badge font-mono" style={{ backgroundColor: 'rgba(245, 158, 11, 0.15)', color: 'var(--accent-amber)' }}>
-                {selectedSeason}
-              </span>
-            </div>
-            <div className="hud-directive-text" style={{ padding: '2px 0' }}>
-              <span className="hud-highlight-text font-mono" style={{ fontSize: '15px' }}>
-                38 Gameweeks
-              </span>
-              <span className="hud-sub-text font-mono" style={{ fontSize: '11px', marginTop: '2px' }}>
-                {currentSeasonMeta?.total_players?.toLocaleString() || '0'} Players
-              </span>
-            </div>
-          </div>
-
-          {/* Tile 2: League Firepower */}
-          <div className="hud-tile hud-tile-chip">
-            <div className="hud-tile-header">
-              <span className="hud-tile-eyebrow font-mono">LEAGUE FIREPOWER</span>
-              <span className="hud-chip-live-badge font-mono" style={{ backgroundColor: 'var(--accent-cyan)', color: 'var(--text-inverse)' }}>
-                OFFICIAL
-              </span>
-            </div>
-            <div className="hud-directive-text" style={{ padding: '2px 0' }}>
-              <span className="hud-highlight-text font-mono" style={{ fontSize: '15px', color: 'var(--accent-cyan)' }}>
-                {currentSeasonMeta?.total_goals?.toLocaleString() || '0'} Goals
-              </span>
-              <span className="hud-sub-text font-mono" style={{ fontSize: '11px', marginTop: '2px' }}>
-                {currentSeasonMeta?.total_assists?.toLocaleString() || '0'} Assists logged
-              </span>
-            </div>
-          </div>
-
-          {/* Tile 3: Golden Boot Winner */}
-          <div className="hud-tile hud-tile-directive">
-            <div className="hud-tile-header">
-              <span className="hud-tile-eyebrow font-mono">GOLDEN BOOT</span>
-              <span className="hud-chip-idle-badge font-mono">
-                {currentSeasonMeta?.top_scorer_goals} GOALS
-              </span>
-            </div>
-            <div className="hud-directive-text" style={{ padding: '2px 0' }}>
-              <span className="hud-highlight-text" style={{ fontSize: '15px', color: 'var(--accent-crimson)', fontWeight: 800 }}>
-                {currentSeasonMeta?.top_scorer_name || '-'}
-              </span>
-              <span className="hud-sub-text font-mono" style={{ fontSize: '11px', marginTop: '2px' }}>
-                Top goalscorer in Premier League
-              </span>
-            </div>
-          </div>
-
-          {/* Tile 4: Top Point Hauler / Season MVP */}
-          <div className="hud-tile hud-tile-scorecard">
-            <div className="hud-tile-header">
-              <span className="hud-tile-eyebrow font-mono">SEASON MVP</span>
-              <span className="hud-squad-status font-mono" style={{ color: 'var(--accent-amber)' }}>
-                {currentSeasonMeta?.top_points_name || '-'}
-              </span>
-            </div>
-            <div className="hud-scorecard-body">
-              <div className="hud-score-main">
-                <span className="hud-score-val font-mono" style={{ color: 'var(--accent-amber)', fontSize: '20px', fontWeight: 800 }}>
-                  {currentSeasonMeta?.top_points || 0}
-                </span>
-                <span className="hud-score-unit font-mono">pts</span>
+              {/* Season Pills Scroll Track */}
+              <div className="vault-season-scroll-track" ref={trackRef}>
+                {seasonsList.map(s => {
+                  const isSelected = s.season === selectedSeason;
+                  return (
+                    <button
+                      key={s.season}
+                      ref={el => { pillRefs.current[s.season] = el; }}
+                      type="button"
+                      onClick={() => setSelectedSeason(s.season)}
+                      className={`vault-season-pill ${isSelected ? 'active' : ''}`}
+                      aria-pressed={isSelected}
+                      aria-label={`Select season ${s.season}`}
+                    >
+                      {s.season}
+                    </button>
+                  );
+                })}
               </div>
-              <div className="hud-score-meta font-mono" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '2px' }}>
-                <span className="hud-formation-pill">{currentDreamTeam.formation} Formation</span>
+
+              {/* Right Arrow: Moves to Older Seasons (right in the visual array) */}
+              <button
+                type="button"
+                className="vault-season-nav-btn"
+                onClick={handleOlderSeason}
+                disabled={currentSeasonIndex >= seasonsList.length - 1}
+                title="Older Season"
+                aria-label="Navigate to older season"
+              >
+                <span>Older</span>
+                <CaretRight size={14} weight="bold" />
+              </button>
+            </div>
+
+            {/* 3. Season KPI Deck (Adaptive HUD Ribbon: 4-col desktop, 2x2 tablet & mobile) */}
+            <div className="vault-hud-ribbon">
+              {/* Tile 1: Campaign Profile */}
+              <div className="hud-tile hud-tile-strategy">
+                <div className="hud-tile-header">
+                  <span className="hud-tile-eyebrow font-mono">CAMPAIGN PROFILE</span>
+                  <span className="hud-strategy-badge font-mono" style={{ backgroundColor: 'rgba(245, 158, 11, 0.15)', color: 'var(--accent-amber)' }}>
+                    {selectedSeason}
+                  </span>
+                </div>
+                <div className="hud-directive-text" style={{ padding: '2px 0' }}>
+                  <span className="hud-highlight-text font-mono" style={{ fontSize: '15px' }}>
+                    38 Gameweeks
+                  </span>
+                  <span className="hud-sub-text font-mono" style={{ fontSize: '11px', marginTop: '2px' }}>
+                    {currentSeasonMeta?.total_players?.toLocaleString() || '0'} Players
+                  </span>
+                </div>
+              </div>
+
+              {/* Tile 2: League Firepower */}
+              <div className="hud-tile hud-tile-chip">
+                <div className="hud-tile-header">
+                  <span className="hud-tile-eyebrow font-mono">LEAGUE FIREPOWER</span>
+                  <span className="hud-chip-live-badge font-mono" style={{ backgroundColor: 'var(--accent-cyan)', color: 'var(--text-inverse)' }}>
+                    OFFICIAL
+                  </span>
+                </div>
+                <div className="hud-directive-text" style={{ padding: '2px 0' }}>
+                  <span className="hud-highlight-text font-mono" style={{ fontSize: '15px', color: 'var(--accent-cyan)' }}>
+                    {currentSeasonMeta?.total_goals?.toLocaleString() || '0'} Goals
+                  </span>
+                  <span className="hud-sub-text font-mono" style={{ fontSize: '11px', marginTop: '2px' }}>
+                    {currentSeasonMeta?.total_assists?.toLocaleString() || '0'} Assists logged
+                  </span>
+                </div>
+              </div>
+
+              {/* Tile 3: Golden Boot Winner */}
+              <div className="hud-tile hud-tile-directive">
+                <div className="hud-tile-header">
+                  <span className="hud-tile-eyebrow font-mono">GOLDEN BOOT</span>
+                  <span className="hud-chip-idle-badge font-mono">
+                    {currentSeasonMeta?.top_scorer_goals} GOALS
+                  </span>
+                </div>
+                <div className="hud-directive-text" style={{ padding: '2px 0' }}>
+                  <span className="hud-highlight-text" style={{ fontSize: '15px', color: 'var(--accent-crimson)', fontWeight: 800 }}>
+                    {currentSeasonMeta?.top_scorer_name || '-'}
+                  </span>
+                  <span className="hud-sub-text font-mono" style={{ fontSize: '11px', marginTop: '2px' }}>
+                    Top goalscorer in Premier League
+                  </span>
+                </div>
+              </div>
+
+              {/* Tile 4: Top Point Hauler / Season MVP */}
+              <div className="hud-tile hud-tile-scorecard">
+                <div className="hud-tile-header">
+                  <span className="hud-tile-eyebrow font-mono">SEASON MVP</span>
+                  <span className="hud-squad-status font-mono" style={{ color: 'var(--accent-amber)' }}>
+                    {currentSeasonMeta?.top_points_name || '-'}
+                  </span>
+                </div>
+                <div className="hud-scorecard-body">
+                  <div className="hud-score-main">
+                    <span className="hud-score-val font-mono" style={{ color: 'var(--accent-amber)', fontSize: '20px', fontWeight: 800 }}>
+                      {currentSeasonMeta?.top_points || 0}
+                    </span>
+                    <span className="hud-score-unit font-mono">pts</span>
+                  </div>
+                  <div className="hud-score-meta font-mono" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '2px' }}>
+                    <span className="hud-formation-pill">{currentDreamTeam.formation} Formation</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          </>
+        )}
 
         {/* 4. Tab View 1: Tactical Pitch (Dream Team) */}
         {activeTab === 'pitch' && (
@@ -851,6 +855,7 @@ export default function HistoricalVault({ onInspectPlayer }) {
                   zIndex: 4
                 }}>
                   <th
+                    scope="col"
                     className="font-mono sortable-th vault-table-sticky-col"
                     onClick={() => handleHeaderSort('season')}
                     style={{ padding: '10px 12px', cursor: 'pointer', userSelect: 'none', minWidth: '90px' }}
@@ -861,6 +866,7 @@ export default function HistoricalVault({ onInspectPlayer }) {
                     </div>
                   </th>
                   <th
+                    scope="col"
                     className="font-mono sortable-th"
                     onClick={() => handleHeaderSort('top_points')}
                     style={{ padding: '10px 12px', cursor: 'pointer', userSelect: 'none', minWidth: '180px' }}
@@ -871,6 +877,7 @@ export default function HistoricalVault({ onInspectPlayer }) {
                     </div>
                   </th>
                   <th
+                    scope="col"
                     className="font-mono sortable-th"
                     onClick={() => handleHeaderSort('top_scorer_goals')}
                     style={{ padding: '10px 12px', cursor: 'pointer', userSelect: 'none', minWidth: '170px' }}
@@ -881,6 +888,7 @@ export default function HistoricalVault({ onInspectPlayer }) {
                     </div>
                   </th>
                   <th
+                    scope="col"
                     className="font-mono sortable-th"
                     onClick={() => handleHeaderSort('total_goals')}
                     style={{ padding: '10px 12px', textAlign: 'right', cursor: 'pointer', userSelect: 'none', minWidth: '110px' }}
@@ -891,6 +899,7 @@ export default function HistoricalVault({ onInspectPlayer }) {
                     </div>
                   </th>
                   <th
+                    scope="col"
                     className="font-mono sortable-th"
                     onClick={() => handleHeaderSort('total_assists')}
                     style={{ padding: '10px 12px', textAlign: 'right', cursor: 'pointer', userSelect: 'none', minWidth: '110px' }}
@@ -901,6 +910,7 @@ export default function HistoricalVault({ onInspectPlayer }) {
                     </div>
                   </th>
                   <th
+                    scope="col"
                     className="font-mono sortable-th"
                     onClick={() => handleHeaderSort('total_players')}
                     style={{ padding: '10px 12px', textAlign: 'right', cursor: 'pointer', userSelect: 'none', minWidth: '90px' }}
@@ -910,7 +920,7 @@ export default function HistoricalVault({ onInspectPlayer }) {
                       {sortKey === 'total_players' && (sortDir === 'asc' ? <CaretUp size={12} weight="bold" /> : <CaretDown size={12} weight="bold" />)}
                     </div>
                   </th>
-                  <th className="font-mono" style={{ padding: '10px 12px', textAlign: 'center', minWidth: '100px' }}>
+                  <th scope="col" className="font-mono" style={{ padding: '10px 12px', textAlign: 'center', minWidth: '100px' }}>
                     ACTION
                   </th>
                 </tr>
@@ -928,14 +938,15 @@ export default function HistoricalVault({ onInspectPlayer }) {
                         transition: 'background-color 0.15s ease'
                       }}
                     >
-                      <td className="font-mono vault-table-sticky-col" style={{
+                      <th scope="row" className="font-mono vault-table-sticky-col" style={{
                         padding: '12px',
                         fontWeight: 800,
+                        textAlign: 'left',
                         color: isCurrent ? 'var(--accent-amber)' : 'var(--text-primary)',
                         borderLeft: isCurrent ? '3px solid var(--accent-amber)' : '3px solid transparent'
                       }}>
                         {s.season}
-                      </td>
+                      </th>
                       <td style={{ padding: '12px' }}>
                         <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{s.top_points_name}</span>{' '}
                         <span className="font-mono" style={{ color: 'var(--accent-amber)', fontSize: '11px', fontWeight: 700 }}>({s.top_points} pts)</span>

@@ -252,15 +252,42 @@ a:focus-visible,
   border-width: 0;
 }
 
-/* Motion Sensitivity Preferences (A11y WCAG 2.3.3) */
+/* Motion Sensitivity Preferences (A11y WCAG 2.2.2 & 2.3.3)
+   Intentional alternative preserving visual feedback and hierarchy while
+   eliminating vestibular triggers (flashing, rapid translation, spatial slides). */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Suppress spatial displacement/translation while preserving clear state feedback (opacity, color, border) */
+  button,
+  .btn,
+  .nav-tab-btn,
+  .strategy-btn,
+  .chip-btn,
+  .swap-trigger-btn,
+  .filter-btn,
+  .gw-selector-btn,
+  .modal-close-btn,
+  .action-btn,
+  .quick-action-btn,
+  .planner-pill-btn,
+  [role="button"],
+  .player-pitch-card,
+  .drawer-panel,
+  .modal-backdrop,
+  .modal-window {
+    transform: none !important;
+    transition: opacity 0.1s ease,
+                background-color 0.1s ease,
+                border-color 0.1s ease,
+                color 0.1s ease,
+                box-shadow 0.1s ease !important;
   }
 }
 
@@ -538,20 +565,20 @@ p,
   position: relative;
 }
 
-.tab-label-full {
+.nav-tab-btn .tab-label-full {
   display: inline;
 }
 
-.tab-label-short {
+.nav-tab-btn .tab-label-short {
   display: none;
 }
 
 /* Responsive Tab Labels: Prevent horizontal header overflow on standard viewports */
 @media (max-width: 1540px) {
-  .tab-label-full {
+  .nav-tab-btn .tab-label-full {
     display: none !important;
   }
-  .tab-label-short {
+  .nav-tab-btn .tab-label-short {
     display: inline !important;
   }
 }
@@ -1892,8 +1919,62 @@ p,
   font-size: 10px;
   font-weight: 700;
   color: var(--text-muted);
-  width: 50px;
+  width: 48px;
   flex-shrink: 0;
+}
+
+.bench-player-info {
+  min-width: 0;
+  overflow: hidden;
+  flex: 1;
+}
+
+.bench-player-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.bench-player-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.bench-score-column {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.bench-points-val {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--accent-emerald);
+}
+
+.bench-points-label {
+  font-size: 9.5px;
+  color: var(--text-muted);
+}
+
+.bench-priority-badge {
+  font-size: 8px;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+.bench-priority-badge.priority-high {
+  color: var(--accent-emerald);
+}
+
+.bench-priority-badge.priority-medium {
+  color: var(--accent-amber);
+}
+
+.bench-priority-badge.priority-low {
+  color: var(--text-muted);
 }
 
 .bench-slot-tag.boost-tag {

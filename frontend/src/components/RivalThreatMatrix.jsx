@@ -263,13 +263,13 @@ export default function RivalThreatMatrix({
             <table className="data-table rivals-table">
               <thead>
                 <tr>
-                  <th style={{ width: '8%' }}>Rank</th>
-                  <th style={{ width: '28%' }}>Manager &amp; Team</th>
-                  <th style={{ width: '12%' }}>Points</th>
-                  <th style={{ width: '18%' }}>Captain</th>
-                  <th style={{ width: '14%' }}>Squad Overlap</th>
-                  <th style={{ width: '10%' }}>Threat</th>
-                  <th style={{ width: '10%' }}>Action</th>
+                  <th scope="col" style={{ width: '8%' }}>Rank</th>
+                  <th scope="col" style={{ width: '28%' }}>Manager &amp; Team</th>
+                  <th scope="col" style={{ width: '12%' }}>Points</th>
+                  <th scope="col" style={{ width: '18%' }}>Captain</th>
+                  <th scope="col" style={{ width: '14%' }}>Squad Overlap</th>
+                  <th scope="col" style={{ width: '10%' }}>Threat</th>
+                  <th scope="col" style={{ width: '10%' }}>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -288,7 +288,7 @@ export default function RivalThreatMatrix({
                       onClick={() => setSelectedRivalId(r.entry_id)}
                       style={{ cursor: 'pointer' }}
                     >
-                      <td className="font-mono" style={{ fontWeight: 700 }}>#{r.overall_rank || r.rank || (idx + 1)}</td>
+                      <th scope="row" className="font-mono" style={{ fontWeight: 700, textAlign: 'left' }}>#{r.overall_rank || r.rank || (idx + 1)}</th>
                       <td>
                         <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{r.manager_name}</div>
                         <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{r.team_name}</div>

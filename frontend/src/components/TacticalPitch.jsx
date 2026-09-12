@@ -680,31 +680,25 @@ export default function TacticalPitch({
                             {slotLabel}
                           </span>
                           <span className={`player-pos-tag ${p.position}`}>{p.position}</span>
-                          <div style={{ minWidth: 0, overflow: 'hidden' }}>
-                            <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                          <div className="bench-player-info">
+                            <div className="bench-player-name">
                               {p.web_name}
                             </div>
-                            <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                            <div className="bench-player-meta font-mono">
                               {p.team} · £{formatFplPrice(p.cost ?? p.now_cost ?? p.selling_price ?? 0)}m
                             </div>
                           </div>
                         </div>
-                        <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 800, color: 'var(--accent-emerald)' }}>
+                        <div className="bench-score-column">
+                          <div className="bench-points-val font-mono">
                             {displayBenchPts} pts
                           </div>
-                          <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                          <div className="bench-points-label font-mono">
                             {hasActualPoints ? 'actual pts' : 'exp pts'}
                           </div>
                           {/* M-06: Auto-Sub Priority */}
                           {!hasActualPoints && p.auto_sub_label && (
-                            <div style={{
-                              fontSize: '8px',
-                              fontWeight: 800,
-                              fontFamily: 'var(--font-mono)',
-                              marginTop: '2px',
-                              color: p.auto_sub_label === 'HIGH' ? 'var(--accent-emerald)' : p.auto_sub_label === 'MEDIUM' ? 'var(--accent-amber)' : 'var(--text-muted)',
-                            }}>
+                            <div className={`bench-priority-badge font-mono priority-${p.auto_sub_label.toLowerCase()}`}>
                               {p.auto_sub_label} PRIORITY
                             </div>
                           )}

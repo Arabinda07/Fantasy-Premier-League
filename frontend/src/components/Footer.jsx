@@ -54,7 +54,6 @@ export default function Footer({ onNavigateTab }) {
         )}
 
         <div className="footer-meta-actions">
-          <span className="footer-attribution">Data: Official FPL API & OKF v0.2</span>
           <a
             href="https://github.com/Arabinda07/Fantasy-Premier-League"
             target="_blank"
