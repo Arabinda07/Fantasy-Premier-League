@@ -460,24 +460,29 @@ def manage_gameweek(
         recommended_starters_dicts = [asdict(p) for p in active_sq.starters]
         recommended_bench_dicts = [asdict(p) for p in active_sq.bench]
 
-        # Determine if this GW is already completed using active gameweek detection
-        gw_is_completed = False
+        # Determine gameweek status: completed, live/in-progress, or upcoming
+        active_gw = None
+        next_gw = None
         try:
             from model.pipeline_automation import detect_active_gameweek
             active_gw, next_gw, _ = detect_active_gameweek(season=season, data_root=data_root, offline=True)
-            if active_gw is not None and gw <= active_gw:
-                gw_is_completed = True
         except Exception:
-            # Fallback: if live_profile points exist and gw matches event
-            if live_profile and getattr(live_profile, 'event_points', 0) > 0:
-                gw_is_completed = False
+            pass
 
-        if gw_is_completed:
-            # Completed GW: show what actually happened on the pitch
+        # Check if gameweek is completed
+        gw_is_completed = False
+        if active_gw is not None and gw < active_gw:
+            gw_is_completed = True
+
+        # If manager has locked picks for this gameweek from live API sync:
+        # Display what is actually playing/locked on the pitch.
+        has_actual_picks = bool(actual_starters and len(actual_starters) == 11)
+
+        if has_actual_picks:
             display_starters = actual_starters
             display_bench = actual_bench
         else:
-            # Upcoming / in-progress GW: show the solver's recommended post-transfer squad
+            # Future / unpicked gameweek: show solver's recommended lineup
             display_starters = recommended_starters_dicts
             display_bench = recommended_bench_dicts
 

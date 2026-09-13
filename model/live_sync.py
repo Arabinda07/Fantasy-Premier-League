@@ -402,6 +402,11 @@ def calculate_available_free_transfers(
             # Took hits: FT resets to 1 for next GW, then gains +1 = 1
             ft = 1
 
+    # Deduct transfers already executed in current_gw (if any)
+    current_transfers = gw_transfer_counts.get(current_gw, 0)
+    if current_transfers > 0 and current_gw not in chip_gws:
+        return max(0, ft - current_transfers)
+
     return max(1, min(5, ft))
 
 

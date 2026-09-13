@@ -16,7 +16,7 @@ import TransferWorkbench from './TransferWorkbench';
 const DEFAULT_5GW_ROADMAP = [
   { gw: 2, transfers_in: [], transfers_out: [], hits_taken: 0, net_xp: 64.72, bank: 0.0, ft_available: 1 },
   { gw: 3, transfers_in: ['Canvot'], transfers_out: ['Ballard'], hits_taken: 0, net_xp: 62.16, bank: 0.0, ft_available: 2 },
-  { gw: 4, transfers_in: [], transfers_out: [], hits_taken: 0, net_xp: 64.16, bank: 0.0, ft_available: 1 },
+  { gw: 4, transfers_in: ['Rashford'], transfers_out: ['Mbeumo'], hits_taken: 0, net_xp: 54.47, bank: 1.6, ft_available: 0 },
   { gw: 5, transfers_in: [], transfers_out: [], hits_taken: 0, net_xp: 63.35, bank: 0.0, ft_available: 2 },
   { gw: 6, transfers_in: [], transfers_out: [], hits_taken: 0, net_xp: 62.65, bank: 0.0, ft_available: 1 }
 ];
@@ -243,8 +243,8 @@ export default function MultiGwPlanner({
                   <span className="gw-tag pill-base pill-sm font-mono">GW{item.gw}</span>
                   {idx === 0 && <span className="current-badge pill-base pill-xs font-mono">CURRENT</span>}
                 </div>
-                <span className="gw-ft-badge font-mono" title={`${item.ft_available || 1} Free Transfers available`}>
-                  {item.ft_available || 1} FT
+                <span className="gw-ft-badge font-mono" title={`${item.ft_available != null ? item.ft_available : (idx === 0 ? 0 : 1)} Free Transfers available`}>
+                  {item.ft_available != null ? item.ft_available : (idx === 0 ? 0 : 1)} FT
                 </span>
               </div>
 
