@@ -1,110 +1,110 @@
 {
-  "evaluated_gw": 3,
-  "evaluated_at": "2026-09-12T09:44:05.748406+00:00",
+  "evaluated_gw": 4,
+  "evaluated_at": "2026-09-13T10:45:28.795704+00:00",
   "season": "2026-27",
-  "total_players": 652,
-  "active_players": 387,
-  "overall_mae": 1.17,
-  "overall_rmse": 2.01,
-  "starters_mae": 1.91,
-  "starters_rmse": 2.6,
-  "rank_correlation": 0.355,
+  "total_players": 656,
+  "active_players": 401,
+  "overall_mae": 1.32,
+  "overall_rmse": 2.09,
+  "starters_mae": 2.08,
+  "starters_rmse": 2.66,
+  "rank_correlation": 0.204,
   "brier_score_cs": 0.198,
   "positional": [
     {
       "pos": "GK",
       "count": 71,
-      "mae": 0.61,
-      "rmse": 1.28,
-      "meanPred": 1.09,
-      "meanAct": 1.01,
-      "bias": 0.08,
-      "status": "CALIBRATED"
+      "mae": 0.99,
+      "rmse": 2.01,
+      "meanPred": 1.14,
+      "meanAct": 0.89,
+      "bias": 0.26,
+      "status": "OVER_PROJECTED"
     },
     {
       "pos": "DEF",
-      "count": 214,
-      "mae": 1.46,
-      "rmse": 2.44,
-      "meanPred": 1.4,
-      "meanAct": 1.74,
-      "bias": -0.34,
-      "status": "UNDER_PROJECTED"
+      "count": 215,
+      "mae": 1.65,
+      "rmse": 2.34,
+      "meanPred": 1.69,
+      "meanAct": 0.99,
+      "bias": 0.7,
+      "status": "OVER_PROJECTED"
     },
     {
       "pos": "MID",
-      "count": 289,
-      "mae": 1.15,
-      "rmse": 1.89,
-      "meanPred": 1.53,
-      "meanAct": 1.33,
-      "bias": 0.2,
-      "status": "CALIBRATED"
+      "count": 292,
+      "mae": 1.17,
+      "rmse": 1.88,
+      "meanPred": 1.43,
+      "meanAct": 0.92,
+      "bias": 0.51,
+      "status": "OVER_PROJECTED"
     },
     {
       "pos": "FWD",
       "count": 78,
-      "mae": 0.92,
-      "rmse": 1.65,
-      "meanPred": 1.42,
-      "meanAct": 1.09,
-      "bias": 0.33,
+      "mae": 1.27,
+      "rmse": 2.16,
+      "meanPred": 1.3,
+      "meanAct": 1.0,
+      "bias": 0.3,
       "status": "OVER_PROJECTED"
     }
   ],
   "outliers": [
     {
-      "player": "Mitchell",
+      "player": "Davis",
+      "team": "Ipswich Town",
+      "pos": "ASSET",
+      "pred": 1.92,
+      "actual": 14,
+      "diff": "+12.1",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Schade",
+      "team": "Brentford",
+      "pos": "ASSET",
+      "pred": 3.46,
+      "actual": 15,
+      "diff": "+11.5",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Belloumi",
+      "team": "Hull City",
+      "pos": "ASSET",
+      "pred": 1.66,
+      "actual": 13,
+      "diff": "+11.3",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Emersonn",
+      "team": "Ipswich Town",
+      "pos": "ASSET",
+      "pred": 1.64,
+      "actual": 12,
+      "diff": "+10.4",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Raya",
+      "team": "Arsenal",
+      "pos": "ASSET",
+      "pred": 5.01,
+      "actual": 14,
+      "diff": "+9.0",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Disasi",
       "team": "Crystal Palace",
       "pos": "ASSET",
-      "pred": 2.68,
-      "actual": 15,
-      "diff": "+12.3",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Bogle",
-      "team": "Leeds",
-      "pos": "ASSET",
-      "pred": 2.17,
-      "actual": 14,
-      "diff": "+11.8",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Vuskovic",
-      "team": "Brighton",
-      "pos": "ASSET",
-      "pred": 2.17,
-      "actual": 12,
-      "diff": "+9.8",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Isak",
-      "team": "Liverpool",
-      "pos": "ASSET",
-      "pred": 3.28,
-      "actual": 13,
-      "diff": "+9.7",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Barnes",
-      "team": "Newcastle",
-      "pos": "ASSET",
-      "pred": 3.71,
-      "actual": 12,
-      "diff": "+8.3",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "O'Reilly",
-      "team": "Man City",
-      "pos": "ASSET",
-      "pred": 5.31,
-      "actual": 0,
-      "diff": "-5.3",
+      "pred": 3.21,
+      "actual": -3,
+      "diff": "-6.2",
       "reason": "Tactical substitution or match blank"
     }
   ]
