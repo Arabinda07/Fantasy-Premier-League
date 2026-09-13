@@ -92,5 +92,22 @@ All user-facing copy in the frontend (titles, buttons, modals, tooltips, validat
 * **Rule**: Never introduce corporate jargon (*"assets"*, *"portfolios"*), raw math formulas (*"Dixon-Coles bivariate Poisson"*, *"Bayesian shrinkage"*), or robotic error messages into user-facing components.
 * **Automated Enforcement**: All frontend builds (`npm run build`) and Pytest runs (`pytest model/test_voice_and_tone.py`) automatically execute the copy validation suite ([`scripts/validate_frontend_copy.py`](file:///e:/Fantasy-Premier-League/scripts/validate_frontend_copy.py) & [`scripts/check_copy.cjs`](file:///e:/Fantasy-Premier-League/scripts/check_copy.cjs)). Run `npm run check-copy` to verify changes instantly.
 
+## Frontend Architecture & Bi-Directional Design System Governance (DESIGN.md)
 
+All agents modifying or extending the frontend (`frontend/`) must strictly observe the bi-directional contract with [`DESIGN.md`](file:///e:/Fantasy-Premier-League/DESIGN.md):
 
+* **Direction 1 (DESIGN.md → Code / Mandatory Consumption)**:
+  - Before writing or modifying any UI component or style under `frontend/src/`, agents MUST consult [`DESIGN.md`](file:///e:/Fantasy-Premier-League/DESIGN.md).
+  - All UI elements must strictly reuse the repeatable elements catalog (e.g., `.matchday-control-deck`, `.matchday-directive-strip`, `.player-pitch-card`, `.bench-slot-card`, `.transfer-workbench-card`, `.rival-threat-card`, `.fixture-cell`, `.velocity-card`, `.vault-metric-card`), declared surface scopes (`.surface-scope-*`), and tokenized CSS custom properties.
+  - Hardcoded hex values, ad-hoc font families, and arbitrary `9999px` bubble pills on cards are strictly prohibited anti-slop violations.
+  - Telemetry and statistics must strictly use `--font-mono` (`JetBrains Mono`) with `font-feature-settings: 'tnum' 1`; functional chrome must use `--font-sans` (`Plus Jakarta Sans`).
+
+* **Direction 2 (Code → DESIGN.md / Mandatory Reciprocal Registration)**:
+  - Whenever an agent implements a new repeatable UI component, layout primitive, or variant in `frontend/src/`, the agent is contractually mandated to document it in [`DESIGN.md`](file:///e:/Fantasy-Premier-League/DESIGN.md) in the exact same task or pull request.
+  - If the component includes interactive variations or visual states, register it in the interactive workbench [`frontend/src/components/ComponentStudio.jsx`](file:///e:/Fantasy-Premier-League/frontend/src/components/ComponentStudio.jsx).
+  - Never allow frontend implementation and [`DESIGN.md`](file:///e:/Fantasy-Premier-League/DESIGN.md) to drift out of sync.
+
+* **Mandatory Frontend Verification Gates**:
+  - Run the Impeccable detector scan: `node "C:\Users\Arabinda\.gemini\config\skills\impeccable\scripts\detect.mjs" --json frontend/src`
+  - Run the copy validator: `npm run check-copy` (inside `frontend/`)
+  - Run the production build: `npm run build` (inside `frontend/`)

@@ -179,7 +179,7 @@ export default function Header({
                   <span className="tab-label-full">{tab.label}</span>
                   <span className="tab-label-short">{tab.shortLabel}</span>
                   {tab.badge && (
-                    <span className={`tab-pip font-mono ${tab.badgeType || ''}`}>
+                    <span className={`tab-pip pill-base pill-xs font-mono ${tab.badgeType || ''}`}>
                       {tab.badge}
                     </span>
                   )}

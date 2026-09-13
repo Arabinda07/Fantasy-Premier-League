@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { TrendUp, TrendDown, CalendarCheck } from '@phosphor-icons/react';
+import CollapsibleSection from './CollapsibleSection';
 
 export default function MarketVelocityTicker({ allPlayers, allPlayersData, liveData, onInspectPlayer }) {
   const playersList = (allPlayers && allPlayers.length > 0)
@@ -157,7 +158,7 @@ export default function MarketVelocityTicker({ allPlayers, allPlayersData, liveD
               >
                 <div className="asset-main-info">
                   <div className="market-asset-identity">
-                    <span className={`player-pos-tag ${p.pos}`}>{p.pos}</span>
+                    <span className={`player-pos-tag pill-base pill-sm ${p.pos}`}>{p.pos}</span>
                     <span className="asset-player-name">{p.web_name}</span>
                     <span className="asset-team-name font-mono">({p.team})</span>
                   </div>
@@ -208,7 +209,7 @@ export default function MarketVelocityTicker({ allPlayers, allPlayersData, liveD
               >
                 <div className="asset-main-info">
                   <div className="market-asset-identity">
-                    <span className={`player-pos-tag ${p.pos}`}>{p.pos}</span>
+                    <span className={`player-pos-tag pill-base pill-sm ${p.pos}`}>{p.pos}</span>
                     <span className="asset-player-name">{p.web_name}</span>
                     <span className="asset-team-name font-mono">({p.team})</span>
                   </div>
@@ -233,16 +234,16 @@ export default function MarketVelocityTicker({ allPlayers, allPlayersData, liveD
         </div>
       </div>
 
-      {/* Season Chip Optimization Guide */}
-      <div className="chip-guide-panel">
-        <div className="panel-header">
-          <h2 className="market-section-title" style={{ margin: 0, fontSize: 'inherit', fontWeight: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <CalendarCheck size={16} weight="bold" />
-            <span>Season Chip Strategy &amp; Double Gameweek Guide</span>
-          </h2>
-        </div>
-
-        <div className="chip-guide-grid">
+      {/* Season Chip Optimization Guide — On-Demand Progressive Disclosure */}
+      <CollapsibleSection
+        title="Season Chip Strategy & Double Gameweek Horizons"
+        subtitle="Long-term chip timing and expected points boost"
+        badge="5 Chips"
+        badgeVariant="neutral"
+        defaultOpen={false}
+        className="market-chip-guide-collapsible"
+      >
+        <div className="chip-guide-grid" style={{ marginTop: 0 }}>
           {chips.map(chip => (
             <div key={chip.name} className="chip-guide-card">
               <div className="chip-guide-header">
@@ -254,7 +255,7 @@ export default function MarketVelocityTicker({ allPlayers, allPlayersData, liveD
             </div>
           ))}
         </div>
-      </div>
+      </CollapsibleSection>
     </div>
   );
 }

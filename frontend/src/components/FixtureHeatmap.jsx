@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { GridNine, Info, Sparkle } from '@phosphor-icons/react';
 
 export default function FixtureHeatmap({
@@ -12,6 +12,27 @@ export default function FixtureHeatmap({
 }) {
   const [horizon, setHorizon] = useState('5');
   const [showFormulaTooltip, setShowFormulaTooltip] = useState(false);
+  const formulaRef = useRef(null);
+
+  useEffect(() => {
+    if (!showFormulaTooltip) return;
+    const handleClickOutside = (e) => {
+      if (formulaRef.current && !formulaRef.current.contains(e.target)) {
+        setShowFormulaTooltip(false);
+      }
+    };
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setShowFormulaTooltip(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showFormulaTooltip]);
 
   const activeFixtures = fixtures || fixturesData || [];
   const activeTeams = teams || teamsData || [];
@@ -157,7 +178,7 @@ export default function FixtureHeatmap({
                 onClick={() => setHorizon(h.id)}
                 aria-label={`Planning horizon: ${h.label}`}
                 aria-pressed={horizon === h.id}
-                className={`segmented-chip-btn ${horizon === h.id ? 'active' : ''}`}
+                className={`segmented-chip-btn pill-base pill-md ${horizon === h.id ? 'active' : ''}`}
               >
                 <span>{h.label}</span>
               </button>
@@ -166,55 +187,70 @@ export default function FixtureHeatmap({
         </div>
       </div>
 
-      {/* Institutional FDR Legend & Calculation Explainer */}
+      {/* Streamlined FDR Legend & Formula Explainer */}
       <div className="fixture-legend-bar">
         <div className="legend-scale-group">
-          <span className="legend-label font-mono">FDR DIFFICULTY:</span>
+          <span className="legend-label font-mono">FDR:</span>
           <div className="legend-items">
-            <div className="legend-chip legend-fdr-1">
+            <div className="legend-chip legend-fdr-1" title="FDR 1: Very Easy (Home vs promoted / bottom tier)">
               <span className="legend-dot" style={{ background: 'var(--fdr-1)' }} />
               <span className="legend-fdr-num font-mono">1</span>
-              <span className="legend-text">Very Easy (Home vs Promoted)</span>
+              <span className="legend-text">Very Easy</span>
             </div>
-            <div className="legend-chip legend-fdr-2">
+            <div className="legend-chip legend-fdr-2" title="FDR 2: Easy (Home vs lower-half opponent)">
               <span className="legend-dot" style={{ background: 'var(--fdr-2)' }} />
               <span className="legend-fdr-num font-mono">2</span>
-              <span className="legend-text">Easy (Home vs Lower Half)</span>
+              <span className="legend-text">Easy</span>
             </div>
-            <div className="legend-chip legend-fdr-3">
+            <div className="legend-chip legend-fdr-3" title="FDR 3: Moderate (Mid-table matchup)">
               <span className="legend-dot" style={{ background: 'var(--fdr-3)' }} />
               <span className="legend-fdr-num font-mono">3</span>
-              <span className="legend-text">Moderate (Mid-table)</span>
+              <span className="legend-text">Moderate</span>
             </div>
-            <div className="legend-chip legend-fdr-4">
+            <div className="legend-chip legend-fdr-4" title="FDR 4: Tough (Away vs top-six)">
               <span className="legend-dot" style={{ background: 'var(--fdr-4)' }} />
               <span className="legend-fdr-num font-mono">4</span>
-              <span className="legend-text">Tough (Away vs Top 6)</span>
+              <span className="legend-text">Tough</span>
             </div>
-            <div className="legend-chip legend-fdr-5">
+            <div className="legend-chip legend-fdr-5" title="FDR 5: Very Tough (Away vs title contenders)">
               <span className="legend-dot" style={{ background: 'var(--fdr-5)' }} />
               <span className="legend-fdr-num font-mono">5</span>
-              <span className="legend-text">Very Tough (Away vs Title Contenders)</span>
+              <span className="legend-text">Very Tough</span>
             </div>
-            <div className="legend-chip legend-fdr-blank">
+            <div className="legend-chip legend-fdr-blank" title="Blank Gameweek: No fixture scheduled">
               <span className="legend-dot" style={{ background: 'var(--border-subtle)' }} />
               <span className="legend-fdr-num font-mono">-</span>
-              <span className="legend-text">Blank GW</span>
+              <span className="legend-text">Blank</span>
             </div>
-            <div className="legend-chip legend-fdr-past">
+            <div className="legend-chip legend-fdr-past" title="Completed Matchday">
               <span className="legend-dot" style={{ background: 'var(--text-muted)', opacity: 0.6 }} />
               <span className="legend-fdr-num font-mono">✓</span>
-              <span className="legend-text">Completed Matchday</span>
+              <span className="legend-text">Past</span>
             </div>
           </div>
         </div>
 
-        <div className="legend-formula-group font-mono">
-          <span className="formula-tag">
+        <div className="legend-formula-group" ref={formulaRef}>
+          <button
+            type="button"
+            className={`formula-trigger-btn font-mono ${showFormulaTooltip ? 'active' : ''}`}
+            onClick={() => setShowFormulaTooltip(prev => !prev)}
+            title="Click to view Avg Difficulty formula"
+            aria-expanded={showFormulaTooltip}
+          >
             <Info size={13} weight="bold" />
-            <span>Avg Difficulty = (Σ FDR over next {effectiveWindow} GWs) / {effectiveWindow}</span>
-          </span>
-          <span className="formula-subtext">Sorted ascending: lower score = easier run</span>
+            <span>Avg Difficulty Formula</span>
+          </button>
+          {showFormulaTooltip && (
+            <div className="formula-popover-card font-mono" role="tooltip">
+              <div className="formula-popover-title">
+                Avg Difficulty = (Σ FDR over next {effectiveWindow} GWs) / {effectiveWindow}
+              </div>
+              <div className="formula-popover-desc">
+                Sorted ascending: lower score indicates an easier fixture run.
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -261,7 +297,7 @@ export default function FixtureHeatmap({
                       <span className="team-name">{team.name}</span>
                     </th>
                     <td className="avg-cell font-mono">
-                      <span className="avg-badge" style={{ color: team.avgDiff <= 2.6 ? 'var(--accent-emerald)' : team.avgDiff >= 3.6 ? 'var(--accent-crimson)' : 'var(--text-primary)' }}>
+                      <span className="avg-badge pill-base pill-sm" style={{ color: team.avgDiff <= 2.6 ? 'var(--accent-emerald)' : team.avgDiff >= 3.6 ? 'var(--accent-crimson)' : 'var(--text-primary)' }}>
                         {team.avgDiff.toFixed(2)}
                       </span>
                     </td>

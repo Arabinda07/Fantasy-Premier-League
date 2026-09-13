@@ -1113,7 +1113,7 @@ function HistoricalPlayerCard({ player, isCaptain, onInspect }) {
               [C]
             </span>
           )}
-          <span className={`pos-tag pos-${pos.toLowerCase()} font-mono`}>
+          <span className={`pos-tag pill-base pill-sm pos-${pos.toLowerCase()} font-mono`}>
             {pos}
           </span>
         </div>
@@ -1223,7 +1223,7 @@ function HistoricalPlayerDetailModal({ player, onClose }) {
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '16px' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                <span className={`pos-tag pos-${pos.toLowerCase()} font-mono`} style={{ fontSize: '10px', padding: '2px 6px' }}>
+                <span className={`pos-tag pill-base pill-sm pos-${pos.toLowerCase()} font-mono`}>
                   {pos}
                 </span>
                 <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>

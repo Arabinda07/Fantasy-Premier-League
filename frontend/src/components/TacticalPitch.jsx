@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import PlayerCard from './PlayerCard';
 import { formatFplPrice } from '../constants/copyTokens';
 import {
@@ -10,7 +10,8 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   CaretRight,
-  Target
+  Target,
+  Check
 } from '@phosphor-icons/react';
 
 export default function TacticalPitch({
@@ -36,7 +37,8 @@ export default function TacticalPitch({
   onSelectChip = () => {},
   strategy = 'pure_xp',
   onSelectStrategy = () => {},
-  onNavigateTab
+  onNavigateTab,
+  onOpenSyncModal
 }) {
   // Extract data from liveData payload if provided
   const effectiveChipSimulations = liveData?.chip_simulations || chipSimulations || {};
@@ -201,13 +203,13 @@ export default function TacticalPitch({
 
       return (
         <div className="rec-transfer-group">
-          <div className="rec-transfer-pill in">
+          <div className="rec-transfer-pill pill-base pill-md in">
             <ArrowUpRight size={13} weight="bold" />
             <span className="rec-tag font-mono">BUY</span>
             <span className="rec-player-name">{inName}</span>
           </div>
           <CaretRight size={13} className="rec-arrow" />
-          <div className="rec-transfer-pill out">
+          <div className="rec-transfer-pill pill-base pill-md out">
             <ArrowDownRight size={13} weight="bold" />
             <span className="rec-tag font-mono">SELL</span>
             <span className="rec-player-name">{outName}</span>
@@ -250,6 +252,36 @@ export default function TacticalPitch({
   const isNonParticipating = liveData?.participated === false || (starters.length === 0 && bench.length === 0);
   const isCompletedGw = Boolean(liveData?.is_completed || (liveData?.event_points !== undefined && liveData?.gameweek < 3));
 
+  // Sync and Matchday Lock State
+  const manager = liveData?.manager_profile;
+  const isSynced = Boolean(
+    manager?.entry_id ||
+    (typeof window !== 'undefined' && localStorage.getItem('fpl_synced_entry_id'))
+  );
+
+  const [isLineupLocked, setIsLineupLocked] = useState(() => {
+    try {
+      return typeof window !== 'undefined' && localStorage.getItem(`fpl_lineup_locked_gw_${liveData?.gameweek || 2}`) === 'true';
+    } catch (e) {
+      return false;
+    }
+  });
+
+  const handlePrimaryCtaClick = () => {
+    if (!isSynced) {
+      if (onOpenSyncModal) {
+        onOpenSyncModal();
+      }
+      return;
+    }
+    const nextState = !isLineupLocked;
+    setIsLineupLocked(nextState);
+    try {
+      localStorage.setItem(`fpl_lineup_locked_gw_${liveData?.gameweek || 2}`, String(nextState));
+    } catch (e) {}
+  };
+
+
   // Determine actual completed points
   const completedScore = liveData?.event_points !== undefined
     ? liveData.event_points
@@ -258,181 +290,229 @@ export default function TacticalPitch({
   return (
     <div>
       <h1 className="sr-only">Gameweek {liveData?.gameweek || 1} Tactical Pitch &amp; Matchday Lineup</h1>
-      {/* Tactical Dugout Command HUD Ribbon (4 Modular HUD Tiles) */}
-      <div className="tactical-hud-ribbon">
-        {/* Tile 1: Tactical Objective Strategy */}
-        <div className="hud-tile hud-tile-strategy">
-          <div className="hud-tile-header">
-            <span className="hud-tile-eyebrow font-mono">
-              {isCompletedGw ? 'MATCHDAY STATE' : 'OBJECTIVE'}
-            </span>
-            <span className="hud-tile-subtext font-mono">
-              {isNonParticipating
-                ? 'Did Not Enter'
-                : isCompletedGw
-                ? 'Completed Gameweek'
-                : (strategy === 'pure_xp' ? 'Max Points' : strategy === 'rank_protect' ? 'Protect Lead' : 'Climb Rank')}
-            </span>
-          </div>
-          {isCompletedGw ? (
-            <div className="hud-directive-text" style={{ padding: '4px 0' }}>
-              <span className="hud-highlight-text font-mono" style={{ fontSize: '13px', color: isNonParticipating ? 'var(--text-muted)' : 'var(--accent-emerald)' }}>
-                {isNonParticipating ? 'No Squad Registered' : `Gameweek ${liveData?.gameweek} Result`}
-              </span>
-              <span className="hud-sub-text" style={{ fontSize: '11px' }}>
-                {isNonParticipating ? 'Zero points scored' : 'Official matchday scores recorded'}
-              </span>
-            </div>
-          ) : (
-            <div className="hud-segmented-group" role="group" aria-label="Tactical Goal">
-              {strategyOptions.map(opt => {
-                const Icon = opt.icon;
-                const isSelected = strategy === opt.id;
-                return (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    className={`hud-segment-btn ${isSelected ? 'active' : ''}`}
-                    onClick={() => onSelectStrategy(opt.id)}
-                    title={opt.desc}
-                  >
-                    <Icon size={12} weight={isSelected ? 'fill' : 'bold'} />
-                    <span className="hud-label-full">{opt.label}</span>
-                    <span className="hud-label-short">{opt.shortLabel || opt.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+
+      {/* Compact Matchday Status Bar */}
+      <div className="matchday-status-bar">
+        <div className="matchday-status-left">
+          <span className="matchday-status-title">
+            Gameweek {liveData?.gameweek || 2} · Starting XI
+          </span>
+          <span className="matchday-formation-tag font-mono">
+            {isNonParticipating ? 'No Squad' : isCompletedGw ? 'Completed' : `${formation}`}
+          </span>
         </div>
 
-        {/* Tile 2: Matchday Chip Simulator */}
-        <div className={`hud-tile hud-tile-chip ${isChipActive ? 'active-chip-tile' : ''}`}>
-          <div className="hud-tile-header">
-            <span className="hud-tile-eyebrow font-mono">
-              {isCompletedGw ? 'CHIP PLAYED' : 'MATCHDAY CHIP'}
+        <div className="matchday-status-right">
+          <div className="matchday-score-chip font-mono">
+            <span className="matchday-score-num">
+              {isNonParticipating ? '0.0' : isCompletedGw ? completedScore : Number(displayStartingXp).toFixed(1)}
             </span>
-            {isCompletedGw ? (
-              <span className="hud-chip-idle-badge font-mono">
-                {liveData?.manager_profile?.active_chip ? liveData.manager_profile.active_chip.toUpperCase() : 'NONE'}
-              </span>
-            ) : isChipActive ? (
-              <span className="hud-chip-live-badge font-mono">ACTIVE</span>
+            <span className="matchday-score-label">
+              {isCompletedGw ? 'pts' : 'xP'}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            className={`matchday-lock-btn font-mono ${isLineupLocked ? 'is-locked' : ''}`}
+            onClick={handlePrimaryCtaClick}
+            title={!isSynced ? "Connect FPL Team to synchronize lineup" : isLineupLocked ? "Lineup is locked for this gameweek" : "Lock lineup selections"}
+          >
+            {isLineupLocked ? (
+              <>
+                <Check size={13} weight="bold" />
+                <span>Lineup Locked</span>
+              </>
+            ) : !isSynced ? (
+              <>
+                <ArrowUpRight size={13} weight="bold" />
+                <span>Connect FPL Squad</span>
+              </>
             ) : (
-              <span className="hud-chip-idle-badge font-mono">SIMULATE</span>
+              <>
+                <ShieldCheck size={13} weight="bold" />
+                <span>Lock Lineup</span>
+              </>
             )}
-          </div>
-          {isCompletedGw ? (
-            <div className="hud-directive-text" style={{ padding: '4px 0' }}>
-              <span className="hud-highlight-text" style={{ fontSize: '13px' }}>
-                {liveData?.manager_profile?.active_chip
-                  ? chipOptions.find(c => c.id === liveData.manager_profile.active_chip)?.label || liveData.manager_profile.active_chip.toUpperCase()
-                  : 'Regular Squad'}
-              </span>
-              <span className="hud-sub-text" style={{ fontSize: '11px' }}>
-                {liveData?.manager_profile?.active_chip ? 'Active during this matchday' : 'No bonus chip played'}
-              </span>
-            </div>
-          ) : (
-            <div className="hud-chip-selector-wrap">
-              <select
-                value={activeChip}
-                onChange={(e) => onSelectChip(e.target.value)}
-                className="hud-chip-select font-mono"
-                aria-label="Matchday Chip Selector"
-              >
-                {chipOptions.map(chip => (
-                  <option key={chip.id} value={chip.id}>
-                    {chip.label}
-                  </option>
-                ))}
-              </select>
-              <div className="hud-chip-desc">
-                {chipOptions.find(c => c.id === activeChip)?.desc || 'No chip active'}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Tile 3: Tactical Directive Action */}
-        <div className="hud-tile hud-tile-directive">
-          <div className="hud-tile-header">
-            <span className="hud-tile-eyebrow font-mono">
-              {isNonParticipating
-                ? 'STATUS'
-                : isCompletedGw
-                ? 'MATCHDAY SUMMARY'
-                : isChipActive
-                ? 'ACTIVE SIMULATION'
-                : strategy !== 'pure_xp'
-                ? 'TACTICAL OVERRIDE'
-                : 'RECOMMENDED MOVE'}
-            </span>
-            {!isCompletedGw && onNavigateTab && (
-              <button
-                type="button"
-                className="hud-directive-link font-mono"
-                onClick={() => onNavigateTab('transfers')}
-                title="Open Transfer Planner Workbench"
-              >
-                Planner <ArrowUpRight size={11} weight="bold" />
-              </button>
-            )}
-          </div>
-          <div className="hud-directive-content">
-            {isNonParticipating ? (
-              <div className="hud-directive-text">
-                <span className="hud-highlight-text" style={{ color: 'var(--text-muted)' }}>Did Not Participate</span>
-                <span className="hud-sub-text">No lineup or points scored in Gameweek {liveData?.gameweek || 1}</span>
-              </div>
-            ) : isCompletedGw ? (
-              <div className="hud-directive-text">
-                <span className="hud-highlight-text" style={{ color: 'var(--accent-emerald)' }}>
-                  {liveData?.event_points || completedScore} Points Scored
-                </span>
-                <span className="hud-sub-text">
-                  {liveData?.event_rank ? `Gameweek Rank: #${Number(liveData.event_rank).toLocaleString()}` : `Completed Gameweek ${liveData?.gameweek}`}
-                </span>
-              </div>
-            ) : isChipActive ? (
-              <div className="hud-directive-text">
-                <span className="hud-highlight-text">{currentChipData.label || 'Chip Active'}</span>
-                <span className="hud-sub-text">{currentChipData.description || 'Active matchday chip projection'}</span>
-              </div>
-            ) : currentStrategyData && strategy !== 'pure_xp' ? (
-              <div className="hud-directive-text">
-                <span className="hud-highlight-text">{currentStrategyData.label}</span>
-                <span className="hud-sub-text">{currentStrategyData.subtitle || 'Tactical Goal Active'}</span>
-              </div>
-            ) : (
-              renderTransferPills(effectiveActionSummary)
-            )}
-          </div>
-        </div>
-
-        {/* Tile 4: Matchday Scorecard Telemetry */}
-        <div className="hud-tile hud-tile-scorecard">
-          <div className="hud-tile-header">
-            <span className="hud-tile-eyebrow font-mono">
-              {isNonParticipating ? 'SCORE' : isCompletedGw ? 'FINAL SCORE' : 'PROJECTED OUTPUT'}
-            </span>
-            <span className="hud-squad-status font-mono">
-              {isNonParticipating ? '0 Active' : '15/15 Active'}
-            </span>
-          </div>
-          <div className="hud-scorecard-body">
-            <div className="hud-score-main">
-              <span className="hud-score-val font-mono" style={isCompletedGw && !isNonParticipating ? { color: 'var(--accent-emerald)' } : {}}>
-                {isNonParticipating ? '0' : isCompletedGw ? completedScore : Number(displayStartingXp).toFixed(1)}
-              </span>
-              <span className="hud-score-unit font-mono">{isCompletedGw ? 'pts' : 'xP'}</span>
-            </div>
-            <div className="hud-score-meta font-mono">
-              <span className="hud-formation-pill">{isNonParticipating ? 'No Squad' : formation}</span>
-            </div>
-          </div>
+          </button>
         </div>
       </div>
+
+      {/* Tactical Dugout Command HUD Ribbon (4 Modular HUD Tiles) */}
+      <div className="tactical-hud-ribbon">
+          {/* Tile 1: Tactical Objective Strategy */}
+          <div className="hud-tile hud-tile-strategy">
+            <div className="hud-tile-header">
+              <span className="hud-tile-eyebrow font-mono">
+                {isCompletedGw ? 'MATCHDAY STATE' : 'OBJECTIVE'}
+              </span>
+              <span className="hud-tile-subtext font-mono">
+                {isNonParticipating
+                  ? 'Did Not Enter'
+                  : isCompletedGw
+                  ? 'Completed Gameweek'
+                  : (strategy === 'pure_xp' ? 'Max Points' : strategy === 'rank_protect' ? 'Protect Lead' : 'Climb Rank')}
+              </span>
+            </div>
+            {isCompletedGw ? (
+              <div className="hud-directive-text" style={{ padding: '4px 0' }}>
+                <span className="hud-highlight-text font-mono" style={{ fontSize: '13px', color: isNonParticipating ? 'var(--text-muted)' : 'var(--accent-emerald)' }}>
+                  {isNonParticipating ? 'No Squad Registered' : `Gameweek ${liveData?.gameweek} Result`}
+                </span>
+                <span className="hud-sub-text" style={{ fontSize: '11px' }}>
+                  {isNonParticipating ? 'Zero points scored' : 'Official matchday scores recorded'}
+                </span>
+              </div>
+            ) : (
+              <div className="hud-segmented-group" role="group" aria-label="Tactical Goal">
+                {strategyOptions.map(opt => {
+                  const Icon = opt.icon;
+                  const isSelected = strategy === opt.id;
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      className={`hud-segment-btn ${isSelected ? 'active' : ''}`}
+                      onClick={() => onSelectStrategy(opt.id)}
+                      title={opt.desc}
+                    >
+                      <Icon size={12} weight={isSelected ? 'fill' : 'bold'} />
+                      <span className="hud-label-full">{opt.label}</span>
+                      <span className="hud-label-short">{opt.shortLabel || opt.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Tile 2: Matchday Chip Simulator */}
+          <div className={`hud-tile hud-tile-chip ${isChipActive ? 'active-chip-tile' : ''}`}>
+            <div className="hud-tile-header">
+              <span className="hud-tile-eyebrow font-mono">
+                {isCompletedGw ? 'CHIP PLAYED' : 'MATCHDAY CHIP'}
+              </span>
+              {isCompletedGw ? (
+                <span className="hud-chip-idle-badge font-mono">
+                  {liveData?.manager_profile?.active_chip ? liveData.manager_profile.active_chip.toUpperCase() : 'NONE'}
+                </span>
+              ) : isChipActive ? (
+                <span className="hud-chip-live-badge font-mono">ACTIVE</span>
+              ) : (
+                <span className="hud-chip-idle-badge font-mono">SIMULATE</span>
+              )}
+            </div>
+            {isCompletedGw ? (
+              <div className="hud-directive-text" style={{ padding: '4px 0' }}>
+                <span className="hud-highlight-text" style={{ fontSize: '13px' }}>
+                  {liveData?.manager_profile?.active_chip
+                    ? chipOptions.find(c => c.id === liveData.manager_profile.active_chip)?.label || liveData.manager_profile.active_chip.toUpperCase()
+                    : 'Regular Squad'}
+                </span>
+                <span className="hud-sub-text" style={{ fontSize: '11px' }}>
+                  {liveData?.manager_profile?.active_chip ? 'Active during this matchday' : 'No bonus chip played'}
+                </span>
+              </div>
+            ) : (
+              <div className="hud-chip-selector-wrap">
+                <select
+                  value={activeChip}
+                  onChange={(e) => onSelectChip(e.target.value)}
+                  className="hud-chip-select font-mono"
+                  aria-label="Matchday Chip Selector"
+                >
+                  {chipOptions.map(chip => (
+                    <option key={chip.id} value={chip.id}>
+                      {chip.label}
+                    </option>
+                  ))}
+                </select>
+                <div className="hud-chip-desc">
+                  {chipOptions.find(c => c.id === activeChip)?.desc || 'No chip active'}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Tile 3: Tactical Directive Action */}
+          <div className="hud-tile hud-tile-directive">
+            <div className="hud-tile-header">
+              <span className="hud-tile-eyebrow font-mono">
+                {isNonParticipating
+                  ? 'STATUS'
+                  : isCompletedGw
+                  ? 'MATCHDAY SUMMARY'
+                  : isChipActive
+                  ? 'ACTIVE SIMULATION'
+                  : strategy !== 'pure_xp'
+                  ? 'TACTICAL OVERRIDE'
+                  : 'RECOMMENDED MOVE'}
+              </span>
+              {!isCompletedGw && onNavigateTab && (
+                <button
+                  type="button"
+                  className="hud-directive-link font-mono"
+                  onClick={() => onNavigateTab('transfers')}
+                  title="Open Transfer Planner Workbench"
+                >
+                  Planner <ArrowUpRight size={11} weight="bold" />
+                </button>
+              )}
+            </div>
+            <div className="hud-directive-content">
+              {isNonParticipating ? (
+                <div className="hud-directive-text">
+                  <span className="hud-highlight-text" style={{ color: 'var(--text-muted)' }}>Did Not Participate</span>
+                  <span className="hud-sub-text">No lineup or points scored in Gameweek {liveData?.gameweek || 1}</span>
+                </div>
+              ) : isCompletedGw ? (
+                <div className="hud-directive-text">
+                  <span className="hud-highlight-text" style={{ color: 'var(--accent-emerald)' }}>
+                    {liveData?.event_points || completedScore} Points Scored
+                  </span>
+                  <span className="hud-sub-text">
+                    {liveData?.event_rank ? `Gameweek Rank: #${Number(liveData.event_rank).toLocaleString()}` : `Completed Gameweek ${liveData?.gameweek}`}
+                  </span>
+                </div>
+              ) : isChipActive ? (
+                <div className="hud-directive-text">
+                  <span className="hud-highlight-text">{currentChipData.label || 'Chip Active'}</span>
+                  <span className="hud-sub-text">{currentChipData.description || 'Active matchday chip projection'}</span>
+                </div>
+              ) : currentStrategyData && strategy !== 'pure_xp' ? (
+                <div className="hud-directive-text">
+                  <span className="hud-highlight-text">{currentStrategyData.label}</span>
+                  <span className="hud-sub-text">{currentStrategyData.subtitle || 'Tactical Goal Active'}</span>
+                </div>
+              ) : (
+                renderTransferPills(effectiveActionSummary)
+              )}
+            </div>
+          </div>
+
+          {/* Tile 4: Matchday Scorecard Telemetry */}
+          <div className="hud-tile hud-tile-scorecard">
+            <div className="hud-tile-header">
+              <span className="hud-tile-eyebrow font-mono">
+                {isNonParticipating ? 'SCORE' : isCompletedGw ? 'FINAL SCORE' : 'PROJECTED OUTPUT'}
+              </span>
+              <span className="hud-squad-status font-mono">
+                {isNonParticipating ? '0 Active' : '15/15 Active'}
+              </span>
+            </div>
+            <div className="hud-scorecard-body">
+              <div className="hud-score-main">
+                <span className="hud-score-val font-mono" style={isCompletedGw && !isNonParticipating ? { color: 'var(--accent-emerald)' } : {}}>
+                  {isNonParticipating ? '0' : isCompletedGw ? completedScore : Number(displayStartingXp).toFixed(1)}
+                </span>
+                <span className="hud-score-unit font-mono">{isCompletedGw ? 'pts' : 'xP'}</span>
+              </div>
+              <div className="hud-score-meta font-mono">
+                <span className="hud-formation-pill">{isNonParticipating ? 'No Squad' : formation}</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
       {/* Classical 2-Column Pitch Workspace (Pitch on Left, Sidebar on Right) */}
       <div className="pitch-workspace">
@@ -545,177 +625,177 @@ export default function TacticalPitch({
           )}
         </div>
 
-        {/* Sidebar (Right Column) - Transforms into Bench Boost Telemetry Hub if Bench Boost is active */}
+        {/* Sidebar (Right Column) */}
         <div className="pitch-sidebar">
           {isBenchBoost ? (
-            <div className="sidebar-panel bench-boost-telemetry-panel">
-              <div className="panel-header">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <RocketLaunch size={15} weight="fill" color="var(--accent-emerald)" />
-                  <h2 className="panel-title" style={{ margin: 0, fontSize: 'inherit', fontWeight: 'inherit', display: 'inline' }}>BENCH BOOST</h2>
-                </div>
-                <span className="panel-badge font-mono" style={{ whiteSpace: 'nowrap' }}>
-                  15 SCORING
-                </span>
-              </div>
-
-              {/* Bench Boost Metric Grid */}
-              <div className="bb-telemetry-grid">
-                <div className="bb-telemetry-stat">
-                  <span className="bb-stat-label">STARTING XI</span>
-                  <span className="bb-stat-val font-mono">{Number(startingXp || 64.7).toFixed(1)} <span className="bb-stat-unit">pts</span></span>
-                </div>
-                <div className="bb-telemetry-stat highlight">
-                  <span className="bb-stat-label">BENCH CONTRIBUTION</span>
-                  <span className="bb-stat-val font-mono emerald">+{benchUpliftTotal} <span className="bb-stat-unit">pts</span></span>
-                </div>
-                <div className="bb-telemetry-stat full-width">
-                  <div>
-                    <span className="bb-stat-label">TOTAL SQUAD PROJECTION</span>
-                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>All 15 players scoring</span>
+              <div className="sidebar-panel bench-boost-telemetry-panel">
+                <div className="panel-header">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <RocketLaunch size={15} weight="fill" color="var(--accent-emerald)" />
+                    <h2 className="panel-title" style={{ margin: 0, fontSize: 'inherit', fontWeight: 'inherit', display: 'inline' }}>BENCH BOOST</h2>
                   </div>
-                  <span className="bb-stat-val font-mono emerald" style={{ fontSize: '16px' }}>
-                    {displayStartingXp} <span className="bb-stat-unit">pts</span>
+                  <span className="panel-badge font-mono" style={{ whiteSpace: 'nowrap' }}>
+                    15 SCORING
                   </span>
                 </div>
-              </div>
 
-              <div className="bb-sub-header font-mono">
-                <span>BENCH PLAYERS SCORING THIS WEEK</span>
-                <span className="bb-count-pill">4 ACTIVE</span>
-              </div>
-
-              <div className="bench-list">
-                {boostedBenchList.map((p) => (
-                  <div
-                    key={p.player_code || p.id || p.web_name}
-                    className="bench-item boost-active"
-                    onClick={() => onInspectPlayer && onInspectPlayer(p)}
-                    onDoubleClick={() => onInspectPlayer && onInspectPlayer(p)}
-                    tabIndex={0}
-                    role="button"
-                    title="Click to view scouting report & stats"
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-                      <span className="bench-slot-tag font-mono boost-tag">
-                        {p.slotLabel || 'SUB'}
-                      </span>
-                      <span className={`player-pos-tag ${p.position}`}>{p.position}</span>
-                      <div style={{ minWidth: 0, overflow: 'hidden' }}>
-                        <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                          {p.web_name}
-                        </div>
-                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                          {p.team} · £{Number(p.cost || 0).toFixed(1)}m
-                        </div>
-                      </div>
-                    </div>
-                    <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 800, color: 'var(--accent-emerald)' }}>
-                        +{Number(p.expected_points || 0).toFixed(1)} pts
-                      </div>
-                      <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                        bench pts
-                      </div>
-                    </div>
+                {/* Bench Boost Metric Grid */}
+                <div className="bb-telemetry-grid">
+                  <div className="bb-telemetry-stat">
+                    <span className="bb-stat-label">STARTING XI</span>
+                    <span className="bb-stat-val font-mono">{Number(startingXp || 64.7).toFixed(1)} <span className="bb-stat-unit">pts</span></span>
                   </div>
-                ))}
-              </div>
-
-              <div className="bench-help-text">
-                All 15 players are active on the pitch. Double-click any player card to view their scouting report & match stats.
-              </div>
-            </div>
-          ) : (
-            <div className="sidebar-panel">
-              <div className="panel-header">
-                <h2 className="panel-title" style={{ margin: 0, fontSize: 'inherit', fontWeight: 'inherit', display: 'inline' }}>
-                  {isNonParticipating
-                    ? 'Substitutes'
-                    : isCompletedGw
-                    ? 'MATCHDAY BENCH'
-                    : activeChip === 'wildcard'
-                    ? 'WILDCARD BENCH'
-                    : activeChip === 'freehit'
-                    ? 'FREE HIT BENCH'
-                    : activeChip === '3xc'
-                    ? 'TRIPLE CAPTAIN BENCH'
-                    : 'Substitutes'}
-                </h2>
-                <span className="panel-badge font-mono">
-                  {isNonParticipating ? '0 on bench' : `${displayBench.length} on bench`}
-                </span>
-              </div>
-
-              {isNonParticipating ? (
-                <div style={{ padding: '24px 16px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>
-                  No substitutes available for this gameweek.
+                  <div className="bb-telemetry-stat highlight">
+                    <span className="bb-stat-label">BENCH CONTRIBUTION</span>
+                    <span className="bb-stat-val font-mono emerald">+{benchUpliftTotal} <span className="bb-stat-unit">pts</span></span>
+                  </div>
+                  <div className="bb-telemetry-stat full-width">
+                    <div>
+                      <span className="bb-stat-label">TOTAL SQUAD PROJECTION</span>
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>All 15 players scoring</span>
+                    </div>
+                    <span className="bb-stat-val font-mono emerald" style={{ fontSize: '16px' }}>
+                      {displayStartingXp} <span className="bb-stat-unit">pts</span>
+                    </span>
+                  </div>
                 </div>
-              ) : (
+
+                <div className="bb-sub-header font-mono">
+                  <span>BENCH PLAYERS SCORING THIS WEEK</span>
+                  <span className="bb-count-pill">4 ACTIVE</span>
+                </div>
+
                 <div className="bench-list">
-                  {displayBench.map((p, idx) => {
-                    const isSelected = activeSelectedPlayer?.player_code === p.player_code;
-                    const slotLabel = idx === 0 ? 'GK Sub' : `Sub ${idx}`;
-                    const hasActualPoints = p.actual_points !== undefined;
-                    const displayBenchPts = hasActualPoints ? Number(p.actual_points) : Number(p.expected_points || 0).toFixed(1);
-                    return (
-                      <div
-                        key={p.player_code || p.id || p.web_name}
-                        className={`bench-item ${isSelected ? 'is-selected' : ''}`}
-                        onClick={() => handlePlayerSelect(p)}
-                        onDoubleClick={() => onInspectPlayer && onInspectPlayer(p)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            handlePlayerSelect(p);
-                          }
-                        }}
-                        tabIndex={0}
-                        role="button"
-                        aria-label={`Bench ${slotLabel}: ${p.web_name}, ${p.position}, £${formatFplPrice(p.cost ?? p.now_cost ?? p.selling_price ?? 0)}M, ${displayBenchPts} points`}
-                        title="Click to swap with starter · Double-click for player stats"
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-                          <span className="bench-slot-tag font-mono">
-                            {slotLabel}
-                          </span>
-                          <span className={`player-pos-tag ${p.position}`}>{p.position}</span>
-                          <div className="bench-player-info">
-                            <div className="bench-player-name">
-                              {p.web_name}
-                            </div>
-                            <div className="bench-player-meta font-mono">
-                              {p.team} · £{formatFplPrice(p.cost ?? p.now_cost ?? p.selling_price ?? 0)}m
-                            </div>
+                  {boostedBenchList.map((p) => (
+                    <div
+                      key={p.player_code || p.id || p.web_name}
+                      className="bench-item boost-active"
+                      onClick={() => onInspectPlayer && onInspectPlayer(p)}
+                      onDoubleClick={() => onInspectPlayer && onInspectPlayer(p)}
+                      tabIndex={0}
+                      role="button"
+                      title="Click to view scouting report & stats"
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+                        <span className="bench-slot-tag pill-base pill-xs font-mono boost-tag">
+                          {p.slotLabel || 'SUB'}
+                        </span>
+                        <span className={`player-pos-tag pill-base pill-sm ${p.position}`}>{p.position}</span>
+                        <div style={{ minWidth: 0, overflow: 'hidden' }}>
+                          <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                            {p.web_name}
                           </div>
-                        </div>
-                        <div className="bench-score-column">
-                          <div className="bench-points-val font-mono">
-                            {displayBenchPts} pts
+                          <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                            {p.team} · £{Number(p.cost || 0).toFixed(1)}m
                           </div>
-                          <div className="bench-points-label font-mono">
-                            {hasActualPoints ? 'actual pts' : 'exp pts'}
-                          </div>
-                          {/* M-06: Auto-Sub Priority */}
-                          {!hasActualPoints && p.auto_sub_label && (
-                            <div className={`bench-priority-badge font-mono priority-${p.auto_sub_label.toLowerCase()}`}>
-                              {p.auto_sub_label} PRIORITY
-                            </div>
-                          )}
                         </div>
                       </div>
-                    );
-                  })}
+                      <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 800, color: 'var(--accent-emerald)' }}>
+                          +{Number(p.expected_points || 0).toFixed(1)} pts
+                        </div>
+                        <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                          bench pts
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              )}
 
-              <div className="bench-help-text">
-                {isCompletedGw
-                  ? 'Official matchday scores recorded for bench substitutes.'
-                  : 'Click any starter and bench player to swap them. Double-click any player card to view their scouting report.'}
+                <div className="bench-help-text">
+                  All 15 players are active on the pitch. Double-click any player card to view their scouting report & match stats.
+                </div>
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="sidebar-panel">
+                <div className="panel-header">
+                  <h2 className="panel-title" style={{ margin: 0, fontSize: 'inherit', fontWeight: 'inherit', display: 'inline' }}>
+                    {isNonParticipating
+                      ? 'Substitutes'
+                      : isCompletedGw
+                      ? 'MATCHDAY BENCH'
+                      : activeChip === 'wildcard'
+                      ? 'WILDCARD BENCH'
+                      : activeChip === 'freehit'
+                      ? 'FREE HIT BENCH'
+                      : activeChip === '3xc'
+                      ? 'TRIPLE CAPTAIN BENCH'
+                      : 'Substitutes'}
+                  </h2>
+                  <span className="panel-badge font-mono">
+                    {isNonParticipating ? '0 on bench' : `${displayBench.length} on bench`}
+                  </span>
+                </div>
+
+                {isNonParticipating ? (
+                  <div style={{ padding: '24px 16px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>
+                    No substitutes available for this gameweek.
+                  </div>
+                ) : (
+                  <div className="bench-list">
+                    {displayBench.map((p, idx) => {
+                      const isSelected = activeSelectedPlayer?.player_code === p.player_code;
+                      const slotLabel = idx === 0 ? 'GK Sub' : `Sub ${idx}`;
+                      const hasActualPoints = p.actual_points !== undefined;
+                      const displayBenchPts = hasActualPoints ? Number(p.actual_points) : Number(p.expected_points || 0).toFixed(1);
+                      return (
+                        <div
+                          key={p.player_code || p.id || p.web_name}
+                          className={`bench-item ${isSelected ? 'is-selected' : ''}`}
+                          onClick={() => handlePlayerSelect(p)}
+                          onDoubleClick={() => onInspectPlayer && onInspectPlayer(p)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              handlePlayerSelect(p);
+                            }
+                          }}
+                          tabIndex={0}
+                          role="button"
+                          aria-label={`Bench ${slotLabel}: ${p.web_name}, ${p.position}, £${formatFplPrice(p.cost ?? p.now_cost ?? p.selling_price ?? 0)}M, ${displayBenchPts} points`}
+                          title="Click to swap with starter · Double-click for player stats"
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+                            <span className="bench-slot-tag pill-base pill-xs font-mono">
+                              {slotLabel}
+                            </span>
+                            <span className={`player-pos-tag pill-base pill-sm ${p.position}`}>{p.position}</span>
+                            <div className="bench-player-info">
+                              <div className="bench-player-name">
+                                {p.web_name}
+                              </div>
+                              <div className="bench-player-meta font-mono">
+                                {p.team} · £{formatFplPrice(p.cost ?? p.now_cost ?? p.selling_price ?? 0)}m
+                              </div>
+                            </div>
+                          </div>
+                          <div className="bench-score-column">
+                            <div className="bench-points-val font-mono">
+                              {displayBenchPts} pts
+                            </div>
+                            <div className="bench-points-label font-mono">
+                              {hasActualPoints ? 'actual pts' : 'exp pts'}
+                            </div>
+                            {/* M-06: Auto-Sub Priority */}
+                            {!hasActualPoints && p.auto_sub_label && (
+                              <div className={`bench-priority-badge font-mono priority-${p.auto_sub_label.toLowerCase()}`}>
+                                {p.auto_sub_label} PRIORITY
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                <div className="bench-help-text">
+                  {isCompletedGw
+                    ? 'Official matchday scores recorded for bench substitutes.'
+                    : 'Click any starter and bench player to swap them. Double-click any player card to view their scouting report.'}
+                </div>
+              </div>
+            )}
         </div>
       </div>
     </div>

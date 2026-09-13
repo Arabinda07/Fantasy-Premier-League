@@ -125,7 +125,7 @@ export default function PlayerCard({
           {isBoosted && player.is_bench_asset && (
             <span className="boost-badge font-mono" title="Bench Boost Active: Scoring points this gameweek">BB</span>
           )}
-          <span className={`player-pos-tag ${pos}`}>{pos}</span>
+          <span className={`player-pos-tag pill-base pill-sm ${pos}`}>{pos}</span>
           {/* M-02: Rotation/Hook Risk Indicator */}
           {player.hook_hazard > 0.15 && (
             <span className="hook-hazard-badge font-mono" title={`${Math.round(player.hook_hazard * 100)}% early sub risk`}>RISK</span>

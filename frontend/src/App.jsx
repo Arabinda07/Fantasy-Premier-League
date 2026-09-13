@@ -381,6 +381,7 @@ export default function App() {
                     strategy={activeStrategy}
                     onSelectStrategy={handleStrategyChange}
                     onNavigateTab={handleTabChange}
+                    onOpenSyncModal={() => setIsSyncModalOpen(true)}
                   />
                 </div>
               </ErrorBoundary>

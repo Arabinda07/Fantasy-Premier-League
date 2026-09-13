@@ -158,7 +158,7 @@ export default function PlayerDNAInspector({ player, onClose }) {
           <div className="segmented-chip-rail">
             <button
               type="button"
-              className={`segmented-chip-btn ${activeView === 'chart' ? 'active' : ''}`}
+              className={`segmented-chip-btn pill-base pill-md ${activeView === 'chart' ? 'active' : ''}`}
               onClick={() => setActiveView('chart')}
             >
               <ChartBar size={12} weight="bold" />
@@ -166,7 +166,7 @@ export default function PlayerDNAInspector({ player, onClose }) {
             </button>
             <button
               type="button"
-              className={`segmented-chip-btn ${activeView === 'radar' ? 'active' : ''}`}
+              className={`segmented-chip-btn pill-base pill-md ${activeView === 'radar' ? 'active' : ''}`}
               onClick={() => setActiveView('radar')}
             >
               <Polygon size={12} weight="bold" />

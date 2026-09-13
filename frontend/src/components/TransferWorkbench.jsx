@@ -145,7 +145,7 @@ export default function TransferWorkbench({
               </div>
 
               <div className="compare-player-name-row">
-                <span className={`player-pos-tag ${playerOut?.position}`}>{playerOut?.position}</span>
+                <span className={`player-pos-tag pill-base pill-sm ${playerOut?.position}`}>{playerOut?.position}</span>
                 <span className="compare-player-name">{playerOut?.web_name}</span>
                 <span className="compare-player-team font-mono">({playerOut?.team})</span>
               </div>
@@ -189,7 +189,7 @@ export default function TransferWorkbench({
               </div>
 
               <div className="compare-player-name-row">
-                <span className={`player-pos-tag ${playerIn?.position}`}>{playerIn?.position}</span>
+                <span className={`player-pos-tag pill-base pill-sm ${playerIn?.position}`}>{playerIn?.position}</span>
                 <span className="compare-player-name">{playerIn?.web_name}</span>
                 <span className="compare-player-team font-mono">({playerIn?.team})</span>
               </div>
@@ -342,7 +342,7 @@ export default function TransferWorkbench({
                     {p.web_name}
                   </th>
                   <td>
-                    <span className={`player-pos-tag ${p.position}`}>{p.position}</span>
+                    <span className={`player-pos-tag pill-base pill-sm ${p.position}`}>{p.position}</span>
                   </td>
                   <td className="font-mono" style={{ color: 'var(--text-secondary)' }}>{p.team}</td>
                   <td className="font-mono">£{Number(p.now_cost || p.cost || 0).toFixed(1)}m</td>

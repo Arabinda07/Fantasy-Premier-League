@@ -178,7 +178,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
           <div className="segmented-chip-rail">
             <button
               type="button"
-              className={`segmented-chip-btn ${subView === 'sandbox' ? 'active' : ''}`}
+              className={`segmented-chip-btn pill-base pill-md ${subView === 'sandbox' ? 'active' : ''}`}
               onClick={() => setSubView('sandbox')}
             >
               <SlidersHorizontal size={14} weight={subView === 'sandbox' ? 'fill' : 'bold'} />
@@ -186,7 +186,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
             </button>
             <button
               type="button"
-              className={`segmented-chip-btn ${subView === 'scorecard' ? 'active' : ''}`}
+              className={`segmented-chip-btn pill-base pill-md ${subView === 'scorecard' ? 'active' : ''}`}
               onClick={() => setSubView('scorecard')}
             >
               <ChartLine size={14} weight={subView === 'scorecard' ? 'fill' : 'bold'} />
@@ -316,7 +316,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
               {Object.entries(POSITIONAL_BASELINES).map(([pos, data]) => (
                 <div key={pos} className="baseline-card">
                   <div className="baseline-header">
-                    <span className={`player-pos-tag ${pos}`}>{pos}</span>
+                    <span className={`player-pos-tag pill-base pill-sm ${pos}`}>{pos}</span>
                     <span className="baseline-label">{data.label}</span>
                   </div>
                   <div className="baseline-metrics-list">
@@ -661,7 +661,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
               {ACCURACY_DATA.outliers.map(item => (
                 <div key={item.player} className="diff-ledger-row" style={{ background: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-sm)', padding: '10px 14px', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span className={`player-pos-tag ${item.pos}`}>{item.pos}</span>
+                    <span className={`player-pos-tag pill-base pill-sm ${item.pos}`}>{item.pos}</span>
                     <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{item.player}</span>
                     <span className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>({item.team})</span>
                   </div>
@@ -686,3 +686,4 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
     </div>
   );
 }
+

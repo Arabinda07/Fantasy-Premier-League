@@ -421,7 +421,7 @@ export default function RivalThreatMatrix({
                         tabIndex={0}
                       >
                         <div className="h2h-player-meta">
-                          <span className={`player-pos-tag ${p.pos || 'MID'}`}>{p.pos || 'MID'}</span>
+                          <span className={`player-pos-tag pill-base pill-sm ${p.pos || 'MID'}`}>{p.pos || 'MID'}</span>
                           <span className="h2h-player-name">{p.name}</span>
                           {p.team && <span className="h2h-team-tag font-mono">{p.team}</span>}
                         </div>
@@ -463,7 +463,7 @@ export default function RivalThreatMatrix({
                         tabIndex={0}
                       >
                         <div className="h2h-player-meta">
-                          <span className={`player-pos-tag ${p.pos || 'MID'}`}>{p.pos || 'MID'}</span>
+                          <span className={`player-pos-tag pill-base pill-sm ${p.pos || 'MID'}`}>{p.pos || 'MID'}</span>
                           <span className="h2h-player-name">{p.name}</span>
                           {p.team && <span className="h2h-team-tag font-mono">{p.team}</span>}
                         </div>

@@ -91,7 +91,7 @@ export default function MultiGwPlanner({
           <div className="segmented-chip-rail">
             <button
               type="button"
-              className={`segmented-chip-btn ${viewMode === 'roadmap' ? 'active' : ''}`}
+              className={`segmented-chip-btn pill-base pill-md ${viewMode === 'roadmap' ? 'active' : ''}`}
               onClick={() => setViewMode('roadmap')}
             >
               <CalendarCheck size={14} weight={viewMode === 'roadmap' ? 'fill' : 'bold'} />
@@ -99,7 +99,7 @@ export default function MultiGwPlanner({
             </button>
             <button
               type="button"
-              className={`segmented-chip-btn ${viewMode === 'workbench' ? 'active' : ''}`}
+              className={`segmented-chip-btn pill-base pill-md ${viewMode === 'workbench' ? 'active' : ''}`}
               onClick={() => setViewMode('workbench')}
             >
               <Scales size={14} weight={viewMode === 'workbench' ? 'fill' : 'bold'} />
@@ -107,7 +107,7 @@ export default function MultiGwPlanner({
             </button>
             <button
               type="button"
-              className={`segmented-chip-btn ${viewMode === 'both' ? 'active' : ''}`}
+              className={`segmented-chip-btn pill-base pill-md ${viewMode === 'both' ? 'active' : ''}`}
               onClick={() => setViewMode('both')}
             >
               <ArrowsLeftRight size={14} weight={viewMode === 'both' ? 'fill' : 'bold'} />
@@ -240,8 +240,8 @@ export default function MultiGwPlanner({
               {/* Gameweek Column Header */}
               <div className="gw-column-header">
                 <div className="gw-header-left">
-                  <span className="gw-tag font-mono">GW{item.gw}</span>
-                  {idx === 0 && <span className="current-badge font-mono">CURRENT</span>}
+                  <span className="gw-tag pill-base pill-sm font-mono">GW{item.gw}</span>
+                  {idx === 0 && <span className="current-badge pill-base pill-xs font-mono">CURRENT</span>}
                 </div>
                 <span className="gw-ft-badge font-mono" title={`${item.ft_available || 1} Free Transfers available`}>
                   {item.ft_available || 1} FT
