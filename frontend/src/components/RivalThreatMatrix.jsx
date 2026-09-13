@@ -1,11 +1,12 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { formatFplPrice } from '../constants/copyTokens';
 import {
   UsersThree,
   ShieldCheck,
   ShieldWarning,
   Crown,
-  Gauge
+  Gauge,
+  Info
 } from '@phosphor-icons/react';
 
 const DEFAULT_RIVALS = [
@@ -100,6 +101,29 @@ export default function RivalThreatMatrix({
 
   const [selectedRivalId, setSelectedRivalId] = useState(rivals[0]?.entry_id || 1198015);
   const [h2hView, setH2hView] = useState('split'); // 'split' | 'yours' | 'danger'
+  const [showNotes, setShowNotes] = useState(false);
+  const notesRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (notesRef.current && !notesRef.current.contains(event.target)) {
+        setShowNotes(false);
+      }
+    }
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        setShowNotes(false);
+      }
+    }
+    if (showNotes) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showNotes]);
 
   const selectedRival = rivals.find(r => r.entry_id === selectedRivalId) || rivals[0];
 
@@ -198,52 +222,74 @@ export default function RivalThreatMatrix({
 
   return (
     <div className="view-fluid">
-      {/* Hero Header */}
-      <div className="studio-hero-panel">
-        <div className="studio-hero-header">
-          <div className="studio-badge">
+      {/* Mini-League Tactical Telemetry Deck */}
+      <div className="rivals-telemetry-deck" role="region" aria-label="Mini-League Tactical Telemetry">
+        <div className="rivals-telemetry-left">
+          <div className="rivals-league-badge">
             <UsersThree size={14} weight="fill" />
-            <span>{leagueName.toUpperCase()}</span>
+            <span className="rivals-league-name">{leagueName}</span>
           </div>
-          <span className="studio-version font-mono">
-            LEAGUE ID #{leagueId}
-          </span>
+          <span className="rivals-id-pill font-mono">ID #{leagueId}</span>
+          <span className="rivals-count-pill font-mono">{rivals.length} Rivals Tracked</span>
         </div>
-        <h1 className="studio-title">{leagueName} · Mini-League Head-to-Head</h1>
-        <p className="studio-description">
-          Track your mini-league rivals in real time. See who they are captaining, find your rank-climbing differentials, and watch out for danger players.
-        </p>
 
-        {/* Top Metric Strip: Asymmetric Hierarchy */}
-        <div className="kpi-strip rivals-kpi-asymmetric">
-          <div className="kpi-card">
-            <div className="kpi-label font-mono" style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>Your Captain</div>
-            <div className="kpi-value" style={{ color: 'var(--accent-amber)' }}>
-              {myCaptain}
-              <Crown size={16} weight="fill" />
-            </div>
-            <div className="kpi-subtext">
-              {captainBackingPct}% of rivals in your league ({captainBackingCount}/{rivals.length}) picked the same
-            </div>
+        <div className="rivals-telemetry-right">
+          {/* Captain Consensus Chip */}
+          <div
+            className="telemetry-chip chip-captain"
+            title={`${captainBackingPct}% of rivals in your league (${captainBackingCount}/${rivals.length}) picked ${myCaptain}`}
+          >
+            <Crown size={14} weight="fill" className="telemetry-chip-icon" />
+            <span className="telemetry-chip-label">Captain</span>
+            <span className="telemetry-chip-val font-mono">{myCaptain}</span>
+            <span className="telemetry-chip-meta font-mono">{captainBackingPct}% backing</span>
           </div>
-          <div className="kpi-card">
-            <div className="kpi-label font-mono" style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>Your Differentials</div>
-            <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
-              {userDiffNames.length} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Unique Players</span>
-            </div>
-            <div className="kpi-subtext">
-              {userDiffNames.slice(0, 5).join(', ')}{userDiffNames.length > 5 ? '...' : ''}
-            </div>
+
+          {/* Differential Edge Chip */}
+          <div
+            className="telemetry-chip chip-diff"
+            title={`${userDiffNames.length} unique differentials generating +${yourUpside.toFixed(1)} xP potential`}
+          >
+            <ShieldCheck size={14} weight="bold" className="telemetry-chip-icon" />
+            <span className="telemetry-chip-label">Differentials</span>
+            <span className="telemetry-chip-val font-mono">{userDiffNames.length} Unique</span>
+            <span className="telemetry-chip-meta font-mono">+{yourUpside.toFixed(1)} xP</span>
           </div>
-          <div className="kpi-card kpi-threat-hero-card">
-            <span className="kpi-threat-badge font-mono">DANGER RIVAL PICK</span>
-            <div className="kpi-label font-mono" style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>Biggest Threat to Your Rank</div>
-            <div className="kpi-value kpi-threat-value" style={{ color: 'var(--accent-crimson)' }}>
-              {topThreatPlayer}
-            </div>
-            <div className="kpi-subtext">
-              Owned by {threatFrequency} of your top {rivals.length} mini-league rivals
-            </div>
+
+          {/* Danger Threat Chip */}
+          <div
+            className="telemetry-chip chip-danger"
+            title={`Biggest threat to your rank: ${topThreatPlayer} owned by ${threatFrequency} of ${rivals.length} rivals`}
+          >
+            <ShieldWarning size={14} weight="bold" className="telemetry-chip-icon" />
+            <span className="telemetry-chip-label">Danger Pick</span>
+            <span className="telemetry-chip-val font-mono">{topThreatPlayer}</span>
+            <span className="telemetry-chip-meta font-mono">{threatFrequency}/{rivals.length} rivals</span>
+          </div>
+
+          {/* On-Demand Tactical Notes Popover */}
+          <div className="telemetry-notes-group" ref={notesRef}>
+            <button
+              type="button"
+              className={`telemetry-notes-btn font-mono ${showNotes ? 'active' : ''}`}
+              onClick={() => setShowNotes(prev => !prev)}
+              title="Click to view tactical telemetry notes"
+              aria-expanded={showNotes}
+            >
+              <Info size={13} weight="bold" />
+              <span>Notes</span>
+            </button>
+            {showNotes && (
+              <div className="telemetry-popover-card font-mono" role="tooltip">
+                <h3 className="telemetry-popover-title">
+                  Tactical Duel Telemetry &amp; Swing Analysis
+                </h3>
+                <div className="telemetry-popover-body">
+                  <p><strong>Differential Edge:</strong> Starting XI players unique to your squad vs this rival. Net delta reflects projected point swing.</p>
+                  <p><strong>Danger Pick:</strong> The highest-frequency player owned across mini-league competitors that is absent from your squad.</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -259,17 +305,21 @@ export default function RivalThreatMatrix({
             </div>
           </div>
 
-          <div className="table-scroll-wrapper">
+          <div className="table-mobile-hint font-mono">
+            <span>Swipe table to view squad overlap &amp; compare rivals →</span>
+          </div>
+
+          <div className="table-scroll-wrapper rivals-scroll-wrapper">
             <table className="data-table rivals-table">
               <thead>
                 <tr>
-                  <th scope="col" style={{ width: '8%' }}>Rank</th>
-                  <th scope="col" style={{ width: '28%' }}>Manager &amp; Team</th>
-                  <th scope="col" style={{ width: '12%' }}>Points</th>
-                  <th scope="col" style={{ width: '18%' }}>Captain</th>
-                  <th scope="col" style={{ width: '14%' }}>Squad Overlap</th>
-                  <th scope="col" style={{ width: '10%' }}>Threat</th>
-                  <th scope="col" style={{ width: '10%' }}>Action</th>
+                  <th scope="col" className="col-rank">Rank</th>
+                  <th scope="col" className="col-manager">Manager &amp; Team</th>
+                  <th scope="col" className="col-points">Points</th>
+                  <th scope="col" className="col-captain">Captain</th>
+                  <th scope="col" className="col-overlap">Squad Overlap</th>
+                  <th scope="col" className="col-threat">Threat</th>
+                  <th scope="col" className="col-action">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -286,30 +336,40 @@ export default function RivalThreatMatrix({
                       key={r.entry_id || idx}
                       className={isSelected ? 'selected-row' : ''}
                       onClick={() => setSelectedRivalId(r.entry_id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setSelectedRivalId(r.entry_id);
+                        }
+                      }}
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`Rival ${r.manager_name}, ${r.team_name}, Rank ${r.overall_rank || idx + 1}. Click to compare.`}
                       style={{ cursor: 'pointer' }}
                     >
-                      <th scope="row" className="font-mono" style={{ fontWeight: 700, textAlign: 'left' }}>#{r.overall_rank || r.rank || (idx + 1)}</th>
-                      <td>
+                      <th scope="row" className="font-mono col-rank" style={{ fontWeight: 700, textAlign: 'left' }}>#{r.overall_rank || r.rank || (idx + 1)}</th>
+                      <td className="col-manager">
                         <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{r.manager_name}</div>
                         <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{r.team_name}</div>
                       </td>
-                      <td className="font-mono" style={{ fontWeight: 700, color: 'var(--accent-emerald)' }}>
+                      <td className="font-mono col-points" style={{ fontWeight: 700, color: 'var(--accent-emerald)' }}>
                         {r.overall_points || r.total_points || 70}
                       </td>
-                      <td>
+                      <td className="col-captain">
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <span style={{ fontWeight: 600 }}>{r.captain_name || 'Haaland'}</span>
                           <Crown size={12} weight="fill" color="var(--accent-amber)" />
                         </div>
                       </td>
-                      <td className="font-mono">{overlapCount}/15 shared ({overlapPctVal}%)</td>
-                      <td>
+                      <td className="font-mono col-overlap">{overlapCount}/15 shared ({overlapPctVal}%)</td>
+                      <td className="col-threat">
                         <span className={`threat-badge ${threatClass}`}>{r.threat_level === 'HIGH' ? 'HIGH' : r.threat_level === 'LOW' ? 'LOW' : 'MEDIUM'}</span>
                       </td>
-                      <td>
+                      <td className="col-action">
                         <button
                           type="button"
                           className="table-action-btn"
+                          aria-label={isSelected ? `Currently comparing with ${r.manager_name}` : `Compare squad with ${r.manager_name}`}
                           onClick={(e) => {
                             e.stopPropagation();
                             setSelectedRivalId(r.entry_id);

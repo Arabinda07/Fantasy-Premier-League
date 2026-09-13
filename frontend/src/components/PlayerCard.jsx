@@ -154,10 +154,21 @@ export default function PlayerCard({
       <div className="player-team-row">
         <span
           className="player-team-tag"
+          role="button"
+          tabIndex={0}
           onClick={(e) => {
             e.stopPropagation();
             if (onOpenMatchup) {
               onOpenMatchup(player.fixture_details || { home_team: player.team, away_team: opponent || 'Opponent' });
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              e.stopPropagation();
+              if (onOpenMatchup) {
+                onOpenMatchup(player.fixture_details || { home_team: player.team, away_team: opponent || 'Opponent' });
+              }
             }
           }}
           title="Click for match preview, win odds & clean sheet chances"

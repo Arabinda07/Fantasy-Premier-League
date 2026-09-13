@@ -547,7 +547,7 @@ export default function TacticalPitch({
           ) : (
             <>
               {/* Row 1: Goalkeepers */}
-              <div className="pitch-row">
+              <div className={`pitch-row pitch-row-gk pitch-row-count-${gks.length}`}>
                 {gks.map(p => (
                   <PlayerCard
                     key={p.player_code || p.id || p.web_name}
@@ -566,7 +566,7 @@ export default function TacticalPitch({
               </div>
 
               {/* Row 2: Defenders */}
-              <div className="pitch-row">
+              <div className={`pitch-row pitch-row-def pitch-row-count-${defs.length}`}>
                 {defs.map(p => (
                   <PlayerCard
                     key={p.player_code || p.id || p.web_name}
@@ -585,7 +585,7 @@ export default function TacticalPitch({
               </div>
 
               {/* Row 3: Midfielders */}
-              <div className="pitch-row">
+              <div className={`pitch-row pitch-row-mid pitch-row-count-${mids.length}`}>
                 {mids.map(p => (
                   <PlayerCard
                     key={p.player_code || p.id || p.web_name}
@@ -604,7 +604,7 @@ export default function TacticalPitch({
               </div>
 
               {/* Row 4: Forwards */}
-              <div className="pitch-row">
+              <div className={`pitch-row pitch-row-fwd pitch-row-count-${fwds.length}`}>
                 {fwds.map(p => (
                   <PlayerCard
                     key={p.player_code || p.id || p.web_name}
@@ -672,6 +672,12 @@ export default function TacticalPitch({
                       className="bench-item boost-active"
                       onClick={() => onInspectPlayer && onInspectPlayer(p)}
                       onDoubleClick={() => onInspectPlayer && onInspectPlayer(p)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          if (onInspectPlayer) onInspectPlayer(p);
+                        }
+                      }}
                       tabIndex={0}
                       role="button"
                       title="Click to view scouting report & stats"

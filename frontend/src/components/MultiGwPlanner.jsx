@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer
 } from 'recharts';
@@ -9,7 +9,8 @@ import {
   ArrowDownRight,
   CheckCircle,
   ChartLine,
-  Scales
+  Scales,
+  Info
 } from '@phosphor-icons/react';
 import TransferWorkbench from './TransferWorkbench';
 
@@ -61,6 +62,30 @@ export default function MultiGwPlanner({
 
   const [activeGwIndex, setActiveGwIndex] = useState(0);
   const [viewMode, setViewMode] = useState('both'); // 'both' | 'roadmap' | 'workbench'
+  const [showChart, setShowChart] = useState(true);
+  const [showNotes, setShowNotes] = useState(false);
+  const notesRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (notesRef.current && !notesRef.current.contains(event.target)) {
+        setShowNotes(false);
+      }
+    }
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        setShowNotes(false);
+      }
+    }
+    if (showNotes) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showNotes]);
 
   // Compute multi-horizon totals & cumulative trajectory
   const trajectoryData = React.useMemo(() => {
@@ -84,146 +109,178 @@ export default function MultiGwPlanner({
 
   return (
     <div className="view-fluid">
-      {/* Sub-View Switcher Rail */}
-      <div className="chip-switcher-bar" style={{ marginBottom: '16px' }}>
-        <div className="chip-switcher-left">
-          <span className="chip-switcher-label font-mono">Workspace</span>
-          <div className="segmented-chip-rail">
+      {/* Multi-Horizon Planner Control Deck */}
+      <div className="planner-control-deck" role="region" aria-label="Transfer Planner Workspace Controls">
+        <div className="planner-control-left">
+          <div className="planner-horizon-badge font-mono">
+            <CalendarCheck size={14} weight="fill" />
+            <span>GW{startGw}–GW{endGw} HORIZON</span>
+          </div>
+
+          <div className="planner-segmented-rail" role="tablist" aria-label="Transfer Workspace Views">
             <button
               type="button"
-              className={`segmented-chip-btn pill-base pill-md ${viewMode === 'roadmap' ? 'active' : ''}`}
+              className={`planner-rail-btn ${viewMode === 'roadmap' ? 'active' : ''}`}
               onClick={() => setViewMode('roadmap')}
+              aria-pressed={viewMode === 'roadmap'}
             >
-              <CalendarCheck size={14} weight={viewMode === 'roadmap' ? 'fill' : 'bold'} />
+              <CalendarCheck size={13} weight={viewMode === 'roadmap' ? 'fill' : 'bold'} />
               <span>5-Week Roadmap</span>
             </button>
             <button
               type="button"
-              className={`segmented-chip-btn pill-base pill-md ${viewMode === 'workbench' ? 'active' : ''}`}
+              className={`planner-rail-btn ${viewMode === 'workbench' ? 'active' : ''}`}
               onClick={() => setViewMode('workbench')}
+              aria-pressed={viewMode === 'workbench'}
             >
-              <Scales size={14} weight={viewMode === 'workbench' ? 'fill' : 'bold'} />
-              <span>Transfer Scout &amp; Compare</span>
+              <Scales size={13} weight={viewMode === 'workbench' ? 'fill' : 'bold'} />
+              <span>Transfer Scout</span>
             </button>
             <button
               type="button"
-              className={`segmented-chip-btn pill-base pill-md ${viewMode === 'both' ? 'active' : ''}`}
+              className={`planner-rail-btn ${viewMode === 'both' ? 'active' : ''}`}
               onClick={() => setViewMode('both')}
+              aria-pressed={viewMode === 'both'}
             >
-              <ArrowsLeftRight size={14} weight={viewMode === 'both' ? 'fill' : 'bold'} />
+              <ArrowsLeftRight size={13} weight={viewMode === 'both' ? 'fill' : 'bold'} />
               <span>Unified Canvas</span>
             </button>
           </div>
         </div>
-        <div className="chip-switcher-right font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-          {viewMode === 'roadmap' ? '5-Week Plan' : viewMode === 'workbench' ? 'Player Comparison' : 'Full Transfer View'}
+
+        <div className="planner-control-right">
+          {/* 5-GW Target Projection */}
+          <div
+            className="telemetry-chip chip-target"
+            title={`Projected ${totalHorizonXp.toFixed(1)} pts across ${activeRoadmap.length} gameweeks (~${(totalHorizonXp / Math.max(1, activeRoadmap.length)).toFixed(1)} pts/GW)`}
+          >
+            <ChartLine size={14} weight="bold" className="telemetry-chip-icon" />
+            <span className="telemetry-chip-label">Target:</span>
+            <span className="telemetry-chip-val font-mono">{totalHorizonXp.toFixed(1)} pts</span>
+            <span className="telemetry-chip-meta font-mono">~{(totalHorizonXp / Math.max(1, activeRoadmap.length)).toFixed(1)}/GW</span>
+          </div>
+
+          {/* Point Hits Strategy */}
+          <div
+            className="telemetry-chip chip-hits"
+            title={totalHits === 0 ? 'Optimal: 0 transfer penalties planned' : `${totalHits} transfer hit planned (-${totalHits * 4} pts)`}
+          >
+            <span className="telemetry-chip-label">Hits:</span>
+            <span className="telemetry-chip-val font-mono" style={{ color: totalHits === 0 ? 'var(--accent-emerald)' : 'var(--accent-amber)' }}>
+              {totalHits === 0 ? '0 Hits' : `-${totalHits * 4} pts`}
+            </span>
+          </div>
+
+          {/* Bank & Free Transfers */}
+          <div className="telemetry-chip chip-bank" title="Available in bank for upcoming transfers">
+            <span className="telemetry-chip-label">Bank:</span>
+            <span className="telemetry-chip-val font-mono">£{Number(activeRoadmap[activeGwIndex]?.bank || 0.0).toFixed(1)}m</span>
+            <span className="telemetry-chip-meta font-mono">{activeRoadmap[0]?.ft_available != null ? activeRoadmap[0].ft_available : 0} FT</span>
+          </div>
+
+          {/* On-Demand Planner Notes Popover */}
+          <div className="telemetry-notes-group" ref={notesRef}>
+            <button
+              type="button"
+              className={`telemetry-notes-btn font-mono ${showNotes ? 'active' : ''}`}
+              onClick={() => setShowNotes(prev => !prev)}
+              title="Click to view transfer strategy notes"
+              aria-expanded={showNotes}
+            >
+              <Info size={13} weight="bold" />
+              <span>Notes</span>
+            </button>
+            {showNotes && (
+              <div className="telemetry-popover-card font-mono" role="tooltip">
+                <h3 className="telemetry-popover-title">
+                  Multi-Horizon Transfer Strategy &amp; Rules
+                </h3>
+                <div className="telemetry-popover-body">
+                  <p><strong>Free Transfers:</strong> Accumulate up to 5 FTs. Rolling a transfer allows double-moves without taking a -4 point penalty.</p>
+                  <p><strong>Point Hits:</strong> Each additional transfer beyond available FTs deducts 4 points from your gameweek score.</p>
+                  <p><strong>Trajectory Chart:</strong> Plots expected cumulative points based on planned buy/sell tactical moves and fixture difficulty ratings.</p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {(viewMode === 'roadmap' || viewMode === 'both') && (
         <>
-          {/* Hero Header */}
-          <div className="studio-hero-panel">
-            <div className="studio-hero-header">
-              <span className="studio-version font-mono">{`NEXT ${activeRoadmap.length} GAMEWEEKS · GW${startGw} TO GW${endGw}`}</span>
-            </div>
-            <h1 className="studio-title">5-Gameweek Transfer Planner &amp; Bank Strategy</h1>
-            <p className="studio-description">
-              Plan your transfers in advance, bank free transfers, and preview your points over the next 5 gameweeks.
-            </p>
-
-            {/* Horizon Metric Strip: Asymmetric Hero Layout */}
-            <div className="kpi-strip planner-kpi-asymmetric">
-              <div className="kpi-card kpi-hero-card">
-                <span className="kpi-hero-badge font-mono">PRIMARY PROJECTION</span>
-                <div className="kpi-label">5-Week Expected Total</div>
-                <div className="kpi-value font-mono kpi-hero-value" style={{ color: 'var(--accent-emerald)' }}>
-                  {totalHorizonXp.toFixed(1)} <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>pts</span>
-                </div>
-                <div className="kpi-subtext">
-                  Projected score across {activeRoadmap.length} gameweeks · ~{(totalHorizonXp / Math.max(1, activeRoadmap.length)).toFixed(1)} pts/GW
-                </div>
+          {/* Cumulative Projected Points Trajectory Area Chart */}
+          <div className="data-table-container">
+            <div className="studio-table-controls">
+              <div className="controls-left">
+                <span className="controls-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <ChartLine size={14} weight="bold" />
+                  <span>Projected Points Growth ({activeRoadmap.length} Weeks)</span>
+                </span>
+                <span className="controls-count font-mono">Based on planned transfers &amp; fixture difficulty</span>
               </div>
-              <div className="kpi-card">
-                <div className="kpi-label">Point Hits Planned</div>
-                <div className="kpi-value font-mono" style={{ color: totalHits === 0 ? 'var(--accent-emerald)' : 'var(--accent-amber)' }}>
-                  {totalHits} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>(-{totalHits * 4} pts)</span>
-                </div>
-                <div className="kpi-subtext">
-                  {totalHits === 0 ? 'Optimal: 0 transfer penalties' : `${totalHits} transfer hit planned`}
-                </div>
-              </div>
-              <div className="kpi-card">
-                <div className="kpi-label">Bank Balance</div>
-                <div className="kpi-value font-mono">
-                  £{Number(activeRoadmap[activeGwIndex]?.bank || 0.0).toFixed(1)}m
-                </div>
-                <div className="kpi-subtext">Available in bank for upcoming moves</div>
+              <div className="controls-right">
+                <button
+                  type="button"
+                  className="table-action-btn font-mono"
+                  onClick={() => setShowChart(prev => !prev)}
+                  title={showChart ? "Collapse trajectory chart" : "Expand trajectory chart"}
+                >
+                  {showChart ? 'Hide Chart' : 'Show Chart'}
+                </button>
               </div>
             </div>
-          </div>
 
-      {/* Cumulative Projected Points Trajectory Area Chart */}
-      <div className="data-table-container">
-        <div className="studio-table-controls">
-          <div className="controls-left">
-            <span className="controls-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <ChartLine size={14} weight="bold" />
-              Projected Points Growth (Next 5 Weeks)
-            </span>
-            <span className="controls-count font-mono">Based on planned transfers &amp; fixture difficulty</span>
+            {showChart && (
+              <div className="chart-canvas-container">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={trajectoryData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="xpAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#10B981" stopOpacity={0.35}/>
+                        <stop offset="95%" stopColor="#10B981" stopOpacity={0.0}/>
+                      </linearGradient>
+                    </defs>
+                    <XAxis
+                      dataKey="gw"
+                      stroke="var(--text-muted)"
+                      fontSize={11}
+                      tickLine={false}
+                      axisLine={{ stroke: 'var(--border-subtle)' }}
+                    />
+                    <YAxis
+                      stroke="var(--text-muted)"
+                      fontSize={11}
+                      tickLine={false}
+                      axisLine={{ stroke: 'var(--border-subtle)' }}
+                      domain={['auto', 'auto']}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        background: 'var(--bg-surface-2)',
+                        border: '1px solid var(--border-medium)',
+                        borderRadius: 'var(--radius-sm)',
+                        fontSize: '12px',
+                        color: 'var(--text-primary)',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
+                      }}
+                      formatter={(val, name) => [
+                        name === 'cumulativeXp' ? `${val} pts (Cumulative)` : `${val} pts (Gameweek)`,
+                        name === 'cumulativeXp' ? 'Total Haul' : 'Weekly Target'
+                      ]}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="cumulativeXp"
+                      stroke="#10B981"
+                      strokeWidth={2}
+                      fillOpacity={1}
+                      fill="url(#xpAreaGrad)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </div>
-        </div>
-
-        <div className="chart-canvas-container">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={trajectoryData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
-              <defs>
-                <linearGradient id="xpAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10B981" stopOpacity={0.35}/>
-                  <stop offset="95%" stopColor="#10B981" stopOpacity={0.0}/>
-                </linearGradient>
-              </defs>
-              <XAxis
-                dataKey="gw"
-                stroke="var(--text-muted)"
-                fontSize={11}
-                tickLine={false}
-                axisLine={{ stroke: 'var(--border-subtle)' }}
-              />
-              <YAxis
-                stroke="var(--text-muted)"
-                fontSize={11}
-                tickLine={false}
-                axisLine={{ stroke: 'var(--border-subtle)' }}
-                domain={['auto', 'auto']}
-              />
-              <Tooltip
-                contentStyle={{
-                  background: 'var(--bg-surface-2)',
-                  border: '1px solid var(--border-medium)',
-                  borderRadius: 'var(--radius-sm)',
-                  fontSize: '12px',
-                  color: 'var(--text-primary)',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
-                }}
-                formatter={(val, name) => [
-                  name === 'cumulativeXp' ? `${val} pts (Cumulative)` : `${val} pts (Gameweek)`,
-                  name === 'cumulativeXp' ? 'Total Haul' : 'Weekly Target'
-                ]}
-              />
-              <Area
-                type="monotone"
-                dataKey="cumulativeXp"
-                stroke="#10B981"
-                strokeWidth={2}
-                fillOpacity={1}
-                fill="url(#xpAreaGrad)"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
 
       {/* 5-Column Gameweek Strategic Horizon Stepper */}
       <div className="multi-gw-matrix-grid">

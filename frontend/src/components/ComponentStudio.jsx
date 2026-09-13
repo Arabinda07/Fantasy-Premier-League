@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { SCORING_COMPONENTS } from '../constants/copyTokens';
 import {
   Flask,
@@ -14,7 +14,8 @@ import {
   Target,
   MagnifyingGlass,
   Funnel,
-  X
+  X,
+  Info
 } from '@phosphor-icons/react';
 import accuracyMetricsData from '../data/accuracy_metrics.json';
 
@@ -61,6 +62,31 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
+  const [isCalibrationOpen, setIsCalibrationOpen] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
+  const notesRef = useRef(null);
+
+  // Close notes popover on click outside or Escape
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (notesRef.current && !notesRef.current.contains(event.target)) {
+        setShowNotes(false);
+      }
+    }
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        setShowNotes(false);
+      }
+    }
+    if (showNotes) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showNotes]);
 
   // Handle position filter change
   const handlePosChange = (pos) => {
@@ -171,15 +197,15 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
 
   return (
     <div className="studio-container">
-      {/* Sub-View Switcher Rail */}
-      <div className="chip-switcher-bar" style={{ marginBottom: '16px' }}>
-        <div className="chip-switcher-left">
-          <span className="chip-switcher-label font-mono">Module</span>
+      {/* Institutional Forecaster Control Deck (52px Header) */}
+      <div className="forecaster-control-deck" role="region" aria-label="Points Forecaster Controls">
+        <div className="forecaster-control-left">
           <div className="segmented-chip-rail">
             <button
               type="button"
               className={`segmented-chip-btn pill-base pill-md ${subView === 'sandbox' ? 'active' : ''}`}
               onClick={() => setSubView('sandbox')}
+              aria-pressed={subView === 'sandbox'}
             >
               <SlidersHorizontal size={14} weight={subView === 'sandbox' ? 'fill' : 'bold'} />
               <span>Formula Sandbox</span>
@@ -188,159 +214,185 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
               type="button"
               className={`segmented-chip-btn pill-base pill-md ${subView === 'scorecard' ? 'active' : ''}`}
               onClick={() => setSubView('scorecard')}
+              aria-pressed={subView === 'scorecard'}
             >
               <ChartLine size={14} weight={subView === 'scorecard' ? 'fill' : 'bold'} />
               <span>Accuracy Scorecard</span>
             </button>
           </div>
+
+          <div className="forecaster-telemetry-chips">
+            <div className="telemetry-chip" title="Spearman rank correlation across Premier League starters">
+              <span className="telemetry-chip-label">Rank Acc:</span>
+              <span className="telemetry-chip-val font-mono" style={{ color: 'var(--accent-emerald)' }}>+{ACCURACY_DATA.rank_correlation}</span>
+            </div>
+            <div className="telemetry-chip" title="Average points margin per starter playing 60+ minutes">
+              <span className="telemetry-chip-label">Margin:</span>
+              <span className="telemetry-chip-val font-mono" style={{ color: 'var(--accent-emerald)' }}>±{ACCURACY_DATA.starters_mae} pts</span>
+            </div>
+            <div className="telemetry-chip" title={`${SCORING_COMPONENTS.official_count} key scoring factors evaluated`}>
+              <span className="telemetry-chip-label">Factors:</span>
+              <span className="telemetry-chip-val font-mono">{SCORING_COMPONENTS.official_count}</span>
+            </div>
+          </div>
         </div>
-        <div className="chip-switcher-right font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-          {subView === 'sandbox' ? 'Points Formula' : 'Model Accuracy & Scores'}
+
+        <div className="forecaster-control-right">
+          {subView === 'sandbox' && (
+            <button
+              type="button"
+              className={`calibration-toggle-btn ${isCalibrationOpen ? 'active' : ''}`}
+              onClick={() => setIsCalibrationOpen(prev => !prev)}
+              aria-expanded={isCalibrationOpen}
+              title="Toggle model calibration sliders and baseline rates"
+            >
+              <SlidersHorizontal size={13} weight={isCalibrationOpen ? 'fill' : 'bold'} />
+              <span>Calibration ({priorMinutes}m · {homeAdvantage.toFixed(2)}x)</span>
+            </button>
+          )}
+
+          {/* On-Demand Projection Methodology Notes */}
+          <div className="telemetry-notes-group" ref={notesRef}>
+            <button
+              type="button"
+              className={`telemetry-notes-btn font-mono ${showNotes ? 'active' : ''}`}
+              onClick={() => setShowNotes(prev => !prev)}
+              title="Click to view projection methodology notes"
+              aria-expanded={showNotes}
+            >
+              <Info size={13} weight="bold" />
+              <span>Notes</span>
+            </button>
+            {showNotes && (
+              <div className="telemetry-popover-card font-mono" role="tooltip">
+              <h3 className="telemetry-popover-title">
+                Scoring Formula Calibration
+              </h3>
+                <div className="telemetry-popover-body">
+                  <p><strong>10 Scoring Factors:</strong> Calculated from expected goals, assists, clean sheets, saves, bonus potential, and expected minutes without relying on luck or hauling streaks.</p>
+                  <p><strong>Form vs Baseline:</strong> Blends recent match form with long-term positional averages so small-sample flukes do not distort rankings.</p>
+                  <p><strong>Home Multiplier:</strong> Applies a balanced {homeAdvantage.toFixed(2)}x boost to attack and clean sheet odds for home fixtures.</p>
+                  <p style={{ marginTop: '8px', fontSize: '11px', color: 'var(--text-muted)' }}>
+                    Open the <strong>Calibration</strong> drawer to adjust recent form weighting ({priorMinutes}m sample) or stadium boost.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {subView === 'sandbox' ? (
         <>
-          {/* Studio Header */}
-          <div className="studio-hero-panel">
-            <h2 className="studio-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Flask size={20} weight="bold" />
-              How Points Projections Work
-            </h2>
-            <p className="studio-description">
-              Instead of chasing last week's lucky haul or overreacting to a two-game dry spell, our model calculates steady expected points from goal threat, assist chance, clean sheets, and expected minutes. We blend recent match form with long-term league track records so you get dependable projections.
-            </p>
-
-            {/* Model Accuracy & Calibration Benchmark Strip */}
-            <div className="kpi-strip" style={{ marginBottom: '20px' }}>
-              <div className="kpi-card">
-                <div className="kpi-label">Player Rank Accuracy</div>
-                <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
-                  +{ACCURACY_DATA.rank_correlation}
-                </div>
-                <div className="kpi-subtext">Accurately identifies top performers</div>
-              </div>
-              <div className="kpi-card">
-                <div className="kpi-label">Starting XI Accuracy</div>
-                <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
-                  ±{ACCURACY_DATA.starters_mae} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
-                </div>
-                <div className="kpi-subtext">Average points margin per starter</div>
-              </div>
-              <div className="kpi-card">
-                <div className="kpi-label">Key Scoring Factors</div>
-                <div className="kpi-value font-mono">
-                  {SCORING_COMPONENTS.official_count} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Factors</span>
-                </div>
-                <div className="kpi-subtext">{SCORING_COMPONENTS.note}</div>
-              </div>
-            </div>
-
-            {/* Sliders */}
-            <div className="studio-sliders-grid">
-              <div className="studio-slider-card">
-                <div className="slider-header">
-                  <span className="slider-label">
-                    <SlidersHorizontal size={15} weight="bold" />
-                    <span>Recent Form vs Long-Term Track Record</span>
-                  </span>
-                  <span className="slider-value-capsule font-mono">{priorMinutes} mins sample</span>
-                </div>
-                <div className="slider-input-wrapper">
-                  <input
-                    type="range"
-                    min="100"
-                    max="1200"
-                    step="50"
-                    value={priorMinutes}
-                    onChange={e => setPriorMinutes(Number(e.target.value))}
-                    className="studio-range-input"
-                    aria-label="Adjust historical baseline weighting sample in minutes"
-                  />
-                </div>
-                <div className="slider-ticks font-mono">
-                  <span className="slider-tick-item left">100m (Hot Form)</span>
-                  <span className="slider-tick-item center">500m (Balanced)</span>
-                  <span className="slider-tick-item right">1200m (Career Record)</span>
-                </div>
-                <div className="slider-hint">
-                  Recent matches count more heavily: form from 8 weeks ago counts half as much as today.
-                </div>
-              </div>
-
-              <div className="studio-slider-card">
-                <div className="slider-header">
-                  <span className="slider-label">
-                    <Lightning size={15} weight="bold" />
-                    <span>Home Ground Advantage</span>
-                  </span>
-                  <span className="slider-value-capsule font-mono">{homeAdvantage.toFixed(2)}x boost</span>
-                </div>
-                <div className="slider-input-wrapper">
-                  <input
-                    type="range"
-                    min="0.90"
-                    max="1.30"
-                    step="0.02"
-                    value={homeAdvantage}
-                    onChange={e => setHomeAdvantage(Number(e.target.value))}
-                    className="studio-range-input"
-                    aria-label="Adjust home venue performance multiplier"
-                  />
-                </div>
-                <div className="slider-ticks font-mono">
-                  <span className="slider-tick-item left">0.90x (Neutral Ground)</span>
-                  <span className="slider-tick-item center">1.10x (Avg Home Boost)</span>
-                  <span className="slider-tick-item right">1.30x (Fortress Stadium)</span>
-                </div>
-                <div className="slider-hint">
-                  Gives a realistic boost to goal threat and clean sheet chances when playing at home.
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Positional Baseline Rates Reference */}
-          <div className="studio-baselines-panel">
-            <div className="studio-baselines-header">
-              <div>
-                <h3 className="studio-section-title">
-                  League Averages by Position (Per 90 Minutes)
-                </h3>
-                <div className="studio-section-subtitle">
-                  Standard league averages used to calculate baseline points when a player has limited recent minutes
-                </div>
-              </div>
-            </div>
-            <div className="studio-baselines-grid">
-              {Object.entries(POSITIONAL_BASELINES).map(([pos, data]) => (
-                <div key={pos} className="baseline-card">
-                  <div className="baseline-header">
-                    <span className={`player-pos-tag pill-base pill-sm ${pos}`}>{pos}</span>
-                    <span className="baseline-label">{data.label}</span>
+          {/* On-Demand Collapsible Calibration Drawer (Sliders + Positional Baselines) */}
+          {isCalibrationOpen && (
+            <div className="calibration-drawer-container">
+              {/* Sliders */}
+              <div className="studio-sliders-grid">
+                <div className="studio-slider-card">
+                  <div className="slider-header">
+                    <span className="slider-label">
+                      <SlidersHorizontal size={15} weight="bold" />
+                      <span>Recent Form vs Long-Term Track Record</span>
+                    </span>
+                    <span className="slider-value-capsule font-mono">{priorMinutes} mins sample</span>
                   </div>
-                  <div className="baseline-metrics-list">
-                    <div className="baseline-metric-row">
-                      <span className="metric-name">Expected Goals</span>
-                      <span className="metric-val font-mono">{data.xG90.toFixed(2)} <span className="metric-unit">xG</span></span>
-                    </div>
-                    <div className="baseline-metric-row">
-                      <span className="metric-name">Expected Assists</span>
-                      <span className="metric-val font-mono">{data.xA90.toFixed(2)} <span className="metric-unit">xA</span></span>
-                    </div>
-                    <div className="baseline-metric-row">
-                      <span className="metric-name">Clean Sheet Rate</span>
-                      <span className="metric-val font-mono">{Math.round(data.cleanSheet * 100)}%</span>
-                    </div>
-                    <div className="baseline-metric-row">
-                      <span className="metric-name">Bonus Potential</span>
-                      <span className="metric-val font-mono">{data.bonus90.toFixed(2)} <span className="metric-unit">BPS</span></span>
+                  <div className="slider-input-wrapper">
+                    <input
+                      type="range"
+                      min="100"
+                      max="1200"
+                      step="50"
+                      value={priorMinutes}
+                      onChange={e => setPriorMinutes(Number(e.target.value))}
+                      className="studio-range-input"
+                      aria-label="Adjust historical baseline weighting sample in minutes"
+                    />
+                  </div>
+                  <div className="slider-ticks font-mono">
+                    <span className="slider-tick-item left">100m (Hot Form)</span>
+                    <span className="slider-tick-item center">500m (Balanced)</span>
+                    <span className="slider-tick-item right">1200m (Career Record)</span>
+                  </div>
+                  <div className="slider-hint">
+                    Recent matches count more heavily: form from 8 weeks ago counts half as much as today.
+                  </div>
+                </div>
+
+                <div className="studio-slider-card">
+                  <div className="slider-header">
+                    <span className="slider-label">
+                      <Lightning size={15} weight="bold" />
+                      <span>Home Ground Advantage</span>
+                    </span>
+                    <span className="slider-value-capsule font-mono">{homeAdvantage.toFixed(2)}x boost</span>
+                  </div>
+                  <div className="slider-input-wrapper">
+                    <input
+                      type="range"
+                      min="0.90"
+                      max="1.30"
+                      step="0.02"
+                      value={homeAdvantage}
+                      onChange={e => setHomeAdvantage(Number(e.target.value))}
+                      className="studio-range-input"
+                      aria-label="Adjust home venue performance multiplier"
+                    />
+                  </div>
+                  <div className="slider-ticks font-mono">
+                    <span className="slider-tick-item left">0.90x (Neutral Ground)</span>
+                    <span className="slider-tick-item center">1.10x (Avg Home Boost)</span>
+                    <span className="slider-tick-item right">1.30x (Fortress Stadium)</span>
+                  </div>
+                  <div className="slider-hint">
+                    Gives a realistic boost to goal threat and clean sheet chances when playing at home.
+                  </div>
+                </div>
+              </div>
+
+              {/* Positional Baseline Rates Reference */}
+              <div className="studio-baselines-panel" style={{ marginTop: '12px' }}>
+                <div className="studio-baselines-header">
+                  <div>
+                    <h3 className="studio-section-title">
+                      League Averages by Position (Per 90 Minutes)
+                    </h3>
+                    <div className="studio-section-subtitle">
+                      Standard league averages used to calculate baseline points when a player has limited recent minutes
                     </div>
                   </div>
                 </div>
-              ))}
+                <div className="studio-baselines-grid">
+                  {Object.entries(POSITIONAL_BASELINES).map(([pos, data]) => (
+                    <div key={pos} className="baseline-card">
+                      <div className="baseline-header">
+                        <span className={`player-pos-tag pill-base pill-sm ${pos}`}>{pos}</span>
+                        <span className="baseline-label">{data.label}</span>
+                      </div>
+                      <div className="baseline-metrics-list">
+                        <div className="baseline-metric-row">
+                          <span className="metric-name">Expected Goals</span>
+                          <span className="metric-val font-mono">{data.xG90.toFixed(2)} <span className="metric-unit">xG</span></span>
+                        </div>
+                        <div className="baseline-metric-row">
+                          <span className="metric-name">Expected Assists</span>
+                          <span className="metric-val font-mono">{data.xA90.toFixed(2)} <span className="metric-unit">xA</span></span>
+                        </div>
+                        <div className="baseline-metric-row">
+                          <span className="metric-name">Clean Sheet Rate</span>
+                          <span className="metric-val font-mono">{Math.round(data.cleanSheet * 100)}%</span>
+                        </div>
+                        <div className="baseline-metric-row">
+                          <span className="metric-name">Bonus Potential</span>
+                          <span className="metric-val font-mono">{data.bonus90.toFixed(2)} <span className="metric-unit">BPS</span></span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Real-time Adjusted Predictions Table */}
           <div className="data-table-container">

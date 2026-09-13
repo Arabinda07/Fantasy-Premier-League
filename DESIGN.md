@@ -317,6 +317,7 @@ All frontend surfaces are constructed by composing the following standardized re
 - **Identity**: High-contrast player web name (`Plus Jakarta Sans`, `font-weight: 800`).
 - **Fixture**: Opponent link opening Match Preview Drawer (`v ARS (H)`).
 - **Metric Banner**: Centered monospace expected score (`5.4 xP`).
+- **Responsive 5-Card Scaling (`.pitch-row-count-5`)**: Fluid compact adaptation for 5-man midfield/defense lines on mobile viewports (<400px). Cards scale seamlessly (`min-width: 0; max-width: 62px;` down to `58px` on `<=380px`) with container queries (`@container pitch`), compact font hierarchy (`8.5px` name, `8.5px` points), and tight gaps (`2px` / `1.5px`) eliminating lateral clipping.
 
 ### 5.4 Bench Strip Slot (`.bench-slot-card`)
 - 4 vertical slots (`[GK Sub]`, `[Sub 1]`, `[Sub 2]`, `[Sub 3]`) on `#182035`.
@@ -371,6 +372,32 @@ All frontend surfaces are constructed by composing the following standardized re
 - **Single-Line Legend Bar (`.fixture-legend-bar`)**: Replaces multi-row 90px+ header blocks with a compact 38px horizontal strip positioned beside the horizon pills. Reclaims ~60px of vertical height so 15+ clubs sit directly above the fold.
 - **FDR Dot Track (`.legend-scale-group`)**: Unified 1-line scale with 7 micro-chips (`1 Very Easy` to `5 Very Tough`, `Blank`, `Past`) utilizing 6px colored dots (`--fdr-1` to `--fdr-5`, `--bg-canvas-subtle`, `--text-muted`) with uppercase 10px tracking.
 - **Contextual Formula Trigger (`.formula-trigger-btn`) & Popover (`.formula-popover-card`)**: Accessible popover button trigger (`[ ℹ Avg Difficulty Formula ]`) toggling an on-demand mathematical explanation card ($280\text{px}$ width) with keyboard Escape / outside click dismissal, keeping mathematical nuances available without permanent table clutter.
+
+### 5.15 Mini-League Tactical Telemetry Deck (`.rivals-telemetry-deck`)
+- **Streamlined Command Strip (`.rivals-telemetry-deck`)**: Replaces the bulky 280px hero panel and 3-card asymmetric KPI grid with a compact 48–52px horizontal command strip. Reclaims ~228px of vertical height, lifting the primary Mini-League Table and Head-to-Head Tactical Duel directly into the initial viewport fold.
+- **Integrated Identity & KPI Telemetry Chips (`.rivals-telemetry-left` & `.rivals-telemetry-right`)**:
+  - Left: League badge with `UsersThree` icon, league ID monospace pill (`#1305495`), and active rivals counter chip (`{n} Rivals Tracked`).
+  - Right: High-density micro-chips for Captain Consensus (`👑 {captain} · {pct}% backing`), Differential Advantage (`🛡️ {count} Differentials · +{xp} xP`), and Danger Pick (`⚠️ {player} · {freq}/{n} rivals`).
+- **Contextual Telemetry Notes Trigger & Popover (`.telemetry-notes-btn` & `.telemetry-popover-card`)**: Accessible on-demand popover with keyboard Escape and click-outside dismissal explaining differential edge calculations ($\text{Net Delta} = \text{Your Differentials xP} - \text{Rival Differentials xP}$) and danger pick mechanics without permanent clutter.
+- **Mobile Standings Scroll Cue (`.table-mobile-hint`) & Scroll Mask (`.rivals-scroll-wrapper`)**: Responsive visual affordance banner and dual-edge gradient masks alerting mobile users on viewports `<680px` that the standings table scrolls horizontally to access squad overlap metrics and the Head-to-Head compare action button.
+
+### 5.16 Multi-Horizon Planner Control Deck (`.planner-control-deck`)
+- **Integrated Command Strip (`.planner-control-deck`)**: Replaces the separate mode switcher bar, 240px planner hero panel, 3-card asymmetric KPI grid, and duplicate 180px workbench hero panel with a single, high-density 52px control deck. Reclaims ~350px–550px of vertical height, lifting the 5-GW strategic matrix and transfer comparison workbench directly into the initial viewport fold.
+- **Segmented Workspace Track (`.planner-segmented-rail`)**: Inline mode switcher (`[ 📅 5-Week Roadmap ] [ ⚖️ Transfer Scout ] [ ⚡ Unified Canvas ]`) with instant tab transitions and zero layout shifts.
+- **Integrated Horizon Telemetry Chips (`.planner-control-right`)**:
+  - Target Projection: Monospace total expected points (`🎯 Target: {pts} pts (~{avg}/GW)`).
+  - Point Hits Strategy: Penalty indicator (`0 Hits` in emerald / `-{hits*4} pts` in amber).
+  - Bank & Free Transfers: Combined liquidity and flexibility status (`£{bank}m in Bank` · `{ft} FT Remaining`).
+- **Collapsible Trajectory Canvas**: On-demand toggle button (`[ Hide/Show Chart ]`) allows managers to collapse the Recharts AreaChart for immediate access to the 5-GW horizon cards.
+- **Compact Comparison Cue Banner (`.compare-workbench-compact-cue`)**: Subtle dashed indicator in the marketplace view replacing the tall empty placeholder box until a player comparison is initiated.
+
+### 5.17 Forecaster Control Deck & Calibration Drawer (`.forecaster-control-deck`)
+- **Streamlined Command Strip (`.forecaster-control-deck`)**: Replaces the floating sub-view switcher, 280px hero panel, 3-card asymmetric KPI strip, and static parameter sliders with an integrated 48–52px operational header. Reclaims ~640px of vertical height, pulling the 600+ player projections table and position filters directly into the initial viewport fold.
+- **Sub-View Rail & Accuracy Telemetry (`.forecaster-control-left`)**:
+  - Segmented Switcher: Seamless toggling between `Formula Sandbox` and `Accuracy Scorecard`.
+  - Accuracy Telemetry Micro-Chips: Monospace badges for Rank Accuracy (`Rank Acc: +0.417`), Starter Points Margin (`Margin: ±1.85 pts`), and Key Factors (`Factors: 10`).
+- **On-Demand Calibration Drawer (`.calibration-drawer-container`)**: Activated via the `[ ⚙️ Calibration (500m · 1.10x) ]` button (`.calibration-toggle-btn`), expanding the recent form weighting slider, home venue multiplier, and positional baseline rates per 90 on demand without crowding the primary evaluation table.
+- **Methodology Notes Popover (`.telemetry-notes-group` / `.telemetry-popover-card`)**: Accessible popover dialog explaining scoring factors, baseline prior weighting, and venue adjustments with keyboard Escape and outside-click dismissal.
 
 ---
 

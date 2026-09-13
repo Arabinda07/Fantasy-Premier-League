@@ -39,20 +39,28 @@ export function useDataLoader() {
     async function loadDatasets() {
       try {
         setIsLoading(true);
-        // Dynamically import all 3 datasets asynchronously in parallel
-        const [playersMod, fixturesMod, teamsMod] = await Promise.all([
-          dataCache.players ? Promise.resolve({ default: dataCache.players }) : import('../data/players_full.json'),
-          dataCache.fixtures ? Promise.resolve({ default: dataCache.fixtures }) : import('../data/fixtures_all.json'),
+        // Stage 1: Load lightweight team metadata and fixture schedule first for immediate responsiveness
+        const [teamsMod, fixturesMod] = await Promise.all([
           dataCache.teams ? Promise.resolve({ default: dataCache.teams }) : import('../data/teams_all.json'),
+          dataCache.fixtures ? Promise.resolve({ default: dataCache.fixtures }) : import('../data/fixtures_all.json'),
         ]);
 
-        const players = playersMod.default || playersMod;
-        const fixtures = fixturesMod.default || fixturesMod;
         const teams = teamsMod.default || teamsMod;
-
-        dataCache.players = players;
-        dataCache.fixtures = fixtures;
+        const fixtures = fixturesMod.default || fixturesMod;
         dataCache.teams = teams;
+        dataCache.fixtures = fixtures;
+
+        if (isMounted) {
+          setData(prev => ({ ...prev, teams, fixtures }));
+        }
+
+        // Stage 2: Hydrate full 600+ player database
+        const playersMod = dataCache.players
+          ? { default: dataCache.players }
+          : await import('../data/players_full.json');
+
+        const players = playersMod.default || playersMod;
+        dataCache.players = players;
 
         if (isMounted) {
           setData({ players, fixtures, teams });

@@ -86,21 +86,6 @@ export default function TransferWorkbench({
 
   return (
     <div className="view-fluid">
-      {/* Workbench Context Header */}
-      <div className="studio-hero-panel" style={{ marginBottom: '20px' }}>
-        <div className="studio-hero-header">
-          <div className="studio-badge">
-            <Scales size={14} weight="fill" />
-            <span>TRANSFER COMPARISON &amp; SCOUT</span>
-          </div>
-          <span className="studio-version font-mono">PLAYER COMPARISON</span>
-        </div>
-        <h1 className="studio-title">Head-to-Head Transfer Scout</h1>
-        <p className="studio-description">
-          Test potential transfer targets against your current players. Compare expected points, price differences, and underlying goal &amp; assist stats before locking in your moves.
-        </p>
-      </div>
-
       {/* Side-by-Side Transfer Comparison Workbench */}
       {playerIn ? (
         <div className="compare-workbench-container">
@@ -216,14 +201,11 @@ export default function TransferWorkbench({
           </div>
         </div>
       ) : (
-        <div className="compare-workbench-container compare-placeholder">
-          <div className="placeholder-content">
-            <Scales size={20} weight="bold" className="placeholder-icon" />
-            <span className="placeholder-title">Test Any Transfer Head-to-Head</span>
+        <div className="compare-workbench-compact-cue font-mono">
+          <div className="cue-content">
+            <Scales size={15} weight="bold" className="cue-icon" />
+            <span>Select any player in the marketplace below to simulate a direct swap against your squad</span>
           </div>
-          <p className="placeholder-desc">
-            Click the <strong style={{ color: 'var(--accent-emerald)' }}>&quot;Compare&quot;</strong> button on any player in the market below to simulate a direct swap against your squad and inspect points, budget, and goal threat differences.
-          </p>
         </div>
       )}
 
