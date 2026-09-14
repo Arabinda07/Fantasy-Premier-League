@@ -1,58 +1,67 @@
 {
   "evaluated_gw": 4,
-  "evaluated_at": "2026-09-13T10:45:28.795704+00:00",
+  "evaluated_at": "2026-09-14T11:10:21.749882+00:00",
   "season": "2026-27",
   "total_players": 656,
-  "active_players": 401,
-  "overall_mae": 1.32,
-  "overall_rmse": 2.09,
+  "active_players": 405,
+  "overall_mae": 1.33,
+  "overall_rmse": 2.22,
   "starters_mae": 2.08,
-  "starters_rmse": 2.66,
-  "rank_correlation": 0.204,
+  "starters_rmse": 2.82,
+  "rank_correlation": 0.3,
   "brier_score_cs": 0.198,
   "positional": [
     {
       "pos": "GK",
       "count": 71,
-      "mae": 0.99,
-      "rmse": 2.01,
+      "mae": 0.97,
+      "rmse": 1.99,
       "meanPred": 1.14,
-      "meanAct": 0.89,
-      "bias": 0.26,
-      "status": "OVER_PROJECTED"
+      "meanAct": 1.13,
+      "bias": 0.02,
+      "status": "CALIBRATED"
     },
     {
       "pos": "DEF",
       "count": 215,
-      "mae": 1.65,
-      "rmse": 2.34,
+      "mae": 1.68,
+      "rmse": 2.49,
       "meanPred": 1.69,
-      "meanAct": 0.99,
-      "bias": 0.7,
+      "meanAct": 1.37,
+      "bias": 0.32,
       "status": "OVER_PROJECTED"
     },
     {
       "pos": "MID",
       "count": 292,
-      "mae": 1.17,
-      "rmse": 1.88,
+      "mae": 1.14,
+      "rmse": 2.01,
       "meanPred": 1.43,
-      "meanAct": 0.92,
-      "bias": 0.51,
-      "status": "OVER_PROJECTED"
+      "meanAct": 1.19,
+      "bias": 0.24,
+      "status": "CALIBRATED"
     },
     {
       "pos": "FWD",
       "count": 78,
-      "mae": 1.27,
-      "rmse": 2.16,
+      "mae": 1.37,
+      "rmse": 2.39,
       "meanPred": 1.3,
-      "meanAct": 1.0,
-      "bias": 0.3,
-      "status": "OVER_PROJECTED"
+      "meanAct": 1.27,
+      "bias": 0.03,
+      "status": "CALIBRATED"
     }
   ],
   "outliers": [
+    {
+      "player": "Groß",
+      "team": "Brighton",
+      "pos": "ASSET",
+      "pred": 3.21,
+      "actual": 17,
+      "diff": "+13.8",
+      "reason": "High conversion or unexpected haul"
+    },
     {
       "player": "Davis",
       "team": "Ipswich Town",
@@ -87,15 +96,6 @@
       "pred": 1.64,
       "actual": 12,
       "diff": "+10.4",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Raya",
-      "team": "Arsenal",
-      "pos": "ASSET",
-      "pred": 5.01,
-      "actual": 14,
-      "diff": "+9.0",
       "reason": "High conversion or unexpected haul"
     },
     {
