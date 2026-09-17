@@ -68,14 +68,24 @@ PROMOTED_FIXTURE_XGC_FLOOR: float = 1.40      # Minimum defensive error floor fo
 # Minimum completed gameweeks before bias correction activates
 MIN_GWS_FOR_CORRECTION: int = 2
 # Maximum absolute bias correction in points (prevents over-fitting to early noise)
-MAX_BIAS_CORRECTION_PTS: float = 0.5
-# Exponential decay weight for recency (higher = more weight on recent GWs)
-BIAS_EWMA_ALPHA: float = 0.6
+MAX_BIAS_CORRECTION_PTS: float = 0.35
+# Exponential decay weight for recency (alpha=0.18 provides ~3.5 GW half-life, stabilizing noise)
+BIAS_EWMA_ALPHA: float = 0.18
+
+
+# Baseline empirical positional priors for cold-start calibration
+BASELINE_POSITIONAL_PRIORS: Dict[str, float] = {
+    'GK': -0.75,
+    'DEF': 0.10,
+    'MID': 0.25,
+    'FWD': 0.50,
+}
 
 
 def load_positional_bias_corrections(
     season: str = '2026-27',
     data_root: str = 'data',
+    fallback_priors: bool = False,
 ) -> Dict[str, float]:
     """Load per-position bias corrections from the accuracy log.
 
@@ -92,22 +102,24 @@ def load_positional_bias_corrections(
     Args:
         season: season string e.g. '2026-27'.
         data_root: root data directory.
+        fallback_priors: if True, returns BASELINE_POSITIONAL_PRIORS when
+            fewer than MIN_GWS_FOR_CORRECTION completed gameweeks are available.
 
     Returns:
         Dict mapping position string ('GK', 'DEF', 'MID', 'FWD') to an
-        additive correction in points.  Empty dict if insufficient data.
+        additive correction in points.  Empty dict if insufficient data and fallback_priors is False.
     """
     log_path = os.path.join(data_root, season, 'accuracy_log.csv')
     if not os.path.exists(log_path):
-        return {}
+        return dict(BASELINE_POSITIONAL_PRIORS) if fallback_priors else {}
 
     try:
         log_df = pd.read_csv(log_path)
     except Exception:
-        return {}
+        return dict(BASELINE_POSITIONAL_PRIORS) if fallback_priors else {}
 
     if len(log_df) < MIN_GWS_FOR_CORRECTION:
-        return {}
+        return dict(BASELINE_POSITIONAL_PRIORS) if fallback_priors else {}
 
     corrections: Dict[str, float] = {}
     for pos in ('GK', 'DEF', 'MID', 'FWD'):
@@ -129,6 +141,43 @@ def load_positional_bias_corrections(
     if corrections:
         print(f"[Bias Correction] Applying positional corrections from {len(log_df)} completed GWs: "
               + ", ".join(f"{p}: {c:+.3f} pts" for p, c in corrections.items()))
+
+    return corrections
+
+
+def load_team_bias_corrections(
+    season: str = '2026-27',
+    data_root: str = 'data',
+) -> Dict[str, float]:
+    """Load per-team bias corrections from team_accuracy_log.csv.
+
+    Reads team_accuracy_log.csv, computes exponential-weighted mean bias per
+    team across completed gameweeks, and returns additive per-player corrections
+    that should be added/subtracted from predicted xP for that team's assets.
+
+    Positive bias in the log means the model over-predicts (reduce predictions).
+    """
+    team_log_path = os.path.join(data_root, season, 'team_accuracy_log.csv')
+    if not os.path.exists(team_log_path):
+        return {}
+
+    try:
+        df = pd.read_csv(team_log_path)
+    except Exception:
+        return {}
+
+    if 'gameweek' not in df.columns or len(df['gameweek'].unique()) < MIN_GWS_FOR_CORRECTION:
+        return {}
+
+    corrections: Dict[str, float] = {}
+    for team_name, group in df.groupby('team'):
+        bias_series = pd.to_numeric(group['bias'], errors='coerce').dropna()
+        if bias_series.empty:
+            continue
+        ewma_bias = float(bias_series.ewm(alpha=BIAS_EWMA_ALPHA, adjust=False).mean().iloc[-1])
+        # Per-player bias dampening clamped to [-0.15, +0.15] pts
+        clamped = max(-0.15, min(0.15, ewma_bias / 11.0))
+        corrections[str(team_name)] = round(-clamped, 4)
 
     return corrections
 
@@ -499,6 +548,7 @@ def predict_gameweek_fixtures(
     min_minutes_pct: Optional[float] = None,
     dispersion_r: float = DEFAULT_DISPERSION_R,
     include_c11_in_xp: bool = False,
+    positional_calibration: bool = False,
 ) -> pd.DataFrame:
     """Predict fixture-adjusted expected points for all players in a given gameweek.
 
@@ -517,6 +567,7 @@ def predict_gameweek_fixtures(
         min_minutes_pct: optional minimum percentage of available season minutes.
         dispersion_r: Negative Binomial dispersion parameter r.
         include_c11_in_xp: whether to include C11 (defensive contributions) in expected points.
+        positional_calibration: whether to enable baseline empirical positional priors in early gameweeks.
 
     Returns:
         pd.DataFrame containing player metadata, fixture details, and predicted xP.
@@ -717,7 +768,9 @@ def predict_gameweek_fixtures(
         result_df = calibrate_fixture_bonus_points(result_df, fixtures)
 
     # Apply positional bias corrections from the accuracy feedback loop
-    bias_corrections = load_positional_bias_corrections(season=season, data_root=data_root)
+    bias_corrections = load_positional_bias_corrections(
+        season=season, data_root=data_root, fallback_priors=positional_calibration
+    )
     if bias_corrections and 'position' in result_df.columns and 'expected_points' in result_df.columns:
         for pos, correction in bias_corrections.items():
             mask = result_df['position'].str.upper() == pos
@@ -726,6 +779,27 @@ def predict_gameweek_fixtures(
             ).round(4)
             # Floor at 0.0 — predictions should never go negative
             result_df.loc[mask, 'expected_points'] = result_df.loc[mask, 'expected_points'].clip(lower=0.0)
+
+    # Apply team-level bias corrections with defensive orthogonalization
+    # Defensive assets (GK, DEF) already absorbed positional defensive variance.
+    # To prevent destructive collinear double-counting, team bias on defenders is dampened by 60% (applied at 40%).
+    team_corrections = load_team_bias_corrections(season=season, data_root=data_root)
+    if team_corrections and 'team' in result_df.columns and 'expected_points' in result_df.columns:
+        for t_name, correction in team_corrections.items():
+            team_mask = result_df['team'].astype(str).str.lower() == t_name.lower()
+            if team_mask.any():
+                def_mask = team_mask & result_df['position'].astype(str).str.upper().isin(['GK', 'DEF'])
+                att_mask = team_mask & ~result_df['position'].astype(str).str.upper().isin(['GK', 'DEF'])
+
+                if att_mask.any():
+                    result_df.loc[att_mask, 'expected_points'] = (
+                        result_df.loc[att_mask, 'expected_points'] + correction
+                    ).round(4)
+                if def_mask.any():
+                    result_df.loc[def_mask, 'expected_points'] = (
+                        result_df.loc[def_mask, 'expected_points'] + (correction * 0.40)
+                    ).round(4)
+                result_df.loc[team_mask, 'expected_points'] = result_df.loc[team_mask, 'expected_points'].clip(lower=0.0)
 
     if save_csv:
         from model.file_utils import atomic_write_csv

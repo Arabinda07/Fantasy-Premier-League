@@ -236,46 +236,40 @@ def compute_player_minutes_hazard(
             avg_starter_mins=0.0,
         )
 
-    # 2. Historical Baseline Start & Appearance Rates
-    starts_cnt = _safe_float(
-        player_row.get('short_form_starts',
-        player_row.get('season_starts',
-        player_row.get('fbref_starts',
-        player_row.get('starts'))))
-    )
-    matches_cnt = _safe_float(
-        player_row.get('short_form_matches',
-        player_row.get('fbref_squads_made',
-        player_row.get('matches')))
-    )
-    if matches_cnt <= 0.0:
-        season_starts_val = _safe_float(player_row.get('season_starts', player_row.get('starts', 0.0)))
+    # 2. Historical Baseline Start & Appearance Rates (Sample Window Aligned)
+    has_short_form_starts = 'short_form_starts' in player_row and pd.notnull(player_row.get('short_form_starts'))
+    if has_short_form_starts:
+        starts_cnt = _safe_float(player_row.get('short_form_starts'))
+        matches_cnt = _safe_float(player_row.get('short_form_matches', player_row.get('matches', 0.0)))
+        total_mins = _safe_float(player_row.get('short_form_minutes', 0.0))
+        subs_cnt = _safe_float(player_row.get('short_form_subs', 0.0))
+    elif 'season_starts' in player_row and pd.notnull(player_row.get('season_starts')):
+        starts_cnt = _safe_float(player_row.get('season_starts'))
+        season_starts_val = starts_cnt
         season_subs_val = _safe_float(player_row.get('season_subs', player_row.get('fbref_subs', 0.0)))
         unused_subs_val = _safe_float(player_row.get('fbref_unused_subs', 0.0))
         squads_sum = season_starts_val + season_subs_val + unused_subs_val
-        if squads_sum > 0.0:
-            matches_cnt = squads_sum
+        matches_cnt = _safe_float(player_row.get('fbref_squads_made', squads_sum if squads_sum > 0 else player_row.get('matches', 0.0)))
+        total_mins = _safe_float(player_row.get('season_minutes', player_row.get('minutes', 0.0)))
+        subs_cnt = season_subs_val
+    else:
+        starts_cnt = _safe_float(player_row.get('fbref_starts', player_row.get('starts', 0.0)))
+        matches_cnt = _safe_float(player_row.get('fbref_squads_made', player_row.get('matches', 0.0)))
+        total_mins = _safe_float(
+            player_row.get('minutes',
+            player_row.get('long_form_unweighted_minutes',
+            player_row.get('unweighted_minutes',
+            player_row.get('long_form_minutes', 0.0))))
+        )
+        subs_cnt = _safe_float(player_row.get('fbref_subs', player_row.get('subs', 0.0)))
 
-    total_mins = _safe_float(
-        player_row.get('short_form_minutes',
-        player_row.get('season_minutes',
-        player_row.get('minutes',
-        player_row.get('long_form_unweighted_minutes',
-        player_row.get('unweighted_minutes',
-        player_row.get('long_form_minutes'))))))
-    )
+    if matches_cnt <= 0.0 and starts_cnt > 0:
+        matches_cnt = starts_cnt + subs_cnt
 
     long_mins = _safe_float(
         player_row.get('long_form_unweighted_minutes',
         player_row.get('unweighted_minutes',
         player_row.get('long_form_minutes', 0.0)))
-    )
-
-    subs_cnt = _safe_float(
-        player_row.get('short_form_subs',
-        player_row.get('season_subs',
-        player_row.get('fbref_subs',
-        player_row.get('subs', 0.0))))
     )
 
     # Empirical baseline start rate

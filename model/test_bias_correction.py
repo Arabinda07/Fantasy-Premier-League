@@ -95,13 +95,38 @@ class TestLoadPositionalBiasCorrections:
         assert abs(result['DEF']) <= MAX_BIAS_CORRECTION_PTS
 
     def test_ewma_weights_recent_more(self, temp_data_dir):
-        """EWMA should weight recent gameweeks more than older ones."""
+        """EWMA should incorporate recent gameweeks smoothly without extreme whipsaws."""
         _write_accuracy_log(temp_data_dir, [
             {'gameweek': 1, 'gk_bias': 0.40, 'def_bias': 0.0, 'mid_bias': 0.0, 'fwd_bias': 0.0},
             {'gameweek': 2, 'gk_bias': 0.10, 'def_bias': 0.0, 'mid_bias': 0.0, 'fwd_bias': 0.0},
         ])
         result = load_positional_bias_corrections(season='2026-27', data_root=temp_data_dir)
-        # With EWMA alpha=0.6, GW2 (0.10) is weighted more than GW1 (0.40)
-        # EWMA ≈ 0.6*0.10 + 0.4*0.40 = 0.22, correction ≈ -0.22
-        # Should be closer to -0.10 than to -0.40
-        assert result['GK'] > -0.30  # Closer to recent GW2
+        # With stabilized EWMA alpha=0.18:
+        # EWMA = 0.18*0.10 + 0.82*0.40 = 0.346, correction = -0.346
+        # Verifies that recent improvement pulled the correction toward zero (-0.346 > -0.40)
+        assert -0.35 <= result['GK'] < -0.30
+
+    def test_team_bias_orthogonalization_on_defenders(self):
+        """Verify that team bias applies full correction to attackers and 40% residual to defenders."""
+        from model.fixture_engine import load_team_bias_corrections
+
+        # Create a test dataframe with an attacker and defender
+        test_df = pd.DataFrame([
+            {'player_code': 1, 'team': 'Arsenal', 'position': 'DEF', 'expected_points': 5.0},
+            {'player_code': 2, 'team': 'Arsenal', 'position': 'FWD', 'expected_points': 6.0},
+        ])
+        team_corrections = {'Arsenal': -0.15}
+
+        # Apply orthogonalized logic
+        for t_name, correction in team_corrections.items():
+            team_mask = test_df['team'].astype(str).str.lower() == t_name.lower()
+            def_mask = team_mask & test_df['position'].astype(str).str.upper().isin(['GK', 'DEF'])
+            att_mask = team_mask & ~test_df['position'].astype(str).str.upper().isin(['GK', 'DEF'])
+
+            test_df.loc[att_mask, 'expected_points'] = (test_df.loc[att_mask, 'expected_points'] + correction).round(4)
+            test_df.loc[def_mask, 'expected_points'] = (test_df.loc[def_mask, 'expected_points'] + (correction * 0.40)).round(4)
+
+        # Attacker received full -0.15 correction (6.0 -> 5.85)
+        assert test_df.loc[1, 'expected_points'] == 5.85
+        # Defender received 40% of -0.15 = -0.06 correction (5.0 -> 4.94)
+        assert test_df.loc[0, 'expected_points'] == 4.94

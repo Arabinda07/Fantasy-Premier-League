@@ -22,9 +22,11 @@ Usage:
 """
 import argparse
 from dataclasses import dataclass, field
+import json
 import math
 import os
 import sys
+import time
 from typing import Dict, Any, List, Tuple, Optional, Set, Union
 import numpy as np
 import pandas as pd
@@ -76,6 +78,10 @@ class GameweekBacktestResult:
     bank: float
     team_value: float
     chip_used: Optional[str] = None
+    bench_points_unplayed: int = 0
+    auto_sub_points: int = 0
+    starting_xi_points: int = 0
+    bench_cost: float = 0.0
 
 
 @dataclass
@@ -94,6 +100,12 @@ class SeasonBacktestReport:
     captaincy_success_rate: float  # % of gameweeks where captain scored >= 6 pts
     chips_used: Dict[str, int]     # mapping chip -> GW
     gw_results: List[GameweekBacktestResult]
+    bench_points_unplayed_total: int = 0
+    auto_sub_points_total: int = 0
+    starting_xi_points_total: int = 0
+    avg_bench_cost: float = 0.0
+    final_team_value: float = 0.0
+    enable_bench_optimization: bool = True
 
 
 # ---------------------------------------------------------------------------
@@ -280,6 +292,10 @@ def run_season_backtest(
     use_multi_horizon: bool = True,
     horizon: int = 3,
     enable_chips: bool = True,
+    enable_bench_optimization: bool = True,
+    pred_df_cache: Optional[Dict[int, pd.DataFrame]] = None,
+    positional_calibration: bool = True,
+    silent: bool = False,
 ) -> SeasonBacktestReport:
     """Run full historical backtest simulation across gameweeks start_gw..end_gw with chip automation.
 
@@ -294,6 +310,9 @@ def run_season_backtest(
         use_multi_horizon: whether to use multi-period lookahead transfer solver.
         horizon: lookahead gameweek horizon (default 3).
         enable_chips: whether to enable autonomous strategic chip deployment (WC1, WC2, FH, BB, 3xC).
+        enable_bench_optimization: whether to enable audited bench capital drag, soft floor, and equity retention.
+        pred_df_cache: optional shared prediction dataframe dictionary to guarantee 100% input parity in A/B tests.
+        silent: if True, suppress gameweek print statements.
 
     Returns:
         SeasonBacktestReport dataclass with complete analytics.
@@ -313,7 +332,12 @@ def run_season_backtest(
     if enable_chips:
         try:
             from model.chip_optimizer import evaluate_chip_schedule
-            chip_plan = evaluate_chip_schedule(season=season, current_gw=start_gw, data_root=data_root)
+            chip_plan = evaluate_chip_schedule(
+                season=season,
+                current_gw=start_gw,
+                data_root=data_root,
+                enable_bench_optimization=enable_bench_optimization,
+            )
             chip_targets = {k: rec.target_gw for k, rec in chip_plan.recommendations.items()}
         except Exception:
             chip_targets = {}
@@ -326,19 +350,32 @@ def run_season_backtest(
     total_capt_pts = 0
     capt_successes = 0
 
-    print(f"[*] Starting Autonomous FPL Backtest for {season} (GW{start_gw} to GW{end_gw}, Strategy: {strategy}, Chips: {'ENABLED' if enable_chips else 'DISABLED'})...")
+    total_unplayed_bench = 0
+    total_auto_sub_pts = 0
+    total_starting_xi_pts = 0
+    total_bench_cost_sum = 0.0
+
+    opt_label = "AUDITED" if enable_bench_optimization else "BASELINE"
+    if not silent:
+        print(f"[*] Starting Autonomous FPL Backtest for {season} (GW{start_gw} to GW{end_gw}, Model: {opt_label}, Strategy: {strategy}, Chips: {'ENABLED' if enable_chips else 'DISABLED'})...")
 
     for gw in range(start_gw, end_gw + 1):
         actuals = load_gameweek_actual_points(season=season, gw=gw, data_root=data_root)
 
-        # 1. Build Prediction Dataframe for current Gameweek (strict out-of-sample historical rolling form)
-        pred_df = predict_gameweek_fixtures(
-            season=season,
-            gw=gw,
-            data_root=data_root,
-            dynamic_dataset=True,
-            save_csv=False,
-        )
+        # 1. Build or retrieve Prediction Dataframe for current Gameweek
+        if pred_df_cache is not None and gw in pred_df_cache:
+            pred_df = pred_df_cache[gw]
+        else:
+            pred_df = predict_gameweek_fixtures(
+                season=season,
+                gw=gw,
+                data_root=data_root,
+                dynamic_dataset=True,
+                save_csv=False,
+                positional_calibration=positional_calibration,
+            )
+            if pred_df_cache is not None:
+                pred_df_cache[gw] = pred_df
 
         # Restore pre-Free-Hit squad if Free Hit was played in gw-1
         if pre_fh_squad is not None:
@@ -376,6 +413,8 @@ def run_season_backtest(
                 data_root=data_root,
                 strategy=strategy,
                 lambda_risk=lambda_risk,
+                current_gw=gw,
+                enable_bench_optimization=enable_bench_optimization,
             )
             current_squad = squad_sol
             bank = round(100.0 - squad_sol.total_cost, 1)
@@ -410,6 +449,8 @@ def run_season_backtest(
                 data_root=data_root,
                 strategy=strategy,
                 lambda_risk=lambda_risk,
+                current_gw=gw,
+                enable_bench_optimization=enable_bench_optimization,
             )
             current_squad = squad_sol
             bank = round(wc_budget - squad_sol.total_cost, 1)
@@ -431,13 +472,19 @@ def run_season_backtest(
                 for h_step in range(1, horizon):
                     next_gw = gw + h_step
                     if next_gw <= 38:
-                        h_df = predict_gameweek_fixtures(
-                            season=season,
-                            gw=next_gw,
-                            data_root=data_root,
-                            dynamic_dataset=False,
-                            save_csv=False,
-                        )
+                        if pred_df_cache is not None and next_gw in pred_df_cache:
+                            h_df = pred_df_cache[next_gw]
+                        else:
+                            h_df = predict_gameweek_fixtures(
+                                season=season,
+                                gw=next_gw,
+                                data_root=data_root,
+                                dynamic_dataset=False,
+                                save_csv=False,
+                                positional_calibration=positional_calibration,
+                            )
+                            if pred_df_cache is not None:
+                                pred_df_cache[next_gw] = h_df
                         horizon_dfs.append(h_df)
                     else:
                         horizon_dfs.append(pred_df)
@@ -453,6 +500,8 @@ def run_season_backtest(
                     lambda_risk=lambda_risk,
                     lambda_ft=lambda_ft,
                     chip=active_chip,
+                    start_gw=gw,
+                    enable_bench_optimization=enable_bench_optimization,
                 )
 
                 if multi_sol.gw_plans:
@@ -486,6 +535,8 @@ def run_season_backtest(
                     strategy=strategy,
                     lambda_risk=lambda_risk,
                     chip=active_chip,
+                    current_gw=gw,
+                    enable_bench_optimization=enable_bench_optimization,
                 )
                 trans_in = trans_sol.transfers_in
                 trans_out = trans_sol.transfers_out
@@ -515,14 +566,38 @@ def run_season_backtest(
             chip=active_chip,
         )
 
+        sub_in_codes = {p.player_code for p in current_squad.bench if p.web_name in auto_in}
+        gw_auto_sub_pts = sum(actuals.get(c, {}).get('total_points', 0) for c in sub_in_codes)
+        gw_unplayed_bench_pts = sum(actuals.get(p.player_code, {}).get('total_points', 0) for p in current_squad.bench if p.player_code not in sub_in_codes) if active_chip != 'bboost' else 0
+        gw_starting_xi_pts = (gross_pts - gw_auto_sub_pts) if active_chip != 'bboost' else gross_pts
+        gw_bench_cost = round(sum(p.cost for p in current_squad.bench), 1)
+
         net_pts = gross_pts - hit_pen
         cumulative_points += net_pts
         total_gross += gross_pts
         total_hits += hits_taken
         total_trans += n_trans
         total_capt_pts += capt_pts
+        total_unplayed_bench += gw_unplayed_bench_pts
+        total_auto_sub_pts += gw_auto_sub_pts
+        total_starting_xi_pts += gw_starting_xi_pts
+        total_bench_cost_sum += gw_bench_cost
         if base_capt_score >= 6:
             capt_successes += 1
+
+        # 3. Dynamic Rolling Accuracy Logging & Positional Bias Feedback
+        if positional_calibration:
+            try:
+                from model.accuracy_tracker import evaluate_gameweek_accuracy
+                evaluate_gameweek_accuracy(
+                    season=season,
+                    gw=gw,
+                    data_root=data_root,
+                    save_log=True,
+                    pred_df=pred_df,
+                )
+            except Exception:
+                pass
 
         team_val = round(sum(p.cost for p in current_squad.squad) + bank, 1)
 
@@ -548,12 +623,16 @@ def run_season_backtest(
             bank=bank,
             team_value=team_val,
             chip_used=active_chip,
+            bench_points_unplayed=gw_unplayed_bench_pts,
+            auto_sub_points=gw_auto_sub_pts,
+            starting_xi_points=gw_starting_xi_pts,
+            bench_cost=gw_bench_cost,
         )
         gw_results.append(result_row)
 
         chip_tag = f" [{active_chip.upper()}]" if active_chip else ""
-        if gw % 5 == 0 or gw == end_gw or gw == start_gw or active_chip:
-            print(f"  * GW{gw:>2}{chip_tag:<10} | Net: {net_pts:>3} pts | Gross: {gross_pts:>3} pts (Capt: {result_row.captain} +{capt_pts}p) | Total: {cumulative_points:>4} pts | FTs: {free_transfers} | Hits: {hits_taken}")
+        if not silent and (gw % 5 == 0 or gw == end_gw or gw == start_gw or active_chip):
+            print(f"  * GW{gw:>2}{chip_tag:<10} | Net: {net_pts:>3} pts | Gross: {gross_pts:>3} pts (Capt: {result_row.captain} +{capt_pts}p) | Total: {cumulative_points:>4} pts | Bench: £{gw_bench_cost}M ({gw_unplayed_bench_pts}p) | FTs: {free_transfers} | Hits: {hits_taken}")
 
     num_gws = max(1, end_gw - start_gw + 1)
     capt_success_rate = round(capt_successes / num_gws, 4)
@@ -572,7 +651,195 @@ def run_season_backtest(
         captaincy_success_rate=capt_success_rate,
         chips_used=used_chips,
         gw_results=gw_results,
+        bench_points_unplayed_total=total_unplayed_bench,
+        auto_sub_points_total=total_auto_sub_pts,
+        starting_xi_points_total=total_starting_xi_pts,
+        avg_bench_cost=round(total_bench_cost_sum / num_gws, 2),
+        final_team_value=team_val,
+        enable_bench_optimization=enable_bench_optimization,
     )
+
+
+# ---------------------------------------------------------------------------
+# Historical A/B Benchmark Suite
+# ---------------------------------------------------------------------------
+
+def run_ab_benchmark(
+    season: str = '2025-26',
+    start_gw: int = 1,
+    end_gw: int = 38,
+    strategy: str = 'pure_xp',
+    lambda_risk: float = 0.0,
+    lambda_ft: float = 1.75,
+    data_root: str = 'data',
+    use_multi_horizon: bool = True,
+    horizon: int = 3,
+    enable_chips: bool = True,
+    positional_calibration: bool = True,
+) -> Tuple[SeasonBacktestReport, SeasonBacktestReport, Dict[str, Any]]:
+    """Run an A/B benchmark comparing Baseline (unoptimized bench) vs Audited (optimized bench).
+
+    Shared precomputed predictions cache guarantees 100% data parity between runs.
+    """
+    print("\n" + "=" * 105)
+    print(f"      FPL PRODUCTION ENGINE A/B BENCHMARK SUITE: {season} (GW{start_gw} to GW{end_gw})")
+    print("=" * 105)
+    print(f"Configuration: Horizon = {horizon} GWs | Strategy = {strategy.upper()} | Chips = {'ENABLED' if enable_chips else 'DISABLED'} | Pos-Cal = {'ENABLED' if positional_calibration else 'DISABLED'}")
+    print("Pre-warming shared fixture predictions cache for strict input data parity...\n")
+
+    # Clean prior accuracy logs for pristine calibration trajectory
+    log_path = os.path.join(data_root, season, 'accuracy_log.csv')
+    team_log_path = os.path.join(data_root, season, 'team_accuracy_log.csv')
+    for p in (log_path, team_log_path):
+        if os.path.exists(p):
+            try:
+                os.remove(p)
+            except Exception:
+                pass
+
+    shared_cache: Dict[int, pd.DataFrame] = {}
+
+    print(">>> [1/2] RUNNING VARIANT A: BASELINE MODEL (Unconstrained Bench, Drag=0, Equity=0, Flat Auto-Subs)")
+    t0_a = time.time()
+    report_a = run_season_backtest(
+        season=season,
+        start_gw=start_gw,
+        end_gw=end_gw,
+        strategy=strategy,
+        lambda_risk=lambda_risk,
+        lambda_ft=lambda_ft,
+        data_root=data_root,
+        use_multi_horizon=use_multi_horizon,
+        horizon=horizon,
+        enable_chips=enable_chips,
+        enable_bench_optimization=False,
+        pred_df_cache=shared_cache,
+        positional_calibration=positional_calibration,
+    )
+    time_a = time.time() - t0_a
+    print(f"[OK] Variant A completed in {time_a:.1f}s | Total Net Points: {report_a.total_points_net} pts\n")
+
+    print(">>> [2/2] RUNNING VARIANT B: AUDITED MODEL (Capital Drag, Soft Floor, Equity Preservation, Festive Shock)")
+    t0_b = time.time()
+    report_b = run_season_backtest(
+        season=season,
+        start_gw=start_gw,
+        end_gw=end_gw,
+        strategy=strategy,
+        lambda_risk=lambda_risk,
+        lambda_ft=lambda_ft,
+        data_root=data_root,
+        use_multi_horizon=use_multi_horizon,
+        horizon=horizon,
+        enable_chips=enable_chips,
+        enable_bench_optimization=True,
+        pred_df_cache=shared_cache,
+        positional_calibration=positional_calibration,
+    )
+    time_b = time.time() - t0_b
+    print(f"[OK] Variant B completed in {time_b:.1f}s | Total Net Points: {report_b.total_points_net} pts\n")
+
+    # Compute comparative deltas
+    delta_net = report_b.total_points_net - report_a.total_points_net
+    pct_net = (delta_net / report_a.total_points_net * 100.0) if report_a.total_points_net > 0 else 0.0
+    delta_gross = report_b.total_points_gross - report_a.total_points_gross
+    delta_starting_xi = report_b.starting_xi_points_total - report_a.starting_xi_points_total
+    delta_bench_waste = report_b.bench_points_unplayed_total - report_a.bench_points_unplayed_total
+    delta_auto_subs = report_b.auto_sub_points_total - report_a.auto_sub_points_total
+    delta_hits = report_b.total_hits_taken - report_a.total_hits_taken
+    delta_transfers = report_b.total_transfers_made - report_a.total_transfers_made
+    delta_capt = report_b.captaincy_points_total - report_a.captaincy_points_total
+    delta_bench_cost = report_b.avg_bench_cost - report_a.avg_bench_cost
+    delta_team_val = report_b.final_team_value - report_a.final_team_value
+
+    summary_stats = {
+        'season': season,
+        'start_gw': start_gw,
+        'end_gw': end_gw,
+        'variant_a': {
+            'name': 'Baseline Model',
+            'net_points': report_a.total_points_net,
+            'gross_points': report_a.total_points_gross,
+            'starting_xi_points': report_a.starting_xi_points_total,
+            'unplayed_bench_points': report_a.bench_points_unplayed_total,
+            'auto_sub_points': report_a.auto_sub_points_total,
+            'hits_taken': report_a.total_hits_taken,
+            'transfers_made': report_a.total_transfers_made,
+            'captaincy_points': report_a.captaincy_points_total,
+            'captaincy_success_rate': report_a.captaincy_success_rate,
+            'avg_bench_cost': report_a.avg_bench_cost,
+            'final_team_value': report_a.final_team_value,
+            'chips_used': report_a.chips_used,
+        },
+        'variant_b': {
+            'name': 'Audited / Improved Model',
+            'net_points': report_b.total_points_net,
+            'gross_points': report_b.total_points_gross,
+            'starting_xi_points': report_b.starting_xi_points_total,
+            'unplayed_bench_points': report_b.bench_points_unplayed_total,
+            'auto_sub_points': report_b.auto_sub_points_total,
+            'hits_taken': report_b.total_hits_taken,
+            'transfers_made': report_b.total_transfers_made,
+            'captaincy_points': report_b.captaincy_points_total,
+            'captaincy_success_rate': report_b.captaincy_success_rate,
+            'avg_bench_cost': report_b.avg_bench_cost,
+            'final_team_value': report_b.final_team_value,
+            'chips_used': report_b.chips_used,
+        },
+        'deltas': {
+            'delta_net_points': delta_net,
+            'delta_net_pct': round(pct_net, 2),
+            'delta_gross_points': delta_gross,
+            'delta_starting_xi_points': delta_starting_xi,
+            'delta_bench_waste': delta_bench_waste,
+            'delta_auto_sub_points': delta_auto_subs,
+            'delta_hits_taken': delta_hits,
+            'delta_transfers_made': delta_transfers,
+            'delta_captaincy_points': delta_capt,
+            'delta_avg_bench_cost': round(delta_bench_cost, 2),
+            'delta_final_team_value': round(delta_team_val, 2),
+        }
+    }
+
+    # Print Comparative Scoreboard
+    sign_net = "+" if delta_net >= 0 else ""
+    sign_sxi = "+" if delta_starting_xi >= 0 else ""
+    sign_bw = "+" if delta_bench_waste >= 0 else ""
+    sign_as = "+" if delta_auto_subs >= 0 else ""
+    sign_hits = "+" if delta_hits >= 0 else ""
+    sign_tv = "+" if delta_team_val >= 0 else ""
+    sign_bc = "+" if delta_bench_cost >= 0 else ""
+
+    print("\n" + "=" * 105)
+    print(f"             FPL HISTORICAL A/B BENCHMARK SCOREBOARD -- {season} (GW{start_gw} - GW{end_gw})")
+    print("=" * 105)
+    print(f"{'Performance Metric':<36} | {'Variant A (Baseline)':<22} | {'Variant B (Improved)':<22} | {'Net Alpha Delta':<16}")
+    print("-" * 105)
+    print(f"{'Total Net FPL Points':<36} | {report_a.total_points_net:>18} pts | {report_b.total_points_net:>18} pts | {sign_net}{delta_net:>5} pts ({sign_net}{pct_net:.1f}%)")
+    print(f"{'Average Points Per Gameweek':<36} | {report_a.total_points_net / max(1, end_gw - start_gw + 1):>15.2f} pts/GW | {report_b.total_points_net / max(1, end_gw - start_gw + 1):>15.2f} pts/GW | {sign_net}{delta_net / max(1, end_gw - start_gw + 1):>5.2f} pts/GW")
+    print(f"{'Starting XI Gross Points':<36} | {report_a.starting_xi_points_total:>18} pts | {report_b.starting_xi_points_total:>18} pts | {sign_sxi}{delta_starting_xi:>5} pts")
+    print(f"{'Unplayed Bench Points (Wasted)':<36} | {report_a.bench_points_unplayed_total:>18} pts | {report_b.bench_points_unplayed_total:>18} pts | {sign_bw}{delta_bench_waste:>5} pts")
+    print(f"{'Auto-Sub Points Rescued':<36} | {report_a.auto_sub_points_total:>18} pts | {report_b.auto_sub_points_total:>18} pts | {sign_as}{delta_auto_subs:>5} pts")
+    print(f"{'Transfer Hits Taken':<36} | {report_a.total_hits_taken:>13} (-{report_a.total_hit_penalties}p) | {report_b.total_hits_taken:>13} (-{report_b.total_hit_penalties}p) | {sign_hits}{delta_hits:>5} hits")
+    print(f"{'Total Transfers Executed':<36} | {report_a.total_transfers_made:>18}     | {report_b.total_transfers_made:>18}     | {report_b.total_transfers_made - report_a.total_transfers_made:>+5} trans")
+    print(f"{'Captaincy Points Total':<36} | {report_a.captaincy_points_total:>18} pts | {report_b.captaincy_points_total:>18} pts | {delta_capt:>+5} pts")
+    print(f"{'Captaincy Hit Rate (>= 6 pts)':<36} | {report_a.captaincy_success_rate * 100:>17.1f}% | {report_b.captaincy_success_rate * 100:>17.1f}% | {(report_b.captaincy_success_rate - report_a.captaincy_success_rate)*100:>+5.1f}%")
+    print(f"{'Average Bench Squad Cost':<36} | £{report_a.avg_bench_cost:>17.2f}M | £{report_b.avg_bench_cost:>17.2f}M | {sign_bc}£{delta_bench_cost:.2f}M")
+    print(f"{'Final Squad + Bank Value (GW38)':<36} | £{report_a.final_team_value:>17.1f}M | £{report_b.final_team_value:>17.1f}M | {sign_tv}£{delta_team_val:.1f}M")
+    print("=" * 105)
+
+    # Persist JSON report
+    out_dir = os.path.join(data_root, season)
+    os.makedirs(out_dir, exist_ok=True)
+    out_json = os.path.join(out_dir, f"ab_benchmark_report_{season}.json")
+    try:
+        with open(out_json, 'w') as f:
+            json.dump(summary_stats, f, indent=2)
+        print(f"[*] Saved comprehensive A/B benchmark payload to {out_json}")
+    except Exception as e:
+        print(f"[!] Warning: failed to save benchmark JSON ({e})")
+
+    return report_a, report_b, summary_stats
 
 
 # ---------------------------------------------------------------------------
@@ -580,8 +847,10 @@ def run_season_backtest(
 # ---------------------------------------------------------------------------
 
 def main():
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8')
     parser = argparse.ArgumentParser(description="Autonomous Historical FPL Backtest Engine")
-    parser.add_argument('--season', default='2024-25', help="Historical season (e.g. 2024-25, 2023-24)")
+    parser.add_argument('--season', default='2025-26', help="Historical season (e.g. 2025-26, 2024-25)")
     parser.add_argument('--start-gw', type=int, default=1, help="Starting gameweek (1-38)")
     parser.add_argument('--end-gw', type=int, default=38, help="Ending gameweek (1-38)")
     parser.add_argument('--strategy', default='pure_xp', choices=['pure_xp', 'rank_protect', 'differential_chase'], help="Optimization strategy")
@@ -589,32 +858,59 @@ def main():
     parser.add_argument('--lambda-ft', type=float, default=1.75, help="Free transfer banking shadow price")
     parser.add_argument('--horizon', type=int, default=3, help="Lookahead horizon in gameweeks (default: 3)")
     parser.add_argument('--disable-chips', action='store_true', help="Disable autonomous strategic chip activation")
+    parser.add_argument('--disable-bench-optimization', action='store_true', help="Run standalone backtest with unoptimized bench baseline")
+    parser.add_argument('--no-positional-calibration', action='store_true', help="Disable baseline empirical positional priors and rolling accuracy feedback")
+    parser.add_argument('--ab-compare', action='store_true', help="Run side-by-side A/B benchmark between Baseline and Audited models")
     parser.add_argument('--data-root', default='data', help="Data root directory")
     args = parser.parse_args()
 
-    report = run_season_backtest(
-        season=args.season,
-        start_gw=args.start_gw,
-        end_gw=args.end_gw,
-        strategy=args.strategy,
-        lambda_risk=args.lambda_risk,
-        lambda_ft=args.lambda_ft,
-        data_root=args.data_root,
-        horizon=args.horizon,
-        enable_chips=not args.disable_chips,
-    )
+    pos_cal = not args.no_positional_calibration
 
-    print("\n" + "=" * 90)
-    print(f"      HISTORICAL BACKTEST SUMMARY REPORT -- {report.season} (GW{report.start_gw} - GW{report.end_gw})")
-    print("=" * 90)
-    print(f"Strategy: {report.strategy.upper()} | Lookahead Horizon: {args.horizon} GWs | Chips: {'ENABLED' if not args.disable_chips else 'DISABLED'}")
-    print(f"Total Season Points (Net):    {report.total_points_net:,} pts (Gross: {report.total_points_gross:,} pts)")
-    print(f"Average Points Per Gameweek:  {report.total_points_net / max(1, report.end_gw - report.start_gw + 1):.2f} pts/GW")
-    print(f"Total Transfers Executed:     {report.total_transfers_made} transfers ({report.total_hits_taken} hits = -{report.total_hit_penalties} pts)")
-    print(f"Captaincy Points Earned:      {report.captaincy_points_total:,} pts (Success Rate: {report.captaincy_success_rate*100:.1f}%)")
-    if report.chips_used:
-        print(f"Strategic Chips Deployed:     " + ", ".join(f"{chip.upper()} (GW{gw})" for chip, gw in report.chips_used.items()))
-    print("=" * 90 + "\n")
+    if args.ab_compare:
+        run_ab_benchmark(
+            season=args.season,
+            start_gw=args.start_gw,
+            end_gw=args.end_gw,
+            strategy=args.strategy,
+            lambda_risk=args.lambda_risk,
+            lambda_ft=args.lambda_ft,
+            data_root=args.data_root,
+            horizon=args.horizon,
+            enable_chips=not args.disable_chips,
+            positional_calibration=pos_cal,
+        )
+    else:
+        report = run_season_backtest(
+            season=args.season,
+            start_gw=args.start_gw,
+            end_gw=args.end_gw,
+            strategy=args.strategy,
+            lambda_risk=args.lambda_risk,
+            lambda_ft=args.lambda_ft,
+            data_root=args.data_root,
+            horizon=args.horizon,
+            enable_chips=not args.disable_chips,
+            enable_bench_optimization=not args.disable_bench_optimization,
+            positional_calibration=pos_cal,
+        )
+
+        opt_tag = "AUDITED" if not args.disable_bench_optimization else "BASELINE"
+        print("\n" + "=" * 90)
+        print(f"      HISTORICAL BACKTEST SUMMARY REPORT -- {report.season} (GW{report.start_gw} - GW{report.end_gw})")
+        print("=" * 90)
+        print(f"Model: {opt_tag} | Strategy: {report.strategy.upper()} | Lookahead Horizon: {args.horizon} GWs | Chips: {'ENABLED' if not args.disable_chips else 'DISABLED'}")
+        print(f"Total Season Points (Net):    {report.total_points_net:,} pts (Gross: {report.total_points_gross:,} pts)")
+        print(f"Average Points Per Gameweek:  {report.total_points_net / max(1, report.end_gw - report.start_gw + 1):.2f} pts/GW")
+        print(f"Starting XI Points:           {report.starting_xi_points_total:,} pts")
+        print(f"Unplayed Bench Points (Waste):{report.bench_points_unplayed_total:,} pts")
+        print(f"Auto-Sub Points Rescued:      {report.auto_sub_points_total:,} pts")
+        print(f"Total Transfers Executed:     {report.total_transfers_made} transfers ({report.total_hits_taken} hits = -{report.total_hit_penalties} pts)")
+        print(f"Captaincy Points Earned:      {report.captaincy_points_total:,} pts (Success Rate: {report.captaincy_success_rate*100:.1f}%)")
+        print(f"Average Bench Squad Cost:     £{report.avg_bench_cost:.2f}M")
+        print(f"Final Squad + Bank Value:     £{report.final_team_value:.1f}M")
+        if report.chips_used:
+            print(f"Strategic Chips Deployed:     " + ", ".join(f"{chip.upper()} (GW{gw})" for chip, gw in report.chips_used.items()))
+        print("=" * 90 + "\n")
 
 
 if __name__ == '__main__':

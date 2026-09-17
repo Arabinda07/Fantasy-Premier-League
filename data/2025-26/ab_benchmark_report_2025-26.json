@@ -1,0 +1,60 @@
+{
+  "season": "2025-26",
+  "start_gw": 1,
+  "end_gw": 38,
+  "variant_a": {
+    "name": "Baseline Model",
+    "net_points": 1669,
+    "gross_points": 1673,
+    "starting_xi_points": 1468,
+    "unplayed_bench_points": 43,
+    "auto_sub_points": 205,
+    "hits_taken": 1,
+    "transfers_made": 71,
+    "captaincy_points": 485,
+    "captaincy_success_rate": 0.4474,
+    "avg_bench_cost": 21.16,
+    "final_team_value": 100.0,
+    "chips_used": {
+      "wildcard_1": 6,
+      "wildcard_2": 25,
+      "bboost": 26,
+      "3xc": 33,
+      "freehit": 34
+    }
+  },
+  "variant_b": {
+    "name": "Audited / Improved Model",
+    "net_points": 1762,
+    "gross_points": 1766,
+    "starting_xi_points": 1578,
+    "unplayed_bench_points": 50,
+    "auto_sub_points": 188,
+    "hits_taken": 1,
+    "transfers_made": 73,
+    "captaincy_points": 489,
+    "captaincy_success_rate": 0.4737,
+    "avg_bench_cost": 19.19,
+    "final_team_value": 100.0,
+    "chips_used": {
+      "wildcard_1": 6,
+      "wildcard_2": 25,
+      "bboost": 26,
+      "3xc": 33,
+      "freehit": 34
+    }
+  },
+  "deltas": {
+    "delta_net_points": 93,
+    "delta_net_pct": 5.57,
+    "delta_gross_points": 93,
+    "delta_starting_xi_points": 110,
+    "delta_bench_waste": 7,
+    "delta_auto_sub_points": -17,
+    "delta_hits_taken": 0,
+    "delta_transfers_made": 2,
+    "delta_captaincy_points": 4,
+    "delta_avg_bench_cost": -1.97,
+    "delta_final_team_value": 0.0
+  }
+}

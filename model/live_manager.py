@@ -115,6 +115,14 @@ def manage_gameweek(
     """Execute complete live gameweek management decision workflow with Elite Enhancements."""
     season_dir = os.path.join(data_root, season)
 
+    # Check local squad snapshot first if available (allows local overrides like 0 FTs, £0.6M bank)
+    snapshot = load_manager_squad_snapshot(entry_id=team_id, season=season, data_root=data_root)
+    if snapshot:
+        if free_transfers is None and 'free_transfers' in snapshot:
+            free_transfers = int(snapshot['free_transfers'])
+        if bank == 0.0 and 'bank' in snapshot:
+            bank = float(snapshot['bank'])
+
     # 0. If team_id is provided, sync live manager profile directly from FPL API
     live_profile: Optional[LiveSyncProfile] = None
     if team_id is not None:
@@ -130,7 +138,7 @@ def manage_gameweek(
                 current_squad_codes = live_profile.squad_codes
             if bank == 0.0 and live_profile.bank > 0.0:
                 bank = live_profile.bank
-            if free_transfers is None and live_profile.free_transfers > 0:
+            if free_transfers is None:
                 free_transfers = live_profile.free_transfers
             if chip is None and live_profile.active_chip:
                 chip = live_profile.active_chip
@@ -255,8 +263,33 @@ def manage_gameweek(
         forced_vice_captain_code=forced_vice_captain_code,
     )
 
-    # 4. Check seasonal chip recommendations
-    chip_plan = evaluate_chip_schedule(season=season, current_gw=gw, data_root=data_root)
+    # Calculate team value (squad cost + liquid bank)
+    calculated_team_value = 100.0
+    if live_profile and getattr(live_profile, 'team_value', 0.0) > 0.0:
+        calculated_team_value = float(live_profile.team_value)
+    elif current_squad_codes and not gw1_df.empty:
+        p_code_col = 'player_code' if 'player_code' in gw1_df.columns else ('code' if 'code' in gw1_df.columns else 'id')
+        owned_subset = gw1_df[gw1_df[p_code_col].astype(int).isin(set(current_squad_codes))]
+        if not owned_subset.empty:
+            cost_col = 'now_cost' if 'now_cost' in owned_subset.columns else ('cost' if 'cost' in owned_subset.columns else None)
+            if cost_col:
+                costs = pd.to_numeric(owned_subset[cost_col], errors='coerce').fillna(50.0)
+                if costs.max() > 20.0:
+                    costs = costs / 10.0
+                calculated_team_value = round(float(costs.sum()), 1)
+
+    # 4. Check seasonal chip recommendations (including opportunistic Wildcard evaluation)
+    chip_plan = evaluate_chip_schedule(
+        season=season,
+        current_gw=gw,
+        data_root=data_root,
+        current_squad_codes=current_squad_codes,
+        gw1_df=gw1_df,
+        horizon_dfs=horizon_dfs,
+        free_transfers=free_transfers,
+        bank=bank,
+        team_value=calculated_team_value,
+    )
 
     # 5. Build Matchday Action Plan
     curr_plan = multi_sol.gw_plans[0] if multi_sol.gw_plans else None
@@ -266,18 +299,27 @@ def manage_gameweek(
     if active_sq and len(active_sq.squad) == 15:
         try:
             current_snapshot_path = os.path.join(season_dir, 'current_squad.json')
+            proposed_squad_codes = [p.player_code for p in active_sq.squad]
+            proposed_starter_codes = [p.player_code for p in active_sq.starters]
+            proposed_bench_codes = [p.player_code for p in active_sq.bench]
+
             snap_payload = {
                 'entry_id': team_id,
                 'manager_name': live_profile.manager_name if live_profile else 'Manager',
                 'team_name': live_profile.team_name if live_profile else 'Team',
                 'season': season,
                 'last_updated_gw': gw,
-                'squad_codes': [p.player_code for p in active_sq.squad],
-                'starter_codes': [p.player_code for p in active_sq.starters],
-                'bench_codes': [p.player_code for p in active_sq.bench],
-                'captain_code': active_sq.captain.player_code if active_sq.captain else None,
-                'vice_captain_code': active_sq.vice_captain.player_code if active_sq.vice_captain else None,
-                'bank': curr_plan.bank if curr_plan else bank,
+                'squad_status': 'RECOMMENDED_READY_FOR_EXECUTION',
+                'baseline_squad_codes': current_squad_codes,
+                'squad_codes': proposed_squad_codes,
+                'starter_codes': proposed_starter_codes,
+                'bench_codes': proposed_bench_codes,
+                'captain_code': active_sq.captain.player_code if active_sq and active_sq.captain else None,
+                'vice_captain_code': active_sq.vice_captain.player_code if active_sq and active_sq.vice_captain else None,
+                'bank': bank,
+                'free_transfers': free_transfers,
+                'transfers_recommended': curr_plan.transfers_count if curr_plan else 0,
+                'hits_recommended': curr_plan.hits_taken if curr_plan else 0,
                 'updated_at': time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime()),
             }
             import tempfile
@@ -295,12 +337,23 @@ def manage_gameweek(
             print(f"[!] Warning: Failed to persist squad snapshot ({e}).")
 
     # Immediate Action Logic
-    if curr_plan and curr_plan.transfers_count == 0:
-        action_summary = "ROLL TRANSFER (Save free transfer to accumulate 2 FTs next week)"
+    wc_rec = chip_plan.recommendations.get('wildcard_1')
+    if wc_rec and getattr(wc_rec, 'is_active_now', False):
+        action_summary = f"ACTIVATE WILDCARD CHIP: {wc_rec.rationale}"
+    elif curr_plan and curr_plan.transfers_count == 0:
+        if wc_rec and getattr(wc_rec, 'harvest_advisory', None):
+            action_summary = f"HOLD WILDCARD & HARVEST BENCH: {wc_rec.harvest_advisory}"
+        elif free_transfers == 0:
+            target_wc_gw = wc_rec.target_gw if wc_rec else min(38, gw + 1)
+            action_summary = f"STAND PAT (0 FTs): No transfers recommended for GW{gw}. Squad is set; hold Wildcard for GW{target_wc_gw} (+1 FT arriving next GW)."
+        else:
+            acc_fts = min(5, free_transfers + 1)
+            action_summary = f"ROLL TRANSFER (Save free transfer to accumulate {acc_fts} FTs next week)"
     elif curr_plan and curr_plan.hits_taken == 0:
         trans_in_names = ", ".join([p.web_name for p in curr_plan.transfers_in])
         trans_out_names = ", ".join([p.web_name for p in curr_plan.transfers_out])
-        action_summary = f"EXECUTE {curr_plan.transfers_count} FREE TRANSFER(S): [IN] {trans_in_names} | [OUT] {trans_out_names}"
+        harvest_note = f" [{wc_rec.harvest_advisory}]" if (wc_rec and getattr(wc_rec, 'harvest_advisory', None)) else ""
+        action_summary = f"EXECUTE {curr_plan.transfers_count} FREE TRANSFER(S): [IN] {trans_in_names} | [OUT] {trans_out_names}{harvest_note}"
     elif curr_plan:
         trans_in_names = ", ".join([p.web_name for p in curr_plan.transfers_in])
         trans_out_names = ", ".join([p.web_name for p in curr_plan.transfers_out])
@@ -405,6 +458,8 @@ def manage_gameweek(
             print(f"  [ALERT] ACTIVE RECOMMENDATION: Trigger {chip_rec.chip.upper()} in GW{gw}! (+{chip_rec.expected_value_delta:.1f} pts expected) -> {chip_rec.rationale}")
         elif chip_rec.target_gw <= gw + horizon:
             print(f"  [NOTICE] UPCOMING CHIP: {chip_rec.chip.upper()} recommended for GW{chip_rec.target_gw} -> {chip_rec.rationale}")
+    if wc_rec and getattr(wc_rec, 'harvest_advisory', None):
+        print(f"  [CAPITAL HARVESTING] {wc_rec.harvest_advisory}")
     print("=" * 90 + "\n")
 
     # 7. Write Excel & JSON reports
@@ -503,16 +558,56 @@ def manage_gameweek(
         is_completed = gw_is_completed
         participated = bool(live_profile and len(live_profile.squad_codes) == 15)
 
+        mgr_profile_dict = None
+        if live_profile:
+            live_profile.free_transfers = free_transfers
+            live_profile.bank = bank
+            if current_squad_codes and len(current_squad_codes) == 15:
+                live_profile.squad_codes = current_squad_codes
+            mgr_profile_dict = asdict(live_profile)
+        elif snapshot:
+            mgr_profile_dict = {
+                'entry_id': snapshot.get('entry_id', 9500404),
+                'manager_name': snapshot.get('manager_name', 'Arabinda Saha'),
+                'team_name': snapshot.get('team_name', 'Fuljhore Giants'),
+                'overall_rank': snapshot.get('overall_rank', 0),
+                'overall_points': snapshot.get('overall_points', 0),
+                'bank': bank,
+                'team_value': snapshot.get('team_value', 100.6),
+                'free_transfers': free_transfers,
+                'active_chip': chip,
+                'squad_codes': current_squad_codes or snapshot.get('squad_codes', []),
+                'starter_codes': [p['player_code'] for p in display_starters],
+                'bench_codes': [p['player_code'] for p in display_bench],
+                'captain_code': display_captain['player_code'] if display_captain else None,
+                'vice_captain_code': display_vice['player_code'] if display_vice else None,
+                'selling_prices': snapshot.get('selling_prices', {}),
+                'purchase_prices': snapshot.get('purchase_prices', {}),
+                'rivals': snapshot.get('rivals', []),
+            }
+
         payload = {
             'season': season,
             'gameweek': gw,
             'strategy': strategy,
             'is_completed': is_completed,
-            'participated': participated,
-            'overall_points': live_profile.overall_points if live_profile else 0,
-            'overall_rank': live_profile.overall_rank if live_profile else 0,
-            'manager_profile': asdict(live_profile) if live_profile else None,
+            'participated': participated or bool(mgr_profile_dict),
+            'overall_points': live_profile.overall_points if live_profile else (snapshot.get('overall_points', 0) if snapshot else 0),
+            'overall_rank': live_profile.overall_rank if live_profile else (snapshot.get('overall_rank', 0) if snapshot else 0),
+            'manager_profile': mgr_profile_dict,
             'action_summary': action_summary,
+            'chip_recommendations': {
+                k: {
+                    'chip': rec.chip,
+                    'target_gw': rec.target_gw,
+                    'expected_value_delta': rec.expected_value_delta,
+                    'rationale': rec.rationale,
+                    'is_active_now': getattr(rec, 'is_active_now', False),
+                    'distress_score': getattr(rec, 'distress_score', 0.0),
+                    'urgent_reason': getattr(rec, 'urgent_reason', None),
+                }
+                for k, rec in chip_plan.recommendations.items()
+            },
             'starting_xp': display_starting_xp,
             'total_xp': display_total_xp,
             'captain': display_captain['web_name'] if display_captain else None,

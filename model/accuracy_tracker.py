@@ -127,6 +127,7 @@ def evaluate_gameweek_accuracy(
     gw: int = 1,
     data_root: str = 'data',
     save_log: bool = True,
+    pred_df: Optional[pd.DataFrame] = None,
 ) -> Optional[GameweekAccuracyReport]:
     """Compare predicted points vs actual outcomes for a completed gameweek.
 
@@ -135,6 +136,7 @@ def evaluate_gameweek_accuracy(
         gw: completed gameweek number.
         data_root: root data directory.
         save_log: if True, append row to data/<season>/accuracy_log.csv.
+        pred_df: optional in-memory prediction DataFrame (bypasses CSV lookup).
 
     Returns:
         GameweekAccuracyReport or None if data missing.
@@ -142,17 +144,21 @@ def evaluate_gameweek_accuracy(
     season_dir = os.path.join(data_root, season)
 
     # 1. Load predictions
-    preds_path = os.path.join(season_dir, f'fixture_predictions_gw{gw}.csv')
-    if not os.path.exists(preds_path):
-        preds_path = os.path.join(season_dir, 'fixture_predictions.csv')
-    if not os.path.exists(preds_path):
-        preds_path = os.path.join(season_dir, 'predictions.csv')
+    if pred_df is None:
+        preds_path = os.path.join(season_dir, f'fixture_predictions_gw{gw}.csv')
+        if not os.path.exists(preds_path):
+            preds_path = os.path.join(season_dir, 'fixture_predictions.csv')
+        if not os.path.exists(preds_path):
+            preds_path = os.path.join(season_dir, 'predictions.csv')
 
-    if not os.path.exists(preds_path):
-        print(f"[Accuracy Tracker] Warning: No prediction file found for GW{gw} at {preds_path}")
-        return None
+        if not os.path.exists(preds_path):
+            print(f"[Accuracy Tracker] Warning: No prediction file found for GW{gw} at {preds_path}")
+            return None
 
-    pred_df = pd.read_csv(preds_path)
+        pred_df = pd.read_csv(preds_path)
+    else:
+        pred_df = pred_df.copy()
+
     actual_df = load_actual_gameweek_points(season=season, gw=gw, data_root=data_root)
 
     if actual_df.empty:
@@ -217,11 +223,17 @@ def evaluate_gameweek_accuracy(
         except Exception:
             rank_corr = 0.0
 
-    # Positional breakdown
+    # Positional breakdown: filter to active starters (actual_mins >= 60) to eliminate cameo and injury noise
     pos_col = 'position' if 'position' in merged.columns else 'element_type'
+    starter_mask = merged['actual_mins'] >= 60
+    if not starter_mask.any():
+        starter_mask = merged['actual_mins'] > 0
+    if not starter_mask.any():
+        starter_mask = pd.Series(True, index=merged.index)
+
     pos_accuracies = {}
     for pos in ['GK', 'DEF', 'MID', 'FWD']:
-        pos_subset = merged[merged[pos_col].astype(str).str.upper().str.contains(pos)]
+        pos_subset = merged[starter_mask & merged[pos_col].astype(str).str.upper().str.contains(pos)]
         if not pos_subset.empty:
             p_mae = float(pos_subset['abs_error'].mean())
             p_rmse = float(math.sqrt(pos_subset['sq_error'].mean()))
@@ -314,6 +326,41 @@ def evaluate_gameweek_accuracy(
         log_df.sort_values('gameweek', inplace=True)
         log_df.to_csv(log_path, index=False)
         print(f"[Accuracy Tracker] Logged GW{gw} accuracy metrics to {log_path}")
+
+        # Save team-level performance metrics to team_accuracy_log.csv
+        team_col = 'team_pred' if 'team_pred' in merged.columns else ('team' if 'team' in merged.columns else None)
+        if team_col and team_col in merged.columns:
+            team_rows = []
+            for team_name, group in merged.groupby(team_col):
+                if not str(team_name).strip():
+                    continue
+                # Evaluate only the active playing XI (top 11 by actual minutes)
+                # Prevents unselected reserve squad members from manufacturing artificial positive bias
+                top11_team = group.sort_values('actual_mins', ascending=False).head(11)
+                team_pred = float(top11_team['pred_xp'].sum())
+                team_act = float(top11_team['actual_pts'].sum())
+                team_goals = int(top11_team['goals_scored'].sum()) if 'goals_scored' in top11_team.columns else 0
+                team_rows.append({
+                    'gameweek': gw,
+                    'team': str(team_name),
+                    'pred_xp': round(team_pred, 2),
+                    'actual_pts': round(team_act, 2),
+                    'bias': round(team_pred - team_act, 2),
+                    'actual_goals': team_goals,
+                })
+            if team_rows:
+                team_log_path = os.path.join(season_dir, 'team_accuracy_log.csv')
+                t_df = pd.DataFrame(team_rows)
+                if os.path.exists(team_log_path):
+                    try:
+                        prev_team_df = pd.read_csv(team_log_path)
+                        prev_team_df = prev_team_df[prev_team_df['gameweek'] != gw]
+                        t_df = pd.concat([prev_team_df, t_df], ignore_index=True)
+                    except Exception:
+                        pass
+                t_df.sort_values(['gameweek', 'team'], inplace=True)
+                t_df.to_csv(team_log_path, index=False)
+                print(f"[Accuracy Tracker] Logged GW{gw} team-level accuracy metrics to {team_log_path}")
 
         # Also export structured JSON for frontend and analytics
         export_accuracy_metrics_json(report, season=season, data_root=data_root, export_frontend=True)

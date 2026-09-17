@@ -34,12 +34,12 @@ def enrich_matchday_json(gw: Optional[int] = None, season: str = '2026-27', data
     frontend_json = os.path.join(REPO_ROOT, 'frontend', 'src', 'data', f'live_matchday_gw{gw}.json')
     data_json = os.path.join(REPO_ROOT, data_root, season, f'fpl_matchday_live_gw{gw}.json')
 
-    # Find the source JSON
+    # Find the source JSON (prioritize data_json from live_manager)
     source_path = None
-    if os.path.exists(frontend_json):
-        source_path = frontend_json
-    elif os.path.exists(data_json):
+    if os.path.exists(data_json):
         source_path = data_json
+    elif os.path.exists(frontend_json):
+        source_path = frontend_json
 
     if not source_path:
         print(f"[Enrichment] Warning: No matchday JSON found for GW{gw} at {frontend_json} or {data_json}")
