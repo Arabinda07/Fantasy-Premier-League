@@ -19,3 +19,23 @@ gameweek,team,pred_xp,actual_pts,bias,actual_goals
 4,Nott'm Forest,27.34,35.0,-7.66,3
 4,Spurs,35.89,43.0,-7.11,0
 4,Sunderland,27.0,8.0,19.0,2
+5,Arsenal,37.35,0.0,37.35,7
+5,Aston Villa,31.36,0.0,31.36,0
+5,Bournemouth,35.44,0.0,35.44,5
+5,Brentford,32.79,0.0,32.79,7
+5,Brighton,31.81,0.0,31.81,9
+5,Chelsea,32.87,0.0,32.87,10
+5,Coventry City,24.06,0.0,24.06,0
+5,Crystal Palace,27.64,0.0,27.64,4
+5,Everton,40.97,0.0,40.97,4
+5,Fulham,31.93,0.0,31.93,4
+5,Hull City,23.87,0.0,23.87,4
+5,Ipswich Town,27.62,0.0,27.62,4
+5,Leeds,34.01,0.0,34.01,6
+5,Liverpool,31.51,0.0,31.51,6
+5,Man City,37.98,0.0,37.98,8
+5,Man Utd,35.89,0.0,35.89,5
+5,Newcastle,33.09,0.0,33.09,5
+5,Nott'm Forest,36.83,0.0,36.83,3
+5,Spurs,36.2,0.0,36.2,0
+5,Sunderland,24.95,0.0,24.95,2
