@@ -12,6 +12,7 @@ import os
 import shutil
 import sys
 import tempfile
+from unittest.mock import MagicMock, patch
 import pytest
 import pandas as pd
 
@@ -129,10 +130,27 @@ class TestTypeSafeBridge:
             assert isinstance(resolved, str)
             assert len(resolved) > 10
 
-    def test_disk_cache_behavior(self, temp_dir):
-        """Second identical call must be served from disk cache."""
+    @patch("urllib.request.urlopen")
+    def test_disk_cache_behavior(self, mock_urlopen, temp_dir):
+        """Second identical call must be served from disk cache without repeated network requests."""
+        fake_payload = {
+            "answers": {
+                "test_score": {
+                    "type": "score",
+                    "score": 1.0,
+                    "confidence": 0.85,
+                    "probabilities": {"0": 0.1, "1": 0.85, "2": 0.05}
+                }
+            },
+            "usage": {"input_tokens": 12, "output_tokens": 4}
+        }
+        mock_resp = MagicMock()
+        mock_resp.read.return_value = json.dumps(fake_payload).encode("utf-8")
+        mock_resp.__enter__.return_value = mock_resp
+        mock_urlopen.return_value = mock_resp
+
         cache_dir = os.path.join(temp_dir, "cache")
-        bridge = TypeSafeBridge(cache_dir=cache_dir, enable_cache=True)
+        bridge = TypeSafeBridge(api_key="test-api-key", cache_dir=cache_dir, enable_cache=True)
 
         state = {"team": "Brentford", "notes": "Solid mid-block"}
         questions = {
@@ -143,14 +161,38 @@ class TestTypeSafeBridge:
             }
         }
 
-        # First call (executes or mocks)
+        # First call (executes live network mock and writes to cache)
         res1 = bridge.ask(state, questions)
         assert res1.cached is False
+        assert mock_urlopen.call_count == 1
 
-        # Second call with identical state & questions MUST be cached
+        # Second call with identical state & questions MUST be served from disk cache
         res2 = bridge.ask(state, questions)
         assert res2.cached is True
         assert res2.answers == res1.answers
+        assert mock_urlopen.call_count == 1  # Network was NOT hit a second time
+
+    @patch("model.typesafe_bridge.resolve_typesafe_api_key", return_value=None)
+    def test_offline_fallback_guardrail(self, mock_key, temp_dir):
+        """Unauthenticated requests cleanly produce fallback mock answers without writing cache."""
+        cache_dir = os.path.join(temp_dir, "cache")
+        bridge = TypeSafeBridge(api_key=None, cache_dir=cache_dir, enable_cache=True)
+
+        state = {"team": "Brentford", "notes": "Solid mid-block"}
+        questions = {
+            "test_score": {
+                "type": "score",
+                "instruction": "Rate defensive line",
+                "legend": {"1": "Low", "3": "Mid", "5": "High"}
+            }
+        }
+
+        res = bridge.ask(state, questions)
+        assert res.cached is False
+        assert "test_score" in res.answers
+        assert res.usage["input_tokens"] == 0
+        # Verify cache directory remains clean
+        assert len(os.listdir(cache_dir)) == 0
 
 
 class TestEndToEndEnrichmentWithDynamicArchetypes:
