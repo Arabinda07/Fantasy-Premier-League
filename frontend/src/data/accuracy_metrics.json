@@ -1,6 +1,6 @@
 {
   "evaluated_gw": 4,
-  "evaluated_at": "2026-09-17T10:36:14.315168+00:00",
+  "evaluated_at": "2026-09-18T10:12:24.027165+00:00",
   "season": "2026-27",
   "total_players": 656,
   "active_players": 406,
@@ -13,43 +13,43 @@
   "positional": [
     {
       "pos": "GK",
-      "count": 71,
-      "mae": 0.91,
-      "rmse": 1.91,
-      "meanPred": 1.14,
-      "meanAct": 1.18,
-      "bias": -0.04,
+      "count": 23,
+      "mae": 2.74,
+      "rmse": 3.35,
+      "meanPred": 3.45,
+      "meanAct": 3.65,
+      "bias": -0.2,
       "status": "CALIBRATED"
     },
     {
       "pos": "DEF",
-      "count": 215,
-      "mae": 1.7,
-      "rmse": 2.6,
-      "meanPred": 1.69,
-      "meanAct": 1.56,
-      "bias": 0.13,
+      "count": 117,
+      "mae": 2.67,
+      "rmse": 3.44,
+      "meanPred": 2.61,
+      "meanAct": 2.76,
+      "bias": -0.15,
       "status": "CALIBRATED"
     },
     {
       "pos": "MID",
-      "count": 292,
-      "mae": 1.11,
-      "rmse": 2.0,
-      "meanPred": 1.43,
-      "meanAct": 1.33,
-      "bias": 0.09,
-      "status": "CALIBRATED"
+      "count": 128,
+      "mae": 1.91,
+      "rmse": 2.84,
+      "meanPred": 2.48,
+      "meanAct": 2.76,
+      "bias": -0.28,
+      "status": "UNDER_PROJECTED"
     },
     {
       "pos": "FWD",
-      "count": 78,
-      "mae": 1.35,
-      "rmse": 2.41,
-      "meanPred": 1.3,
-      "meanAct": 1.45,
-      "bias": -0.15,
-      "status": "CALIBRATED"
+      "count": 32,
+      "mae": 2.52,
+      "rmse": 3.57,
+      "meanPred": 2.38,
+      "meanAct": 3.12,
+      "bias": -0.75,
+      "status": "UNDER_PROJECTED"
     }
   ],
   "outliers": [
