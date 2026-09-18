@@ -39,6 +39,7 @@ frontend/public/assets/
 *.swo
 
 # Data caches
+data/.cache/
 data/*/cache/
 cache/
 

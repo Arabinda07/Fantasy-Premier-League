@@ -17,6 +17,7 @@ Formulas:
 Usage:
     from model.matchup_intelligence import compute_h2h_multiplier, enrich_predictions_with_matchup_intelligence
 """
+import json
 import math
 import os
 import sys
@@ -87,6 +88,44 @@ PLAYER_TACTICAL_AFFINITIES: Dict[str, str] = {
 }
 
 
+def load_dynamic_tactical_archetypes(
+    season: str = '2026-27',
+    data_root: str = 'data',
+) -> Tuple[Dict[str, Dict[str, float]], Dict[str, str]]:
+    """Load dynamic tactical archetypes and player affinities from disk if present.
+
+    Overlays dynamic JSON evaluations onto TACTICAL_ARCHETYPES and
+    PLAYER_TACTICAL_AFFINITIES. Falls back cleanly to static baselines if file is missing.
+    """
+    teams: Dict[str, Dict[str, float]] = {k: dict(v) for k, v in TACTICAL_ARCHETYPES.items()}
+    affinities: Dict[str, str] = dict(PLAYER_TACTICAL_AFFINITIES)
+
+    if os.path.isabs(data_root):
+        fpath = os.path.join(data_root, season, 'tactical_archetypes.json')
+    else:
+        fpath = os.path.join(REPO_ROOT, data_root, season, 'tactical_archetypes.json')
+
+    if os.path.exists(fpath):
+        try:
+            with open(fpath, 'r', encoding='utf-8') as f:
+                payload = json.load(f)
+                dyn_teams = payload.get('teams', {})
+                for t_name, t_vals in dyn_teams.items():
+                    if isinstance(t_vals, dict):
+                        teams[t_name] = {
+                            'defensive_line': float(t_vals.get('defensive_line', 1.00)),
+                            'transition_vulnerability': float(t_vals.get('transition_vulnerability', 1.00)),
+                        }
+                dyn_aff = payload.get('player_affinities', {})
+                for p_name, p_aff in dyn_aff.items():
+                    if isinstance(p_aff, str):
+                        affinities[p_name] = p_aff
+        except Exception:
+            pass
+
+    return teams, affinities
+
+
 # ---------------------------------------------------------------------------
 # Core Mathematical Functions
 # ---------------------------------------------------------------------------
@@ -142,6 +181,8 @@ def compute_tactical_archetype_multiplier(
     player_name: str,
     archetype_map: Optional[Dict[str, Dict[str, float]]] = None,
     affinity_map: Optional[Dict[str, str]] = None,
+    season: str = '2026-27',
+    data_root: str = 'data',
 ) -> float:
     """Calculate tactical matchup multiplier based on opponent defensive line depth.
 
@@ -153,14 +194,18 @@ def compute_tactical_archetype_multiplier(
         player_name: player web_name or full name.
         archetype_map: team defensive archetype mapping.
         affinity_map: player tactical profile mapping.
+        season: season string for dynamic lookup.
+        data_root: root data directory.
 
     Returns:
         Tactical multiplier float (e.g. 1.12 for Palmer vs Brighton high line).
     """
-    if archetype_map is None:
-        archetype_map = TACTICAL_ARCHETYPES
-    if affinity_map is None:
-        affinity_map = PLAYER_TACTICAL_AFFINITIES
+    if archetype_map is None or affinity_map is None:
+        dyn_archetypes, dyn_affinities = load_dynamic_tactical_archetypes(season=season, data_root=data_root)
+        if archetype_map is None:
+            archetype_map = dyn_archetypes
+        if affinity_map is None:
+            affinity_map = dyn_affinities
 
     opp_profile = archetype_map.get(opponent_team, {'defensive_line': 1.00, 'transition_vulnerability': 1.00})
     player_affinity = affinity_map.get(player_name, 'standard')
@@ -191,6 +236,10 @@ def compute_combined_matchup_multiplier(
     career_mins: float = 0.0,
     career_xg: float = 0.0,
     career_xa: float = 0.0,
+    archetype_map: Optional[Dict[str, Dict[str, float]]] = None,
+    affinity_map: Optional[Dict[str, str]] = None,
+    season: str = '2026-27',
+    data_root: str = 'data',
 ) -> Dict[str, float]:
     """Calculate combined H2H and tactical archetype multiplier.
 
@@ -203,6 +252,10 @@ def compute_combined_matchup_multiplier(
         career_mins: career minutes.
         career_xg: career xG.
         career_xa: career xA.
+        archetype_map: optional team archetype map.
+        affinity_map: optional player affinity map.
+        season: season string.
+        data_root: data root directory.
 
     Returns:
         Dict with 'h2h_mult', 'tactical_mult', 'combined_mult'.
@@ -219,6 +272,10 @@ def compute_combined_matchup_multiplier(
     tact_m = compute_tactical_archetype_multiplier(
         opponent_team=opponent_team,
         player_name=player_name,
+        archetype_map=archetype_map,
+        affinity_map=affinity_map,
+        season=season,
+        data_root=data_root,
     )
 
     # Combined multiplier blends H2H and tactical profile
@@ -255,6 +312,9 @@ def enrich_predictions_with_matchup_intelligence(
     if df.empty:
         return df
 
+    # Load dynamic archetypes once per batch
+    dyn_archetypes, dyn_affinities = load_dynamic_tactical_archetypes(season=season, data_root=data_root)
+
     h2h_list = []
     tact_list = []
     comb_list = []
@@ -290,6 +350,10 @@ def enrich_predictions_with_matchup_intelligence(
             career_mins=career_mins,
             career_xg=career_xg,
             career_xa=career_xa,
+            archetype_map=dyn_archetypes,
+            affinity_map=dyn_affinities,
+            season=season,
+            data_root=data_root,
         )
 
         h2h_list.append(res['h2h_mult'])
