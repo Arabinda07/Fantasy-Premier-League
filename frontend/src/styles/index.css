@@ -9981,6 +9981,59 @@ tr:hover .vault-table-sticky-col {
   box-shadow: none;
 }
 
+/* Responsive Adaptation for Dugout Matchday Modals */
+@media (max-width: 540px) {
+  .handover-profile-details {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .handover-picks-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .handover-fpl-links {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .handover-modal-actions,
+  .breakdown-modal-actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .handover-confirm-btn,
+  .modal-btn-primary,
+  .modal-btn-ghost,
+  .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .breakdown-comparison-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    text-align: left;
+  }
+
+  .breakdown-delta-col {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-sm, 6px);
+  }
+
+  .delta-arrow {
+    display: none;
+  }
+}
+
+
 
 
 
