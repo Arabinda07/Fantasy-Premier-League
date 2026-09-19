@@ -17,8 +17,16 @@ export default function TransferBreakdownModal({
 }) {
   const modalRef = useRef(null);
 
+  // Keyboard accessibility: Focus placement, Escape key to dismiss & focus trap (WCAG 2.1.2 & 2.4.3)
   useEffect(() => {
     if (!isOpen) return;
+
+    // Auto-focus dialog on mount for assistive tech and keyboard users
+    const focusTimer = setTimeout(() => {
+      if (modalRef.current) {
+        modalRef.current.focus();
+      }
+    }, 50);
 
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
@@ -51,7 +59,10 @@ export default function TransferBreakdownModal({
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      clearTimeout(focusTimer);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -67,6 +78,8 @@ export default function TransferBreakdownModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="breakdown-modal-title"
+        tabIndex={-1}
+        style={{ outline: 'none' }}
       >
         {/* Header */}
         <div className="modal-header">
