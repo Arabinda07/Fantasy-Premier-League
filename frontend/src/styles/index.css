@@ -984,21 +984,15 @@ p,
 
 .tactical-hud-ribbon {
   display: grid;
-  grid-template-columns: 1.15fr 1fr 1.6fr 0.95fr;
-  gap: 10px;
+  grid-template-columns: 1fr 1fr 1.25fr;
+  gap: 12px;
   margin-bottom: 16px;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1024px) {
   .tactical-hud-ribbon {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (max-width: 768px) {
-  .tactical-hud-ribbon {
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-4);
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
 }
 
@@ -1020,21 +1014,22 @@ p,
 }
 
 .hud-tile {
-  background: var(--bg-surface-1);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 10px 1var(--space-2);
+  background: var(--bg-surface-1, #111726);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md, 8px);
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: var(--space-4);
-  box-shadow: var(--shadow-card), var(--shadow-inner-highlight);
+  gap: 10px;
+  min-height: 84px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
 }
 
 .hud-tile:hover {
-  border-color: var(--border-medium);
-  box-shadow: var(--shadow-card-hover), var(--shadow-inner-highlight);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
 }
 
 .hud-tile-header {
@@ -1044,89 +1039,99 @@ p,
 }
 
 .hud-tile-eyebrow {
-  font-size: var(--text-sm);
+  font-size: 11px;
   font-weight: 700;
-  color: var(--text-muted);
-  letter-spacing: 0.08em;
+  color: #94A3B8;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .hud-tile-subtext {
-  font-size: var(--text-sm);
+  font-size: 11.5px;
   font-weight: 700;
-  color: var(--accent-emerald);
+  color: var(--accent-emerald, #10B981);
 }
 
 /* Tile 1: Strategy Segmented Group */
 .hud-segmented-group {
   display: flex;
-  gap: 3px;
-  background: var(--bg-surface-2);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xs);
-  padding: var(--space-1);
+  gap: 4px;
+  background: #0B0F19;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 3px;
 }
 
 .hud-segment-btn {
   flex: 1;
   background: transparent;
   border: 1px solid transparent;
-  color: var(--text-muted);
-  font-size: var(--text-base);
+  color: #94A3B8;
+  font-size: 12px;
   font-weight: 700;
-  padding: 5px var(--space-3);
-  border-radius: var(--radius-xs);
+  padding: 7px 10px;
+  border-radius: 4px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
+  gap: 6px;
   white-space: nowrap;
   transition: all 0.15s ease;
 }
 
 .hud-segment-btn:hover:not(.active) {
-  color: var(--text-primary);
+  color: #F8FAFC;
   background: rgba(255, 255, 255, 0.05);
 }
 
 .hud-segment-btn.active {
-  background: var(--accent-emerald);
-  color: var(--text-inverse);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  background: #1E293B;
+  color: #F8FAFC;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.hud-segment-btn.active svg {
+  color: var(--accent-emerald, #10B981);
 }
 
 /* Tile 2: Matchday Chip Simulator */
 .hud-chip-live-badge {
-  font-size: var(--text-xs);
+  font-size: 10.5px;
   font-weight: 700;
-  background: var(--accent-amber);
-  color: var(--text-inverse);
-  padding: 1px 5px;
-  border-radius: var(--radius-xs);
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #FBBF24;
+  padding: 2px 7px;
+  border-radius: 4px;
   letter-spacing: 0.05em;
 }
 
 .hud-chip-idle-badge {
-  font-size: var(--text-xs);
+  font-size: 10.5px;
   font-weight: 700;
-  color: var(--text-muted);
+  color: #94A3B8;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 2px 7px;
+  border-radius: 4px;
 }
 
 .hud-chip-selector-wrap {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 5px;
 }
 
 .hud-chip-select {
   width: 100%;
-  background: var(--bg-surface-2);
-  color: var(--text-primary);
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-xs);
-  padding: 5px var(--space-4);
-  font-size: var(--text-md);
+  background: #0B0F19;
+  color: #F8FAFC;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
   outline: none;
@@ -1135,12 +1140,12 @@ p,
 
 .hud-chip-select:focus,
 .hud-chip-select:hover {
-  border-color: var(--accent-emerald);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .hud-chip-desc {
-  font-size: var(--text-sm);
-  color: var(--text-muted);
+  font-size: 11px;
+  color: #94A3B8;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1148,15 +1153,28 @@ p,
 
 .active-chip-tile {
   border-color: rgba(245, 158, 11, 0.4);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
 }
 
 /* Tile 3: Tactical Directive */
+.hud-tile-directive {
+  background: #111726;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hud-tile-directive:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+  background: #151D2E;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+
 .hud-directive-link {
   background: transparent;
   border: none;
-  color: var(--accent-emerald);
-  font-size: var(--text-sm);
+  color: #38BDF8;
+  font-size: 11px;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
@@ -1167,82 +1185,31 @@ p,
 }
 
 .hud-directive-link:hover {
-  color: var(--accent-emerald-light);
+  color: #7DD3FC;
   text-decoration: underline;
 }
 
 .hud-directive-content {
   display: flex;
   align-items: center;
-  min-height: 28px;
+  min-height: 32px;
 }
 
 .hud-directive-text {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 3px;
 }
 
 .hud-highlight-text {
-  font-size: var(--text-md);
+  font-size: 13px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #F8FAFC;
 }
 
 .hud-sub-text {
-  font-size: var(--text-sm);
-  color: var(--text-muted);
-}
-
-/* Tile 4: Scorecard HUD */
-.hud-squad-status {
-  font-size: var(--text-sm);
-  font-weight: 700;
-  color: var(--accent-emerald);
-}
-
-.hud-scorecard-body {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
-
-.hud-score-main {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-2);
-}
-
-.hud-score-val {
-  font-size: var(--text-2xl);
-  font-weight: 700;
-  color: var(--accent-emerald);
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-}
-
-.hud-score-unit {
-  font-size: var(--text-base);
-  font-weight: 700;
-  color: var(--text-muted);
-}
-
-.hud-score-meta {
-  display: flex;
-  align-items: center;
-}
-
-.hud-formation-pill {
-  background: transparent;
-  border: 1px solid var(--border-subtle);
-  color: var(--text-muted);
-  font-family: var(--font-mono, monospace);
-  font-size: var(--text-base);
-  font-weight: 600;
-  padding: var(--space-1) 7px;
-  border-radius: var(--radius-xs);
-  letter-spacing: 0.02em;
+  font-size: 11px;
+  color: #94A3B8;
 }
 
 .directive-structured-text {
@@ -1546,45 +1513,49 @@ p,
 .rec-transfer-pill {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-3);
-  padding: 3px var(--space-4);
-  border-radius: var(--radius-xs);
-  font-size: var(--text-md);
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
   font-family: var(--font-mono);
-  font-weight: 600;
+  font-weight: 700;
+  transition: all 0.15s ease;
 }
 
 .rec-transfer-pill.in {
-  background: rgba(16, 185, 129, 0.12);
-  color: var(--text-primary);
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  background: rgba(16, 185, 129, 0.15);
+  color: #F8FAFC;
+  border: 1px solid rgba(16, 185, 129, 0.35);
 }
 
 .rec-transfer-pill.in .rec-tag {
-  color: var(--accent-emerald);
-  font-weight: 700;
-  font-size: var(--text-sm);
+  color: #34D399;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.05em;
 }
 
 .rec-transfer-pill.out {
-  background: rgba(239, 68, 68, 0.12);
-  color: var(--text-primary);
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.15);
+  color: #F8FAFC;
+  border: 1px solid rgba(239, 68, 68, 0.35);
 }
 
 .rec-transfer-pill.out .rec-tag {
-  color: var(--accent-crimson);
-  font-weight: 700;
-  font-size: var(--text-sm);
+  color: #F87171;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.05em;
 }
 
 .rec-arrow {
-  color: var(--text-muted);
+  color: #64748B;
 }
 
 .rec-player-name {
   font-weight: 700;
-  color: var(--text-primary);
+  font-size: 13px;
+  color: #F8FAFC;
 }
 
 .rec-generic-text {

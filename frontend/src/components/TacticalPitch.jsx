@@ -439,12 +439,6 @@ export default function TacticalPitch({
           <span className="matchday-formation-tag font-mono">
             {isNonParticipating ? 'No Squad' : isCompletedGw ? 'Completed' : `${formation}`}
           </span>
-          {liveData?.guardrail_audit && (
-            <span className="hud-audit-chip font-mono" title={liveData.guardrail_audit.message || 'All Mathematical & Tactical Guardrails Passed'}>
-              <ShieldCheck size={12} weight="fill" color="var(--accent-emerald)" />
-              MODEL AUDIT: PASSED
-            </span>
-          )}
         </div>
 
         <div className="matchday-status-right">
@@ -675,29 +669,6 @@ export default function TacticalPitch({
               ) : (
                 renderTransferPills(effectiveActionSummary)
               )}
-            </div>
-          </div>
-
-          {/* Tile 4: Matchday Scorecard Telemetry */}
-          <div className="hud-tile hud-tile-scorecard">
-            <div className="hud-tile-header">
-              <span className="hud-tile-eyebrow font-mono">
-                {isNonParticipating ? 'SCORE' : isCompletedGw ? 'FINAL SCORE' : 'PROJECTED OUTPUT'}
-              </span>
-              <span className="hud-squad-status font-mono">
-                {isNonParticipating ? '0 Active' : '15/15 Active'}
-              </span>
-            </div>
-            <div className="hud-scorecard-body">
-              <div className="hud-score-main">
-                <span className="hud-score-val font-mono" style={isCompletedGw && !isNonParticipating ? { color: 'var(--accent-emerald)' } : {}}>
-                  {isNonParticipating ? '0' : isCompletedGw ? completedScore : Number(displayStartingXp).toFixed(1)}
-                </span>
-                <span className="hud-score-unit font-mono">{isCompletedGw ? 'pts' : 'xP'}</span>
-              </div>
-              <div className="hud-score-meta font-mono">
-                <span className="hud-formation-pill">{isNonParticipating ? 'No Squad' : formation}</span>
-              </div>
             </div>
           </div>
         </div>
