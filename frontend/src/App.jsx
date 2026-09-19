@@ -136,6 +136,7 @@ export default function App() {
       setBench(data.bench || []);
       setSelectedSwapPlayer(null);
     }
+    setIsSimulating(false);
   };
 
   // Check first-time onboarding on initial mount

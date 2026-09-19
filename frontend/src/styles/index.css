@@ -9406,8 +9406,8 @@ tr:hover .vault-table-sticky-col {
 }
 
 .handover-profile-card {
-  background: #182035 !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: #151D2E !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: var(--radius-md);
   padding: 14px 16px;
 }
@@ -9455,8 +9455,8 @@ tr:hover .vault-table-sticky-col {
 }
 
 .handover-transfer-card {
-  background: #182035 !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: #151D2E !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: var(--radius-md);
   padding: 14px;
   display: flex;
@@ -9478,16 +9478,15 @@ tr:hover .vault-table-sticky-col {
   gap: 10px;
   padding: 10px 14px;
   border-radius: var(--radius-sm);
+  background: #161F32 !important;
 }
 
 .handover-transfer-pill.in {
-  background: rgba(16, 185, 129, 0.15) !important;
-  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+  border: 1px solid rgba(16, 185, 129, 0.28) !important;
 }
 
 .handover-transfer-pill.out {
-  background: rgba(239, 68, 68, 0.15) !important;
-  border: 1px solid rgba(239, 68, 68, 0.4) !important;
+  border: 1px solid rgba(239, 68, 68, 0.28) !important;
 }
 
 .transfer-tag {
@@ -9498,12 +9497,12 @@ tr:hover .vault-table-sticky-col {
 }
 
 .handover-transfer-pill.in .transfer-tag {
-  background: rgba(16, 185, 129, 0.3);
-  color: var(--accent-emerald);
+  background: rgba(16, 185, 129, 0.2);
+  color: #34D399;
 }
 
 .handover-transfer-pill.out .transfer-tag {
-  background: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.2);
   color: #F87171;
 }
 
@@ -9515,12 +9514,12 @@ tr:hover .vault-table-sticky-col {
 .transfer-name {
   font-size: 13px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #F8FAFC;
 }
 
 .transfer-meta {
   font-size: 11px;
-  color: var(--text-secondary);
+  color: #94A3B8;
 }
 
 .transfer-arrow {
@@ -9532,7 +9531,7 @@ tr:hover .vault-table-sticky-col {
   align-items: center;
   gap: 6px;
   font-size: 11.5px;
-  color: var(--text-secondary);
+  color: #94A3B8;
   padding-top: 4px;
 }
 
@@ -9543,41 +9542,50 @@ tr:hover .vault-table-sticky-col {
 }
 
 .handover-pick-box {
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: var(--radius-md);
   padding: 14px;
-  background: #182035 !important;
+  background: #151D2E !important;
 }
 
 .handover-pick-box.captain {
-  border-color: rgba(234, 179, 8, 0.4) !important;
-  background: rgba(234, 179, 8, 0.08) !important;
+  border: 1px solid rgba(245, 158, 11, 0.25) !important;
+  background: #151D2E !important;
 }
 
 .handover-pick-box.vice {
-  border-color: rgba(56, 189, 248, 0.4) !important;
-  background: rgba(56, 189, 248, 0.08) !important;
+  border: 1px solid rgba(56, 189, 248, 0.25) !important;
+  background: #151D2E !important;
 }
 
 .pick-box-header {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--text-muted);
+  letter-spacing: 0.04em;
   margin-bottom: 4px;
+}
+
+.handover-pick-box.captain .pick-box-header {
+  color: #FBBF24;
+}
+
+.handover-pick-box.vice .pick-box-header {
+  color: #38BDF8;
 }
 
 .pick-box-name {
   font-size: 15px;
   font-weight: 800;
-  color: var(--text-primary);
+  color: #F8FAFC;
 }
 
 .pick-box-meta {
   font-size: 11.5px;
-  color: var(--text-secondary);
+  color: #94A3B8;
   margin-top: 2px;
 }
 
@@ -9586,22 +9594,22 @@ tr:hover .vault-table-sticky-col {
   align-items: center;
   gap: 8px;
   font-size: 11.5px;
-  color: var(--text-secondary);
+  color: #94A3B8;
   padding: 8px 14px;
-  background: #182035 !important;
+  background: #151D2E !important;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
 .handover-advisory-box {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  background: rgba(245, 158, 11, 0.12) !important;
-  border: 1px solid rgba(245, 158, 11, 0.45) !important;
+  background: #151D2E !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: var(--radius-md);
-  padding: 14px;
-  color: #FDE68A;
+  padding: 12px 16px;
+  color: #CBD5E1;
 }
 
 .advisory-icon {
@@ -9613,14 +9621,15 @@ tr:hover .vault-table-sticky-col {
 .advisory-content strong {
   display: block;
   font-size: 12px;
+  font-weight: 700;
   margin-bottom: 3px;
-  color: #FBBF24;
+  color: #F8FAFC;
 }
 
 .advisory-content p {
   font-size: 11.5px;
   line-height: 1.45;
-  color: rgba(253, 230, 138, 0.95);
+  color: #94A3B8;
   margin: 0;
 }
 
@@ -9640,16 +9649,16 @@ tr:hover .vault-table-sticky-col {
   font-weight: 600;
   text-decoration: none;
   border-radius: var(--radius-sm);
-  background: #182035 !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  color: var(--text-primary);
+  background: #151D2E !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #E2E8F0;
   transition: all 150ms ease;
 }
 
 .handover-link-btn:hover {
-  background: rgba(59, 130, 246, 0.18) !important;
-  border-color: rgba(59, 130, 246, 0.5) !important;
-  color: #93C5FD;
+  background: #1E293B !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #FFFFFF;
 }
 
 .handover-modal-actions {

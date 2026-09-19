@@ -71,7 +71,7 @@ export default function TransferBreakdownModal({
         {/* Header */}
         <div className="modal-header">
           <div className="modal-title-group">
-            <div className="modal-icon-box" style={{ background: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent-blue)' }}>
+            <div className="modal-icon-box" style={{ background: 'rgba(255, 255, 255, 0.05)', color: 'var(--accent-blue)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
               <ArrowsLeftRight size={20} weight="bold" />
             </div>
             <div>

@@ -474,10 +474,10 @@ export default function TacticalPitch({
                   type="button"
                   className="matchday-reset-btn font-mono"
                   onClick={onResetToSuggested}
-                  title="Reset squad back to model's suggested lineup"
+                  title="Revert squad to suggested lineup and exit simulation"
                 >
                   <ClockCounterClockwise size={13} weight="bold" />
-                  <span>Reset</span>
+                  <span>Reset to Suggested</span>
                 </button>
               )}
             </>
@@ -516,34 +516,6 @@ export default function TacticalPitch({
           </button>
         </div>
       </div>
-
-      {/* Active Simulation Notice Banner */}
-      {isSimulating && !isCompletedGw && (
-        <div className="simulation-mode-banner font-mono">
-          <div className="sim-banner-left">
-            <span className="sim-pulse-dot" />
-            <strong>SIMULATION MODE ACTIVE</strong>
-            <span>&middot;</span>
-            <span>Tap any starter and bench player to test substitutions &amp; captaincy. Projected points recalculate live.</span>
-          </div>
-          <div className="sim-banner-actions">
-            <button
-              type="button"
-              className="sim-banner-reset-btn font-mono"
-              onClick={onResetToSuggested}
-            >
-              Reset to Suggested
-            </button>
-            <button
-              type="button"
-              className="sim-banner-done-btn font-mono"
-              onClick={onToggleSimulate}
-            >
-              Done
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Tactical Dugout Command HUD Ribbon (4 Modular HUD Tiles) */}
       <div className="tactical-hud-ribbon">
