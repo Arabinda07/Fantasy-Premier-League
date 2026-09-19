@@ -260,7 +260,7 @@ export default function MatchdayHandoverModal({
           <div className="handover-modal-actions">
             <button
               type="button"
-              className="btn-secondary"
+              className="modal-btn-ghost"
               onClick={onClose}
             >
               Close
@@ -268,7 +268,7 @@ export default function MatchdayHandoverModal({
 
             <button
               type="button"
-              className="btn-primary handover-confirm-btn font-mono"
+              className="handover-confirm-btn font-mono"
               onClick={() => {
                 onConfirmLock();
                 onClose();

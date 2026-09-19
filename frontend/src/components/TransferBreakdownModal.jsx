@@ -182,7 +182,7 @@ export default function TransferBreakdownModal({
           <div className="breakdown-modal-actions">
             <button
               type="button"
-              className="btn-secondary"
+              className="modal-btn-ghost"
               onClick={onClose}
             >
               Close
@@ -192,8 +192,7 @@ export default function TransferBreakdownModal({
               href={officialTransfersUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-primary font-mono"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              className="modal-btn-primary font-mono"
             >
               <span>Execute Transfer on Official FPL</span>
               <ArrowSquareOut size={14} weight="bold" />

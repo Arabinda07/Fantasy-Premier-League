@@ -9429,10 +9429,11 @@ tr:hover .vault-table-sticky-col {
 
 .profile-detail-label {
   display: block;
-  font-size: 10px;
-  color: var(--text-muted);
+  font-size: 11px;
+  color: #94A3B8;
   text-transform: uppercase;
-  margin-bottom: 2px;
+  letter-spacing: 0.04em;
+  margin-bottom: 3px;
 }
 
 .profile-detail-val {
@@ -9450,7 +9451,7 @@ tr:hover .vault-table-sticky-col {
 .handover-section-title {
   font-size: 11px;
   font-weight: 700;
-  color: var(--text-muted);
+  color: #94A3B8;
   letter-spacing: 0.05em;
 }
 
@@ -9668,27 +9669,69 @@ tr:hover .vault-table-sticky-col {
   padding-top: 6px;
 }
 
+.modal-btn-ghost,
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #94A3B8;
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 150ms ease;
+}
+
+.modal-btn-ghost:hover,
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.24);
+  color: #F8FAFC;
+}
+
+.modal-btn-ghost:focus-visible,
+.btn-secondary:focus-visible,
+.handover-confirm-btn:focus-visible,
+.modal-btn-primary:focus-visible {
+  outline: 2px solid var(--accent-cyan, #38BDF8);
+  outline-offset: 2px;
+}
+
 .handover-confirm-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--accent-emerald);
-  color: #064E3B;
+  background: #059669;
+  color: #FFFFFF;
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
   font-weight: 700;
   padding: 10px 18px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid rgba(16, 185, 129, 0.35);
   cursor: pointer;
   transition: all 150ms ease;
 }
 
 .handover-confirm-btn:hover:not(:disabled) {
-  background: #34D399;
-  box-shadow: 0 0 16px rgba(16, 185, 129, 0.45);
+  background: #10B981;
+  border-color: rgba(16, 185, 129, 0.6);
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+  color: #FFFFFF;
 }
 
 .handover-confirm-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
+  background: #1E293B;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #64748B;
+  box-shadow: none;
 }
 
 /* Transfer Breakdown Modal Styling */
@@ -9857,6 +9900,47 @@ tr:hover .vault-table-sticky-col {
   align-items: center;
   padding-top: 6px;
 }
+
+.modal-btn-primary,
+.btn-primary,
+.breakdown-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #0284C7;
+  color: #FFFFFF !important;
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 150ms ease;
+}
+
+.modal-btn-primary:hover:not(:disabled),
+.btn-primary:hover:not(:disabled),
+.breakdown-action-btn:hover:not(:disabled) {
+  background: #0369A1;
+  border-color: rgba(255, 255, 255, 0.32);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+  color: #FFFFFF !important;
+}
+
+.modal-btn-primary:disabled,
+.btn-primary:disabled,
+.breakdown-action-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: #1E293B;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #64748B !important;
+  box-shadow: none;
+}
+
 
 
 
