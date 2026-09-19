@@ -61,8 +61,16 @@ export default function MultiGwPlanner({
   const endGw = activeRoadmap[activeRoadmap.length - 1]?.gw || (startGw + Math.max(0, activeRoadmap.length - 1));
 
   const [activeGwIndex, setActiveGwIndex] = useState(0);
+  const [selectedTransferPair, setSelectedTransferPair] = useState(null);
   const [viewMode, setViewMode] = useState('both'); // 'both' | 'roadmap' | 'workbench'
   const [showChart, setShowChart] = useState(true);
+
+  // Sync active index if roadmap length changes
+  useEffect(() => {
+    if (activeGwIndex >= activeRoadmap.length) {
+      setActiveGwIndex(0);
+    }
+  }, [activeRoadmap, activeGwIndex]);
   const [showNotes, setShowNotes] = useState(false);
   const notesRef = useRef(null);
 
@@ -331,7 +339,25 @@ export default function MultiGwPlanner({
                     {item.transfers_in.map((inPlayer, tIdx) => {
                       const outPlayer = item.transfers_out?.[tIdx] || 'Target Out';
                       return (
-                        <div key={tIdx} className="transfer-move-item">
+                        <div
+                          key={tIdx}
+                          className="transfer-move-item interactive-move-item"
+                          role="button"
+                          tabIndex={0}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveGwIndex(idx);
+                            setSelectedTransferPair({ inName: inPlayer, outName: outPlayer, timestamp: Date.now() });
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.stopPropagation();
+                              setActiveGwIndex(idx);
+                              setSelectedTransferPair({ inName: inPlayer, outName: outPlayer, timestamp: Date.now() });
+                            }
+                          }}
+                          title={`Load ${outPlayer} ➔ ${inPlayer} into comparison workbench`}
+                        >
                           <div className="move-tag in font-mono">
                             <ArrowUpRight size={12} weight="bold" />
                             <span>BUY: {inPlayer}</span>
@@ -374,6 +400,9 @@ export default function MultiGwPlanner({
         roadmap={activeRoadmap}
         allPlayers={activeAllPlayers}
         squadPlayers={activeSquadPlayers}
+        activeGwItem={activeRoadmap[activeGwIndex]}
+        activeGwIndex={activeGwIndex}
+        selectedTransferPair={selectedTransferPair}
         onInspectPlayer={onInspectPlayer}
         onCompareChange={onCompareChange}
       />

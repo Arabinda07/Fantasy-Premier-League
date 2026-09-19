@@ -191,47 +191,160 @@ export default function TacticalPitch({
 
   const renderTransferPills = (summary) => {
     if (!summary) return null;
+
+    // 1. Check if structured pairwise transfers exist from clientOptimizer or liveData
+    let pairs = [];
+    if (typeof summary === 'object' && Array.isArray(summary.pairwise_transfers) && summary.pairwise_transfers.length > 0) {
+      pairs = summary.pairwise_transfers.map(p => ({
+        in: p.in || p.in_player || p.in_name || 'Target In',
+        out: p.out || p.out_player || p.out_name || 'Target Out'
+      }));
+    } else if (typeof summary === 'object' && Array.isArray(summary.transfers) && summary.transfers.length > 0) {
+      pairs = summary.transfers.map(t => ({
+        in: t.in || t.in_player || 'Target In',
+        out: t.out || t.out_player || 'Target Out'
+      }));
+    }
+
     const summaryStr = typeof summary === 'string' ? summary : (summary.headline || summary.action || '');
-    if (!summaryStr) return null;
 
-    const inMatch = summaryStr.match(/\[IN\]\s*([A-Za-z0-9_.\-\s]+?)(?=\s*\||\s*\[OUT\]|$)/i);
-    const outMatch = summaryStr.match(/\[OUT\]\s*([A-Za-z0-9_.\-\s]+?)(?=\s*\||$)/i);
+    // 2. Parse string format with unicode support and multiple comma-separated players
+    if (pairs.length === 0 && summaryStr) {
+      // Matches [IN] Player1, Player2 | [OUT] Player3, Player4
+      const inMatch = summaryStr.match(/\[IN\]\s*([^|\]]+)/i);
+      const outMatch = summaryStr.match(/\[OUT\]\s*([^|\[]+)/i);
 
-    if (inMatch && outMatch) {
-      const inName = inMatch[1].trim();
-      const outName = outMatch[1].trim();
+      if (inMatch && outMatch) {
+        const inList = inMatch[1].split(',').map(s => s.trim()).filter(Boolean);
+        const outList = outMatch[1].split(',').map(s => s.trim()).filter(Boolean);
+
+        pairs = inList.map((inPlayer, idx) => ({
+          in: inPlayer,
+          out: outList[idx] || 'Target Out'
+        }));
+      }
+    }
+
+    // 3. Fallback to liveData.multi_horizon_roadmap[0] if available
+    if (pairs.length === 0 && liveData?.multi_horizon_roadmap?.[0]?.transfers_in?.length > 0) {
+      const roadmapItem = liveData.multi_horizon_roadmap[0];
+      pairs = roadmapItem.transfers_in.map((inPlayer, idx) => ({
+        in: inPlayer,
+        out: roadmapItem.transfers_out?.[idx] || 'Target Out'
+      }));
+    }
+
+    // If transfer pairs were resolved, extract clean uplift and price warnings
+    if (pairs.length > 0) {
+      // Extract uplift if present (e.g. "+4.4 pts" or net_gain)
+      let upliftText = null;
+      if (typeof summary === 'object' && summary.net_gain != null) {
+        upliftText = `+${Number(summary.net_gain).toFixed(1)} pts projected gain`;
+      } else if (summaryStr) {
+        const upliftMatch = summaryStr.match(/\+(\d+\.?\d*)\s*pts/i);
+        if (upliftMatch) {
+          upliftText = `+${upliftMatch[1]} pts projected gain`;
+        }
+      }
+
+      // Extract price alert if present (cleanly without raw numbers)
+      let priceAlertText = null;
+      if (summaryStr) {
+        const alertMatch = summaryStr.match(/(?:Price Risk|Price Alert):\s*([^()|]+)/i);
+        if (alertMatch) {
+          const names = alertMatch[1].trim();
+          if (names) {
+            priceAlertText = `Price Alert: ${names}`;
+          }
+        }
+      } else if (Array.isArray(liveData?.falling_price_risks) && liveData.falling_price_risks.length > 0) {
+        priceAlertText = `Price Alert: ${liveData.falling_price_risks.join(', ')}`;
+      }
 
       return (
-        <div className="rec-transfer-group">
-          <div className="rec-transfer-pill pill-base pill-md in">
-            <ArrowUpRight size={13} weight="bold" />
-            <span className="rec-tag font-mono">BUY</span>
-            <span className="rec-player-name">{inName}</span>
+        <div className="rec-directive-wrap">
+          <div className="rec-transfer-group">
+            {pairs.map((pair, idx) => (
+              <div key={idx} className="rec-transfer-pair">
+                <div className="rec-transfer-pill pill-base pill-md in">
+                  <ArrowUpRight size={13} weight="bold" />
+                  <span className="rec-tag font-mono">BUY</span>
+                  <span className="rec-player-name">{pair.in}</span>
+                </div>
+                <CaretRight size={13} className="rec-arrow" />
+                <div className="rec-transfer-pill pill-base pill-md out">
+                  <ArrowDownRight size={13} weight="bold" />
+                  <span className="rec-tag font-mono">SELL</span>
+                  <span className="rec-player-name">{pair.out}</span>
+                </div>
+              </div>
+            ))}
           </div>
-          <CaretRight size={13} className="rec-arrow" />
-          <div className="rec-transfer-pill pill-base pill-md out">
-            <ArrowDownRight size={13} weight="bold" />
-            <span className="rec-tag font-mono">SELL</span>
-            <span className="rec-player-name">{outName}</span>
-          </div>
+          {(upliftText || priceAlertText) && (
+            <div className="hud-directive-meta font-mono">
+              {upliftText && <span className="directive-meta-gain">{upliftText}</span>}
+              {upliftText && priceAlertText && <span className="directive-meta-sep">·</span>}
+              {priceAlertText && <span className="directive-meta-alert">{priceAlertText}</span>}
+            </div>
+          )}
         </div>
       );
     }
 
-    if (summaryStr.toLowerCase().includes('roll transfer') || summaryStr.toLowerCase().includes('save free transfer') || summaryStr.includes('LOCKED') || summaryStr.includes('INITIAL')) {
+    // 4. Wildcard chip activation
+    if (summaryStr.toLowerCase().includes('wildcard')) {
+      return (
+        <div className="directive-structured-text">
+          <span className="directive-action">Activate Wildcard Chip</span>
+          <span className="directive-separator font-mono">·</span>
+          <span className="directive-detail">Permanent free transfers recommended for full squad rebuild</span>
+        </div>
+      );
+    }
+
+    // 5. Roll Free Transfer / Bank FT
+    if (
+      summaryStr.toLowerCase().includes('roll transfer') ||
+      summaryStr.toLowerCase().includes('save free transfer') ||
+      summaryStr.toLowerCase().includes('bank')
+    ) {
       return (
         <div className="directive-structured-text">
           <span className="directive-action">Save Free Transfer (Roll FT)</span>
           <span className="directive-separator font-mono">·</span>
-          <span className="directive-detail">Bank 1 FT to have 2 free transfers available next week</span>
+          <span className="directive-detail">Bank 1 FT to accumulate free transfers for upcoming gameweeks</span>
         </div>
       );
     }
 
-    const cleanMsg = summaryStr.replace(/EXECUTE\s*\d*\s*FREE\s*TRANSFER\(S\):\s*/i, '');
+    // 6. Stand Pat / Squad Locked
+    if (
+      summaryStr.toLowerCase().includes('no immediate transfers') ||
+      summaryStr.toLowerCase().includes('stand pat') ||
+      summaryStr.toLowerCase().includes('lineup locked') ||
+      summaryStr.includes('LOCKED') ||
+      summaryStr.includes('INITIAL')
+    ) {
+      return (
+        <div className="directive-structured-text">
+          <span className="directive-action">Squad Locked · Stand Pat</span>
+          <span className="directive-separator font-mono">·</span>
+          <span className="directive-detail">No immediate transfers required for this gameweek</span>
+        </div>
+      );
+    }
+
+    // 7. Clean fallthrough: strip technical solver regex prefixes and bracketed debug rationale
+    const cleanMsg = summaryStr
+      .replace(/EXECUTE\s*\d*\s*FREE\s*TRANSFER\(S\):\s*/i, '')
+      .replace(/\[Squad holds[^\]]*\]/gi, '')
+      .replace(/\|\s*\[!\]\s*Nightly Price Risk:[^|]+/gi, '')
+      .replace(/Option Hurdle:[^)]+\)/gi, '')
+      .trim();
+
     return (
       <div className="directive-structured-text">
-        <span className="directive-action">{cleanMsg}</span>
+        <span className="directive-action">{cleanMsg || 'Review squad transfers in Planner'}</span>
       </div>
     );
   };

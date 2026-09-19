@@ -1501,10 +1501,45 @@ p,
   font-size: var(--text-md);
 }
 
+.rec-directive-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.rec-transfer-pair {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.hud-directive-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  line-height: var(--leading-tight);
+}
+
+.directive-meta-gain {
+  color: var(--accent-emerald);
+  font-weight: 600;
+}
+
+.directive-meta-alert {
+  color: var(--accent-amber);
+  font-weight: 500;
+}
+
+.directive-meta-sep {
+  color: var(--border-medium);
+}
+
 .rec-transfer-group {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 
@@ -1556,6 +1591,182 @@ p,
   font-size: var(--text-md);
   font-weight: 600;
   color: var(--text-primary);
+}
+
+/* Recommended Tactical Moves Panel (Transfer Planner) */
+.recommended-moves-panel {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.rec-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.rec-panel-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rec-panel-eyebrow {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--accent-emerald);
+  letter-spacing: 0.05em;
+}
+
+.rec-panel-subtitle {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.rec-panel-badge {
+  font-size: var(--text-xs);
+  padding: 2px var(--space-2);
+  background: var(--bg-surface-3);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-xs);
+  color: var(--text-secondary);
+}
+
+.rec-pairs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-3);
+}
+
+.rec-pair-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  width: 100%;
+}
+
+.rec-pair-card:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-surface-2);
+}
+
+.rec-pair-card.active {
+  border-color: var(--accent-emerald);
+  background: rgba(16, 185, 129, 0.06);
+  box-shadow: 0 0 0 1px var(--accent-emerald);
+}
+
+.rec-pair-flow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.rec-card-player {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.rec-action-badge.out {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-crimson);
+  letter-spacing: 0.04em;
+}
+
+.rec-action-badge.in {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-emerald);
+  letter-spacing: 0.04em;
+}
+
+.rec-card-name {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rec-card-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.rec-flow-arrow {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.rec-pair-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: 11px;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+
+.rec-delta-tag.gain {
+  color: var(--accent-emerald);
+  font-weight: 700;
+}
+
+.rec-delta-tag.loss {
+  color: var(--accent-crimson);
+  font-weight: 700;
+}
+
+.rec-cost-tag {
+  color: var(--text-secondary);
+}
+
+.rec-status-tag {
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.rec-status-tag.active {
+  color: var(--accent-emerald);
+  font-weight: 700;
+}
+
+.interactive-move-item {
+  cursor: pointer;
+  transition: transform var(--transition-fast), background var(--transition-fast);
+  border-radius: var(--radius-xs);
+  padding: 2px 4px;
+}
+
+.interactive-move-item:hover {
+  background: var(--bg-surface-3);
+  transform: translateY(-1px);
+}
+
+.interactive-move-item:focus-visible {
+  outline: 2px solid var(--accent-emerald);
+  outline-offset: 1px;
 }
 
 .status-indicator {

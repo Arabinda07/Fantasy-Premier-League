@@ -1203,33 +1203,29 @@ export function analyzeRivals(rivalsData = [], userSquad = [], allPlayers = []) 
 /**
  * Generate 5-Gameweek Multi-Horizon Roadmap
  */
-export function generateMultiGwRoadmap(solvedLineup, allPlayers = [], currentGw = 2) {
+export function generateMultiGwRoadmap(solvedLineup, allPlayers = [], currentGw = 2, transferAnalysis = null) {
   const gwList = [currentGw, currentGw + 1, currentGw + 2, currentGw + 3, currentGw + 4];
-  const roadmap = {};
+  const roadmap = [];
+
+  const firstIn = transferAnalysis?.pairwise_transfers?.map(p => p.in || p.in_player) ||
+                  transferAnalysis?.transfers?.map(t => t.in || t.in_player) || [];
+  const firstOut = transferAnalysis?.pairwise_transfers?.map(p => p.out || p.out_player) ||
+                   transferAnalysis?.transfers?.map(t => t.out || t.out_player) || [];
 
   for (let i = 0; i < gwList.length; i++) {
     const gwNum = gwList[i];
     const decay = 1.0 - i * 0.04;
-    const projectedXp = Number((solvedLineup.startingXp * decay).toFixed(1));
+    const projectedXp = Number(((solvedLineup?.startingXp || 50.0) * decay).toFixed(1));
 
-    roadmap[`gw${gwNum}`] = {
-      gameweek: gwNum,
-      projected_xp: projectedXp,
-      transfers_planned: i === 0 ? [] : [
-        {
-          gw: gwNum,
-          type: 'ROLL_FT',
-          reason: 'Accumulate free transfers for upcoming fixture swing',
-        },
-      ],
-      captain_pick: solvedLineup.captain ? solvedLineup.captain.web_name : 'Haaland',
-      active_chip: 'none',
-      squad_summary: {
-        starters_count: 11,
-        bench_count: 4,
-        formation: solvedLineup.formation,
-      },
-    };
+    roadmap.push({
+      gw: gwNum,
+      transfers_in: i === 0 ? firstIn : [],
+      transfers_out: i === 0 ? firstOut : [],
+      hits_taken: 0,
+      net_xp: projectedXp,
+      bank: 0.5,
+      ft_available: i === 0 ? (firstIn.length > 0 ? 0 : 1) : 1,
+    });
   }
 
   return roadmap;
@@ -1327,7 +1323,7 @@ export function buildLiveMatchdayPayload(syncedData = {}, allPlayers = [], selec
   const enrichedRivals = analyzeRivals(syncedData.rivals || [], enrichedSquad, allPlayers);
 
   // 7. Multi-horizon roadmap
-  const roadmap = generateMultiGwRoadmap(solved, allPlayers, currentGw);
+  const roadmap = generateMultiGwRoadmap(solved, allPlayers, currentGw, transferAnalysis);
 
   // 8. Structural Archetype Builds
   const structuralBuilds = generateStructuralBuilds(allPlayers, enrichedSquad);

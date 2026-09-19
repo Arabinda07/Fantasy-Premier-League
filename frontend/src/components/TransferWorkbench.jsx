@@ -1,16 +1,20 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   MagnifyingGlass,
   Scales,
   X,
   TrendUp,
-  TrendDown
+  TrendDown,
+  ArrowsLeftRight
 } from '@phosphor-icons/react';
 
 export default function TransferWorkbench({
-  roadmap: _roadmap,
-  allPlayers,
+  roadmap = [],
+  allPlayers = [],
   squadPlayers = [],
+  activeGwItem = null,
+  activeGwIndex = 0,
+  selectedTransferPair = null,
   onInspectPlayer,
   onCompareChange
 }) {
@@ -25,6 +29,73 @@ export default function TransferWorkbench({
 
   // Initialize playerOut with first squad player if available
   const defaultSquadList = squadPlayers.length > 0 ? squadPlayers : (allPlayers ? allPlayers.slice(0, 15) : []);
+
+  // Current Horizon Plan derived from activeGwItem, roadmap[activeGwIndex], or roadmap[0]
+  const currentPlan = activeGwItem || (roadmap && roadmap.length > 0 ? roadmap[activeGwIndex || 0] : null);
+
+  // Compute recommended pairs from the active roadmap item
+  const recommendedPairs = useMemo(() => {
+    if (!currentPlan || !Array.isArray(currentPlan.transfers_in) || currentPlan.transfers_in.length === 0) {
+      return [];
+    }
+
+    const pairs = [];
+    const pool = allPlayers || [];
+    const squad = defaultSquadList || [];
+
+    currentPlan.transfers_in.forEach((inName, idx) => {
+      const outName = currentPlan.transfers_out?.[idx] || '';
+
+      const pIn = pool.find(p => (p.web_name || '').toLowerCase() === (inName || '').toLowerCase()) ||
+                  pool.find(p => (p.web_name || '').toLowerCase().includes((inName || '').toLowerCase()));
+
+      const pOut = squad.find(p => (p.web_name || '').toLowerCase() === (outName || '').toLowerCase()) ||
+                   squad.find(p => (p.web_name || '').toLowerCase().includes((outName || '').toLowerCase())) ||
+                   pool.find(p => (p.web_name || '').toLowerCase() === (outName || '').toLowerCase());
+
+      if (pIn && pOut) {
+        const xpInVal = Number(pIn.expected_points ?? pIn.xp ?? pIn.xP ?? 0);
+        const xpOutVal = Number(pOut.expected_points ?? pOut.xp ?? pOut.xP ?? 0);
+        const costInVal = Number(pIn.now_cost ?? pIn.cost ?? 0);
+        const costOutVal = Number(pOut.now_cost ?? pOut.cost ?? 0);
+
+        pairs.push({
+          inPlayer: pIn,
+          outPlayer: pOut,
+          inName: pIn.web_name || inName,
+          outName: pOut.web_name || outName,
+          xpDelta: Number((xpInVal - xpOutVal).toFixed(1)),
+          costDelta: Number((costInVal - costOutVal).toFixed(1)),
+        });
+      }
+    });
+
+    return pairs;
+  }, [currentPlan, allPlayers, defaultSquadList]);
+
+  // Sync with selectedTransferPair prop or auto-populate 1st recommended move
+  useEffect(() => {
+    if (selectedTransferPair?.inName && selectedTransferPair?.outName) {
+      const pool = allPlayers || [];
+      const squad = defaultSquadList || [];
+      const pIn = pool.find(p => (p.web_name || '').toLowerCase() === selectedTransferPair.inName.toLowerCase()) ||
+                  pool.find(p => (p.web_name || '').toLowerCase().includes(selectedTransferPair.inName.toLowerCase()));
+      const pOut = squad.find(p => (p.web_name || '').toLowerCase() === selectedTransferPair.outName.toLowerCase()) ||
+                   squad.find(p => (p.web_name || '').toLowerCase().includes(selectedTransferPair.outName.toLowerCase())) ||
+                   pool.find(p => (p.web_name || '').toLowerCase() === selectedTransferPair.outName.toLowerCase());
+
+      if (pIn && pOut) {
+        setPlayerIn(pIn);
+        setPlayerOut(pOut);
+        if (onCompareChange) onCompareChange(`${pIn.web_name} vs ${pOut.web_name}`);
+      }
+    } else if (!playerIn && !playerOut && recommendedPairs.length > 0) {
+      const first = recommendedPairs[0];
+      setPlayerIn(first.inPlayer);
+      setPlayerOut(first.outPlayer);
+      if (onCompareChange) onCompareChange(`${first.inPlayer.web_name} vs ${first.outPlayer.web_name}`);
+    }
+  }, [selectedTransferPair, recommendedPairs]);
 
   // Filter and sort marketplace players
   const filteredPlayers = useMemo(() => {
@@ -86,6 +157,82 @@ export default function TransferWorkbench({
 
   return (
     <div className="view-fluid">
+      {/* Recommended Tactical Moves Panel */}
+      {recommendedPairs.length > 0 && (
+        <div className="recommended-moves-panel">
+          <div className="rec-panel-header">
+            <div className="rec-panel-title-group">
+              <span className="rec-panel-eyebrow font-mono">
+                {currentPlan?.gw ? `GW${currentPlan.gw} RECOMMENDED TRANSFERS` : 'RECOMMENDED TRANSFERS'}
+              </span>
+              <span className="rec-panel-subtitle">
+                Target moves calculated by transfer model to maximize expected points
+              </span>
+            </div>
+            <span className="rec-panel-badge font-mono">
+              {recommendedPairs.length} {recommendedPairs.length === 1 ? 'Transfer' : 'Transfers'}
+            </span>
+          </div>
+
+          <div className="rec-pairs-grid">
+            {recommendedPairs.map((pair, idx) => {
+              const isCurrentActive =
+                playerIn?.player_code === pair.inPlayer.player_code &&
+                playerOut?.player_code === pair.outPlayer.player_code;
+
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => {
+                    setPlayerIn(pair.inPlayer);
+                    setPlayerOut(pair.outPlayer);
+                    if (onCompareChange) {
+                      onCompareChange(`${pair.inPlayer.web_name} vs ${pair.outPlayer.web_name}`);
+                    }
+                  }}
+                  className={`rec-pair-card ${isCurrentActive ? 'active' : ''}`}
+                >
+                  <div className="rec-pair-flow">
+                    <div className="rec-card-player out">
+                      <span className="rec-action-badge out font-mono">SELL</span>
+                      <span className="rec-card-name">{pair.outName}</span>
+                      <span className="rec-card-meta font-mono">
+                        {pair.outPlayer.position} · £{Number(pair.outPlayer.cost || pair.outPlayer.now_cost || 0).toFixed(1)}m
+                      </span>
+                    </div>
+
+                    <ArrowsLeftRight size={16} className="rec-flow-arrow" />
+
+                    <div className="rec-card-player in">
+                      <span className="rec-action-badge in font-mono">BUY</span>
+                      <span className="rec-card-name">{pair.inName}</span>
+                      <span className="rec-card-meta font-mono">
+                        {pair.inPlayer.position} · £{Number(pair.inPlayer.cost || pair.inPlayer.now_cost || 0).toFixed(1)}m
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="rec-pair-footer font-mono">
+                    <span className={`rec-delta-tag ${pair.xpDelta >= 0 ? 'gain' : 'loss'}`}>
+                      {pair.xpDelta >= 0 ? `+${pair.xpDelta} xP Gain` : `${pair.xpDelta} xP`}
+                    </span>
+                    <span className="rec-cost-tag">
+                      {pair.costDelta <= 0
+                        ? `Saves £${Math.abs(pair.costDelta).toFixed(1)}m`
+                        : `Costs +£${pair.costDelta.toFixed(1)}m`}
+                    </span>
+                    <span className={`rec-status-tag ${isCurrentActive ? 'active' : ''}`}>
+                      {isCurrentActive ? '● LOADED IN WORKBENCH' : 'COMPARE IN WORKBENCH ↗'}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Side-by-Side Transfer Comparison Workbench */}
       {playerIn ? (
         <div className="compare-workbench-container">
