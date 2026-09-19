@@ -514,7 +514,7 @@ class ConstitutionLinter:
                                     with open(full_path, 'r', encoding='utf-8', errors='replace') as uf:
                                         u_lines = uf.readlines()
                                     diff_text += f"\ndiff --git a/{norm_file} b/{norm_file}\nnew file mode 100644\n--- /dev/null\n+++ b/{norm_file}\n@@ -0,0 +1,{len(u_lines)} @@\n"
-                                    diff_text += "".join(f"+{l.rstrip('\r\n')}\n" for l in u_lines)
+                                    diff_text += "".join("+" + l.rstrip('\r\n') + "\n" for l in u_lines)
                                 except Exception:
                                     pass
             except Exception:
