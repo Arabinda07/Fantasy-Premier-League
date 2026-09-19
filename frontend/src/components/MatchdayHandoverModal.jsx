@@ -129,11 +129,11 @@ export default function MatchdayHandoverModal({
           {/* Manager & Team Profile Banner */}
           <div className="handover-profile-card">
             <div className="handover-profile-header">
-              <span className="profile-tag font-mono">
+              <span className="handover-profile-tag font-mono">
                 <User size={12} weight="bold" style={{ display: 'inline', marginRight: '4px' }} />
                 SQUAD IDENTITY
               </span>
-              <span className="profile-status font-mono">
+              <span className="handover-profile-id font-mono">
                 TEAM ID: #{managerId}
               </span>
             </div>
@@ -213,11 +213,11 @@ export default function MatchdayHandoverModal({
             </div>
 
             <div className="handover-formation-bar font-mono">
-              <span>Formation: <strong>{formationStr}</strong></span>
-              <span>&middot;</span>
-              <span>Projected Output: <strong>{totalStartingXp} Exp Pts</strong></span>
-              <span>&middot;</span>
-              <span>Bench Order: {bench.slice(0, 3).map(p => p.web_name).join(', ') || 'Calafiori, Calvert-Lewin, De Cuyper'}</span>
+              <span className="handover-telemetry-item">Formation: <strong>{formationStr}</strong></span>
+              <span className="handover-telemetry-dot">&middot;</span>
+              <span className="handover-telemetry-item">Projected Output: <strong>{totalStartingXp} Exp Pts</strong></span>
+              <span className="handover-telemetry-dot">&middot;</span>
+              <span className="handover-telemetry-item">Bench Order: {bench.slice(0, 3).map(p => p.web_name).join(', ') || 'Calafiori, Calvert-Lewin, De Cuyper'}</span>
             </div>
           </div>
 
