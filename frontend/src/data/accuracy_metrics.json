@@ -1,110 +1,110 @@
 {
   "evaluated_gw": 1,
-  "evaluated_at": "2026-09-19T14:18:19.356054+00:00",
+  "evaluated_at": "2026-09-19T17:13:14.611547+00:00",
   "season": "2026-27",
-  "total_players": 659,
-  "active_players": 406,
-  "overall_mae": 1.26,
-  "overall_rmse": 2.15,
-  "starters_mae": 2.01,
-  "starters_rmse": 2.73,
-  "rank_correlation": 0.572,
+  "total_players": 4,
+  "active_players": 4,
+  "overall_mae": 2.5,
+  "overall_rmse": 3.06,
+  "starters_mae": 2.5,
+  "starters_rmse": 3.06,
+  "rank_correlation": 0.8,
   "brier_score_cs": 0.198,
   "positional": [
     {
       "pos": "GK",
-      "count": 23,
-      "mae": 2.48,
-      "rmse": 3.11,
-      "meanPred": 3.41,
-      "meanAct": 3.65,
-      "bias": -0.24,
-      "status": "CALIBRATED"
+      "count": 1,
+      "mae": 2.0,
+      "rmse": 2.0,
+      "meanPred": 4.0,
+      "meanAct": 2.0,
+      "bias": 2.0,
+      "status": "OVER_PROJECTED"
     },
     {
       "pos": "DEF",
-      "count": 117,
-      "mae": 2.53,
-      "rmse": 3.23,
-      "meanPred": 2.68,
-      "meanAct": 2.76,
-      "bias": -0.08,
-      "status": "CALIBRATED"
+      "count": 1,
+      "mae": 1.5,
+      "rmse": 1.5,
+      "meanPred": 4.5,
+      "meanAct": 6.0,
+      "bias": -1.5,
+      "status": "UNDER_PROJECTED"
     },
     {
       "pos": "MID",
-      "count": 128,
-      "mae": 1.85,
-      "rmse": 2.74,
-      "meanPred": 2.77,
-      "meanAct": 2.76,
-      "bias": 0.01,
-      "status": "CALIBRATED"
+      "count": 1,
+      "mae": 1.0,
+      "rmse": 1.0,
+      "meanPred": 6.0,
+      "meanAct": 5.0,
+      "bias": 1.0,
+      "status": "OVER_PROJECTED"
     },
     {
       "pos": "FWD",
-      "count": 32,
-      "mae": 2.69,
-      "rmse": 3.45,
-      "meanPred": 2.92,
-      "meanAct": 3.12,
-      "bias": -0.21,
-      "status": "CALIBRATED"
+      "count": 1,
+      "mae": 5.5,
+      "rmse": 5.5,
+      "meanPred": 7.5,
+      "meanAct": 13.0,
+      "bias": -5.5,
+      "status": "UNDER_PROJECTED"
     }
   ],
   "outliers": [
     {
-      "player": "Groß",
-      "team": "Brighton",
+      "player": "Haaland",
+      "team": "Man City",
       "pos": "ASSET",
-      "pred": 3.47,
-      "actual": 17,
-      "diff": "+13.5",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Bogle",
-      "team": "Leeds",
-      "pos": "ASSET",
-      "pred": 3.14,
-      "actual": 15,
-      "diff": "+11.9",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Schade",
-      "team": "Brentford",
-      "pos": "ASSET",
-      "pred": 3.72,
-      "actual": 15,
-      "diff": "+11.3",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Davis",
-      "team": "Ipswich Town",
-      "pos": "ASSET",
-      "pred": 2.87,
-      "actual": 14,
-      "diff": "+11.1",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Belloumi",
-      "team": "Hull City",
-      "pos": "ASSET",
-      "pred": 2.34,
+      "pred": 7.5,
       "actual": 13,
-      "diff": "+10.7",
+      "diff": "+5.5",
       "reason": "High conversion or unexpected haul"
     },
     {
-      "player": "Havertz",
+      "player": "Gabriel",
       "team": "Arsenal",
       "pos": "ASSET",
-      "pred": 5.51,
-      "actual": 1,
-      "diff": "-4.5",
+      "pred": 4.5,
+      "actual": 6,
+      "diff": "+1.5",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Palmer",
+      "team": "Chelsea",
+      "pos": "ASSET",
+      "pred": 6.0,
+      "actual": 5,
+      "diff": "+1.0",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Raya",
+      "team": "Arsenal",
+      "pos": "ASSET",
+      "pred": 4.0,
+      "actual": 2,
+      "diff": "+2.0",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Raya",
+      "team": "Arsenal",
+      "pos": "ASSET",
+      "pred": 4.0,
+      "actual": 2,
+      "diff": "-2.0",
+      "reason": "Tactical substitution or match blank"
+    },
+    {
+      "player": "Palmer",
+      "team": "Chelsea",
+      "pos": "ASSET",
+      "pred": 6.0,
+      "actual": 5,
+      "diff": "-1.0",
       "reason": "Tactical substitution or match blank"
     }
   ]

@@ -96,6 +96,47 @@ export default function App() {
   const [bench, setBench] = useState(initialMatchday.data?.bench || []);
   const [selectedSwapPlayer, setSelectedSwapPlayer] = useState(null);
   const [activeStrategy, setActiveStrategy] = useState(initialMatchday.data?.strategy || 'pure_xp');
+  const [isSimulating, setIsSimulating] = useState(false);
+  const [isLineupLocked, setIsLineupLocked] = useState(() => {
+    try {
+      const gw = initialMatchday.gameweek || 6;
+      return typeof window !== 'undefined' && localStorage.getItem(`fpl_lineup_locked_gw_${gw}`) === 'true';
+    } catch {
+      return false;
+    }
+  });
+  const [freeTransfers, setFreeTransfers] = useState(() => {
+    try {
+      const gw = initialMatchday.gameweek || 6;
+      const locked = typeof window !== 'undefined' && localStorage.getItem(`fpl_lineup_locked_gw_${gw}`) === 'true';
+      if (locked) return 0;
+      const savedFt = typeof window !== 'undefined' && localStorage.getItem(`fpl_free_transfers_gw_${gw}`);
+      if (savedFt !== null) return Number(savedFt);
+      return initialMatchday.data?.manager_profile?.free_transfers ?? 1;
+    } catch {
+      return 1;
+    }
+  });
+
+  const handleConfirmLockLineup = () => {
+    setIsLineupLocked(true);
+    setFreeTransfers(0);
+    try {
+      localStorage.setItem(`fpl_lineup_locked_gw_${selectedGw}`, 'true');
+      localStorage.setItem(`fpl_free_transfers_gw_${selectedGw}`, '0');
+    } catch (e) {
+      console.warn('Storage error:', e);
+    }
+  };
+
+  const handleResetToSuggested = () => {
+    const data = getMatchdayData(selectedGw) || liveData;
+    if (data) {
+      setStarters(data.starters || []);
+      setBench(data.bench || []);
+      setSelectedSwapPlayer(null);
+    }
+  };
 
   // Check first-time onboarding on initial mount
   useEffect(() => {
@@ -185,6 +226,23 @@ export default function App() {
       setBench(data.bench || []);
       setSelectedSwapPlayer(null);
       if (data.strategy) setActiveStrategy(data.strategy);
+
+      const isLocked = (() => {
+        try {
+          return localStorage.getItem(`fpl_lineup_locked_gw_${numGw}`) === 'true';
+        } catch {
+          return false;
+        }
+      })();
+      setIsLineupLocked(isLocked);
+      const savedFt = (() => {
+        try {
+          return localStorage.getItem(`fpl_free_transfers_gw_${numGw}`);
+        } catch {
+          return null;
+        }
+      })();
+      setFreeTransfers(isLocked ? 0 : (savedFt !== null ? Number(savedFt) : (data.manager_profile?.free_transfers ?? 1)));
     }
   };
 
@@ -294,8 +352,13 @@ export default function App() {
     const isP2Starter = starters.some(s => (s.player_code || s.code) === (p2.player_code || p2.code));
 
     if (isP1Starter && !isP2Starter) {
-      const newStarters = starters.map(s => (s.player_code || s.code) === (p1.player_code || p1.code) ? p2 : s);
-      const newBench = bench.map(b => (b.player_code || b.code) === (p2.player_code || p2.code) ? p1 : b);
+      const p1WasCapt = Boolean(p1.is_captain);
+      const p1WasVc = Boolean(p1.is_vice_captain);
+      const outgoingBench = { ...p1, is_starter: false, is_captain: false, is_vice_captain: false };
+      const incomingStarter = { ...p2, is_starter: true, is_captain: p1WasCapt, is_vice_captain: p1WasVc };
+
+      const newStarters = starters.map(s => (s.player_code || s.code) === (p1.player_code || p1.code) ? incomingStarter : s);
+      const newBench = bench.map(b => (b.player_code || b.code) === (p2.player_code || p2.code) ? outgoingBench : b);
       if (validateFormation(newStarters)) {
         setStarters(newStarters);
         setBench(newBench);
@@ -305,8 +368,13 @@ export default function App() {
         setSelectedSwapPlayer(null);
       }
     } else if (!isP1Starter && isP2Starter) {
-      const newStarters = starters.map(s => (s.player_code || s.code) === (p2.player_code || p2.code) ? p1 : s);
-      const newBench = bench.map(b => (b.player_code || b.code) === (p1.player_code || p1.code) ? p2 : b);
+      const p2WasCapt = Boolean(p2.is_captain);
+      const p2WasVc = Boolean(p2.is_vice_captain);
+      const outgoingBench = { ...p2, is_starter: false, is_captain: false, is_vice_captain: false };
+      const incomingStarter = { ...p1, is_starter: true, is_captain: p2WasCapt, is_vice_captain: p2WasVc };
+
+      const newStarters = starters.map(s => (s.player_code || s.code) === (p2.player_code || p2.code) ? incomingStarter : s);
+      const newBench = bench.map(b => (b.player_code || b.code) === (p1.player_code || p1.code) ? outgoingBench : b);
       if (validateFormation(newStarters)) {
         setStarters(newStarters);
         setBench(newBench);
@@ -318,6 +386,42 @@ export default function App() {
     } else {
       setSelectedSwapPlayer(null);
     }
+  };
+
+  // Interactive Captain / Vice-Captain Designation Handler
+  const handleToggleCaptain = (player) => {
+    if (!player) return;
+    const targetCode = player.player_code || player.code;
+
+    setStarters(prev => {
+      const currentCapt = prev.find(p => p.is_captain);
+      const isTargetCapt = currentCapt && (currentCapt.player_code || currentCapt.code) === targetCode;
+
+      if (isTargetCapt) {
+        // If target is already captain, promote vice-captain to captain and make target vice-captain
+        const currentVc = prev.find(p => p.is_vice_captain) || prev.find(p => (p.player_code || p.code) !== targetCode);
+        const vcCode = currentVc ? (currentVc.player_code || currentVc.code) : null;
+        return prev.map(p => {
+          const c = p.player_code || p.code;
+          return {
+            ...p,
+            is_captain: c === vcCode,
+            is_vice_captain: c === targetCode
+          };
+        });
+      } else {
+        // Promote target to Captain; demote previous Captain to Vice-Captain
+        return prev.map(p => {
+          const c = p.player_code || p.code;
+          const wasCapt = Boolean(p.is_captain);
+          return {
+            ...p,
+            is_captain: c === targetCode,
+            is_vice_captain: wasCapt && c !== targetCode ? true : (c === targetCode ? false : p.is_vice_captain)
+          };
+        });
+      }
+    });
   };
 
   return (
@@ -339,6 +443,7 @@ export default function App() {
         strategy={activeStrategy}
         onSelectStrategy={handleStrategyChange}
         activeChip={activeChip}
+        freeTransfers={freeTransfers}
       />
 
       {/* Semantic Breadcrumbs Navigation Bar */}
@@ -382,6 +487,13 @@ export default function App() {
                     onSelectStrategy={handleStrategyChange}
                     onNavigateTab={handleTabChange}
                     onOpenSyncModal={() => setIsSyncModalOpen(true)}
+                    onToggleCaptain={handleToggleCaptain}
+                    isSimulating={isSimulating}
+                    onToggleSimulate={() => setIsSimulating(prev => !prev)}
+                    onResetToSuggested={handleResetToSuggested}
+                    isLineupLocked={isLineupLocked}
+                    onConfirmLockLineup={handleConfirmLockLineup}
+                    freeTransfers={freeTransfers}
                   />
                 </div>
               </ErrorBoundary>

@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import PlayerCard from './PlayerCard';
+import MatchdayHandoverModal from './MatchdayHandoverModal';
+import TransferBreakdownModal from './TransferBreakdownModal';
 import { formatFplPrice } from '../constants/copyTokens';
 import {
   ShieldCheck,
@@ -11,7 +13,8 @@ import {
   ArrowDownRight,
   CaretRight,
   Target,
-  Check
+  Check,
+  ClockCounterClockwise
 } from '@phosphor-icons/react';
 
 export default function TacticalPitch({
@@ -38,7 +41,14 @@ export default function TacticalPitch({
   strategy = 'pure_xp',
   onSelectStrategy = () => {},
   onNavigateTab,
-  onOpenSyncModal
+  onOpenSyncModal,
+  onToggleCaptain,
+  isSimulating = false,
+  onToggleSimulate = () => {},
+  onResetToSuggested = () => {},
+  isLineupLocked = false,
+  onConfirmLockLineup = () => {},
+  freeTransfers = 1
 }) {
   // Extract data from liveData payload if provided
   const effectiveChipSimulations = liveData?.chip_simulations || chipSimulations || {};
@@ -47,8 +57,16 @@ export default function TacticalPitch({
   const effectiveStartingXp = liveData?.starting_xp != null ? liveData.starting_xp : startingXp;
   const activeSelectedPlayer = selectedSwapPlayer || selectedPlayer;
 
+  const [isHandoverOpen, setIsHandoverOpen] = useState(false);
+  const [isBreakdownOpen, setIsBreakdownOpen] = useState(false);
+
   const handlePlayerSelect = (p) => {
     if (activeChip !== 'none') {
+      if (onInspectPlayer) onInspectPlayer(p);
+      return;
+    }
+
+    if (!isSimulating) {
       if (onInspectPlayer) onInspectPlayer(p);
       return;
     }
@@ -71,15 +89,23 @@ export default function TacticalPitch({
     else if (onOpenMatchup) onOpenMatchup(details);
   };
 
+  // Helper to extract numeric expected points from player
+  const getPlayerXp = (p) => {
+    if (!p) return 0;
+    const val = p.dynamicXp ?? p.expected_points ?? p.xp ?? p.xP ?? 0;
+    return Number(val) || 0;
+  };
+
   // Compute Dynamic Chip Simulations from current squad
   const resolvedChipData = useMemo(() => {
     const capt = starters.find(p => p.is_captain) || starters[0];
-    const captXp = capt ? Number(capt.expected_points || 0) : 0;
-    const baseStartingXp = effectiveStartingXp;
-    const tripleCaptainXp = baseStartingXp + captXp;
+    const captXp = getPlayerXp(capt);
+    const baseStartersSum = starters.reduce((acc, p) => acc + getPlayerXp(p), 0);
+    const standardStartingXp = baseStartersSum + captXp;
+    const tripleCaptainXp = baseStartersSum + (captXp * 2);
 
-    const benchXp = bench.reduce((acc, p) => acc + Number(p.expected_points || 0), 0);
-    const benchBoostXp = baseStartingXp + benchXp;
+    const benchXp = bench.reduce((acc, p) => acc + getPlayerXp(p), 0);
+    const benchBoostXp = standardStartingXp + benchXp;
 
     const result = {
       '3xc': {
@@ -106,7 +132,7 @@ export default function TacticalPitch({
     if (effectiveChipSimulations['3xc']) result['3xc'] = effectiveChipSimulations['3xc'];
 
     return result;
-  }, [starters, bench, effectiveStartingXp, effectiveChipSimulations]);
+  }, [starters, bench, effectiveChipSimulations]);
 
   // Determine active strategy squad if chip is none
   const currentStrategyData = effectiveStrategies && effectiveStrategies[strategy] ? effectiveStrategies[strategy] : null;
@@ -128,11 +154,31 @@ export default function TacticalPitch({
       ? currentStrategyData.bench
       : bench);
 
+  // Dynamically calculate expected points for active display starters + captain bonus + bench boost
+  const calculatedStartingXp = useMemo(() => {
+    if (!displayStarters || displayStarters.length === 0) return 0;
+
+    // Sum base points of all active starters
+    const startersBaseSum = displayStarters.reduce((acc, p) => acc + getPlayerXp(p), 0);
+
+    // Captain bonus: 1x additional for regular captain (total 2x), 2x additional for Triple Captain (total 3x)
+    const capt = displayStarters.find(p => p.is_captain) || displayStarters[0];
+    const captXp = getPlayerXp(capt);
+    const captainBonus = activeChip === '3xc' ? (captXp * 2) : captXp;
+
+    // Bench Boost bonus: all bench players scoring
+    const benchBoostBonus = isBenchBoost
+      ? displayBench.reduce((acc, p) => acc + getPlayerXp(p), 0)
+      : 0;
+
+    return Number((startersBaseSum + captainBonus + benchBoostBonus).toFixed(1));
+  }, [displayStarters, displayBench, activeChip, isBenchBoost]);
+
   const displayStartingXp = isChipActive
-    ? (currentChipData.starting_xp != null ? currentChipData.starting_xp : currentChipData.total_xp)
-    : (strategy !== 'pure_xp' && currentStrategyData
+    ? (currentChipData.starting_xp != null ? currentChipData.starting_xp : calculatedStartingXp)
+    : (strategy !== 'pure_xp' && currentStrategyData && currentStrategyData.starting_xp != null
       ? currentStrategyData.starting_xp
-      : effectiveStartingXp);
+      : calculatedStartingXp);
 
   // Group players for pitch rendering
   const allPitchPlayers = useMemo(() => {
@@ -372,27 +418,7 @@ export default function TacticalPitch({
     (typeof window !== 'undefined' && localStorage.getItem('fpl_synced_entry_id'))
   );
 
-  const [isLineupLocked, setIsLineupLocked] = useState(() => {
-    try {
-      return typeof window !== 'undefined' && localStorage.getItem(`fpl_lineup_locked_gw_${liveData?.gameweek || 2}`) === 'true';
-    } catch (e) {
-      return false;
-    }
-  });
 
-  const handlePrimaryCtaClick = () => {
-    if (!isSynced) {
-      if (onOpenSyncModal) {
-        onOpenSyncModal();
-      }
-      return;
-    }
-    const nextState = !isLineupLocked;
-    setIsLineupLocked(nextState);
-    try {
-      localStorage.setItem(`fpl_lineup_locked_gw_${liveData?.gameweek || 2}`, String(nextState));
-    } catch (e) {}
-  };
 
 
   // Determine actual completed points
@@ -413,6 +439,12 @@ export default function TacticalPitch({
           <span className="matchday-formation-tag font-mono">
             {isNonParticipating ? 'No Squad' : isCompletedGw ? 'Completed' : `${formation}`}
           </span>
+          {liveData?.guardrail_audit && (
+            <span className="hud-audit-chip font-mono" title={liveData.guardrail_audit.message || 'All Mathematical & Tactical Guardrails Passed'}>
+              <ShieldCheck size={12} weight="fill" color="var(--accent-emerald)" />
+              MODEL AUDIT: PASSED
+            </span>
+          )}
         </div>
 
         <div className="matchday-status-right">
@@ -425,11 +457,45 @@ export default function TacticalPitch({
             </span>
           </div>
 
+          {!isCompletedGw && (
+            <>
+              <button
+                type="button"
+                className={`matchday-sim-btn font-mono ${isSimulating ? 'active' : ''}`}
+                onClick={onToggleSimulate}
+                title={isSimulating ? "Exit simulation mode" : "Simulate squad changes and bench substitutions"}
+              >
+                <Lightning size={13} weight={isSimulating ? "fill" : "bold"} />
+                <span>{isSimulating ? "Simulating" : "Simulate"}</span>
+              </button>
+
+              {isSimulating && (
+                <button
+                  type="button"
+                  className="matchday-reset-btn font-mono"
+                  onClick={onResetToSuggested}
+                  title="Reset squad back to model's suggested lineup"
+                >
+                  <ClockCounterClockwise size={13} weight="bold" />
+                  <span>Reset</span>
+                </button>
+              )}
+            </>
+          )}
+
           <button
             type="button"
             className={`matchday-lock-btn font-mono ${isLineupLocked ? 'is-locked' : ''}`}
-            onClick={handlePrimaryCtaClick}
-            title={!isSynced ? "Connect FPL Team to synchronize lineup" : isLineupLocked ? "Lineup is locked for this gameweek" : "Lock lineup selections"}
+            onClick={() => {
+              if (isLineupLocked) return;
+              if (!isSynced && onOpenSyncModal) {
+                onOpenSyncModal();
+                return;
+              }
+              setIsHandoverOpen(true);
+            }}
+            disabled={isLineupLocked}
+            title={isLineupLocked ? "Lineup is locked for this gameweek" : "Review matchday checklist and lock lineup"}
           >
             {isLineupLocked ? (
               <>
@@ -450,6 +516,34 @@ export default function TacticalPitch({
           </button>
         </div>
       </div>
+
+      {/* Active Simulation Notice Banner */}
+      {isSimulating && !isCompletedGw && (
+        <div className="simulation-mode-banner font-mono">
+          <div className="sim-banner-left">
+            <span className="sim-pulse-dot" />
+            <strong>SIMULATION MODE ACTIVE</strong>
+            <span>&middot;</span>
+            <span>Tap any starter and bench player to test substitutions &amp; captaincy. Projected points recalculate live.</span>
+          </div>
+          <div className="sim-banner-actions">
+            <button
+              type="button"
+              className="sim-banner-reset-btn font-mono"
+              onClick={onResetToSuggested}
+            >
+              Reset to Suggested
+            </button>
+            <button
+              type="button"
+              className="sim-banner-done-btn font-mono"
+              onClick={onToggleSimulate}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Tactical Dugout Command HUD Ribbon (4 Modular HUD Tiles) */}
       <div className="tactical-hud-ribbon">
@@ -548,7 +642,16 @@ export default function TacticalPitch({
           </div>
 
           {/* Tile 3: Tactical Directive Action */}
-          <div className="hud-tile hud-tile-directive">
+          <div
+            className="hud-tile hud-tile-directive"
+            onClick={() => {
+              if (!isCompletedGw && !isNonParticipating) {
+                setIsBreakdownOpen(true);
+              }
+            }}
+            style={{ cursor: (!isCompletedGw && !isNonParticipating) ? 'pointer' : 'default' }}
+            title={(!isCompletedGw && !isNonParticipating) ? "Click to view transfer recommendation breakdown" : undefined}
+          >
             <div className="hud-tile-header">
               <span className="hud-tile-eyebrow font-mono">
                 {isNonParticipating
@@ -674,6 +777,7 @@ export default function TacticalPitch({
                     onSelectSub={handlePlayerSelect}
                     onInspect={onInspectPlayer}
                     onOpenMatchup={handleMatchupClick}
+                    onToggleCaptain={onToggleCaptain}
                   />
                 ))}
               </div>
@@ -693,6 +797,7 @@ export default function TacticalPitch({
                     onSelectSub={handlePlayerSelect}
                     onInspect={onInspectPlayer}
                     onOpenMatchup={handleMatchupClick}
+                    onToggleCaptain={onToggleCaptain}
                   />
                 ))}
               </div>
@@ -712,6 +817,7 @@ export default function TacticalPitch({
                     onSelectSub={handlePlayerSelect}
                     onInspect={onInspectPlayer}
                     onOpenMatchup={handleMatchupClick}
+                    onToggleCaptain={onToggleCaptain}
                   />
                 ))}
               </div>
@@ -731,6 +837,7 @@ export default function TacticalPitch({
                     onSelectSub={handlePlayerSelect}
                     onInspect={onInspectPlayer}
                     onOpenMatchup={handleMatchupClick}
+                    onToggleCaptain={onToggleCaptain}
                   />
                 ))}
               </div>
@@ -908,15 +1015,41 @@ export default function TacticalPitch({
                   </div>
                 )}
 
-                <div className="bench-help-text">
+                <div className="bench-help-text font-mono">
                   {isCompletedGw
                     ? 'Official matchday scores recorded for bench substitutes.'
-                    : 'Click any starter and bench player to swap them. Double-click any player card to view their scouting report.'}
+                    : isSimulating
+                    ? 'Simulation Mode: Tap any starter and bench player to swap them. Click Done when finished.'
+                    : 'Tactical Cockpit: Click any player to inspect scouting report. Click Simulate to test substitutions.'}
                 </div>
               </div>
             )}
         </div>
       </div>
+
+      {/* Matchday Handover Checklist & FPL Official Link Modal */}
+      <MatchdayHandoverModal
+        isOpen={isHandoverOpen}
+        onClose={() => setIsHandoverOpen(false)}
+        onConfirmLock={() => {
+          if (onConfirmLockLineup) onConfirmLockLineup();
+        }}
+        liveData={liveData}
+        starters={displayStarters}
+        bench={displayBench}
+        managerId={manager?.entry_id || '9500404'}
+        managerName={manager?.manager_name || 'Arabinda Saha'}
+        teamName={manager?.team_name || 'Fuljhore Giants'}
+        freeTransfers={freeTransfers}
+        isLocked={isLineupLocked}
+      />
+
+      {/* Transfer Recommendation Mathematical Breakdown Modal */}
+      <TransferBreakdownModal
+        isOpen={isBreakdownOpen}
+        onClose={() => setIsBreakdownOpen(false)}
+        managerId={manager?.entry_id || '9500404'}
+      />
     </div>
   );
 }

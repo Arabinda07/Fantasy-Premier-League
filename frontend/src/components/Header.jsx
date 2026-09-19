@@ -21,13 +21,16 @@ export default function Header({
   onOpenSyncModal,
   strategy = 'pure_xp',
   onSelectStrategy,
-  activeChip = 'none'
+  activeChip = 'none',
+  freeTransfers
 }) {
   const manager = liveData?.manager_profile;
   const isSynced = Boolean(
     manager?.entry_id ||
     (typeof window !== 'undefined' && localStorage.getItem('fpl_synced_entry_id'))
   );
+
+  const currentFt = freeTransfers !== undefined ? freeTransfers : (manager?.free_transfers ?? 1);
 
   const tabs = useMemo(() => {
     const tabMap = {
@@ -44,8 +47,8 @@ export default function Header({
         label: 'Transfer Planner',
         shortLabel: 'Planner',
         icon: ArrowsLeftRight,
-        badge: isSynced ? '1 FT' : null,
-        badgeType: 'neutral'
+        badge: isSynced ? `${currentFt} FT` : null,
+        badgeType: currentFt === 0 ? 'muted' : 'neutral'
       },
       rivals: {
         id: 'rivals',

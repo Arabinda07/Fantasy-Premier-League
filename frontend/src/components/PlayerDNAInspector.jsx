@@ -302,6 +302,63 @@ export default function PlayerDNAInspector({ player, onClose }) {
           )}
         </div>
 
+        {/* Financial Telemetry & Profit Retention */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '14px' }}>
+          <div style={{ background: 'var(--bg-surface-2)', padding: '8px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Market Price</div>
+            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
+              £{Number(player.now_cost || player.cost || 0).toFixed(1)}m
+            </div>
+          </div>
+
+          <div style={{ background: 'var(--bg-surface-2)', padding: '8px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Selling Price</div>
+            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 800, color: 'var(--accent-emerald)', marginTop: '2px' }}>
+              £{Number(player.selling_price || player.cost || 0).toFixed(1)}m
+            </div>
+          </div>
+
+          <div style={{ background: 'var(--bg-surface-2)', padding: '8px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Price Momentum</div>
+            <div className="font-mono" style={{ fontSize: '12px', fontWeight: 800, color: player.price_trend?.includes('RISING') ? 'var(--accent-emerald)' : player.price_trend?.includes('FALLING') ? 'var(--accent-crimson)' : 'var(--text-secondary)', marginTop: '4px' }}>
+              {player.price_trend?.includes('RISING') ? '▲ RISING' : player.price_trend?.includes('FALLING') ? '▼ DROP ALERT' : 'STABLE'}
+            </div>
+          </div>
+        </div>
+
+        {/* Press Conference & Manager Candor Section */}
+        {player.manager_name && (
+          <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)', marginBottom: '14px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Press Conference & Manager Candor</span>
+              <span
+                className="font-mono"
+                style={{
+                  fontSize: '9px',
+                  fontWeight: 800,
+                  background: player.manager_candor?.score >= 2 ? 'rgba(245, 158, 11, 0.18)' : 'rgba(16, 185, 129, 0.18)',
+                  color: player.manager_candor?.score >= 2 ? 'var(--accent-amber)' : 'var(--accent-emerald)',
+                  border: '1px solid rgba(255, 255, 255, 0.12)',
+                  borderRadius: '3px',
+                  padding: '1px 5px'
+                }}
+              >
+                {player.manager_candor?.label || 'Generally Reliable'}
+              </span>
+            </div>
+            <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', marginTop: '4px' }}>
+              {player.manager_name} ({player.team})
+            </div>
+            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+              {player.cameo_risk != null && player.cameo_risk >= 0.25
+                ? `Notice: Late cameo risk (${Math.round(player.cameo_risk * 100)}% chance of short sub cameo appearance)`
+                : player.hook_hazard > 0.15
+                ? `Notice: Early substitution risk before 60th minute (${Math.round(player.hook_hazard * 100)}%)`
+                : `Full training confirmed; expected to play regular match minutes`}
+            </div>
+          </div>
+        )}
+
         {/* Tactical Spot-Kick Hierarchy */}
         <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)', marginBottom: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

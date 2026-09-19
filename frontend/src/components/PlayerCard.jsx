@@ -37,7 +37,8 @@ export default function PlayerCard({
   isViceCaptain,
   isTripleCaptain,
   isBoosted,
-  strategyBadge
+  strategyBadge,
+  onToggleCaptain
 }) {
   if (!player) return null;
 
@@ -110,11 +111,53 @@ export default function PlayerCard({
       <div className="player-card-top-row">
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
           {isTripleCaptain ? (
-            <span className="captain-badge triple" title="Triple Captain Active (3x Points)">3XC</span>
+            <button
+              type="button"
+              className="captain-badge triple font-mono"
+              title="Triple Captain Active (3x Points)"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onToggleCaptain) onToggleCaptain(player);
+              }}
+            >
+              3XC
+            </button>
           ) : isCaptain ? (
-            <span className="captain-badge" title="Team Captain (2x Points)">C</span>
+            <button
+              type="button"
+              className="captain-badge active-c font-mono"
+              title="Team Captain (2x Points) · Click to toggle Vice-Captain"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onToggleCaptain) onToggleCaptain(player);
+              }}
+            >
+              C
+            </button>
           ) : isViceCaptain ? (
-            <span className="vice-captain-badge" title="Vice Captain">V</span>
+            <button
+              type="button"
+              className="vice-captain-badge active-v font-mono"
+              title="Vice Captain · Click to make Captain"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onToggleCaptain) onToggleCaptain(player);
+              }}
+            >
+              V
+            </button>
+          ) : onToggleCaptain ? (
+            <button
+              type="button"
+              className="captain-ghost-btn font-mono"
+              title="Make Captain (2x Points)"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleCaptain(player);
+              }}
+            >
+              C
+            </button>
           ) : null}
           {strategyBadge === 'DIFF' && (
             <span className="diff-badge font-mono" title="Differential pick: owned by under 20% of managers">DIFF</span>
@@ -126,10 +169,19 @@ export default function PlayerCard({
             <span className="boost-badge font-mono" title="Bench Boost Active: Scoring points this gameweek">BB</span>
           )}
           <span className={`player-pos-tag pill-base pill-sm ${pos}`}>{pos}</span>
-          {/* M-02: Rotation/Hook Risk Indicator */}
-          {player.hook_hazard > 0.15 && (
-            <span className="hook-hazard-badge font-mono" title={`${Math.round(player.hook_hazard * 100)}% early sub risk`}>RISK</span>
+          {/* Set-Piece Specialist Indicators */}
+          {player.sp_pk_order === 1 && (
+            <span className="sp-badge pk font-mono" title="First-Choice Penalty Taker">PK1</span>
           )}
+          {player.sp_ck_order === 1 && player.sp_pk_order !== 1 && (
+            <span className="sp-badge ck font-mono" title="First-Choice Corner Crosser">CK1</span>
+          )}
+          {/* M-02: Rotation/Hook & Cameo Hazard Risk Indicators */}
+          {player.cameo_risk != null && player.cameo_risk >= 0.25 ? (
+            <span className="hook-hazard-badge cameo font-mono" title={`${Math.round(player.cameo_risk * 100)}% late cameo risk`}>CAMEO</span>
+          ) : player.hook_hazard > 0.15 ? (
+            <span className="hook-hazard-badge font-mono" title={`${Math.round(player.hook_hazard * 100)}% early sub risk`}>RISK</span>
+          ) : null}
           {isBgw && <span className="bgw-badge" title="Blank Gameweek: No game scheduled">BLANK</span>}
           {isDgw && <span className="dgw-badge" title="Double Gameweek: 2 games scheduled">DGW</span>}
           {/* M-06: Auto-Sub Priority Label for bench players */}
@@ -142,7 +194,14 @@ export default function PlayerCard({
             </span>
           )}
         </div>
-        <span className="player-cost-val font-mono">£{cost}m</span>
+        <span className="player-cost-val font-mono">
+          {player.price_trend === 'RISING_LOCK' || player.price_trend === 'RISING_ALERT' ? (
+            <span className="price-arrow-indicator up font-mono" title="Price rise imminent">▲</span>
+          ) : player.price_trend === 'FALLING_LOCK' || player.price_trend === 'FALLING_ALERT' ? (
+            <span className="price-arrow-indicator down font-mono" title="Price drop risk">▼</span>
+          ) : null}
+          £{cost}m
+        </span>
       </div>
 
       {/* Player Web Name */}
