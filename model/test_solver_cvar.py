@@ -105,7 +105,7 @@ class TestSolverCvarMath:
         df_gw1 = pd.DataFrame(gw1_players)
         df_gw2 = pd.DataFrame(gw1_players)
 
-        # Solve multi-horizon with lambda_ft=1.75
+        # Solve multi-horizon with lambda_ft=1.75 (explicitly pinned)
         sol_banked = solve_multi_horizon_transfers(
             current_squad_codes=current_codes,
             horizon_dfs=[df_gw1, df_gw2],
@@ -118,3 +118,65 @@ class TestSolverCvarMath:
         gw1_plan = sol_banked.gw_plans[0]
         # Verify that solver rolls the transfer (transfers_count == 0) instead of making a tiny sideways move
         assert gw1_plan.transfers_count == 0
+
+    def test_lambda_ft_1_0_permits_meaningful_upgrades(self):
+        """Verify that lambda_ft=1.0 allows a +1.5 xP upgrade to go through."""
+        current_codes = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16]
+
+        # Player 13 (MID5) has 4.5 xP; Alternative Player 99 has 6.0 xP (delta = +1.5 xP)
+        gw1_players = [
+            {'player_code': 1, 'web_name': 'GK1', 'team': 'Arsenal', 'position': 'GK', 'cost': 5.0, 'expected_points': 5.0, 'status': 'a'},
+            {'player_code': 2, 'web_name': 'GK2', 'team': 'Ipswich', 'position': 'GK', 'cost': 4.0, 'expected_points': 0.0, 'status': 'a'},
+            {'player_code': 3, 'web_name': 'DEF1', 'team': 'Arsenal', 'position': 'DEF', 'cost': 6.0, 'expected_points': 6.0, 'status': 'a'},
+            {'player_code': 4, 'web_name': 'DEF2', 'team': 'Arsenal', 'position': 'DEF', 'cost': 5.5, 'expected_points': 5.5, 'status': 'a'},
+            {'player_code': 5, 'web_name': 'DEF3', 'team': 'Liverpool', 'position': 'DEF', 'cost': 5.0, 'expected_points': 5.0, 'status': 'a'},
+            {'player_code': 6, 'web_name': 'DEF4', 'team': 'Liverpool', 'position': 'DEF', 'cost': 4.5, 'expected_points': 4.5, 'status': 'a'},
+            {'player_code': 7, 'web_name': 'DEF5', 'team': 'Everton', 'position': 'DEF', 'cost': 4.5, 'expected_points': 3.5, 'status': 'a'},
+            {'player_code': 9, 'web_name': 'MID1', 'team': 'Man City', 'position': 'MID', 'cost': 10.0, 'expected_points': 7.5, 'status': 'a'},
+            {'player_code': 10, 'web_name': 'MID2', 'team': 'Chelsea', 'position': 'MID', 'cost': 9.0, 'expected_points': 7.0, 'status': 'a'},
+            {'player_code': 11, 'web_name': 'MID3', 'team': 'Spurs', 'position': 'MID', 'cost': 8.0, 'expected_points': 6.0, 'status': 'a'},
+            {'player_code': 12, 'web_name': 'MID4', 'team': 'Brighton', 'position': 'MID', 'cost': 6.5, 'expected_points': 5.0, 'status': 'a'},
+            {'player_code': 13, 'web_name': 'MID5', 'team': 'Brentford', 'position': 'MID', 'cost': 5.5, 'expected_points': 4.5, 'status': 'a'},
+            {'player_code': 14, 'web_name': 'FWD1', 'team': 'Man City', 'position': 'FWD', 'cost': 15.0, 'expected_points': 8.5, 'status': 'a'},
+            {'player_code': 15, 'web_name': 'FWD2', 'team': 'Liverpool', 'position': 'FWD', 'cost': 8.0, 'expected_points': 6.0, 'status': 'a'},
+            {'player_code': 16, 'web_name': 'FWD3', 'team': 'Leeds', 'position': 'FWD', 'cost': 5.5, 'expected_points': 4.0, 'status': 'a'},
+            {'player_code': 99, 'web_name': 'MID_UpgradeTarget', 'team': 'Fulham', 'position': 'MID', 'cost': 5.5, 'expected_points': 6.0, 'status': 'a'},
+        ]
+        df_gw1 = pd.DataFrame(gw1_players)
+        df_gw2 = pd.DataFrame(gw1_players)
+
+        sol = solve_multi_horizon_transfers(
+            current_squad_codes=current_codes,
+            horizon_dfs=[df_gw1, df_gw2],
+            free_transfers=1,
+            bank=0.0,
+            lambda_ft=1.0,
+        )
+
+        assert sol.status == "Optimal"
+        gw1_plan = sol.gw_plans[0]
+        # With +1.5 xP delta > lambda_ft=1.0, the solver should execute the transfer
+        assert gw1_plan.transfers_count >= 1
+        in_codes = [p.player_code for p in gw1_plan.transfers_in]
+        assert 99 in in_codes
+
+    def test_ceiling_captain_preferred_over_floor_captain(self):
+        """Verify M-08: ceiling-weighted captaincy prefers haul probability over raw mean xP."""
+        # Player A: higher mean xP (7.0) but low haul probability (5%)
+        # Player B: lower mean xP (6.0) but high haul probability (25%), high ceiling
+        df = pd.DataFrame([
+            {'player_code': 201, 'web_name': 'HighFloor_FWD', 'team': 'Arsenal', 'position': 'FWD',
+             'cost': 10.0, 'expected_points': 7.0, 'haul_prob': 0.05, 'ceiling_p90': 9.0, 'std_points': 2.0, 'status': 'a'},
+            {'player_code': 202, 'web_name': 'HighCeiling_MID', 'team': 'Liverpool', 'position': 'MID',
+             'cost': 10.0, 'expected_points': 6.0, 'haul_prob': 0.25, 'ceiling_p90': 15.0, 'std_points': 5.0, 'status': 'a'},
+        ])
+
+        prepped = prepare_solver_dataframe(df)
+
+        # Player B captain_points should exceed Player A due to ceiling reward:
+        # A: 0.55*7.0 + 0.45*0.05*9.0  = 3.85 + 0.2025 = 4.0525  (× capt_conf)
+        # B: 0.55*6.0 + 0.45*0.25*15.0 = 3.30 + 1.6875 = 4.9875  (× capt_conf)
+        a_capt = prepped.loc[prepped['player_code'] == 201, 'captain_points'].iloc[0]
+        b_capt = prepped.loc[prepped['player_code'] == 202, 'captain_points'].iloc[0]
+        assert b_capt > a_capt, f"Ceiling captain {b_capt:.4f} should exceed floor captain {a_capt:.4f}"
+

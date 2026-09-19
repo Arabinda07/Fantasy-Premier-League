@@ -23,6 +23,8 @@ if REPO_ROOT not in sys.path:
 DEFAULT_TYPESAFE_ENDPOINT = "https://api.typesafe.ai/v1/systemone"
 DEFAULT_TYPESAFE_MODEL = "jev-latest"
 DEFAULT_CACHE_DIR = os.path.join(REPO_ROOT, "data", ".cache", "typesafe")
+MAX_RETRIES = 3
+INITIAL_BACKOFF_SECONDS = 0.5
 
 
 @dataclass
@@ -55,8 +57,8 @@ class TypeSafeResponse:
 
 def resolve_typesafe_api_key(explicit_key: Optional[str] = None) -> Optional[str]:
     """Resolve TYPESAFE_API_KEY from argument, os.environ, or Windows Registry."""
-    if explicit_key and explicit_key.strip():
-        return explicit_key.strip()
+    if explicit_key is not None:
+        return explicit_key.strip() if explicit_key.strip() else None
 
     # 1. Check process environment
     env_key = os.environ.get("TYPESAFE_API_KEY")
@@ -123,6 +125,13 @@ class TypeSafeBridge:
             try:
                 with open(cache_file, "r", encoding="utf-8") as f:
                     return json.load(f)
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                # Corrupted disk cache artifact: unlink to self-heal
+                try:
+                    os.remove(cache_file)
+                except OSError:
+                    pass
+                return None
             except Exception:
                 return None
         return None
@@ -147,8 +156,8 @@ class TypeSafeBridge:
             item["type"] = q_type
 
             # Ensure 'instructions' field is used
-            if "instruction" in item and "instructions" not in item:
-                item["instructions"] = item.pop("instruction")
+            if "instruction" in item:
+                item.setdefault("instructions", item.pop("instruction"))
 
             # Ensure 'criteria' field is used
             if q_type == "choice":
@@ -218,33 +227,48 @@ class TypeSafeBridge:
         req = urllib.request.Request(self.endpoint, data=req_data, headers=headers)
 
         start_time = time.time()
-        try:
-            with urllib.request.urlopen(req, timeout=self.timeout_seconds) as resp:
-                latency_ms = (time.time() - start_time) * 1000.0
-                raw_body = resp.read().decode("utf-8")
-                res_json = json.loads(raw_body)
+        last_exception = None
+        for attempt in range(MAX_RETRIES):
+            try:
+                with urllib.request.urlopen(req, timeout=self.timeout_seconds) as resp:
+                    latency_ms = (time.time() - start_time) * 1000.0
+                    raw_body = resp.read().decode("utf-8")
+                    res_json = json.loads(raw_body)
 
-                answers = res_json.get("answers", {})
-                usage = res_json.get("usage", {})
+                    answers = res_json.get("answers", {})
+                    usage = res_json.get("usage", {})
 
-                # Persist successful call to disk cache
-                self._write_cache(cache_key, {"answers": answers, "usage": usage})
+                    # Persist successful call to disk cache
+                    self._write_cache(cache_key, {"answers": answers, "usage": usage})
 
-                return TypeSafeResponse(
-                    answers=answers,
-                    usage=usage,
-                    cached=False,
-                    latency_ms=round(latency_ms, 2),
-                )
-        except Exception as e:
-            # Fall back safely on network or API failures (never cache failures)
-            fallback_answers = mock_fallback or self._generate_default_mock(norm_questions)
-            return TypeSafeResponse(
-                answers=fallback_answers,
-                usage={"input_tokens": 0, "output_tokens": 0, "error": str(e)},
-                cached=False,
-                latency_ms=round((time.time() - start_time) * 1000.0, 2),
-            )
+                    return TypeSafeResponse(
+                        answers=answers,
+                        usage=usage,
+                        cached=False,
+                        latency_ms=round(latency_ms, 2),
+                    )
+            except urllib.error.HTTPError as he:
+                last_exception = he
+                if he.code in (429, 500, 502, 503, 504, 529) and attempt < MAX_RETRIES - 1:
+                    backoff = INITIAL_BACKOFF_SECONDS * (2 ** attempt)
+                    time.sleep(backoff)
+                    continue
+                break
+            except Exception as e:
+                last_exception = e
+                if attempt < MAX_RETRIES - 1:
+                    time.sleep(INITIAL_BACKOFF_SECONDS * (2 ** attempt))
+                    continue
+                break
+
+        # Fall back safely on network or API failures (never cache failures)
+        fallback_answers = mock_fallback or self._generate_default_mock(norm_questions)
+        return TypeSafeResponse(
+            answers=fallback_answers,
+            usage={"input_tokens": 0, "output_tokens": 0, "error": str(last_exception)},
+            cached=False,
+            latency_ms=round((time.time() - start_time) * 1000.0, 2),
+        )
 
     def _generate_default_mock(self, questions: Dict[str, Any]) -> Dict[str, Any]:
         """Generate neutral, schema-compliant fallback answers for mock execution."""
@@ -266,19 +290,23 @@ class TypeSafeBridge:
                 crit = q_body.get("criteria", q_body.get("legend", []))
                 if isinstance(crit, list):
                     num_levels = max(1, len(crit))
-                    mid_score = float(num_levels // 2)
+                    mid_score = float(num_levels - 1) / 2.0
                     probs = {str(i): 1.0 / num_levels for i in range(num_levels)}
+                    legend_map = {str(i): str(c) for i, c in enumerate(crit)}
                 elif isinstance(crit, dict):
                     levels = [float(k) for k in crit.keys()]
-                    mid_score = sum(levels) / len(levels) if levels else 3.0
-                    probs = {str(k): (1.0 / len(levels)) for k in levels} if levels else {"3.0": 1.0}
+                    mid_score = sum(levels) / len(levels) if levels else 0.0
+                    probs = {str(k): (1.0 / len(levels)) for k in levels} if levels else {"0": 1.0}
+                    legend_map = {str(k): str(v) for k, v in crit.items()}
                 else:
-                    mid_score = 3.0
-                    probs = {"3.0": 1.0}
+                    mid_score = 0.0
+                    probs = {"0": 1.0}
+                    legend_map = {}
                 mock_answers[q_id] = {
                     "type": "score",
                     "score": mid_score,
                     "confidence": 0.5,
+                    "legend": legend_map,
                     "probabilities": probs,
                 }
             elif q_type == "noul":
@@ -308,10 +336,10 @@ class TypeSafeBridge:
             }
         }
         res = self.ask(state, questions)
-        ans = res.answers.get(question_id, {})
+        ans = res.answers.get(question_id) or {}
         val = ans.get("choice", list(options.keys())[0] if options else "standard")
         conf = float(ans.get("confidence", 0.5))
-        probs = ans.get("probabilities", {})
+        probs = ans.get("probabilities") or {}
         return ChoiceResult(value=val, confidence=conf, probabilities=probs)
 
     def ask_score(
@@ -331,8 +359,12 @@ class TypeSafeBridge:
             }
         }
         res = self.ask(state, questions)
-        ans = res.answers.get(question_id, {})
-        val = float(ans.get("score", 3.0))
+        ans = res.answers.get(question_id) or {}
+        default_score = float(len(legend) - 1) / 2.0 if legend else 0.0
+        val = float(ans.get("score", default_score))
         conf = float(ans.get("confidence", 0.5))
-        probs = ans.get("probabilities", {})
-        return ScoreResult(value=val, confidence=conf, probabilities=probs)
+        probs = ans.get("probabilities") or {}
+        raw_level_val = None
+        if "legend" in ans and str(round(val)) in ans["legend"]:
+            raw_level_val = str(ans["legend"][str(round(val))])
+        return ScoreResult(value=val, confidence=conf, probabilities=probs, raw_level=raw_level_val)

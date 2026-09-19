@@ -179,10 +179,11 @@ def compute_rotation_hazard(
     total_starts: float = 0.0,
     starts_60_plus: float = 0.0,
     european_teams: Optional[Dict[str, List[str]]] = None,
-) -> Dict[str, float]:
+    press_intel: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
     """Compute combined rotation hazard for a player.
 
-    Combines midweek congestion, sub-60 vulnerability, and news dampening
+    Combines midweek congestion, sub-60 vulnerability, and news/press conference dampening
     into a single set of multiplicative adjustments.
 
     Args:
@@ -193,25 +194,50 @@ def compute_rotation_hazard(
         total_starts: total starts in sample window.
         starts_60_plus: starts with 60+ minutes.
         european_teams: European competition team mapping.
+        press_intel: Optional Jev System One evaluation dict containing
+                     'calibrated_p_start_mult', 'calibrated_p_app_mult', 'sub_60_hook_risk'.
 
     Returns:
         Dict with 'midweek_hazard', 'sub60_prob', 'news_p_start_mult',
-        'news_p_app_mult', 'combined_p_start_mult', 'combined_p_app_mult'.
+        'news_p_app_mult', 'combined_p_start_mult', 'combined_p_app_mult',
+        and 'press_intel_applied'.
     """
     midweek = compute_midweek_hazard(team_name, days_rest, european_teams)
     sub60 = compute_sub60_vulnerability(total_starts, starts_60_plus)
-    news = compute_news_dampening(status, chance_of_playing)
 
-    combined_start = midweek * news['p_start_mult']
-    combined_app = news['p_app_mult']  # Midweek doesn't affect sub appearances
+    norm_status = str(status).lower().strip() if status else 'a'
+    press_applied = False
+
+    # DETERMINISTIC SUPREMACY: If player is officially suspended or unavailable, force 0.0
+    if norm_status in UNAVAILABLE_STATUSES:
+        news_p_start = 0.0
+        news_p_app = 0.0
+    elif press_intel and isinstance(press_intel, dict):
+        news_p_start = float(press_intel.get('calibrated_p_start_mult', 1.0))
+        news_p_app = float(press_intel.get('calibrated_p_app_mult', 1.0))
+
+        # Adjust sub-60 probability if Jev evaluated a specific hook hazard
+        hook_hazard = float(press_intel.get('sub_60_hook_risk', 0.0))
+        if hook_hazard > 0.0:
+            sub60 = max(0.0, min(1.0, sub60 * (1.0 - hook_hazard)))
+
+        press_applied = True
+    else:
+        news = compute_news_dampening(status, chance_of_playing)
+        news_p_start = news['p_start_mult']
+        news_p_app = news['p_app_mult']
+
+    combined_start = midweek * news_p_start
+    combined_app = news_p_app  # Midweek doesn't affect sub appearances
 
     return {
         'midweek_hazard': round(midweek, 4),
         'sub60_prob': round(sub60, 4),
-        'news_p_start_mult': round(news['p_start_mult'], 4),
-        'news_p_app_mult': round(news['p_app_mult'], 4),
+        'news_p_start_mult': round(news_p_start, 4),
+        'news_p_app_mult': round(news_p_app, 4),
         'combined_p_start_mult': round(combined_start, 4),
         'combined_p_app_mult': round(combined_app, 4),
+        'press_intel_applied': press_applied,
     }
 
 
@@ -221,6 +247,7 @@ def apply_rotation_dampening(
     data_root: str = 'data',
     european_teams: Optional[Dict[str, List[str]]] = None,
     days_rest_map: Optional[Dict[str, int]] = None,
+    press_evaluations: Optional[Dict[int, Dict[str, Any]]] = None,
 ) -> pd.DataFrame:
     """Apply rotation and news dampening to an existing predictions DataFrame.
 
@@ -257,11 +284,20 @@ def apply_rotation_dampening(
             else:
                 chance_map[code] = None
 
+    # Load press conference evaluations if not explicitly provided
+    if press_evaluations is None:
+        try:
+            from model.press_conference_intelligence import load_press_evaluations
+            press_evaluations = load_press_evaluations(season=season, data_root=data_root)
+        except Exception:
+            press_evaluations = {}
+
     if days_rest_map is None:
         days_rest_map = {}
 
     midweek_list = []
     rotation_list = []
+    press_applied_list = []
 
     for idx, row in df.iterrows():
         p_code = int(row.get('player_code', 0))
@@ -269,6 +305,7 @@ def apply_rotation_dampening(
         status = status_map.get(p_code, 'a')
         chance = chance_map.get(p_code)
         days_rest = days_rest_map.get(team, 7)
+        press_intel = press_evaluations.get(p_code) if press_evaluations else None
 
         hazard = compute_rotation_hazard(
             team_name=team,
@@ -276,10 +313,12 @@ def apply_rotation_dampening(
             chance_of_playing=chance,
             days_rest=days_rest,
             european_teams=european_teams,
+            press_intel=press_intel,
         )
 
         midweek_list.append(hazard['midweek_hazard'])
         rotation_list.append(hazard['combined_p_start_mult'])
+        press_applied_list.append(hazard.get('press_intel_applied', False))
 
         # Apply combined dampening to predictions
         combined_start = hazard['combined_p_start_mult']
@@ -290,13 +329,16 @@ def apply_rotation_dampening(
             orig_p_start = _safe_float(row.get('p_start', 0.0))
             orig_p_app = _safe_float(row.get('p_app', 0.0))
 
-            # Scale xP proportionally to the probability dampening
-            xp_scale = min(combined_start, combined_app) if orig_p_start > 0 else combined_app
+            # Scale xP proportionally to playing probabilities
+            # Bulk expected points scaled by starter probability; appearance probability preserves cameo equity
+            p_cameo = max(0.0, combined_app - combined_start)
+            xp_scale = combined_start + (0.35 * p_cameo)  # ~35% point-scoring efficiency for bench cameos
             df.at[idx, 'expected_points'] = round(orig_xp * xp_scale, 4)
             df.at[idx, 'p_start'] = round(orig_p_start * combined_start, 4)
             df.at[idx, 'p_app'] = round(orig_p_app * combined_app, 4)
 
     df['midweek_hazard'] = midweek_list
     df['rotation_dampening'] = rotation_list
+    df['press_intel_applied'] = press_applied_list
 
     return df

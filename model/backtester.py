@@ -293,6 +293,7 @@ def run_season_backtest(
     horizon: int = 3,
     enable_chips: bool = True,
     enable_bench_optimization: bool = True,
+    adaptive_dgw: bool = True,
     pred_df_cache: Optional[Dict[int, pd.DataFrame]] = None,
     positional_calibration: bool = True,
     silent: bool = False,
@@ -341,6 +342,14 @@ def run_season_backtest(
             chip_targets = {k: rec.target_gw for k, rec in chip_plan.recommendations.items()}
         except Exception:
             chip_targets = {}
+
+    sched_profiles = []
+    if adaptive_dgw and use_multi_horizon:
+        try:
+            from model.chip_optimizer import build_gameweek_schedule_profiles
+            sched_profiles = build_gameweek_schedule_profiles(season=season, data_root=data_root)
+        except Exception:
+            sched_profiles = []
 
     gw_results: List[GameweekBacktestResult] = []
     cumulative_points = 0
@@ -468,8 +477,14 @@ def run_season_backtest(
             current_codes = [p.player_code for p in current_squad.squad]
 
             if use_multi_horizon and horizon > 1:
+                eff_horizon = horizon
+                if adaptive_dgw and horizon <= 3 and sched_profiles:
+                    dgw_window = [p for p in sched_profiles if p.is_dgw and gw < p.gw <= min(38, gw + 4)]
+                    if dgw_window:
+                        eff_horizon = min(5, dgw_window[0].gw - gw + 1)
+
                 horizon_dfs: List[pd.DataFrame] = [pred_df]
-                for h_step in range(1, horizon):
+                for h_step in range(1, eff_horizon):
                     next_gw = gw + h_step
                     if next_gw <= 38:
                         if pred_df_cache is not None and next_gw in pred_df_cache:

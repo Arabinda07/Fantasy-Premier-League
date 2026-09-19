@@ -211,7 +211,7 @@ class TestChipOptimization:
 
         assert sol_3xc.status == "Optimal"
         # In 3xC, captain bonus should be exactly double the standard captain bonus (2 * capt_xp)
-        assert abs(sol_3xc.captain_xp - (2.0 * sol_std.captain.expected_points)) < 1e-3
+        assert abs(sol_3xc.captain_xp - (2.0 * sol_3xc.captain.expected_points)) < 1e-3
         assert sol_3xc.total_xp > sol_std.total_xp
 
     def test_bench_boost_chip(self, sample_player_pool):

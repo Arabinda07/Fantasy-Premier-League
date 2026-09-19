@@ -51,6 +51,7 @@ class StageResult:
     duration_seconds: float = 0.0
     message: str = ''
     error: Optional[str] = None
+    data: Optional[Dict[str, Any]] = None
 
 
 @dataclass
@@ -562,6 +563,7 @@ def run_live_solver(
             success=True,
             duration_seconds=time.time() - stage_start,
             message=f'Solver complete. Total projected xP: {total_xp:.2f}{msg_extra}',
+            data={'matchday_result': result},
         )
 
     except Exception as e:
@@ -570,6 +572,57 @@ def run_live_solver(
             success=False,
             duration_seconds=time.time() - stage_start,
             message=f'Live solver failed: {e}',
+            error=str(e),
+        )
+
+
+# ---------------------------------------------------------------------------
+# Stage 5b: Jev Pipeline Sanity Guardrail
+# ---------------------------------------------------------------------------
+
+def run_pipeline_guardrail_stage(
+    season: str = '2026-27',
+    gw: int = 1,
+    matchday_payload: Optional[Dict[str, Any]] = None,
+    data_root: str = 'data',
+) -> StageResult:
+    """Stage 5b: Audit solver recommendations with Jev System One guardrail.
+
+    Args:
+        season: season string.
+        gw: target gameweek number.
+        matchday_payload: optional matchday manager payload.
+        data_root: root data directory.
+
+    Returns:
+        StageResult indicating whether the guardrail passed or aborted.
+    """
+    stage_start = time.time()
+    try:
+        from model.pipeline_guardrail import PipelineGuardrail
+        print(f"[Pipeline] Stage 5b: Auditing solver output with Jev System One for GW{gw}...")
+        guardrail = PipelineGuardrail()
+        verdict = guardrail.audit_matchday_output(
+            season=season,
+            gw=gw,
+            matchday_payload=matchday_payload,
+            data_root=data_root,
+        )
+
+        return StageResult(
+            stage='pipeline_guardrail',
+            success=verdict.passed,
+            duration_seconds=time.time() - stage_start,
+            message=verdict.message,
+            error=None if verdict.passed else verdict.anomaly_type,
+            data=verdict.to_dict(),
+        )
+    except Exception as e:
+        return StageResult(
+            stage='pipeline_guardrail',
+            success=False,
+            duration_seconds=time.time() - stage_start,
+            message=f'Guardrail audit failed with exception: {e}',
             error=str(e),
         )
 
@@ -703,6 +756,7 @@ def run_live_pipeline(
     scrape: bool = False,
     export_excel: bool = True,
     export_json: bool = True,
+    enable_guardrail: bool = True,
 ) -> PipelineResult:
     """Execute end-to-end automated FPL data synchronization and model generation.
 
@@ -817,6 +871,7 @@ def run_live_pipeline(
     # ------------------------------------------------------------------
     # Stage 5: Live Solver (sync + full + solver_only modes)
     # ------------------------------------------------------------------
+    matchday_payload = None
     if mode in ('sync', 'full', 'solver_only'):
         solver_result = run_live_solver(
             season=season,
@@ -832,6 +887,33 @@ def run_live_pipeline(
             export_json=export_json,
         )
         stages.append(solver_result)
+        if solver_result.success and solver_result.data:
+            matchday_payload = solver_result.data.get('matchday_result')
+
+        # ------------------------------------------------------------------
+        # Stage 5b: Jev Pipeline Sanity Guardrail
+        # ------------------------------------------------------------------
+        if enable_guardrail:
+            guard_result = run_pipeline_guardrail_stage(
+                season=season,
+                gw=resolved_gw,
+                matchday_payload=matchday_payload,
+                data_root=data_root,
+            )
+            stages.append(guard_result)
+            if not guard_result.success:
+                print(f"[Pipeline] CRITICAL GUARD: Automated deployment aborted — {guard_result.message}")
+                # CIRCUIT BREAKER: Quarantine corrupted matchday artifacts
+                corrupted_matchday = os.path.join(data_root, season, f'gw{resolved_gw}_matchday.json')
+                if os.path.exists(corrupted_matchday):
+                    quarantine_path = corrupted_matchday.replace('.json', '.quarantined.json')
+                    try:
+                        os.replace(corrupted_matchday, quarantine_path)
+                        print(f"[Pipeline] Quarantined corrupted matchday artifact to {quarantine_path}")
+                    except OSError:
+                        pass
+                # Abort subsequent publishing and enrichment stages immediately
+                export_json = False
 
     # ------------------------------------------------------------------
     # Stage 6: Frontend Enrichment (when JSON export is enabled)
@@ -1010,6 +1092,8 @@ Examples:
                         help="Skip Excel workbook generation")
     parser.add_argument('--no-json', action='store_true', default=False,
                         help="Skip JSON state payload generation")
+    parser.add_argument('--no-guardrail', action='store_true', default=False,
+                        help="Skip Jev System One automated pipeline guardrail")
 
     args = parser.parse_args()
 
@@ -1044,6 +1128,7 @@ Examples:
             scrape=args.scrape,
             export_excel=not args.no_excel,
             export_json=not args.no_json,
+            enable_guardrail=not args.no_guardrail,
         )
 
 

@@ -1,0 +1,19 @@
+{
+  "season": "2026-27",
+  "teams": {
+    "Hull City": {
+      "defensive_line": 0.9075,
+      "transition_vulnerability": 1.0825
+    },
+    "Ipswich Town": {
+      "defensive_line": 1.0115,
+      "transition_vulnerability": 1.1524
+    },
+    "Leicester": {
+      "defensive_line": 0.9208,
+      "transition_vulnerability": 1.0847
+    }
+  },
+  "player_affinities": {},
+  "last_updated": "2026-09-19T03:09:11.170522+00:00"
+}

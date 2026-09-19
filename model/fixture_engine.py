@@ -827,7 +827,7 @@ def main():
     parser.add_argument('--season', default='2026-27', help="Season string (e.g. 2026-27)")
     parser.add_argument('--gw', type=int, default=1, help="Target gameweek number (1-38)")
     parser.add_argument('--alpha', type=float, default=DEFAULT_ALPHA, help="Form blending weight for short form (default 0.35)")
-    parser.add_argument('--m0', type=float, default=DEFAULT_MINS_FILTER, help="Bayesian shrinkage minutes filter (default 500)")
+    parser.add_argument('--m0', type=float, default=DEFAULT_MINS_FILTER, help="Bayesian shrinkage minutes filter (default 350)")
     parser.add_argument('--data-root', default='data', help="Root data directory")
     parser.add_argument('--include-c11-in-xp', action='store_true', default=False, help="Include C11 (defensive contributions) in expected points (custom league mode)")
     args = parser.parse_args()

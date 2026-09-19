@@ -141,31 +141,32 @@ class TacticalPriorUpdater:
         questions = {
             "defensive_line_depth": {
                 "type": "score",
-                "instruction": f"Rate {team_name}'s typical defensive line height and willingness to play an offside trap.",
+                "instructions": f"Rate {team_name}'s typical defensive line height and willingness to play an offside trap.",
                 "legend": DEFENSIVE_LINE_LEGEND,
             },
             "transition_vulnerability": {
                 "type": "score",
-                "instruction": f"Rate {team_name}'s vulnerability to fast transitions and counter-attacks when losing possession.",
+                "instructions": f"Rate {team_name}'s vulnerability to fast transitions and counter-attacks when losing possession.",
                 "legend": TRANSITION_VULNERABILITY_LEGEND,
             }
         }
 
-        # Safe defaults if offline
+        # Safe defaults if offline: index 2.0 is the exact midpoint (neutral level 3 on 1-5 rubric)
         mock = {
-            "defensive_line_depth": {"type": "score", "score": 3.0, "confidence": 0.5},
-            "transition_vulnerability": {"type": "score", "score": 3.0, "confidence": 0.5},
+            "defensive_line_depth": {"type": "score", "score": 2.0, "confidence": 0.5},
+            "transition_vulnerability": {"type": "score", "score": 2.0, "confidence": 0.5},
         }
 
         resp = self.bridge.ask(state, questions, mock_fallback=mock)
 
-        raw_line = float(resp.answers.get("defensive_line_depth", {}).get("score", 2.0))
-        raw_trans = float(resp.answers.get("transition_vulnerability", {}).get("score", 2.0))
+        raw_line = float((resp.answers.get("defensive_line_depth") or {}).get("score", 2.0))
+        raw_trans = float((resp.answers.get("transition_vulnerability") or {}).get("score", 2.0))
 
-        # Jev score is 0-indexed across 5 criteria (0.0=min, 2.0=neutral, 4.0=max).
-        # Offset by +1.0 to map to the 1.0-5.0 rubric scale:
-        line_1_to_5 = (raw_line + 1.0) if raw_line <= 4.0 else raw_line
-        trans_1_to_5 = (raw_trans + 1.0) if raw_trans <= 4.0 else raw_trans
+        # Jev returns continuous score on [0.0, 4.0]. Linear affine transformation to [1.0, 5.0]:
+        clamped_raw_line = max(0.0, min(4.0, raw_line))
+        clamped_raw_trans = max(0.0, min(4.0, raw_trans))
+        line_1_to_5 = clamped_raw_line + 1.0
+        trans_1_to_5 = clamped_raw_trans + 1.0
 
         return {
             "defensive_line": score_to_multiplier(line_1_to_5),
@@ -231,3 +232,85 @@ class TacticalPriorUpdater:
 
         save_tactical_archetypes_file(dataset, season, data_root)
         return existing_teams[team_name]
+
+
+def run_cli():
+    """Command-line interface for running tactical prior updates."""
+    import argparse
+    from model.matchup_intelligence import TACTICAL_ARCHETYPES
+
+    parser = argparse.ArgumentParser(description="Update dynamic tactical archetypes with TypeSafe Jev System One.")
+    parser.add_argument("--team", type=str, help="Team name to evaluate (e.g. 'Hull City')")
+    parser.add_argument("--summary", type=str, help="Tactical summary or matchday observation text")
+    parser.add_argument("--batch-promoted", action="store_true", help="Run batch evaluation for promoted/monitored clubs (Hull, Ipswich, Leicester)")
+    parser.add_argument("--season", type=str, default="2026-27", help="Season string (default: 2026-27)")
+    parser.add_argument("--data-root", type=str, default="data", help="Data root path (default: data)")
+    parser.add_argument("--alpha", type=float, default=DEFAULT_EWMA_ALPHA, help="EWMA smoothing alpha (default: 0.30)")
+    parser.add_argument("--show", action="store_true", help="Display current saved tactical archetypes")
+
+    args = parser.parse_args()
+    updater = TacticalPriorUpdater()
+
+    if args.show:
+        data = load_tactical_archetypes_file(args.season, args.data_root)
+        if not data:
+            print("No dynamic archetypes saved yet; system using static TACTICAL_ARCHETYPES defaults.")
+        else:
+            print(json.dumps(data, indent=2))
+        return
+
+    if args.batch_promoted:
+        batch_configs = [
+            (
+                "Hull City",
+                "Promoted side playing compact, disciplined low-to-mid block under real match pressure. "
+                "Held Chelsea to 2-2 draw with 1.45 XGC per 90. John Egan and center-backs racking up high defensive contributions "
+                "and blocks. Much less vulnerable in transition than pre-season Championship priors anticipated; rarely overcommits fullbacks."
+            ),
+            (
+                "Ipswich Town",
+                "Promoted side under Kieran McKenna playing expansive, high-tempo, front-foot football. "
+                "Active pressing and high commitment of bodies forward yields high tackle/interception volume (Palacios ~57% defcon rate), "
+                "but leaves large grass channels behind. Highly vulnerable to rapid transition counter-attacks when possession is turned over."
+            ),
+            (
+                "Leicester",
+                "Conservative mid-to-low block under Steve Cooper. Deep defensive positioning with Winks/Ndidi shielding centrally. "
+                "Compresses central space well, denying through-balls, but susceptible to wide overloads and second-phase transition balls. "
+                "Moderate transition vulnerability with low defensive line depth."
+            ),
+        ]
+        print(f"=== Running Batch Dynamic Tactical Prior Update ({args.season}) ===")
+        for t_name, t_obs in batch_configs:
+            res = updater.update_team_in_dataset(
+                team_name=t_name,
+                tactical_summary=t_obs,
+                season=args.season,
+                data_root=args.data_root,
+                alpha=args.alpha,
+                fallback_defaults=TACTICAL_ARCHETYPES,
+            )
+            print(f"[{t_name}] Updated: line_depth={res['defensive_line']:.4f}, trans_vuln={res['transition_vulnerability']:.4f}")
+        print("\nAll target teams successfully updated and persisted to disk.")
+        return
+
+    if args.team:
+        obs = args.summary or f"Standard recent Premier League matchday tactical observations for {args.team}."
+        print(f"Evaluating tactical priors for {args.team}...")
+        res = updater.update_team_in_dataset(
+            team_name=args.team,
+            tactical_summary=obs,
+            season=args.season,
+            data_root=args.data_root,
+            alpha=args.alpha,
+            fallback_defaults=TACTICAL_ARCHETYPES,
+        )
+        print(f"[{args.team}] Updated: line_depth={res['defensive_line']:.4f}, trans_vuln={res['transition_vulnerability']:.4f}")
+        return
+
+    parser.print_help()
+
+
+if __name__ == "__main__":
+    run_cli()
+

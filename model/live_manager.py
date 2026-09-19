@@ -111,6 +111,7 @@ def manage_gameweek(
     force_new_squad: bool = False,
     export_excel: bool = True,
     export_json: bool = True,
+    enable_adaptive_dgw: bool = True,
 ) -> Dict[str, Any]:
     """Execute complete live gameweek management decision workflow with Elite Enhancements."""
     season_dir = os.path.join(data_root, season)
@@ -148,9 +149,27 @@ def manage_gameweek(
     if free_transfers is None:
         free_transfers = 1
 
+    # Adaptive DGW Accumulator (M-10): Proactively expand lookahead horizon to 4-5 GWs
+    # when an upcoming Double Gameweek is detected on the schedule
+    active_horizon = horizon
+    if enable_adaptive_dgw and horizon <= 3:
+        try:
+            from model.chip_optimizer import build_gameweek_schedule_profiles
+            sched_profiles = build_gameweek_schedule_profiles(season=season, data_root=data_root)
+            dgw_in_window = [p for p in sched_profiles if p.is_dgw and gw < p.gw <= min(38, gw + 4)]
+            if dgw_in_window:
+                target_dgw = dgw_in_window[0]
+                needed_h = min(5, target_dgw.gw - gw + 1)
+                if needed_h > active_horizon:
+                    active_horizon = needed_h
+                    dgw_teams_str = ", ".join(target_dgw.dgw_teams) if target_dgw.dgw_teams else "multiple clubs"
+                    print(f"[*] Adaptive DGW Accumulator: Double Gameweek detected at GW{target_dgw.gw} ({dgw_teams_str}). Expanding lookahead horizon from {horizon} to {active_horizon} GWs to accumulate DGW players.")
+        except Exception:
+            pass
+
     # 1. Load predictions for all gameweeks in lookahead horizon
     horizon_dfs: List[pd.DataFrame] = []
-    for step in range(horizon):
+    for step in range(active_horizon):
         target_gw = min(38, gw + step)
         pred_df = predict_gameweek_fixtures(season=season, gw=target_gw, data_root=data_root, save_csv=(step == 0))
 
@@ -363,9 +382,11 @@ def manage_gameweek(
 
     # Build lookup for player tags (set-pieces, EO, price trends)
     meta_lookup = {}
+    name_lookup = {}
     if not gw1_df.empty and 'player_code' in gw1_df.columns:
         for _, r in gw1_df.iterrows():
             c = int(r.get('player_code', 0))
+            name_lookup[c] = str(r.get('web_name', f"P_{c}"))
             meta_lookup[c] = {
                 'eo': float(r.get('eo', 0.0)),
                 'pk': float(r.get('sp_pk_order', 0.0) or 0.0),
@@ -375,13 +396,25 @@ def manage_gameweek(
                 'vel': int(r.get('price_net_velocity', 0)),
             }
 
+    # Price Risk Telemetry (M-09): Identify squad players at risk of nightly drops
+    squad_check_codes = current_squad_codes or []
+    falling_risks = [
+        f"{name_lookup.get(c, str(c))} ({meta_lookup.get(c, {}).get('vel', 0):+,d})"
+        for c in squad_check_codes
+        if meta_lookup.get(c, {}).get('trend') in (FALLING_LOCK, FALLING_ALERT)
+    ]
+    if falling_risks and curr_plan and curr_plan.transfers_count > 0:
+        action_summary += f" | [!] Nightly Price Risk: {', '.join(falling_risks)} (Execute before 01:15 GMT to protect value)"
+    elif falling_risks and curr_plan and curr_plan.transfers_count == 0:
+        action_summary += f" | [!] Price Alert: {', '.join(falling_risks)} approaching drop"
+
     # 6. Terminal Briefing Output
     print("\n" + "=" * 90)
     print(f"               FPL LIVE MATCHDAY COMMAND COCKPIT -- {season} GAMEWEEK {gw}")
     print("=" * 90)
     if live_profile:
         print(f"Manager: {live_profile.manager_name} | Team: {live_profile.team_name} (ID: {live_profile.entry_id}) | Overall Rank: {live_profile.overall_rank:,} ({live_profile.overall_points} pts)")
-    print(f"Current Bank: £{bank:.1f}M | Free Transfers: {free_transfers} | Lookahead Horizon: {horizon} GWs | Strategy: {strategy.upper()}")
+    print(f"Current Bank: £{bank:.1f}M | Free Transfers: {free_transfers} | Lookahead Horizon: {active_horizon} GWs | Strategy: {strategy.upper()}")
     if active_sq:
         capt_name = active_sq.captain.web_name if active_sq.captain else "None"
         vice_name = active_sq.vice_captain.web_name if active_sq.vice_captain else "None"
@@ -596,6 +629,7 @@ def manage_gameweek(
             'overall_rank': live_profile.overall_rank if live_profile else (snapshot.get('overall_rank', 0) if snapshot else 0),
             'manager_profile': mgr_profile_dict,
             'action_summary': action_summary,
+            'falling_price_risks': falling_risks,
             'chip_recommendations': {
                 k: {
                     'chip': rec.chip,
@@ -673,6 +707,11 @@ def manage_gameweek(
 
 
 def main():
+    if hasattr(sys.stdout, 'reconfigure'):
+        try:
+            sys.stdout.reconfigure(encoding='utf-8')
+        except Exception:
+            pass
     parser = argparse.ArgumentParser(description="Live FPL Gameweek Matchday Manager & Decision Cockpit")
     parser.add_argument('--season', default='2026-27', help="Season string (e.g. 2026-27)")
     parser.add_argument('--gw', type=int, default=1, help="Current gameweek number (1-38)")

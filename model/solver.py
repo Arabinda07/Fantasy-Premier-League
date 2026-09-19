@@ -532,9 +532,44 @@ def prepare_solver_dataframe(
     if 'sp_pk_order' not in df.columns:
         df = enrich_predictions_with_set_pieces(df, season=season, data_root=data_root)
 
+    # Price Trend & Team Value Momentum Enrichment (M-09)
+    if 'price_trend' not in df.columns:
+        try:
+            from model.price_predictor import enrich_predictions_with_price_trends
+            df = enrich_predictions_with_price_trends(df, season=season, data_root=data_root)
+        except Exception:
+            pass
+
     # Injury & Rotation Hazard Dampening (Forces 0.0 xP for Injured/Suspended players)
     if 'rotation_dampening' not in df.columns:
         df = apply_rotation_dampening(df, season=season, data_root=data_root)
+
+    # Monte Carlo Simulation Distribution Enrichment (M-08):
+    # Merge haul_prob, ceiling_p90, std_points from match_simulator output
+    # to enable ceiling-weighted captaincy and distribution-aware decisions.
+    if current_gw is not None and 'haul_prob' not in df.columns:
+        sim_path = os.path.join(data_root, season, f'simulated_predictions_gw{current_gw}.csv')
+        if os.path.exists(sim_path):
+            try:
+                sim_df = pd.read_csv(sim_path, usecols=['player_code', 'haul_prob', 'ceiling_p90', 'std_points'])
+                sim_df['player_code'] = sim_df['player_code'].astype(int)
+                df = df.merge(sim_df, on='player_code', how='left', suffixes=('', '_sim'))
+            except Exception:
+                pass  # Graceful fallback — simulation data is optional
+
+    # Fill missing simulation columns with position-based defaults
+    if 'haul_prob' not in df.columns:
+        df['haul_prob'] = 0.02
+    else:
+        df['haul_prob'] = pd.to_numeric(df['haul_prob'], errors='coerce').fillna(0.02)
+    if 'ceiling_p90' not in df.columns:
+        df['ceiling_p90'] = df['expected_points'] * 1.5
+    else:
+        df['ceiling_p90'] = pd.to_numeric(df['ceiling_p90'], errors='coerce').fillna(df['expected_points'] * 1.5)
+    if 'std_points' not in df.columns:
+        df['std_points'] = df['expected_points'] * 0.5
+    else:
+        df['std_points'] = pd.to_numeric(df['std_points'], errors='coerce').fillna(df['expected_points'] * 0.5)
 
     # Strategy / Effective Ownership rank-adjusted utility
     if strategy != 'pure_xp' and 'utility_xp' not in df.columns:
@@ -576,7 +611,18 @@ def prepare_solver_dataframe(
     # Blends current-season minutes with long-form historical minutes in early gameweeks (GW1-GW4)
     # to prevent premature captaincy penalties for proven talismans while suppressing low-minute fringe cameos.
     capt_conf = compute_calibrated_captaincy_confidence(df, current_gw=current_gw)
-    df['captain_points'] = df['opt_points'] * capt_conf
+
+    # Ceiling-Weighted Captaincy Score (M-08):
+    # α×E[pts] + β×P(haul≥10)×ceiling_p90 — rewards explosive upside for the doubled-points slot.
+    # Captaincy doubles the return, so variance (upside) is the manager's ally for this decision.
+    alpha_capt = 0.55  # mean xP component weight
+    beta_capt = 0.45   # ceiling/haul component weight
+    haul_p = df['haul_prob'].clip(lower=0.0, upper=1.0)
+    ceil_p90 = df['ceiling_p90']
+    df['captain_points'] = (
+        alpha_capt * df['opt_points'] +
+        beta_capt * haul_p * ceil_p90
+    ) * capt_conf
 
     # Goalkeeper captaincy guardrail: Outfield players strictly receive captaincy priority.
     # Goalkeepers have bounded ceiling (clean sheet + saves) with zero haul ceiling,
@@ -1189,6 +1235,7 @@ def solve_weekly_transfers(
     current_gw: Optional[int] = None,
     bench_mode: str = 'hybrid',
     enable_bench_optimization: bool = True,
+    enable_team_value: bool = True,
 ) -> TransferSolution:
     """Solve for optimal transfers in/out from an existing 15-man squad."""
     df = prepare_solver_dataframe(df, season=season, data_root=data_root, strategy=strategy, lambda_risk=lambda_risk, current_gw=current_gw)
@@ -1264,6 +1311,28 @@ def solve_weekly_transfers(
     def_bonus_weight = 0.04 if enable_bench_optimization else 0.0
     slack_weight = 2.50 if enable_bench_optimization else 0.0
 
+    # Team Value Engine (M-09): early-season purchasing power optimization
+    tv_in_terms = []
+    tv_out_terms = []
+    if enable_team_value:
+        eff_gw = current_gw if current_gw is not None else 1
+        omega_tv = max(0.0, 4.0 * (1.0 - eff_gw / 25.0))
+        if omega_tv > 0:
+            price_trend_delta = {
+                'RISING_LOCK': 0.10,
+                'RISING_ALERT': 0.05,
+                'STABLE': 0.0,
+                'FALLING_ALERT': -0.05,
+                'FALLING_LOCK': -0.10,
+            }
+            for i in indices:
+                trend = str(df.loc[i, 'price_trend']) if 'price_trend' in df.columns else 'STABLE'
+                d_val = price_trend_delta.get(trend, 0.0)
+                if d_val != 0.0:
+                    tv_in_terms.append(omega_tv * d_val * transfer_in[i])
+                    if is_owned[i]:
+                        tv_out_terms.append(-omega_tv * d_val * transfer_out[i])
+
     # Objective
     if is_bench_boost:
         prob += (
@@ -1272,6 +1341,8 @@ def solve_weekly_transfers(
                 capt_multiplier * df.loc[i, 'captain_points'] * c[i]
                 for i in indices
             )
+            + pulp.lpSum(tv_in_terms)
+            + pulp.lpSum(tv_out_terms)
             - phi_weight * pulp.lpSum(phi[i] * transfer_out[i] for i in indices if is_owned[i] and phi[i] > 0)
             - (0.0 if is_wildcard else hit_cost) * hits
         )
@@ -1288,7 +1359,9 @@ def solve_weekly_transfers(
             pulp.lpSum(w_sub2 * df.loc[i, 'opt_points'] * b2[i] for i in outfield_indices) +
             pulp.lpSum(w_sub3 * df.loc[i, 'opt_points'] * b3[i] for i in outfield_indices) +
             pulp.lpSum(w_sub_gk * df.loc[i, 'opt_points'] * bgk[i] for i in gk_indices) +
-            pulp.lpSum(def_bonus_weight * df.loc[i, 'opt_points'] * b1[i] for i in def_indices) -
+            pulp.lpSum(def_bonus_weight * df.loc[i, 'opt_points'] * b1[i] for i in def_indices) +
+            pulp.lpSum(tv_in_terms) +
+            pulp.lpSum(tv_out_terms) -
             pulp.lpSum(bench_cost_penalty * df.loc[i, 'cost'] * (x[i] - s[i]) for i in indices) -
             slack_weight * bench_slack -
             phi_weight * pulp.lpSum(phi[i] * transfer_out[i] for i in indices if is_owned[i] and phi[i] > 0) -
@@ -1536,7 +1609,7 @@ def solve_multi_horizon_transfers(
     free_transfers: int = 1,
     bank: float = 0.0,
     discount_factor: float = 0.90,
-    max_transfers_per_gw: int = 2,
+    max_transfers_per_gw: int = 3,
     hit_cost: float = 4.0,
     max_team_players: int = 3,
     max_promoted_players: int = 2,
@@ -1556,6 +1629,7 @@ def solve_multi_horizon_transfers(
     premium_cost_threshold: float = 10.0,
     bench_mode: str = 'hybrid',
     enable_bench_optimization: bool = True,
+    enable_team_value: bool = True,
 ) -> MultiHorizonSolution:
     """Solve multi-gameweek lookahead optimization across H gameweeks (H=3..5).
 
@@ -1588,6 +1662,7 @@ def solve_multi_horizon_transfers(
         premium_cost_threshold: price threshold in £M defining premium tier (default 10.0).
         bench_mode: bench optimization mode ('hybrid', 'standard', 'ultra_thin').
         enable_bench_optimization: if False, runs baseline unconstrained bench mechanics.
+        enable_team_value: whether to incentivize early-season team value preservation and growth.
 
     Returns:
         MultiHorizonSolution containing step-by-step transfer schedule and lineups.
@@ -1626,12 +1701,27 @@ def solve_multi_horizon_transfers(
                     'position': r.get('position', 'MID'),
                     'cost': float(r.get('cost', 5.0)),
                     'is_promoted': bool(r.get('is_promoted', False)),
+                    'price_trend': str(r.get('price_trend', 'STABLE')),
                 }
 
     # Ensure all owned players have metadata
     for c in current_squad_codes:
         if c not in all_meta:
-            all_meta[c] = {'web_name': f"P_{c}", 'team': '', 'position': 'MID', 'cost': 5.0, 'is_promoted': False}
+            all_meta[c] = {'web_name': f"P_{c}", 'team': '', 'position': 'MID', 'cost': 5.0, 'is_promoted': False, 'price_trend': 'STABLE'}
+
+    # Team Value Engine (M-09): early-season purchasing power optimization
+    pool_0_price_delta: Dict[int, float] = {}
+    if enable_team_value:
+        price_trend_delta = {
+            'RISING_LOCK': 0.10,
+            'RISING_ALERT': 0.05,
+            'STABLE': 0.0,
+            'FALLING_ALERT': -0.05,
+            'FALLING_LOCK': -0.10,
+        }
+        for c in all_codes_set:
+            trend = all_meta.get(c, {}).get('price_trend', 'STABLE')
+            pool_0_price_delta[c] = price_trend_delta.get(trend, 0.0)
 
     # Initial squad cost & initial binary vector
     initial_codes_set = set(current_squad_codes)
@@ -1700,6 +1790,20 @@ def solve_multi_horizon_transfers(
         if lambda_ft > 0:
             ft_t = free_transfers if t == 0 else 1
             obj_terms.append(discount * lambda_ft * (ft_t - pulp.lpSum([u[(c, t)] for c in all_codes_set])))
+
+        # Team Value Engine (M-09): early-season purchasing power optimization at t=0
+        if enable_team_value and t == 0:
+            eff_gw = start_gw if start_gw is not None else 1
+            # Decays from 4.0 in GW1 down to 0.0 at GW25
+            omega_tv = max(0.0, 4.0 * (1.0 - eff_gw / 25.0))
+            if omega_tv > 0:
+                for c in all_codes_set:
+                    d_val = pool_0_price_delta.get(c, 0.0)
+                    if d_val != 0.0:
+                        # Transfer in: +omega_tv * d_val
+                        obj_terms.append(omega_tv * d_val * u[(c, 0)])
+                        # Transfer out: -omega_tv * d_val (selling a falling player avoids negative delta)
+                        obj_terms.append(-omega_tv * d_val * v[(c, 0)])
 
     prob += pulp.lpSum(obj_terms)
 

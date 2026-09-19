@@ -1,0 +1,258 @@
+[
+  {
+    "passed": false,
+    "severity_score": 2.95,
+    "abort_probability": 0.77,
+    "anomaly_type": "data_corruption",
+    "recommendation": "flag_for_review",
+    "message": "Guardrail Halt: data_corruption (Severity: 2.95, Abort Prob: 77%)",
+    "timestamp": "2026-09-19T02:06:29.134832+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £1.9M in trapped bench capital (De Cuyper, Barry). Pruning via 2 FTs yields +2.1 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts).",
+      "outlier_flags": []
+    },
+    "gameweek": 2
+  },
+  {
+    "passed": false,
+    "severity_score": 2.95,
+    "abort_probability": 0.77,
+    "anomaly_type": "data_corruption",
+    "recommendation": "flag_for_review",
+    "message": "Guardrail Halt: data_corruption (Severity: 2.95, Abort Prob: 77%)",
+    "timestamp": "2026-09-19T02:06:48.410053+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £1.9M in trapped bench capital (De Cuyper, Barry). Pruning via 2 FTs yields +2.1 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts).",
+      "outlier_flags": []
+    },
+    "gameweek": 2
+  },
+  {
+    "passed": false,
+    "severity_score": 2.95,
+    "abort_probability": 0.77,
+    "anomaly_type": "data_corruption",
+    "recommendation": "flag_for_review",
+    "message": "Guardrail Halt: data_corruption (Severity: 2.95, Abort Prob: 77%)",
+    "timestamp": "2026-09-19T02:06:59.341981+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £1.9M in trapped bench capital (De Cuyper, Barry). Pruning via 2 FTs yields +2.1 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts).",
+      "outlier_flags": []
+    },
+    "gameweek": 2
+  },
+  {
+    "passed": false,
+    "severity_score": 2.95,
+    "abort_probability": 0.77,
+    "anomaly_type": "data_corruption",
+    "recommendation": "flag_for_review",
+    "message": "Guardrail Halt: data_corruption (Severity: 2.95, Abort Prob: 77%)",
+    "timestamp": "2026-09-19T02:07:09.688609+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £1.9M in trapped bench capital (De Cuyper, Barry). Pruning via 2 FTs yields +2.1 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts).",
+      "outlier_flags": []
+    },
+    "gameweek": 2
+  },
+  {
+    "passed": false,
+    "severity_score": 2.93,
+    "abort_probability": 0.78,
+    "anomaly_type": "data_corruption",
+    "recommendation": "flag_for_review",
+    "message": "Guardrail Halt: data_corruption (Severity: 2.93, Abort Prob: 78%)",
+    "timestamp": "2026-09-19T02:23:41.143872+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £1.9M in trapped bench capital (De Cuyper, Barry). Pruning via 2 FTs yields +2.1 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts).",
+      "outlier_flags": []
+    },
+    "gameweek": 2
+  },
+  {
+    "passed": false,
+    "severity_score": 2.93,
+    "abort_probability": 0.78,
+    "anomaly_type": "data_corruption",
+    "recommendation": "flag_for_review",
+    "message": "Guardrail Halt: data_corruption (Severity: 2.93, Abort Prob: 78%)",
+    "timestamp": "2026-09-19T02:24:00.906920+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £1.9M in trapped bench capital (De Cuyper, Barry). Pruning via 2 FTs yields +2.1 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts).",
+      "outlier_flags": []
+    },
+    "gameweek": 2
+  },
+  {
+    "passed": false,
+    "severity_score": 2.93,
+    "abort_probability": 0.78,
+    "anomaly_type": "data_corruption",
+    "recommendation": "flag_for_review",
+    "message": "Guardrail Halt: data_corruption (Severity: 2.93, Abort Prob: 78%)",
+    "timestamp": "2026-09-19T02:24:12.106990+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £1.9M in trapped bench capital (De Cuyper, Barry). Pruning via 2 FTs yields +2.1 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts).",
+      "outlier_flags": []
+    },
+    "gameweek": 2
+  },
+  {
+    "passed": false,
+    "severity_score": 2.93,
+    "abort_probability": 0.78,
+    "anomaly_type": "data_corruption",
+    "recommendation": "flag_for_review",
+    "message": "Guardrail Halt: data_corruption (Severity: 2.93, Abort Prob: 78%)",
+    "timestamp": "2026-09-19T02:24:22.189446+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £1.9M in trapped bench capital (De Cuyper, Barry). Pruning via 2 FTs yields +2.1 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts).",
+      "outlier_flags": []
+    },
+    "gameweek": 2
+  },
+  {
+    "passed": false,
+    "severity_score": 2.92,
+    "abort_probability": 0.78,
+    "anomaly_type": "data_corruption",
+    "recommendation": "flag_for_review",
+    "message": "Guardrail Halt: data_corruption (Severity: 2.92, Abort Prob: 78%)",
+    "timestamp": "2026-09-19T14:16:29.827054+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £3.2M in trapped bench capital (Barry, Wissa). Pruning via 2 FTs yields +3.5 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts). | [!] Price Alert: B.Fernandes (-151,170) approaching drop",
+      "outlier_flags": []
+    },
+    "gameweek": 2
+  },
+  {
+    "passed": false,
+    "severity_score": 2.92,
+    "abort_probability": 0.78,
+    "anomaly_type": "data_corruption",
+    "recommendation": "flag_for_review",
+    "message": "Guardrail Halt: data_corruption (Severity: 2.92, Abort Prob: 78%)",
+    "timestamp": "2026-09-19T14:16:36.734075+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £3.2M in trapped bench capital (Barry, Wissa). Pruning via 2 FTs yields +3.5 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts). | [!] Price Alert: B.Fernandes (-151,170) approaching drop",
+      "outlier_flags": []
+    },
+    "gameweek": 2
+  },
+  {
+    "passed": false,
+    "severity_score": 2.92,
+    "abort_probability": 0.78,
+    "anomaly_type": "data_corruption",
+    "recommendation": "flag_for_review",
+    "message": "Guardrail Halt: data_corruption (Severity: 2.92, Abort Prob: 78%)",
+    "timestamp": "2026-09-19T14:16:39.593908+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £3.2M in trapped bench capital (Barry, Wissa). Pruning via 2 FTs yields +3.5 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts). | [!] Price Alert: B.Fernandes (-151,170) approaching drop",
+      "outlier_flags": []
+    },
+    "gameweek": 2
+  },
+  {
+    "passed": false,
+    "severity_score": 2.92,
+    "abort_probability": 0.78,
+    "anomaly_type": "data_corruption",
+    "recommendation": "flag_for_review",
+    "message": "Guardrail Halt: data_corruption (Severity: 2.92, Abort Prob: 78%)",
+    "timestamp": "2026-09-19T14:16:42.240262+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £3.2M in trapped bench capital (Barry, Wissa). Pruning via 2 FTs yields +3.5 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts). | [!] Price Alert: B.Fernandes (-151,170) approaching drop",
+      "outlier_flags": []
+    },
+    "gameweek": 2
+  },
+  {
+    "passed": false,
+    "severity_score": 2.92,
+    "abort_probability": 0.78,
+    "anomaly_type": "data_corruption",
+    "recommendation": "flag_for_review",
+    "message": "Guardrail Halt: data_corruption (Severity: 2.92, Abort Prob: 78%)",
+    "timestamp": "2026-09-19T14:18:19.091621+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £3.2M in trapped bench capital (Barry, Wissa). Pruning via 2 FTs yields +3.5 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts). | [!] Price Alert: B.Fernandes (-151,170) approaching drop",
+      "outlier_flags": []
+    },
+    "gameweek": 2
+  },
+  {
+    "passed": false,
+    "severity_score": 2.92,
+    "abort_probability": 0.78,
+    "anomaly_type": "data_corruption",
+    "recommendation": "flag_for_review",
+    "message": "Guardrail Halt: data_corruption (Severity: 2.92, Abort Prob: 78%)",
+    "timestamp": "2026-09-19T14:18:24.610564+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £3.2M in trapped bench capital (Barry, Wissa). Pruning via 2 FTs yields +3.5 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts). | [!] Price Alert: B.Fernandes (-151,170) approaching drop",
+      "outlier_flags": []
+    },
+    "gameweek": 2
+  },
+  {
+    "passed": false,
+    "severity_score": 2.92,
+    "abort_probability": 0.78,
+    "anomaly_type": "data_corruption",
+    "recommendation": "flag_for_review",
+    "message": "Guardrail Halt: data_corruption (Severity: 2.92, Abort Prob: 78%)",
+    "timestamp": "2026-09-19T14:18:27.668426+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £3.2M in trapped bench capital (Barry, Wissa). Pruning via 2 FTs yields +3.5 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts). | [!] Price Alert: B.Fernandes (-151,170) approaching drop",
+      "outlier_flags": []
+    },
+    "gameweek": 2
+  },
+  {
+    "passed": false,
+    "severity_score": 2.92,
+    "abort_probability": 0.78,
+    "anomaly_type": "data_corruption",
+    "recommendation": "flag_for_review",
+    "message": "Guardrail Halt: data_corruption (Severity: 2.92, Abort Prob: 78%)",
+    "timestamp": "2026-09-19T14:18:30.492846+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £3.2M in trapped bench capital (Barry, Wissa). Pruning via 2 FTs yields +3.5 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts). | [!] Price Alert: B.Fernandes (-151,170) approaching drop",
+      "outlier_flags": []
+    },
+    "gameweek": 2
+  }
+]

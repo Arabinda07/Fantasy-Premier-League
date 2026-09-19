@@ -71,7 +71,7 @@ POSITIONAL_PRIORS: Dict[str, Dict[str, float]] = {
     'GK':  {'xg90': 0.00, 'xa90': 0.00, 'dc90': 1.0, 'bonus90': 0.20},
 }
 
-DEFAULT_MINS_FILTER: float = 500.0  # M0 confidence threshold for shrinkage
+DEFAULT_MINS_FILTER: float = 350.0  # M0 confidence threshold for shrinkage
 
 
 # ---------------------------------------------------------------------------

@@ -53,9 +53,16 @@ class TestCaptaincyCalibrationFormulation:
         # All premier starters must achieve full 1.0 confidence
         assert (conf == 1.0).all()
 
-        # In prepare_solver_dataframe, captain_points must match opt_points exactly
+        # Under ceiling-weighted captaincy (M-08), captain_points no longer equals
+        # opt_points — it uses the composite α×xP + β×haul_prob×ceiling_p90.
+        # With capt_conf=1.0 for all nailed starters, verify:
+        #   1. All captain scores are positive (no penalty applied)
+        #   2. Ordering is preserved (highest xP ↔ highest captain score when defaults apply)
         prepared = prepare_solver_dataframe(df, current_gw=1)
-        np.testing.assert_allclose(prepared['captain_points'], prepared['opt_points'])
+        assert (prepared['captain_points'] > 0).all(), "Nailed starters must have positive captain scores"
+        capt_pts = prepared.sort_values('opt_points', ascending=False)['captain_points'].values
+        assert all(capt_pts[i] >= capt_pts[i + 1] for i in range(len(capt_pts) - 1)), \
+            f"Captain score ordering must mirror opt_points ordering: {capt_pts}"
 
     def test_gw1_fringe_cameo_protection_preserved(self):
         """Verify unproven fringe/cameo players with low historical minutes are heavily discounted."""
