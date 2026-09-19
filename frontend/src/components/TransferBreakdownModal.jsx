@@ -96,36 +96,6 @@ export default function TransferBreakdownModal({
         <div className="breakdown-modal-body">
           {/* Head-to-Head Comparison Card */}
           <div className="breakdown-comparison-grid">
-            {/* Incoming Player */}
-            <div className="breakdown-player-col in">
-              <div className="player-col-badge font-mono">
-                <span>TARGET IN</span>
-              </div>
-              <div className="player-col-name">Yoane Wissa</div>
-              <div className="player-col-team font-mono">Brentford &middot; FWD</div>
-              <div className="player-col-metric">
-                <span className="metric-val font-mono">5.33</span>
-                <span className="metric-lbl font-mono">Exp Pts (GW6)</span>
-              </div>
-              <div className="player-col-submetrics font-mono">
-                <div>Cost: &pound;6.1m</div>
-                <div>Fixture: @ Coventry City</div>
-                <div>Trend: &plusmn;0.0m (Stable)</div>
-              </div>
-            </div>
-
-            {/* Delta Column */}
-            <div className="breakdown-delta-col font-mono">
-              <div className="delta-pill">
-                <Sparkle size={13} weight="fill" color="var(--accent-emerald)" />
-                <span>+1.48 Exp Pts</span>
-              </div>
-              <CaretRight size={20} className="delta-arrow" />
-              <div className="delta-cost-note">
-                Budget Impact: &pound;0.4m
-              </div>
-            </div>
-
             {/* Outgoing Player */}
             <div className="breakdown-player-col out">
               <div className="player-col-badge font-mono">
@@ -141,6 +111,36 @@ export default function TransferBreakdownModal({
                 <div>Selling Price: &pound;5.7m</div>
                 <div>Fixture: @ Chelsea</div>
                 <div>Profit Retained: &pound;0.1m</div>
+              </div>
+            </div>
+
+            {/* Delta Column */}
+            <div className="breakdown-delta-col font-mono">
+              <div className="delta-pill">
+                <Sparkle size={13} weight="fill" color="var(--accent-emerald)" />
+                <span>+1.48 Exp Pts</span>
+              </div>
+              <CaretRight size={20} className="delta-arrow" />
+              <div className="delta-cost-note">
+                Budget Impact: &pound;0.4m
+              </div>
+            </div>
+
+            {/* Incoming Player */}
+            <div className="breakdown-player-col in">
+              <div className="player-col-badge font-mono">
+                <span>TARGET IN</span>
+              </div>
+              <div className="player-col-name">Yoane Wissa</div>
+              <div className="player-col-team font-mono">Brentford &middot; FWD</div>
+              <div className="player-col-metric">
+                <span className="metric-val font-mono">5.33</span>
+                <span className="metric-lbl font-mono">Exp Pts (GW6)</span>
+              </div>
+              <div className="player-col-submetrics font-mono">
+                <div>Cost: &pound;6.1m</div>
+                <div>Fixture: @ Coventry City</div>
+                <div>Trend: &plusmn;0.0m (Stable)</div>
               </div>
             </div>
           </div>

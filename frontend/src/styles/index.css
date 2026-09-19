@@ -9806,15 +9806,13 @@ tr:hover .vault-table-sticky-col {
 .breakdown-player-col {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 4px;
 }
 
-.breakdown-player-col.in {
-  text-align: left;
-}
-
+.breakdown-player-col.in,
 .breakdown-player-col.out {
-  text-align: right;
+  text-align: left;
 }
 
 .player-col-badge span {
@@ -9822,15 +9820,18 @@ tr:hover .vault-table-sticky-col {
   font-weight: 800;
   padding: 2px 6px;
   border-radius: 3px;
+  letter-spacing: 0.04em;
 }
 
 .breakdown-player-col.in .player-col-badge span {
-  background: rgba(16, 185, 129, 0.25);
-  color: var(--accent-emerald);
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #34D399;
 }
 
 .breakdown-player-col.out .player-col-badge span {
-  background: rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.35);
   color: #F87171;
 }
 
