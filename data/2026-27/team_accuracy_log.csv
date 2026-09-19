@@ -22,9 +22,9 @@ gameweek,team,pred_xp,actual_pts,bias,actual_goals
 5,Arsenal,37.35,0.0,37.35,7
 5,Aston Villa,31.36,0.0,31.36,0
 5,Bournemouth,35.44,0.0,35.44,5
-5,Brentford,32.79,0.0,32.79,7
+5,Brentford,35.04,66.0,-30.96,9
 5,Brighton,31.81,0.0,31.81,9
-5,Chelsea,32.87,0.0,32.87,10
+5,Chelsea,32.79,16.0,16.79,10
 5,Coventry City,24.06,0.0,24.06,0
 5,Crystal Palace,27.64,0.0,27.64,4
 5,Everton,40.97,0.0,40.97,4
