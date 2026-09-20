@@ -235,6 +235,140 @@ export default function TacticalPitch({
     { id: 'differential_chase', label: 'Climb Rank', shortLabel: 'Climb', icon: Lightning, desc: 'Back low-ownership punts to gain ground on your mini-league rivals' }
   ];
 
+  const resolvedTransferRecommendation = useMemo(() => {
+    const summary = effectiveActionSummary;
+    if (!summary) return null;
+
+    const summaryStr = typeof summary === 'string' ? summary : (summary.headline || summary.action || '');
+    const isRoll = (
+      summaryStr.toLowerCase().includes('roll transfer') ||
+      summaryStr.toLowerCase().includes('save free transfer') ||
+      summaryStr.toLowerCase().includes('bank') ||
+      summaryStr.toLowerCase().includes('no immediate transfers') ||
+      summaryStr.toLowerCase().includes('stand pat') ||
+      summaryStr.toLowerCase().includes('lineup locked') ||
+      summaryStr.includes('LOCKED') ||
+      summaryStr.includes('INITIAL')
+    );
+
+    // 1. Check if structured pairwise transfers exist from clientOptimizer or liveData
+    let pairs = [];
+    if (typeof summary === 'object' && Array.isArray(summary.pairwise_transfers) && summary.pairwise_transfers.length > 0) {
+      pairs = summary.pairwise_transfers.map(p => ({
+        in: p.in || p.in_player || p.in_name || 'Target In',
+        out: p.out || p.out_player || p.out_name || 'Target Out'
+      }));
+    } else if (typeof summary === 'object' && Array.isArray(summary.transfers) && summary.transfers.length > 0) {
+      pairs = summary.transfers.map(t => ({
+        in: t.in || t.in_player || 'Target In',
+        out: t.out || t.out_player || 'Target Out'
+      }));
+    }
+
+    // 2. Parse string format with unicode support
+    if (pairs.length === 0 && summaryStr) {
+      const inMatch = summaryStr.match(/\[IN\]\s*([^|\]]+)/i);
+      const outMatch = summaryStr.match(/\[OUT\]\s*([^|\]]+)/i);
+
+      if (inMatch && outMatch) {
+        const inList = inMatch[1].split(',').map(s => s.trim()).filter(Boolean);
+        const outList = outMatch[1].split(',').map(s => s.trim()).filter(Boolean);
+
+        pairs = inList.map((inPlayer, idx) => ({
+          in: inPlayer,
+          out: outList[idx] || 'Target Out'
+        }));
+      }
+    }
+
+    // 3. Fallback to liveData.multi_horizon_roadmap[0]
+    if (pairs.length === 0 && liveData?.multi_horizon_roadmap?.[0]?.transfers_in?.length > 0) {
+      const roadmapItem = liveData.multi_horizon_roadmap[0];
+      pairs = roadmapItem.transfers_in.map((inPlayer, idx) => ({
+        in: inPlayer,
+        out: roadmapItem.transfers_out?.[idx] || 'Target Out'
+      }));
+    }
+
+    if (pairs.length > 0) {
+      const topPair = pairs[0];
+      const allKnown = [
+        ...(allPlayersData || []),
+        ...(_allPlayers || []),
+        ...(displayStarters || []),
+        ...(displayBench || []),
+        ...(liveData?.all_players || [])
+      ];
+
+      const findP = (name) => {
+        if (!name) return null;
+        const target = name.toLowerCase().trim();
+        return allKnown.find(p =>
+          (p.web_name && p.web_name.toLowerCase() === target) ||
+          (p.name && p.name.toLowerCase() === target) ||
+          (p.player_name && p.player_name.toLowerCase() === target)
+        );
+      };
+
+      const foundIn = findP(topPair.in);
+      const foundOut = findP(topPair.out);
+
+      let netGain = 1.48;
+      if (typeof summary === 'object' && summary.net_gain != null) {
+        netGain = Number(summary.net_gain);
+      } else if (summaryStr) {
+        const match = summaryStr.match(/\+(\d+\.?\d*)\s*pts/i);
+        if (match) {
+          netGain = parseFloat(match[1]);
+        } else if (foundIn && foundOut) {
+          netGain = Math.max(0.1, Number((getPlayerXp(foundIn) - getPlayerXp(foundOut)).toFixed(2)));
+        }
+      }
+
+      const playerIn = {
+        name: foundIn?.web_name || topPair.in,
+        team: foundIn?.team || foundIn?.team_name || 'Brentford',
+        position: foundIn?.position || 'FWD',
+        expected_points: foundIn ? getPlayerXp(foundIn) : 5.33,
+        cost: foundIn ? Number(foundIn.now_cost || foundIn.cost || 6.1) : 6.1,
+        fixture: foundIn?.next_opponent || foundIn?.fixture || '@ Coventry',
+        fdr: foundIn?.fdr || foundIn?.next_fdr || 2
+      };
+
+      const playerOut = {
+        name: foundOut?.web_name || topPair.out,
+        team: foundOut?.team || foundOut?.team_name || 'Brighton',
+        position: foundOut?.position || 'FWD',
+        expected_points: foundOut ? getPlayerXp(foundOut) : 3.85,
+        cost: foundOut ? Number(foundOut.selling_price || foundOut.now_cost || foundOut.cost || 5.7) : 5.7,
+        fixture: foundOut?.next_opponent || foundOut?.fixture || '@ Chelsea',
+        fdr: foundOut?.fdr || foundOut?.next_fdr || 4
+      };
+
+      const costDelta = Number((playerIn.cost - playerOut.cost).toFixed(1));
+
+      return {
+        isRollFt: false,
+        playerIn,
+        playerOut,
+        netGain,
+        costDelta
+      };
+    }
+
+    if (isRoll) {
+      return {
+        isRollFt: true,
+        playerIn: null,
+        playerOut: null,
+        netGain: 0,
+        costDelta: 0
+      };
+    }
+
+    return null;
+  }, [effectiveActionSummary, liveData, allPlayersData, _allPlayers, displayStarters, displayBench]);
+
   const renderTransferPills = (summary) => {
     if (!summary) return null;
 
@@ -985,6 +1119,7 @@ export default function TacticalPitch({
         teamName={manager?.team_name || 'Fuljhore Giants'}
         freeTransfers={freeTransfers}
         isLocked={isLineupLocked}
+        recommendedTransfer={resolvedTransferRecommendation}
       />
 
       {/* Transfer Recommendation Mathematical Breakdown Modal */}
@@ -992,6 +1127,9 @@ export default function TacticalPitch({
         isOpen={isBreakdownOpen}
         onClose={() => setIsBreakdownOpen(false)}
         managerId={manager?.entry_id || '9500404'}
+        gameweek={liveData?.gameweek || 6}
+        recommendedTransfer={resolvedTransferRecommendation}
+        bank={liveData?.bank || liveData?.manager_profile?.bank || 0.4}
       />
     </div>
   );

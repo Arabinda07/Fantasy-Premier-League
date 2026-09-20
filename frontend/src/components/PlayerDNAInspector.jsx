@@ -384,12 +384,6 @@ export default function PlayerDNAInspector({ player, onClose }) {
               : (player.sp_ck_order === 1 ? 'Takes corners and direct free-kicks' : 'Scores and creates from open play')}
           </div>
         </div>
-
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '14px' }}>
-          <button type="button" className="btn-secondary" onClick={onClose}>
-            Close
-          </button>
-        </div>
       </div>
     </div>
   );

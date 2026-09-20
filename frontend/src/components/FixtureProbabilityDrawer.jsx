@@ -2,7 +2,8 @@ import React, { useState, useMemo, useEffect } from 'react';
 import {
   X,
   SoccerBall,
-  Table
+  Table,
+  CaretDown
 } from '@phosphor-icons/react';
 
 // Factorial helper
@@ -60,6 +61,7 @@ export default function FixtureProbabilityDrawer({
   dixonColesList = []
 }) {
   const [hoveredCell, setHoveredCell] = useState(null);
+  const [isMatrixExpanded, setIsMatrixExpanded] = useState(false);
 
   const cleanStr = (s) => (s || '').toLowerCase().trim();
 
@@ -200,14 +202,14 @@ export default function FixtureProbabilityDrawer({
         style={{ maxWidth: '680px' }}
       >
         {/* Drawer Header */}
-        <div className="modal-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="modal-header fixture-drawer-header">
+          <div className="fixture-drawer-title-group">
             <div className="sync-icon-wrapper">
-              <SoccerBall size={18} weight="fill" />
+              <SoccerBall size={20} weight="fill" />
             </div>
             <div>
               <span className="profile-tag">MATCH PREVIEW &amp; PROBABILITY FORECAST</span>
-              <h2 id="drawer-title" className="modal-title" style={{ marginTop: '2px' }}>
+              <h2 id="drawer-title" className="modal-title fixture-drawer-title">
                 {activeFixture.home_team} vs {activeFixture.away_team}
               </h2>
             </div>
@@ -217,8 +219,10 @@ export default function FixtureProbabilityDrawer({
           </button>
         </div>
 
-        {/* Big Matchup Header Banner */}
-        <div className="fixture-hero-card">
+        {/* Drawer Body with Rhythmic Generous Spacing */}
+        <div className="fixture-drawer-body">
+          {/* Big Matchup Header Banner */}
+          <div className="fixture-hero-card">
           <div className="team-side home">
             <span className="team-role">HOME</span>
             <div className="team-display-name">{activeFixture.home_team}</div>
@@ -268,123 +272,147 @@ export default function FixtureProbabilityDrawer({
           </div>
         </div>
 
-        {/* 5x5 Joint Scoreline Probability Matrix */}
-        <div className="data-table-container" style={{ marginBottom: '16px' }}>
-          <div className="studio-table-controls">
+        {/* Collapsible 5x5 Joint Scoreline Probability Matrix & Detailed Odds */}
+        <div className="data-table-container scoreline-accordion-container" style={{ marginBottom: '16px' }}>
+          <button
+            type="button"
+            className="scoreline-accordion-header"
+            onClick={() => setIsMatrixExpanded(prev => !prev)}
+            aria-expanded={isMatrixExpanded}
+            aria-controls="scoreline-matrix-panel"
+          >
             <div className="controls-left">
-              <span className="controls-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Table size={14} weight="bold" />
-                Most Likely Match Scorelines (Probability Grid)
+              <span className="controls-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Table size={16} weight="bold" style={{ color: 'var(--accent-emerald)' }} />
+                <span>Scoreline Probability Matrix &amp; Key Odds</span>
               </span>
-              <span className="controls-count font-mono">Scoreline Chances</span>
+              <span className="controls-count font-mono">
+                {isMatrixExpanded ? 'Click to collapse' : 'Click to inspect 5×5 grid'}
+              </span>
             </div>
-          </div>
-
-          <div style={{ padding: '12px 14px' }}>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '8px', textAlign: 'center', fontFamily: 'var(--font-mono)' }}>
-              ◀ {activeFixture.home_team} (Home Goals) &nbsp;&nbsp;|&nbsp;&nbsp; {activeFixture.away_team} (Away Goals) ▼
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span className="badge-matrix-status font-mono">
+                {isMatrixExpanded ? 'Hide Grid' : 'Show 5×5 Matrix'}
+              </span>
+              <CaretDown
+                size={16}
+                weight="bold"
+                className={`accordion-chevron ${isMatrixExpanded ? 'expanded' : ''}`}
+              />
             </div>
+          </button>
 
-            <div className="matrix-wrapper">
-              <table className="scoreline-matrix-table">
-                <thead>
-                  <tr>
-                    <th className="matrix-corner">H \ A</th>
-                    {[0, 1, 2, 3, 4].map(a => (
-                      <th key={`head-${a}`} className="matrix-col-header font-mono">
-                        {a === 4 ? '4+' : a}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {matrix.map((row, hIdx) => (
-                    <tr key={`row-${hIdx}`}>
-                      <td className="matrix-row-header font-mono">
-                        {hIdx === 4 ? '4+' : hIdx}
-                      </td>
-                      {row.map(cell => {
-                        const isHovered = hoveredCell && hoveredCell.home === cell.home && hoveredCell.away === cell.away;
-                        const isDraw = cell.home === cell.away;
-                        const isHomeWin = cell.home > cell.away;
-                        const isAwayWin = cell.home < cell.away;
-                        const pct = (cell.prob * 100).toFixed(1);
-                        const intensity = Math.min(1, cell.prob / maxProb);
+          {isMatrixExpanded && (
+            <div id="scoreline-matrix-panel" className="scoreline-accordion-body">
+              <div style={{ padding: '12px 14px' }}>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '8px', textAlign: 'center', fontFamily: 'var(--font-mono)' }}>
+                  ◀ {activeFixture.home_team} (Home Goals) &nbsp;&nbsp;|&nbsp;&nbsp; {activeFixture.away_team} (Away Goals) ▼
+                </div>
 
-                        // Heatmap color calculation
-                        const baseColor = isHomeWin
-                          ? `rgba(59, 130, 246, ${0.08 + intensity * 0.40})`
-                          : isAwayWin
-                          ? `rgba(16, 185, 129, ${0.08 + intensity * 0.40})`
-                          : `rgba(245, 158, 11, ${0.08 + intensity * 0.35})`;
-
-                        return (
-                          <td
-                            key={`cell-${cell.home}-${cell.away}`}
-                            className={`matrix-cell ${isHovered ? 'hovered' : ''} ${isDraw ? 'is-draw' : ''}`}
-                            style={{ background: baseColor }}
-                            onMouseEnter={() => setHoveredCell(cell)}
-                            onMouseLeave={() => setHoveredCell(null)}
-                            title={`${activeFixture.home_team} ${cell.home} - ${cell.away} ${activeFixture.away_team}: ${pct}% chance (${isHomeWin ? 'Home Win' : isAwayWin ? 'Away Win' : 'Draw'})`}
-                          >
-                            <span className="matrix-val font-mono">{pct}%</span>
+                <div className="matrix-wrapper">
+                  <table className="scoreline-matrix-table">
+                    <thead>
+                      <tr>
+                        <th className="matrix-corner">H \ A</th>
+                        {[0, 1, 2, 3, 4].map(a => (
+                          <th key={`head-${a}`} className="matrix-col-header font-mono">
+                            {a === 4 ? '4+' : a}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {matrix.map((row, hIdx) => (
+                        <tr key={`row-${hIdx}`}>
+                          <td className="matrix-row-header font-mono">
+                            {hIdx === 4 ? '4+' : hIdx}
                           </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                          {row.map(cell => {
+                            const isHovered = hoveredCell && hoveredCell.home === cell.home && hoveredCell.away === cell.away;
+                            const isDraw = cell.home === cell.away;
+                            const isHomeWin = cell.home > cell.away;
+                            const isAwayWin = cell.home < cell.away;
+                            const pct = (cell.prob * 100).toFixed(1);
+                            const intensity = Math.min(1, cell.prob / maxProb);
 
-            {/* Matrix Hover Readout */}
-            <div style={{ marginTop: '8px', minHeight: '22px', fontSize: '11.5px', textAlign: 'center', fontFamily: 'var(--font-mono)' }}>
-              {hoveredCell ? (
-                <span style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>
-                  Scoreline: {activeFixture.home_team} {hoveredCell.home} – {hoveredCell.away} {activeFixture.away_team} · {(hoveredCell.prob * 100).toFixed(2)}% ({hoveredCell.home > hoveredCell.away ? `${activeFixture.home_team} Win` : hoveredCell.home < hoveredCell.away ? `${activeFixture.away_team} Win` : 'Draw'})
-                </span>
-              ) : (
-                <span style={{ color: 'var(--text-muted)' }}>
-                  Hover over any scoreline to see exact probability
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
+                            // Heatmap color calculation
+                            const baseColor = isHomeWin
+                              ? `rgba(59, 130, 246, ${0.08 + intensity * 0.40})`
+                              : isAwayWin
+                              ? `rgba(16, 185, 129, ${0.08 + intensity * 0.40})`
+                              : `rgba(245, 158, 11, ${0.08 + intensity * 0.35})`;
 
-        {/* 4-Card Quantitative Metrics Grid */}
-        <div className="kpi-strip" style={{ marginBottom: '16px' }}>
-          <div className="kpi-card">
-            <div className="kpi-label">{activeFixture.home_team} Clean Sheet</div>
-            <div className="kpi-value font-mono" style={{ color: 'var(--accent-blue)' }}>
-              {Math.round((activeFixture.home_cs_prob || 0.28) * 100)}%
-            </div>
-            <div className="kpi-subtext">Chance of shutting out {activeFixture.away_team}</div>
-          </div>
+                            return (
+                              <td
+                                key={`cell-${cell.home}-${cell.away}`}
+                                className={`matrix-cell ${isHovered ? 'hovered' : ''} ${isDraw ? 'is-draw' : ''}`}
+                                style={{ background: baseColor }}
+                                onMouseEnter={() => setHoveredCell(cell)}
+                                onMouseLeave={() => setHoveredCell(null)}
+                                title={`${activeFixture.home_team} ${cell.home} - ${cell.away} ${activeFixture.away_team}: ${pct}% chance (${isHomeWin ? 'Home Win' : isAwayWin ? 'Away Win' : 'Draw'})`}
+                              >
+                                <span className="matrix-val font-mono">{pct}%</span>
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
 
-          <div className="kpi-card">
-            <div className="kpi-label">{activeFixture.away_team} Clean Sheet</div>
-            <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
-              {Math.round((activeFixture.away_cs_prob || 0.32) * 100)}%
-            </div>
-            <div className="kpi-subtext">Chance of shutting out {activeFixture.home_team}</div>
-          </div>
+                {/* Matrix Hover Readout */}
+                <div style={{ marginTop: '8px', minHeight: '22px', fontSize: '11.5px', textAlign: 'center', fontFamily: 'var(--font-mono)' }}>
+                  {hoveredCell ? (
+                    <span style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>
+                      Scoreline: {activeFixture.home_team} {hoveredCell.home} – {hoveredCell.away} {activeFixture.away_team} · {(hoveredCell.prob * 100).toFixed(2)}% ({hoveredCell.home > hoveredCell.away ? `${activeFixture.home_team} Win` : hoveredCell.home < hoveredCell.away ? `${activeFixture.away_team} Win` : 'Draw'})
+                    </span>
+                  ) : (
+                    <span style={{ color: 'var(--text-muted)' }}>
+                      Hover over any scoreline to see exact probability
+                    </span>
+                  )}
+                </div>
+              </div>
 
-          <div className="kpi-card">
-            <div className="kpi-label">Both Teams to Score</div>
-            <div className="kpi-value font-mono" style={{ color: 'var(--accent-amber)' }}>
-              {Math.round((activeFixture.btts_prob || 0.54) * 100)}%
-            </div>
-            <div className="kpi-subtext">Both sides find the net</div>
-          </div>
+              {/* 4-Card Quantitative Metrics Grid */}
+              <div style={{ padding: '0 14px 14px 14px' }}>
+                <div className="kpi-strip" style={{ marginBottom: 0 }}>
+                  <div className="kpi-card">
+                    <div className="kpi-label">{activeFixture.home_team} Clean Sheet</div>
+                    <div className="kpi-value font-mono" style={{ color: 'var(--accent-blue)' }}>
+                      {Math.round((activeFixture.home_cs_prob || 0.28) * 100)}%
+                    </div>
+                    <div className="kpi-subtext">Chance of shutting out {activeFixture.away_team}</div>
+                  </div>
 
-          <div className="kpi-card">
-            <div className="kpi-label">Over 2.5 Total Goals</div>
-            <div className="kpi-value font-mono" style={{ color: 'var(--text-primary)' }}>
-              {Math.round((activeFixture.over_2_5_prob || 0.51) * 100)}%
+                  <div className="kpi-card">
+                    <div className="kpi-label">{activeFixture.away_team} Clean Sheet</div>
+                    <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
+                      {Math.round((activeFixture.away_cs_prob || 0.32) * 100)}%
+                    </div>
+                    <div className="kpi-subtext">Chance of shutting out {activeFixture.home_team}</div>
+                  </div>
+
+                  <div className="kpi-card">
+                    <div className="kpi-label">Both Teams to Score</div>
+                    <div className="kpi-value font-mono" style={{ color: 'var(--accent-amber)' }}>
+                      {Math.round((activeFixture.btts_prob || 0.54) * 100)}%
+                    </div>
+                    <div className="kpi-subtext">Both sides find the net</div>
+                  </div>
+
+                  <div className="kpi-card">
+                    <div className="kpi-label">Over 2.5 Total Goals</div>
+                    <div className="kpi-value font-mono" style={{ color: 'var(--text-primary)' }}>
+                      {Math.round((activeFixture.over_2_5_prob || 0.51) * 100)}%
+                    </div>
+                    <div className="kpi-subtext">3 or more total goals expected</div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="kpi-subtext">3 or more total goals expected</div>
-          </div>
+          )}
         </div>
 
         {/* Top 5 Most Likely Exact Scorelines */}
@@ -411,12 +439,6 @@ export default function FixtureProbabilityDrawer({
             ))}
           </div>
         </div>
-
-        {/* Footer Actions */}
-        <div className="modal-actions" style={{ marginTop: '16px' }}>
-          <button type="button" className="btn-secondary" onClick={onClose}>
-            Close
-          </button>
         </div>
       </div>
     </div>

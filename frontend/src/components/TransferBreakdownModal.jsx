@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo, useState } from 'react';
 import {
   X,
   ArrowSquareOut,
@@ -9,19 +9,23 @@ import {
   Calendar,
   Sparkle
 } from '@phosphor-icons/react';
+import { generateTransferRationale } from '../utils/transferRationaleEngine.js';
 
 export default function TransferBreakdownModal({
   isOpen,
   onClose,
-  managerId = '9500404'
+  managerId = '9500404',
+  gameweek = 6,
+  recommendedTransfer,
+  bank = 0.4
 }) {
   const modalRef = useRef(null);
+  const [rationaleExpanded, setRationaleExpanded] = useState(false);
 
   // Keyboard accessibility: Focus placement, Escape key to dismiss & focus trap (WCAG 2.1.2 & 2.4.3)
   useEffect(() => {
     if (!isOpen) return;
 
-    // Auto-focus dialog on mount for assistive tech and keyboard users
     const focusTimer = setTimeout(() => {
       if (modalRef.current) {
         modalRef.current.focus();
@@ -65,6 +69,58 @@ export default function TransferBreakdownModal({
     };
   }, [isOpen, onClose]);
 
+  const gw = gameweek || 6;
+  const isRoll = Boolean(recommendedTransfer?.isRollFt);
+
+  // Default fallback data for initial demonstration if none provided
+  const defaultPlayerOut = {
+    name: 'Jo\u00e3o Pedro',
+    team: 'Brighton',
+    position: 'FWD',
+    expected_points: 3.85,
+    cost: 5.7,
+    fixture: '@ Chelsea',
+    fdr: 4
+  };
+
+  const defaultPlayerIn = {
+    name: 'Yoane Wissa',
+    team: 'Brentford',
+    position: 'FWD',
+    expected_points: 5.33,
+    cost: 6.1,
+    fixture: '@ Coventry',
+    fdr: 2
+  };
+
+  const playerOut = recommendedTransfer?.playerOut || defaultPlayerOut;
+  const playerIn = recommendedTransfer?.playerIn || defaultPlayerIn;
+  const netGain = recommendedTransfer?.netGain != null
+    ? Number(recommendedTransfer.netGain).toFixed(2)
+    : (Number(playerIn.expected_points || 0) - Number(playerOut.expected_points || 0)).toFixed(2);
+  const costDelta = recommendedTransfer?.costDelta != null
+    ? Number(recommendedTransfer.costDelta).toFixed(1)
+    : (Number(playerIn.cost || 0) - Number(playerOut.cost || 0)).toFixed(1);
+
+  // Deterministic, context-aware rationale generation
+  const rationales = useMemo(() => {
+    return generateTransferRationale({
+      playerIn,
+      playerOut,
+      netGain,
+      costDelta,
+      bank,
+      gameweek: gw,
+      isRoll
+    });
+  }, [playerIn, playerOut, netGain, costDelta, bank, gw, isRoll]);
+
+  const renderIcon = (iconType) => {
+    if (iconType === 'emerald') return <Calendar size={14} weight="bold" />;
+    if (iconType === 'cyan') return <TrendUp size={14} weight="bold" />;
+    return <ShieldCheck size={14} weight="bold" />;
+  };
+
   if (!isOpen) return null;
 
   const officialTransfersUrl = 'https://fantasy.premierleague.com/transfers';
@@ -89,10 +145,12 @@ export default function TransferBreakdownModal({
             </div>
             <div>
               <h2 id="breakdown-modal-title" className="modal-title">
-                Transfer Recommendation Breakdown
+                Transfer Recommendation
               </h2>
-              <p className="modal-subtitle">
-                Mathematical Rationale &middot; Gameweek 6
+              <p className="modal-subtitle font-mono">
+                {isRoll
+                  ? `Gameweek ${gw} \u00b7 Bank Free Transfer`
+                  : `Gameweek ${gw} \u00b7 +${netGain} Projected Points Gain`}
               </p>
             </div>
           </div>
@@ -107,110 +165,120 @@ export default function TransferBreakdownModal({
         </div>
 
         <div className="breakdown-modal-body">
-          {/* Head-to-Head Comparison Card */}
-          <div className="breakdown-comparison-grid">
-            {/* Outgoing Player */}
-            <div className="breakdown-player-col out">
-              <div className="player-col-badge font-mono">
-                <span>TARGET OUT</span>
-              </div>
-              <div className="player-col-name">Jo&atilde;o Pedro</div>
-              <div className="player-col-team font-mono">Brighton &middot; FWD</div>
-              <div className="player-col-metric">
-                <span className="metric-val font-mono">3.85</span>
-                <span className="metric-lbl font-mono">Exp Pts (GW6)</span>
-              </div>
-              <div className="player-col-submetrics font-mono">
-                <div>Selling Price: &pound;5.7m</div>
-                <div>Fixture: @ Chelsea</div>
-                <div>Profit Retained: &pound;0.1m</div>
+          {isRoll ? (
+            /* Roll Free Transfer Spec Card */
+            <div className="breakdown-comparison-card roll font-mono">
+              <div className="roll-status-box">
+                <span className="player-col-badge in font-mono">RECOMMENDED STRATEGY</span>
+                <div className="roll-title">Save Free Transfer (Roll FT)</div>
+                <div className="roll-desc">
+                  No immediate transfers required this gameweek. Field your active starting XI.
+                </div>
               </div>
             </div>
-
-            {/* Delta Column */}
-            <div className="breakdown-delta-col font-mono">
-              <div className="delta-pill">
-                <Sparkle size={13} weight="fill" color="var(--accent-emerald)" />
-                <span>+1.48 Exp Pts</span>
+          ) : (
+            /* Head-to-Head Comparison Card */
+            <div className="breakdown-comparison-card">
+              {/* Delta Banner — full-width top on mobile */}
+              <div className="breakdown-delta-col font-mono">
+                <div className="delta-pill">
+                  <Sparkle size={13} weight="fill" />
+                  <span>+{netGain} pts</span>
+                </div>
+                <CaretRight size={18} className="delta-arrow" />
+                <span className="delta-cost-note">
+                  {Number(costDelta) > 0
+                    ? `Costs \u00a3${costDelta}m`
+                    : Number(costDelta) < 0
+                    ? `Saves \u00a3${Math.abs(Number(costDelta)).toFixed(1)}m`
+                    : 'Budget Neutral'}
+                </span>
               </div>
-              <CaretRight size={20} className="delta-arrow" />
-              <div className="delta-cost-note">
-                Budget Impact: &pound;0.4m
+
+              {/* Outgoing Player */}
+              <div className="breakdown-player-col out">
+                <div className="breakdown-col-header">
+                  <span className="player-col-badge out font-mono">OUT</span>
+                </div>
+                <div className="player-col-name">{playerOut.name}</div>
+                <div className="player-col-metric">
+                  <span className="metric-val font-mono">{Number(playerOut.expected_points || 0).toFixed(2)}</span>
+                  <span className="metric-lbl font-mono">Exp Pts</span>
+                </div>
+                <div className="player-col-compact-meta font-mono">
+                  {playerOut.team} &middot; &pound;{Number(playerOut.cost || 0).toFixed(1)}m &middot; {playerOut.fixture || 'TBD'}
+                </div>
+              </div>
+
+              {/* Incoming Player */}
+              <div className="breakdown-player-col in">
+                <div className="breakdown-col-header">
+                  <span className="player-col-badge in font-mono">IN</span>
+                </div>
+                <div className="player-col-name">{playerIn.name}</div>
+                <div className="player-col-metric">
+                  <span className="metric-val font-mono">{Number(playerIn.expected_points || 0).toFixed(2)}</span>
+                  <span className="metric-lbl font-mono">Exp Pts</span>
+                </div>
+                <div className="player-col-compact-meta font-mono">
+                  {playerIn.team} &middot; &pound;{Number(playerIn.cost || 0).toFixed(1)}m &middot; {playerIn.fixture || 'TBD'}
+                </div>
               </div>
             </div>
+          )}
 
-            {/* Incoming Player */}
-            <div className="breakdown-player-col in">
-              <div className="player-col-badge font-mono">
-                <span>TARGET IN</span>
-              </div>
-              <div className="player-col-name">Yoane Wissa</div>
-              <div className="player-col-team font-mono">Brentford &middot; FWD</div>
-              <div className="player-col-metric">
-                <span className="metric-val font-mono">5.33</span>
-                <span className="metric-lbl font-mono">Exp Pts (GW6)</span>
-              </div>
-              <div className="player-col-submetrics font-mono">
-                <div>Cost: &pound;6.1m</div>
-                <div>Fixture: @ Coventry City</div>
-                <div>Trend: &plusmn;0.0m (Stable)</div>
-              </div>
-            </div>
-          </div>
-
-          {/* 3 Pillars of Rationale */}
-          <div className="breakdown-pillars-grid">
-            <div className="breakdown-pillar-card">
-              <div className="pillar-header font-mono">
-                <Calendar size={14} weight="bold" color="var(--accent-emerald)" />
-                <span>FIXTURE RUN</span>
-              </div>
-              <p className="pillar-text">
-                Wissa faces newly-promoted Coventry City and Wolves in back-to-back gameweeks, with high transition vulnerability.
-              </p>
-            </div>
-
-            <div className="breakdown-pillar-card">
-              <div className="pillar-header font-mono">
-                <TrendUp size={14} weight="bold" color="var(--accent-cyan)" />
-                <span>50% PROFIT RETENTION</span>
-              </div>
-              <p className="pillar-text">
-                Purchased Pedro at &pound;5.5m and selling at &pound;5.7m locks in &pound;0.1m profit before difficult Chelsea match.
-              </p>
-            </div>
-
-            <div className="breakdown-pillar-card">
-              <div className="pillar-header font-mono">
-                <ShieldCheck size={14} weight="bold" color="var(--accent-blue)" />
-                <span>TACTICAL FIT</span>
-              </div>
-              <p className="pillar-text">
-                Brentford attack creates high expected goals on the break; Wissa starts in central striker role with zero cameo hazard.
-              </p>
-            </div>
-          </div>
-
-          {/* Modal Actions */}
-          <div className="breakdown-modal-actions">
+          {/* Unified Rationale Spec Card — collapsible on mobile */}
+          <div className={`breakdown-rationale-card ${rationaleExpanded ? 'rationale-expanded' : ''}`}>
             <button
               type="button"
-              className="modal-btn-ghost"
-              onClick={onClose}
+              className="rationale-card-toggle"
+              onClick={() => setRationaleExpanded(!rationaleExpanded)}
+              aria-expanded={rationaleExpanded}
             >
-              Close
+              <span className="rationale-card-title font-mono">
+                WHY THIS MOVE WORKS
+              </span>
+              <CaretRight
+                size={12}
+                weight="bold"
+                className={`rationale-caret ${rationaleExpanded ? 'expanded' : ''}`}
+              />
             </button>
-
-            <a
-              href={officialTransfersUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="modal-btn-primary font-mono"
-            >
-              <span>Execute Transfer on Official FPL</span>
-              <ArrowSquareOut size={14} weight="bold" />
-            </a>
+            <div className="rationale-list">
+              {rationales.map((item) => (
+                <div key={item.id} className="rationale-item">
+                  <div className={`rationale-icon ${item.iconType}`}>
+                    {renderIcon(item.iconType)}
+                  </div>
+                  <div className="rationale-content">
+                    <strong>{item.title}:</strong>{' '}
+                    <span className="rationale-text">{item.text}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
+        </div>
+
+        {/* Modal Actions Docked at Bottom */}
+        <div className="breakdown-modal-actions">
+          <button
+            type="button"
+            className="modal-btn-ghost"
+            onClick={onClose}
+          >
+            Close
+          </button>
+
+          <a
+            href={officialTransfersUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="modal-btn-primary font-mono"
+          >
+            <span>Make Transfer on Official FPL</span>
+            <ArrowSquareOut size={14} weight="bold" />
+          </a>
         </div>
       </div>
     </div>
