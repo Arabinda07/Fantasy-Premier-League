@@ -475,6 +475,11 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
               </div>
             </div>
 
+            {/* Mobile Scroll Hint */}
+            <div className="table-mobile-hint font-mono">
+              <span>Swipe table horizontally to view all projections →</span>
+            </div>
+
             {/* Table Body */}
             <div className="table-scroll-wrapper">
               <table className="data-table">
@@ -654,6 +659,11 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                 </span>
                 <span className="controls-count font-mono">4 Positions Evaluated</span>
               </div>
+            </div>
+
+            {/* Mobile Scroll Hint */}
+            <div className="table-mobile-hint font-mono">
+              <span>Swipe table horizontally to view calibration details →</span>
             </div>
 
             <div className="table-scroll-wrapper">

@@ -151,7 +151,7 @@ export default function PlayerDNAInspector({ player, onClose }) {
         </div>
 
         {/* View Mode Segmented Switcher */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+        <div className="dna-modal-switcher">
           <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             {activeView === 'chart' ? 'Expected Points Breakdown' : 'Player Strengths vs League Average'}
           </span>
