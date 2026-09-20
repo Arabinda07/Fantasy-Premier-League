@@ -325,14 +325,41 @@ export default function TacticalPitch({
         }
       }
 
+      const resolveFixtureStr = (player, fallbackOpp, fallbackVenue = 'A', fallbackFdr = 3) => {
+        if (!player) return { fixture: `@ ${fallbackOpp}`, fdr: fallbackFdr };
+        if (player.next_opponent || player.fixture) {
+          return {
+            fixture: player.next_opponent || player.fixture,
+            fdr: player.fdr || player.next_fdr || fallbackFdr
+          };
+        }
+        if (player.fixture_opponent) {
+          const venue = player.fixture_venue === 'A' ? '@' : 'vs';
+          return {
+            fixture: `${venue} ${player.fixture_opponent}`,
+            fdr: player.fixture_fdr || fallbackFdr
+          };
+        }
+        const pTeam = (player.team || player.team_name || '').toLowerCase();
+        let opp = fallbackOpp;
+        if (pTeam && opp.toLowerCase().includes(pTeam)) {
+          opp = pTeam.includes('chelsea') ? 'Arsenal' : 'Chelsea';
+        }
+        const venue = fallbackVenue === 'A' ? '@' : 'vs';
+        return { fixture: `${venue} ${opp}`, fdr: fallbackFdr };
+      };
+
+      const inFixtureData = resolveFixtureStr(foundIn, 'Coventry', 'A', 2);
+      const outFixtureData = resolveFixtureStr(foundOut, 'Chelsea', 'A', 4);
+
       const playerIn = {
         name: foundIn?.web_name || topPair.in,
         team: foundIn?.team || foundIn?.team_name || 'Brentford',
         position: foundIn?.position || 'FWD',
         expected_points: foundIn ? getPlayerXp(foundIn) : 5.33,
         cost: foundIn ? Number(foundIn.now_cost || foundIn.cost || 6.1) : 6.1,
-        fixture: foundIn?.next_opponent || foundIn?.fixture || '@ Coventry',
-        fdr: foundIn?.fdr || foundIn?.next_fdr || 2
+        fixture: inFixtureData.fixture,
+        fdr: inFixtureData.fdr
       };
 
       const playerOut = {
@@ -341,8 +368,8 @@ export default function TacticalPitch({
         position: foundOut?.position || 'FWD',
         expected_points: foundOut ? getPlayerXp(foundOut) : 3.85,
         cost: foundOut ? Number(foundOut.selling_price || foundOut.now_cost || foundOut.cost || 5.7) : 5.7,
-        fixture: foundOut?.next_opponent || foundOut?.fixture || '@ Chelsea',
-        fdr: foundOut?.fdr || foundOut?.next_fdr || 4
+        fixture: outFixtureData.fixture,
+        fdr: outFixtureData.fdr
       };
 
       const costDelta = Number((playerIn.cost - playerOut.cost).toFixed(1));

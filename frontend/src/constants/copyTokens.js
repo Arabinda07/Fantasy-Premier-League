@@ -242,6 +242,7 @@ export const STRUCTURAL_BUILDS = {
 export const SET_PIECE_TIERS = {
   high: {
     tier: 'High',
+    shortTier: 'High',
     rate: 0.18,
     rateFormatted: '0.18 pk/90',
     label: 'High PK',
@@ -252,6 +253,7 @@ export const SET_PIECE_TIERS = {
   },
   standard: {
     tier: 'Standard',
+    shortTier: 'Std',
     rate: 0.12,
     rateFormatted: '0.12 pk/90',
     label: 'Std PK',
@@ -262,6 +264,7 @@ export const SET_PIECE_TIERS = {
   },
   low: {
     tier: 'Low',
+    shortTier: 'Low',
     rate: 0.07,
     rateFormatted: '0.07 pk/90',
     label: 'Low PK',

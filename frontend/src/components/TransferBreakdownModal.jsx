@@ -6,10 +6,10 @@ import {
   CaretRight,
   TrendUp,
   ShieldCheck,
-  Calendar,
-  Sparkle
+  Calendar
 } from '@phosphor-icons/react';
 import { generateTransferRationale } from '../utils/transferRationaleEngine.js';
+import { resolvePlayerMetadata } from '../utils/playerMetadataHelper.js';
 
 export default function TransferBreakdownModal({
   isOpen,
@@ -102,18 +102,33 @@ export default function TransferBreakdownModal({
     ? Number(recommendedTransfer.costDelta).toFixed(1)
     : (Number(playerIn.cost || 0) - Number(playerOut.cost || 0)).toFixed(1);
 
-  // Deterministic, context-aware rationale generation
+  // Sanitized player metadata avoiding duplicate self-fixtures
+  const outMeta = useMemo(() => resolvePlayerMetadata(playerOut), [playerOut]);
+  const inMeta = useMemo(() => resolvePlayerMetadata(playerIn), [playerIn]);
+
+  // Deterministic, context-aware rationale generation synchronized with player metadata
   const rationales = useMemo(() => {
+    const syncPlayerIn = {
+      ...playerIn,
+      fixture: inMeta.fixtureInfo ? inMeta.fixtureInfo.display : playerIn.fixture,
+      fdr: inMeta.fixtureInfo ? inMeta.fixtureInfo.fdr : playerIn.fdr
+    };
+    const syncPlayerOut = {
+      ...playerOut,
+      fixture: outMeta.fixtureInfo ? outMeta.fixtureInfo.display : playerOut.fixture,
+      fdr: outMeta.fixtureInfo ? outMeta.fixtureInfo.fdr : playerOut.fdr
+    };
+
     return generateTransferRationale({
-      playerIn,
-      playerOut,
+      playerIn: syncPlayerIn,
+      playerOut: syncPlayerOut,
       netGain,
       costDelta,
       bank,
       gameweek: gw,
       isRoll
     });
-  }, [playerIn, playerOut, netGain, costDelta, bank, gw, isRoll]);
+  }, [playerIn, playerOut, inMeta, outMeta, netGain, costDelta, bank, gw, isRoll]);
 
   const renderIcon = (iconType) => {
     if (iconType === 'emerald') return <Calendar size={14} weight="bold" />;
@@ -124,6 +139,7 @@ export default function TransferBreakdownModal({
   if (!isOpen) return null;
 
   const officialTransfersUrl = 'https://fantasy.premierleague.com/transfers';
+  const officialTeamUrl = `https://fantasy.premierleague.com/entry/${managerId}/team`;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -177,15 +193,38 @@ export default function TransferBreakdownModal({
               </div>
             </div>
           ) : (
-            /* Head-to-Head Comparison Card */
-            <div className="breakdown-comparison-card">
-              {/* Delta Banner — full-width top on mobile */}
-              <div className="breakdown-delta-col font-mono">
+            /* Unified Head-to-Head Transfer Card */
+            <div className="unified-transfer-card">
+              {/* 1. Outgoing Player (Left Box) */}
+              <div className="unified-player-box out">
+                <div className="unified-box-header font-mono">
+                  <span className="player-col-badge out">OUT</span>
+                  <span className="player-col-pos">{outMeta.position}</span>
+                </div>
+                <div className="unified-player-name">{outMeta.name}</div>
+                <div className="unified-player-xp font-mono">
+                  <span className="xp-val">{outMeta.expectedPoints}</span>
+                  <span className="xp-lbl">Exp Pts</span>
+                </div>
+                <div className="unified-player-meta font-mono">
+                  <span className="unified-player-meta-cost">{outMeta.team} &middot; &pound;{outMeta.costFormatted}m</span>
+                  {outMeta.fixtureInfo && (
+                    <span
+                      className={`fixture-pill fdr-${outMeta.fixtureInfo.fdr}`}
+                      title={`${outMeta.fixtureInfo.fullDisplay || outMeta.fixtureInfo.display} · FDR ${outMeta.fixtureInfo.fdr}`}
+                    >
+                      {outMeta.fixtureInfo.display}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* 2. Flow Bridge (Center) */}
+              <div className="unified-transfer-bridge font-mono">
                 <div className="delta-pill">
-                  <Sparkle size={13} weight="fill" />
                   <span>+{netGain} pts</span>
                 </div>
-                <CaretRight size={18} className="delta-arrow" />
+                <CaretRight size={14} className="delta-arrow" />
                 <span className="delta-cost-note">
                   {Number(costDelta) > 0
                     ? `Costs \u00a3${costDelta}m`
@@ -195,33 +234,27 @@ export default function TransferBreakdownModal({
                 </span>
               </div>
 
-              {/* Outgoing Player */}
-              <div className="breakdown-player-col out">
-                <div className="breakdown-col-header">
-                  <span className="player-col-badge out font-mono">OUT</span>
+              {/* 3. Incoming Player (Right Box) */}
+              <div className="unified-player-box in">
+                <div className="unified-box-header font-mono">
+                  <span className="player-col-badge in">IN</span>
+                  <span className="player-col-pos">{inMeta.position}</span>
                 </div>
-                <div className="player-col-name">{playerOut.name}</div>
-                <div className="player-col-metric">
-                  <span className="metric-val font-mono">{Number(playerOut.expected_points || 0).toFixed(2)}</span>
-                  <span className="metric-lbl font-mono">Exp Pts</span>
+                <div className="unified-player-name">{inMeta.name}</div>
+                <div className="unified-player-xp font-mono">
+                  <span className="xp-val">{inMeta.expectedPoints}</span>
+                  <span className="xp-lbl">Exp Pts</span>
                 </div>
-                <div className="player-col-compact-meta font-mono">
-                  {playerOut.team} &middot; &pound;{Number(playerOut.cost || 0).toFixed(1)}m &middot; {playerOut.fixture || 'TBD'}
-                </div>
-              </div>
-
-              {/* Incoming Player */}
-              <div className="breakdown-player-col in">
-                <div className="breakdown-col-header">
-                  <span className="player-col-badge in font-mono">IN</span>
-                </div>
-                <div className="player-col-name">{playerIn.name}</div>
-                <div className="player-col-metric">
-                  <span className="metric-val font-mono">{Number(playerIn.expected_points || 0).toFixed(2)}</span>
-                  <span className="metric-lbl font-mono">Exp Pts</span>
-                </div>
-                <div className="player-col-compact-meta font-mono">
-                  {playerIn.team} &middot; &pound;{Number(playerIn.cost || 0).toFixed(1)}m &middot; {playerIn.fixture || 'TBD'}
+                <div className="unified-player-meta font-mono">
+                  <span className="unified-player-meta-cost">{inMeta.team} &middot; &pound;{inMeta.costFormatted}m</span>
+                  {inMeta.fixtureInfo && (
+                    <span
+                      className={`fixture-pill fdr-${inMeta.fixtureInfo.fdr}`}
+                      title={`${inMeta.fixtureInfo.fullDisplay || inMeta.fixtureInfo.display} · FDR ${inMeta.fixtureInfo.fdr}`}
+                    >
+                      {inMeta.fixtureInfo.display}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -234,6 +267,7 @@ export default function TransferBreakdownModal({
               className="rationale-card-toggle"
               onClick={() => setRationaleExpanded(!rationaleExpanded)}
               aria-expanded={rationaleExpanded}
+              aria-controls="transfer-rationale-list"
             >
               <span className="rationale-card-title font-mono">
                 WHY THIS MOVE WORKS
@@ -244,7 +278,7 @@ export default function TransferBreakdownModal({
                 className={`rationale-caret ${rationaleExpanded ? 'expanded' : ''}`}
               />
             </button>
-            <div className="rationale-list">
+            <div id="transfer-rationale-list" className="rationale-list">
               {rationales.map((item) => (
                 <div key={item.id} className="rationale-item">
                   <div className={`rationale-icon ${item.iconType}`}>
@@ -260,11 +294,11 @@ export default function TransferBreakdownModal({
           </div>
         </div>
 
-        {/* Modal Actions Docked at Bottom */}
-        <div className="breakdown-modal-actions">
+        {/* Docked Action Bar */}
+        <div className="modal-action-footer">
           <button
             type="button"
-            className="modal-btn-ghost"
+            className="modal-btn-ghost font-mono"
             onClick={onClose}
           >
             Close

@@ -1,5 +1,6 @@
 import React from 'react';
 import { getPenaltyTierForTeam, AUTO_SUB_LABELS, formatFplPrice } from '../constants/copyTokens';
+import { getClubShortCode } from '../utils/playerMetadataHelper.js';
 
 // Map Premier League team names to kit stripe identifiers
 const getTeamKitClass = (teamName) => {
@@ -56,7 +57,7 @@ export default function PlayerCard({
     opponent = isHome ? fd.away_team : fd.home_team;
   }
   const fixtureLabel = opponent
-    ? `${venue === 'H' ? 'vs' : '@'} ${opponent.substring(0, 3).toUpperCase()}`
+    ? `${venue === 'H' ? 'vs' : '@'} ${getClubShortCode(opponent)}`
     : '';
 
   // Determine Blank (BGW) or Double Gameweek (DGW) status
@@ -109,7 +110,7 @@ export default function PlayerCard({
     >
       {/* Top Header: Badge / Position + BGW/DGW Indicator + Price */}
       <div className="player-card-top-row">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '3px', flexWrap: 'wrap', minWidth: 0 }}>
           {isTripleCaptain ? (
             <button
               type="button"
@@ -168,12 +169,16 @@ export default function PlayerCard({
           {isBoosted && player.is_bench_asset && (
             <span className="boost-badge font-mono" title="Bench Boost Active: Scoring points this gameweek">BB</span>
           )}
-          <span className={`player-pos-tag pill-base pill-sm ${pos}`}>{pos}</span>
-          {/* Set-Piece Specialist Indicators */}
-          {player.sp_pk_order === 1 && (
-            <span className="sp-badge pk font-mono" title="First-Choice Penalty Taker">PK1</span>
+          {/* Set-Piece Specialist Indicators (Unified PK1 + Team Tier) */}
+          {isPenaltyTaker && (
+            <span
+              className={`sp-badge pk ${penaltyTier ? `tier-${penaltyTier.tier.toLowerCase()}` : ''} font-mono`}
+              title={`First-Choice Penalty Taker · ${penaltyTier ? penaltyTier.desc : 'Club spot-kick taker'}`}
+            >
+              PK1{penaltyTier && <span className="pk-tier-sub"> · {penaltyTier.shortTier || penaltyTier.tier}</span>}
+            </span>
           )}
-          {player.sp_ck_order === 1 && player.sp_pk_order !== 1 && (
+          {player.sp_ck_order === 1 && !isPenaltyTaker && (
             <span className="sp-badge ck font-mono" title="First-Choice Corner Crosser">CK1</span>
           )}
           {/* M-02: Rotation/Hook & Cameo Hazard Risk Indicators */}
@@ -236,17 +241,6 @@ export default function PlayerCard({
         </span>
       </div>
 
-      {/* Tactical Spot-Kick Hierarchy (if primary taker) */}
-      {penaltyTier && (
-        <div className="player-tactical-badges-strip" style={{ display: 'flex', justifyContent: 'center', margin: '3px 0 2px 0' }}>
-          <span
-            className="pk-tier-badge font-mono"
-            title={penaltyTier.tooltip}
-          >
-            {penaltyTier.badge}
-          </span>
-        </div>
-      )}
 
       {/* Points Banner (Actual Points for Completed GWs / Expected Points for Upcoming) */}
       <div className="player-stats-bar" style={{ justifyContent: 'center', gap: '6px' }}>
