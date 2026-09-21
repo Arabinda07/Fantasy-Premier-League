@@ -286,5 +286,21 @@
       "outlier_flags": []
     },
     "gameweek": 6
+  },
+  {
+    "passed": true,
+    "severity_score": 0.1,
+    "abort_probability": 0.02,
+    "anomaly_type": "clean",
+    "recommendation": "proceed",
+    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
+    "timestamp": "2026-09-21T11:20:59.119539+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Mbeumo | [OUT] Tavernier [Squad holds £3.5M in trapped bench capital (Tavernier, Calvert-Lewin). Pruning via 2 FTs yields +3.8 pts into starters without burning Wildcard (Option Hurdle: 22.7 pts).]",
+      "outlier_flags": []
+    },
+    "gameweek": 6
   }
 ]

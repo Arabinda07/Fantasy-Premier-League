@@ -28,13 +28,13 @@
     586309,
     465730,
     424876,
-    201658,
     154561,
     244851,
     466075,
     226597,
     222531,
     169528,
+    446008,
     216646,
     177815,
     122798
@@ -44,12 +44,12 @@
     586309,
     465730,
     424876,
-    201658,
     154561,
     244851,
     466075,
     226597,
     222531,
+    446008,
     216646
   ],
   "bench_codes": [
@@ -59,10 +59,10 @@
     177815
   ],
   "captain_code": 141746,
-  "vice_captain_code": 226597,
+  "vice_captain_code": 446008,
   "bank": 2.2,
-  "free_transfers": 0,
-  "transfers_recommended": 0,
+  "free_transfers": 1,
+  "transfers_recommended": 1,
   "hits_recommended": 0,
-  "updated_at": "2026-09-21 03:53:25 UTC"
+  "updated_at": "2026-09-21 11:20:51 UTC"
 }
