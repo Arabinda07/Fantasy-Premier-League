@@ -2,17 +2,17 @@
   "season": "2026-27",
   "gameweek": 5,
   "strategy": "pure_xp",
-  "is_completed": false,
+  "is_completed": true,
   "participated": true,
-  "overall_points": 251,
-  "overall_rank": 5266118,
+  "overall_points": 270,
+  "overall_rank": 6745589,
   "manager_profile": {
     "entry_id": 9500404,
     "manager_name": "Arabinda Saha",
     "team_name": "Fuljhore Giants",
-    "overall_rank": 5266118,
-    "overall_points": 251,
-    "bank": 1.5,
+    "overall_rank": 6745589,
+    "overall_points": 270,
+    "bank": 0.6,
     "team_value": 100.9,
     "free_transfers": 2,
     "active_chip": null,
@@ -1188,9 +1188,9 @@
     ],
     "league_id": 1305495,
     "league_name": "Arsenal Bengal FPL 2026-27",
-    "event_points": 2,
-    "event_rank": 5954913,
-    "points_on_bench": 0
+    "event_points": 28,
+    "event_rank": 10141576,
+    "points_on_bench": 10
   },
   "action_summary": "EXECUTE 2 FREE TRANSFER(S): [IN] Mbeumo, Wissa | [OUT] Jo\u00e3o Pedro, Szoboszlai [Squad holds \u00a34.1M in trapped bench capital (De Cuyper, Jo\u00e3o Pedro). Pruning via 2 FTs yields +4.4 pts into starters without burning Wildcard (Option Hurdle: 23.8 pts).] | [!] Nightly Price Risk: Szoboszlai (-273,870), B.Fernandes (-151,170) (Execute before 01:15 GMT to protect value)",
   "falling_price_risks": [
@@ -1294,7 +1294,14 @@
         "score": 3,
         "label": "Coded & Mind Games",
         "tag": "HIGH_OBFUSCATION"
-      }
+      },
+      "actual_points": 1,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 1
     },
     {
       "player_code": 226597,
@@ -1341,7 +1348,14 @@
         "score": 3,
         "label": "Coded & Mind Games",
         "tag": "HIGH_OBFUSCATION"
-      }
+      },
+      "actual_points": 1,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 1
     },
     {
       "player_code": 169528,
@@ -1388,7 +1402,14 @@
         "score": 1,
         "label": "Generally Reliable",
         "tag": "RELIABLE"
-      }
+      },
+      "actual_points": 2,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 2
     },
     {
       "player_code": 122798,
@@ -1435,7 +1456,14 @@
         "score": 0,
         "label": "Direct & Transparent",
         "tag": "TRANSPARENT"
-      }
+      },
+      "actual_points": 4,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 1,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 4
     },
     {
       "player_code": 222531,
@@ -1482,7 +1510,14 @@
         "score": 1,
         "label": "Generally Reliable",
         "tag": "RELIABLE"
-      }
+      },
+      "actual_points": 2,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 4
     },
     {
       "player_code": 201658,
@@ -1529,7 +1564,14 @@
         "score": 0,
         "label": "Direct & Transparent",
         "tag": "TRANSPARENT"
-      }
+      },
+      "actual_points": 2,
+      "minutes": 74,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 2
     },
     {
       "player_code": 424876,
@@ -1576,7 +1618,14 @@
         "score": 1,
         "label": "Generally Reliable",
         "tag": "RELIABLE"
-      }
+      },
+      "actual_points": 2,
+      "minutes": 80,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 1,
+      "bonus": 0,
+      "effective_points": 2
     },
     {
       "player_code": 244851,
@@ -1623,7 +1672,14 @@
         "score": 2,
         "label": "Guarded & Cautious",
         "tag": "GUARDED"
-      }
+      },
+      "actual_points": 2,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 2
     },
     {
       "player_code": 141746,
@@ -1670,7 +1726,14 @@
         "score": 1,
         "label": "Generally Reliable",
         "tag": "RELIABLE"
-      }
+      },
+      "actual_points": 2,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 2
     },
     {
       "player_code": 586309,
@@ -1717,7 +1780,14 @@
         "score": 0,
         "label": "Direct & Transparent",
         "tag": "TRANSPARENT"
-      }
+      },
+      "actual_points": 6,
+      "minutes": 90,
+      "goals": 1,
+      "assists": 0,
+      "clean_sheets": 1,
+      "bonus": 0,
+      "effective_points": 6
     },
     {
       "player_code": 177815,
@@ -1764,7 +1834,14 @@
         "score": 1,
         "label": "Generally Reliable",
         "tag": "RELIABLE"
-      }
+      },
+      "actual_points": 2,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 1,
+      "bonus": 0,
+      "effective_points": 2
     }
   ],
   "bench": [
@@ -1816,7 +1893,14 @@
         "score": 1,
         "label": "Generally Reliable",
         "tag": "RELIABLE"
-      }
+      },
+      "actual_points": 3,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 3
     },
     {
       "player_code": 466075,
@@ -1866,7 +1950,14 @@
         "score": 3,
         "label": "Coded & Mind Games",
         "tag": "HIGH_OBFUSCATION"
-      }
+      },
+      "actual_points": 1,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 1
     },
     {
       "player_code": 475168,
@@ -1916,7 +2007,14 @@
         "score": 2,
         "label": "Guarded & Cautious",
         "tag": "GUARDED"
-      }
+      },
+      "actual_points": 0,
+      "minutes": 0,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 0
     },
     {
       "player_code": 465730,
@@ -1966,7 +2064,14 @@
         "score": 1,
         "label": "Generally Reliable",
         "tag": "RELIABLE"
-      }
+      },
+      "actual_points": 6,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 1,
+      "bonus": 1,
+      "effective_points": 6
     }
   ],
   "actual_starters": [
@@ -1980,7 +2085,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 1,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 1
     },
     {
       "player_code": 226597,
@@ -1992,7 +2104,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 1,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 1
     },
     {
       "player_code": 169528,
@@ -2004,7 +2123,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 2,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 2
     },
     {
       "player_code": 122798,
@@ -2016,7 +2142,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 4,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 1,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 4
     },
     {
       "player_code": 222531,
@@ -2028,7 +2161,14 @@
       "is_starter": true,
       "is_captain": true,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 2,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 4
     },
     {
       "player_code": 201658,
@@ -2040,7 +2180,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 2,
+      "minutes": 74,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 2
     },
     {
       "player_code": 424876,
@@ -2052,7 +2199,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 2,
+      "minutes": 80,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 1,
+      "bonus": 0,
+      "effective_points": 2
     },
     {
       "player_code": 244851,
@@ -2064,7 +2218,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 2,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 2
     },
     {
       "player_code": 141746,
@@ -2076,7 +2237,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": true,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 2,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 2
     },
     {
       "player_code": 586309,
@@ -2088,7 +2256,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 6,
+      "minutes": 90,
+      "goals": 1,
+      "assists": 0,
+      "clean_sheets": 1,
+      "bonus": 0,
+      "effective_points": 6
     },
     {
       "player_code": 177815,
@@ -2100,7 +2275,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 2,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 1,
+      "bonus": 0,
+      "effective_points": 2
     }
   ],
   "actual_bench": [
@@ -2114,7 +2296,14 @@
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": 1
+      "bench_order": 1,
+      "actual_points": 3,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 3
     },
     {
       "player_code": 466075,
@@ -2126,7 +2315,14 @@
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": 2
+      "bench_order": 2,
+      "actual_points": 1,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 1
     },
     {
       "player_code": 475168,
@@ -2138,7 +2334,14 @@
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": 3
+      "bench_order": 3,
+      "actual_points": 0,
+      "minutes": 0,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 0
     },
     {
       "player_code": 465730,
@@ -2150,7 +2353,14 @@
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": 4
+      "bench_order": 4,
+      "actual_points": 6,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 1,
+      "bonus": 1,
+      "effective_points": 6
     }
   ],
   "recommended_starters": [
@@ -2164,7 +2374,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 2,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 2
     },
     {
       "player_code": 586309,
@@ -2176,7 +2393,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 6,
+      "minutes": 90,
+      "goals": 1,
+      "assists": 0,
+      "clean_sheets": 1,
+      "bonus": 0,
+      "effective_points": 6
     },
     {
       "player_code": 154561,
@@ -2188,7 +2412,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 1,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 1
     },
     {
       "player_code": 244851,
@@ -2200,7 +2431,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 2,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 2
     },
     {
       "player_code": 466075,
@@ -2212,7 +2450,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 1,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 1
     },
     {
       "player_code": 226597,
@@ -2224,7 +2469,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 1,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 1
     },
     {
       "player_code": 222531,
@@ -2236,7 +2488,14 @@
       "is_starter": true,
       "is_captain": true,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 2,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 4
     },
     {
       "player_code": 446008,
@@ -2248,7 +2507,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 2,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 2
     },
     {
       "player_code": 216646,
@@ -2260,7 +2526,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": true,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 0,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 0
     },
     {
       "player_code": 177815,
@@ -2272,7 +2545,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 2,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 1,
+      "bonus": 0,
+      "effective_points": 2
     },
     {
       "player_code": 122798,
@@ -2284,7 +2564,14 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": null
+      "bench_order": null,
+      "actual_points": 4,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 1,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 4
     }
   ],
   "recommended_bench": [
@@ -2298,7 +2585,14 @@
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": 1
+      "bench_order": 1,
+      "actual_points": 3,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 3
     },
     {
       "player_code": 201658,
@@ -2310,7 +2604,14 @@
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": 2
+      "bench_order": 2,
+      "actual_points": 2,
+      "minutes": 74,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 2
     },
     {
       "player_code": 465730,
@@ -2322,7 +2623,14 @@
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": 3
+      "bench_order": 3,
+      "actual_points": 6,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 1,
+      "bonus": 1,
+      "effective_points": 6
     },
     {
       "player_code": 169528,
@@ -2334,7 +2642,14 @@
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
-      "bench_order": 4
+      "bench_order": 4,
+      "actual_points": 2,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "clean_sheets": 0,
+      "bonus": 0,
+      "effective_points": 2
     }
   ],
   "recommended_starting_xp": 55.3988,
@@ -8042,5 +8357,7 @@
     "recommendation": "proceed",
     "health_score": 100,
     "message": "All Mathematical & Tactical Guardrails Passed (100% Health)"
-  }
+  },
+  "event_points": 28,
+  "event_rank": 10141576
 }

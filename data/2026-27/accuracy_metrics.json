@@ -1,58 +1,76 @@
 {
   "evaluated_gw": 5,
-  "evaluated_at": "2026-09-20T10:15:00.463822+00:00",
+  "evaluated_at": "2026-09-21T03:39:28.550423+00:00",
   "season": "2026-27",
   "total_players": 659,
-  "active_players": 415,
-  "overall_mae": 1.5,
-  "overall_rmse": 2.31,
-  "starters_mae": 2.32,
-  "starters_rmse": 2.9,
-  "rank_correlation": 0.208,
+  "active_players": 420,
+  "overall_mae": 1.36,
+  "overall_rmse": 2.27,
+  "starters_mae": 2.06,
+  "starters_rmse": 2.84,
+  "rank_correlation": 0.482,
   "brier_score_cs": 0.198,
   "positional": [
     {
       "pos": "GK",
       "count": 24,
-      "mae": 3.01,
-      "rmse": 3.38,
+      "mae": 2.61,
+      "rmse": 3.16,
       "meanPred": 3.47,
-      "meanAct": 2.12,
-      "bias": 1.35,
-      "status": "OVER_PROJECTED"
+      "meanAct": 3.58,
+      "bias": -0.11,
+      "status": "CALIBRATED"
     },
     {
       "pos": "DEF",
-      "count": 123,
-      "mae": 2.62,
-      "rmse": 3.29,
-      "meanPred": 2.67,
-      "meanAct": 1.7,
-      "bias": 0.97,
-      "status": "OVER_PROJECTED"
+      "count": 124,
+      "mae": 2.46,
+      "rmse": 3.24,
+      "meanPred": 2.65,
+      "meanAct": 2.77,
+      "bias": -0.13,
+      "status": "CALIBRATED"
     },
     {
       "pos": "MID",
-      "count": 139,
-      "mae": 2.41,
-      "rmse": 3.04,
-      "meanPred": 2.78,
-      "meanAct": 1.75,
-      "bias": 1.04,
-      "status": "OVER_PROJECTED"
+      "count": 142,
+      "mae": 1.98,
+      "rmse": 2.88,
+      "meanPred": 2.76,
+      "meanAct": 2.84,
+      "bias": -0.08,
+      "status": "CALIBRATED"
     },
     {
       "pos": "FWD",
-      "count": 35,
-      "mae": 2.32,
-      "rmse": 2.87,
-      "meanPred": 3.05,
-      "meanAct": 1.49,
-      "bias": 1.56,
+      "count": 36,
+      "mae": 2.23,
+      "rmse": 3.34,
+      "meanPred": 3.04,
+      "meanAct": 2.58,
+      "bias": 0.45,
       "status": "OVER_PROJECTED"
     }
   ],
   "outliers": [
+    {
+      "player": "Brobbey",
+      "team": "Sunderland",
+      "pos": "ASSET",
+      "pred": 3.21,
+      "actual": 17,
+      "diff": "+13.8",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Semenyo",
+      "team": "Man City",
+      "pos": "ASSET",
+      "pred": 3.78,
+      "actual": 17,
+      "diff": "+13.2",
+      "reason": "High conversion or unexpected haul"
+    },
     {
       "player": "Dasilva",
       "team": "Coventry City",
@@ -78,24 +96,6 @@
       "pred": 1.75,
       "actual": 13,
       "diff": "+11.2",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Groß",
-      "team": "Brighton",
-      "pos": "ASSET",
-      "pred": 2.96,
-      "actual": 14,
-      "diff": "+11.0",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Tarkowski",
-      "team": "Everton",
-      "pos": "ASSET",
-      "pred": 4.45,
-      "actual": 14,
-      "diff": "+9.6",
       "reason": "High conversion or unexpected haul"
     },
     {

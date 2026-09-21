@@ -61,6 +61,7 @@ class LiveSyncProfile:
     event_points: int = 0
     event_rank: int = 0
     points_on_bench: int = 0
+    gw: int = 1
 
 
 def _get_cache_dir(season: str = '2026-27', data_root: str = 'data') -> str:
@@ -114,6 +115,7 @@ def save_manager_squad_snapshot(
         'manager_name': profile.manager_name,
         'team_name': profile.team_name,
         'season': season,
+        'last_updated_gw': getattr(profile, 'gw', 1),
         'overall_rank': profile.overall_rank,
         'overall_points': profile.overall_points,
         'bank': profile.bank,
@@ -648,9 +650,21 @@ def sync_manager_profile(
         if 'purchase_price' in p:
             purchase_prices[code] = float(p['purchase_price']) / 10.0
 
-    # Fallback to persistent snapshot if API returned no picks
-    if not squad_codes:
-        snapshot = load_manager_squad_snapshot(entry_id=entry_id, season=season, data_root=data_root)
+    # Check if a forward-looking local snapshot for target GW exists (e.g. user already executed transfers for upcoming GW)
+    snapshot = load_manager_squad_snapshot(entry_id=entry_id, season=season, data_root=data_root)
+    if (snapshot 
+        and snapshot.get('entry_id') == entry_id 
+        and int(snapshot.get('last_updated_gw', 0)) == gw 
+        and len(snapshot.get('squad_codes', [])) == 15):
+        print(f"[*] Preserving forward-looking squad snapshot for GW{gw} ({len(snapshot['squad_codes'])} players)")
+        squad_codes = [int(c) for c in snapshot.get('squad_codes', [])]
+        starter_codes = [int(c) for c in snapshot.get('starter_codes', [])]
+        bench_codes = [int(c) for c in snapshot.get('bench_codes', [])]
+        captain_code = snapshot.get('captain_code') or captain_code
+        vice_captain_code = snapshot.get('vice_captain_code') or vice_captain_code
+        if 'bank' in snapshot:
+            bank = float(snapshot['bank'])
+    elif not squad_codes:
         if snapshot and len(snapshot.get('squad_codes', [])) == 15:
             print(f"[*] Loaded squad from persistent snapshot for entry {entry_id}")
             squad_codes = [int(c) for c in snapshot.get('squad_codes', [])]
@@ -666,6 +680,11 @@ def sync_manager_profile(
     # 4. Fetch transfer history & free transfers
     transfers = fetch_fpl_entry_transfers(entry_id=entry_id, season=season, data_root=data_root, use_cache=use_cache)
     free_transfers = calculate_available_free_transfers(summary, transfers, current_gw=gw)
+    if (snapshot 
+        and snapshot.get('entry_id') == entry_id 
+        and int(snapshot.get('last_updated_gw', 0)) == gw 
+        and 'free_transfers' in snapshot):
+        free_transfers = int(snapshot['free_transfers'])
 
     # 5. Fetch mini-league standings if requested
     rivals_data: Optional[List[Dict[str, Any]]] = None
@@ -709,6 +728,7 @@ def sync_manager_profile(
         event_points=event_points,
         event_rank=event_rank,
         points_on_bench=points_on_bench,
+        gw=gw,
     )
 
     if len(squad_codes) == 15:

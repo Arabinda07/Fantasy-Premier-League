@@ -270,5 +270,21 @@
       "outlier_flags": []
     },
     "gameweek": 6
+  },
+  {
+    "passed": false,
+    "severity_score": 2.93,
+    "abort_probability": 0.8,
+    "anomaly_type": "data_corruption",
+    "recommendation": "flag_for_review",
+    "message": "Guardrail Halt: data_corruption (Severity: 2.93, Abort Prob: 80%)",
+    "timestamp": "2026-09-21T03:40:08.537219+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Wissa | [OUT] João Pedro [Squad holds £5.2M in trapped bench capital (Calvert-Lewin, João Pedro). Pruning via 2 FTs yields +5.6 pts into starters without burning Wildcard (Option Hurdle: 22.7 pts).] | [!] Nightly Price Risk: João Pedro (-202,488) (Execute before 01:15 GMT to protect value)",
+      "outlier_flags": []
+    },
+    "gameweek": 6
   }
 ]
