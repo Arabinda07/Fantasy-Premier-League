@@ -334,5 +334,21 @@
       "outlier_flags": []
     },
     "gameweek": 6
+  },
+  {
+    "passed": true,
+    "severity_score": 0.1,
+    "abort_probability": 0.02,
+    "anomaly_type": "clean",
+    "recommendation": "proceed",
+    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
+    "timestamp": "2026-09-23T10:25:38.203226+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £1.9M in trapped bench capital (Calvert-Lewin). Pruning via 2 FTs yields +2.1 pts into starters without burning Wildcard (Option Hurdle: 22.7 pts). | [!] Price Alert: B.Fernandes (-137,040), Szoboszlai (-148,760) approaching drop",
+      "outlier_flags": []
+    },
+    "gameweek": 6
   }
 ]
