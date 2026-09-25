@@ -159,10 +159,9 @@ export default function OnboardingModal({
         aria-modal="true"
         aria-labelledby="onboarding-title"
       >
-        {/* Header Badge */}
-        <div className="onboarding-badge">
-          <SoccerBall size={14} weight="fill" />
-          <span>FPL DUGOUT · 2026-27</span>
+        {/* Header Slug */}
+        <div className="wire-slug font-mono">
+          FPL DUGOUT · 2026-27
         </div>
 
         {/* Title and Subtitle */}

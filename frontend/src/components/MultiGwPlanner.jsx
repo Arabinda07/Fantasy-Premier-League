@@ -120,37 +120,37 @@ export default function MultiGwPlanner({
       {/* Multi-Horizon Planner Control Deck */}
       <div className="planner-control-deck" role="region" aria-label="Transfer Planner Workspace Controls">
         <div className="planner-control-left">
-          <div className="planner-horizon-badge font-mono">
-            <CalendarCheck size={14} weight="fill" />
+          <div className="planner-horizon-slug font-mono">
+            <CalendarCheck size={14} weight="bold" />
             <span>GW{startGw}–GW{endGw} HORIZON</span>
           </div>
 
-          <div className="planner-segmented-rail" role="tablist" aria-label="Transfer Workspace Views">
+          <div className="wire-segments" role="tablist" aria-label="Transfer Workspace Views">
             <button
               type="button"
-              className={`planner-rail-btn ${viewMode === 'roadmap' ? 'active' : ''}`}
+              className={`wire-segment font-mono ${viewMode === 'roadmap' ? 'active' : ''}`}
               onClick={() => setViewMode('roadmap')}
               aria-pressed={viewMode === 'roadmap'}
             >
-              <CalendarCheck size={13} weight={viewMode === 'roadmap' ? 'fill' : 'bold'} />
+              <CalendarCheck size={13} weight="bold" />
               <span>5-Week Roadmap</span>
             </button>
             <button
               type="button"
-              className={`planner-rail-btn ${viewMode === 'workbench' ? 'active' : ''}`}
+              className={`wire-segment font-mono ${viewMode === 'workbench' ? 'active' : ''}`}
               onClick={() => setViewMode('workbench')}
               aria-pressed={viewMode === 'workbench'}
             >
-              <Scales size={13} weight={viewMode === 'workbench' ? 'fill' : 'bold'} />
+              <Scales size={13} weight="bold" />
               <span>Transfer Scout</span>
             </button>
             <button
               type="button"
-              className={`planner-rail-btn ${viewMode === 'both' ? 'active' : ''}`}
+              className={`wire-segment font-mono ${viewMode === 'both' ? 'active' : ''}`}
               onClick={() => setViewMode('both')}
               aria-pressed={viewMode === 'both'}
             >
-              <ArrowsLeftRight size={13} weight={viewMode === 'both' ? 'fill' : 'bold'} />
+              <ArrowsLeftRight size={13} weight="bold" />
               <span>Unified Canvas</span>
             </button>
           </div>
@@ -159,31 +159,30 @@ export default function MultiGwPlanner({
         <div className="planner-control-right">
           {/* 5-GW Target Projection */}
           <div
-            className="telemetry-chip chip-target"
+            className="planner-telemetry-chip font-mono"
             title={`Projected ${totalHorizonXp.toFixed(1)} pts across ${activeRoadmap.length} gameweeks (~${(totalHorizonXp / Math.max(1, activeRoadmap.length)).toFixed(1)} pts/GW)`}
           >
-            <ChartLine size={14} weight="bold" className="telemetry-chip-icon" />
-            <span className="telemetry-chip-label">Target:</span>
-            <span className="telemetry-chip-val font-mono">{totalHorizonXp.toFixed(1)} pts</span>
-            <span className="telemetry-chip-meta font-mono">~{(totalHorizonXp / Math.max(1, activeRoadmap.length)).toFixed(1)}/GW</span>
+            <span className="planner-chip-label">TARGET:</span>
+            <span className="planner-chip-val font-mono">{totalHorizonXp.toFixed(1)} pts</span>
+            <span className="planner-chip-meta font-mono">~{(totalHorizonXp / Math.max(1, activeRoadmap.length)).toFixed(1)}/GW</span>
           </div>
 
           {/* Point Hits Strategy */}
           <div
-            className="telemetry-chip chip-hits"
+            className="planner-telemetry-chip font-mono"
             title={totalHits === 0 ? 'Optimal: 0 transfer penalties planned' : `${totalHits} transfer hit planned (-${totalHits * 4} pts)`}
           >
-            <span className="telemetry-chip-label">Hits:</span>
-            <span className="telemetry-chip-val font-mono" style={{ color: totalHits === 0 ? 'var(--accent-emerald)' : 'var(--accent-amber)' }}>
+            <span className="planner-chip-label">HITS:</span>
+            <span className="planner-chip-val font-mono">
               {totalHits === 0 ? '0 Hits' : `-${totalHits * 4} pts`}
             </span>
           </div>
 
           {/* Bank & Free Transfers */}
-          <div className="telemetry-chip chip-bank" title="Available in bank for upcoming transfers">
-            <span className="telemetry-chip-label">Bank:</span>
-            <span className="telemetry-chip-val font-mono">£{Number(activeRoadmap[activeGwIndex]?.bank || 0.0).toFixed(1)}m</span>
-            <span className="telemetry-chip-meta font-mono">{activeRoadmap[0]?.ft_available != null ? activeRoadmap[0].ft_available : 0} FT</span>
+          <div className="planner-telemetry-chip font-mono" title="Available in bank for upcoming transfers">
+            <span className="planner-chip-label">BANK:</span>
+            <span className="planner-chip-val font-mono">£{Number(activeRoadmap[activeGwIndex]?.bank || 0.0).toFixed(1)}m</span>
+            <span className="planner-chip-meta font-mono">{activeRoadmap[0]?.ft_available != null ? activeRoadmap[0].ft_available : 0} FT</span>
           </div>
 
           {/* On-Demand Planner Notes Popover */}
@@ -244,8 +243,8 @@ export default function MultiGwPlanner({
                   <AreaChart data={trajectoryData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
                     <defs>
                       <linearGradient id="xpAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#10B981" stopOpacity={0.35}/>
-                        <stop offset="95%" stopColor="#10B981" stopOpacity={0.0}/>
+                        <stop offset="5%" stopColor="var(--text-primary)" stopOpacity={0.08} />
+                        <stop offset="95%" stopColor="var(--text-primary)" stopOpacity={0.0} />
                       </linearGradient>
                     </defs>
                     <XAxis
@@ -254,6 +253,7 @@ export default function MultiGwPlanner({
                       fontSize={11}
                       tickLine={false}
                       axisLine={{ stroke: 'var(--border-subtle)' }}
+                      fontFamily="var(--font-mono)"
                     />
                     <YAxis
                       stroke="var(--text-muted)"
@@ -261,15 +261,17 @@ export default function MultiGwPlanner({
                       tickLine={false}
                       axisLine={{ stroke: 'var(--border-subtle)' }}
                       domain={['auto', 'auto']}
+                      fontFamily="var(--font-mono)"
                     />
                     <Tooltip
                       contentStyle={{
                         background: 'var(--bg-surface-2)',
-                        border: '1px solid var(--border-medium)',
+                        border: '1px solid var(--border-subtle)',
                         borderRadius: 'var(--radius-sm)',
-                        fontSize: '12px',
+                        fontSize: '11px',
+                        fontFamily: 'var(--font-mono)',
                         color: 'var(--text-primary)',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
+                        boxShadow: 'var(--shadow-card)'
                       }}
                       formatter={(val, name) => [
                         name === 'cumulativeXp' ? `${val} pts (Cumulative)` : `${val} pts (Gameweek)`,
@@ -279,8 +281,8 @@ export default function MultiGwPlanner({
                     <Area
                       type="monotone"
                       dataKey="cumulativeXp"
-                      stroke="#10B981"
-                      strokeWidth={2}
+                      stroke="var(--text-secondary)"
+                      strokeWidth={1.5}
                       fillOpacity={1}
                       fill="url(#xpAreaGrad)"
                     />
@@ -305,8 +307,8 @@ export default function MultiGwPlanner({
               {/* Gameweek Column Header */}
               <div className="gw-column-header">
                 <div className="gw-header-left">
-                  <span className="gw-tag pill-base pill-sm font-mono">GW{item.gw}</span>
-                  {idx === 0 && <span className="current-badge pill-base pill-xs font-mono">CURRENT</span>}
+                  <span className="gw-col-title font-mono">GW{item.gw}</span>
+                  {idx === 0 && <span className="gw-current-tag font-mono">[CURRENT]</span>}
                 </div>
                 <span className="gw-ft-badge font-mono" title={`${item.ft_available != null ? item.ft_available : (idx === 0 ? 0 : 1)} Free Transfers available`}>
                   {item.ft_available != null ? item.ft_available : (idx === 0 ? 0 : 1)} FT
@@ -316,14 +318,14 @@ export default function MultiGwPlanner({
               {/* Weekly Point Projection & Bank */}
               <div className="gw-column-kpi">
                 <div className="gw-xp-group">
-                  <span className="gw-kpi-label">EXPECTED</span>
+                  <span className="gw-kpi-label font-mono">EXPECTED</span>
                   <div className="gw-xp-val font-mono">
                     {Number(item.net_xp || 0).toFixed(1)} <span className="xp-unit">xP</span>
                   </div>
                 </div>
                 <div className="gw-bank-group font-mono">
-                  <span className="gw-kpi-label">BANK</span>
-                  <span className="gw-bank-val">£{Number(item.bank || 0.0).toFixed(1)}m</span>
+                  <span className="gw-kpi-label font-mono">BANK</span>
+                  <span className="gw-bank-val font-mono">£{Number(item.bank || 0.0).toFixed(1)}m</span>
                 </div>
               </div>
 
@@ -358,13 +360,15 @@ export default function MultiGwPlanner({
                           }}
                           title={`Load ${outPlayer} ➔ ${inPlayer} into comparison workbench`}
                         >
-                          <div className="move-tag in font-mono">
+                          <div className="move-line in font-mono">
                             <ArrowUpRight size={12} weight="bold" />
-                            <span>BUY: {inPlayer}</span>
+                            <span className="move-action">BUY:</span>
+                            <span className="move-player">{inPlayer}</span>
                           </div>
-                          <div className="move-tag out font-mono">
+                          <div className="move-line out font-mono">
                             <ArrowDownRight size={12} weight="bold" />
-                            <span>SELL: {outPlayer}</span>
+                            <span className="move-action">SELL:</span>
+                            <span className="move-player">{outPlayer}</span>
                           </div>
                         </div>
                       );
@@ -372,7 +376,7 @@ export default function MultiGwPlanner({
                   </div>
                 ) : (
                   <div className="no-transfers-label font-mono">
-                    <CheckCircle size={13} weight="fill" color="var(--accent-emerald)" />
+                    <CheckCircle size={13} weight="bold" />
                     <span>Roll Free Transfer (+1 FT)</span>
                   </div>
                 )}
@@ -380,11 +384,11 @@ export default function MultiGwPlanner({
 
               {/* Free Transfers & Hits Status Footer */}
               <div className="gw-footer-meta font-mono">
-                <span className="gw-meta-hits" style={{ color: item.hits_taken ? 'var(--accent-crimson)' : 'var(--text-muted)' }}>
+                <span className="gw-meta-hits">
                   Hits: {item.hits_taken ? `-${item.hits_taken * 4} pts` : '0 pts'}
                 </span>
-                <span className="gw-horizon-status" style={{ color: isSelected ? 'var(--accent-emerald)' : 'var(--text-muted)' }}>
-                  {isSelected ? '● ACTIVE TARGET' : 'CLICK TO VIEW'}
+                <span className="gw-horizon-status font-mono">
+                  {isSelected ? '[ACTIVE]' : 'VIEW'}
                 </span>
               </div>
             </div>

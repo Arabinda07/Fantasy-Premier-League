@@ -119,6 +119,7 @@ export const METRIC_LABELS = {
 
 export const VALIDATION_MESSAGES = {
   formation: {
+    invalid: 'That swap breaks formation rules. You need 1 Goalkeeper, 3-5 Defenders, 2-5 Midfielders and 1-3 Forwards.',
     minDefenders: 'You need at least 3 Defenders in your starting XI. Please adjust your formation before confirming.',
     minGoalkeepers: 'You need exactly 1 Goalkeeper in your starting XI.',
     minForwards: 'You need at least 1 Forward in your starting XI.',

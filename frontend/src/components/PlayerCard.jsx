@@ -1,31 +1,18 @@
 import React from 'react';
-import { getPenaltyTierForTeam, AUTO_SUB_LABELS, formatFplPrice } from '../constants/copyTokens';
+import { formatFplPrice } from '../constants/copyTokens';
 import { getClubShortCode } from '../utils/playerMetadataHelper.js';
 
-// Map Premier League team names to kit stripe identifiers
-const getTeamKitClass = (teamName) => {
-  const t = (teamName || '').toLowerCase().replace(/[^a-z]/g, '');
-  if (t.includes('arsenal')) return 'kit-arsenal';
-  if (t.includes('aston') || t.includes('villa')) return 'kit-aston-villa';
-  if (t.includes('bournemouth')) return 'kit-bournemouth';
-  if (t.includes('brentford')) return 'kit-brentford';
-  if (t.includes('brighton')) return 'kit-brighton';
-  if (t.includes('chelsea')) return 'kit-chelsea';
-  if (t.includes('palace')) return 'kit-crystal-palace';
-  if (t.includes('everton')) return 'kit-everton';
-  if (t.includes('fulham')) return 'kit-fulham';
-  if (t.includes('ipswich')) return 'kit-ipswich';
-  if (t.includes('leicester')) return 'kit-leicester';
-  if (t.includes('liverpool')) return 'kit-liverpool';
-  if (t.includes('city') || t.includes('mancity')) return 'kit-man-city';
-  if (t.includes('utd') || t.includes('united') || t.includes('manutd')) return 'kit-man-utd';
-  if (t.includes('newcastle')) return 'kit-newcastle';
-  if (t.includes('nottingham') || t.includes('forest')) return 'kit-nottingham-forest';
-  if (t.includes('southampton')) return 'kit-southampton';
-  if (t.includes('tottenham') || t.includes('spurs')) return 'kit-tottenham';
-  if (t.includes('westham')) return 'kit-west-ham';
-  if (t.includes('wolves')) return 'kit-wolves';
-  return 'kit-generic';
+// One status word per player, most urgent first (Direction J: no badge stacks)
+const getStatusWord = (player, isBgw, isDgw) => {
+  if (isBgw) return { word: 'BLANK', title: 'Blank gameweek: no game scheduled' };
+  if (isDgw) return { word: 'DGW', title: 'Double gameweek: 2 games scheduled' };
+  if (player.cameo_risk != null && player.cameo_risk >= 0.25) {
+    return { word: 'CAMEO', title: `${Math.round(player.cameo_risk * 100)}% chance of only a late cameo` };
+  }
+  if (player.hook_hazard > 0.15) {
+    return { word: 'RISK', title: `${Math.round(player.hook_hazard * 100)}% chance of an early sub` };
+  }
+  return null;
 };
 
 export default function PlayerCard({
@@ -37,8 +24,6 @@ export default function PlayerCard({
   isCaptain,
   isViceCaptain,
   isTripleCaptain,
-  isBoosted,
-  strategyBadge,
   onToggleCaptain
 }) {
   if (!player) return null;
@@ -58,206 +43,87 @@ export default function PlayerCard({
   }
   const fixtureLabel = opponent
     ? `${venue === 'H' ? 'vs' : '@'} ${getClubShortCode(opponent)}`
-    : '';
+    : getClubShortCode(player.team);
 
-  // Determine Blank (BGW) or Double Gameweek (DGW) status
-  const fixtureCount = player.fixture_count !== undefined ? Number(player.fixture_count) : (opponent ? (opponent.includes(',') || opponent.includes('/') ? 2 : 1) : 1);
-  const isBgw = fixtureCount === 0;
-  const isDgw = fixtureCount >= 2;
+  const fixtureCount = player.fixture_count !== undefined
+    ? Number(player.fixture_count)
+    : (opponent && (opponent.includes(',') || opponent.includes('/')) ? 2 : 1);
+  const status = getStatusWord(player, fixtureCount === 0, fixtureCount >= 2);
 
-  // Set-Piece & Penalty Hierarchy Detection
-  const isPenaltyTaker = player.sp_pk_order === 1 || player.penalties_order === 1 || player.is_penalty_taker || (player.web_name === 'B.Fernandes' || player.web_name === 'Haaland' || player.web_name === 'Palmer' || player.web_name === 'Salah' || player.web_name === 'Saka' || player.web_name === 'Mbeumo');
-  const penaltyTier = isPenaltyTaker ? getPenaltyTierForTeam(player.team) : null;
-
-  // Determine whether to display actual match points or forward expected points
+  // Actual match points once the gameweek is played, forward xP before
   const hasActualPoints = player.actual_points !== undefined;
-  const basePts = hasActualPoints ? Number(player.actual_points) : xp;
   const mult = isTripleCaptain ? 3 : (isCaptain ? 2 : 1);
   const displayPts = hasActualPoints
-    ? (basePts * mult)
-    : (mult > 1 ? (xp * mult).toFixed(1) : xp.toFixed(1));
-  const unit = hasActualPoints
-    ? (mult > 1 ? `pts (${mult}x)` : 'pts')
-    : (mult > 1 ? `pts (${mult}x)` : 'xP');
+    ? Number(player.actual_points) * mult
+    : (xp * mult).toFixed(1);
+  const unit = hasActualPoints ? 'pts' : 'xP';
 
-  const kitClass = getTeamKitClass(player.team);
+  const armband = isTripleCaptain ? '3×' : isCaptain ? 'C' : isViceCaptain ? 'VC' : 'C';
+  const armbandLabel = isTripleCaptain
+    ? `${player.web_name} is triple captain`
+    : isCaptain
+    ? `${player.web_name} is captain. Make vice-captain captain instead`
+    : isViceCaptain
+    ? `${player.web_name} is vice-captain. Make captain`
+    : `Make ${player.web_name} captain`;
 
-  const handleAction = () => {
-    if (onSelectSub) {
-      onSelectSub(player);
-    } else if (onInspect) {
-      onInspect(player);
+  const openMatchup = () => {
+    if (onOpenMatchup) {
+      onOpenMatchup(fd || { home_team: player.team, away_team: opponent || 'Opponent' });
     }
   };
 
   return (
     <div
-      className={`player-pitch-card ${kitClass} ${isSubTarget ? 'sub-target' : ''} ${isBoosted ? 'bench-boosted' : ''} ${isBgw ? 'is-bgw' : ''} ${isDgw ? 'is-dgw' : ''} ${hasActualPoints ? 'has-actuals' : ''}`}
-      tabIndex={0}
-      role="button"
-      aria-label={`${player.web_name}, ${pos}, £${cost}m, ${displayPts} ${unit}`}
-      onClick={handleAction}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleAction();
-        }
-      }}
-      onDoubleClick={() => {
-        if (onInspect) onInspect(player);
-      }}
-      title="Click to swap player · Double-click for match stats & points breakdown"
+      className={`wire-token ${isSubTarget ? 'is-target' : ''} ${isCaptain ? 'is-captain' : ''} ${isViceCaptain ? 'is-vice' : ''}`}
     >
-      {/* Top Header: Badge / Position + BGW/DGW Indicator + Price */}
-      <div className="player-card-top-row">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '3px', flexWrap: 'wrap', minWidth: 0 }}>
-          {isTripleCaptain ? (
-            <button
-              type="button"
-              className="captain-badge triple font-mono"
-              title="Triple Captain Active (3x Points)"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onToggleCaptain) onToggleCaptain(player);
-              }}
-            >
-              3XC
-            </button>
-          ) : isCaptain ? (
-            <button
-              type="button"
-              className="captain-badge active-c font-mono"
-              title="Team Captain (2x Points) · Click to toggle Vice-Captain"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onToggleCaptain) onToggleCaptain(player);
-              }}
-            >
-              C
-            </button>
-          ) : isViceCaptain ? (
-            <button
-              type="button"
-              className="vice-captain-badge active-v font-mono"
-              title="Vice Captain · Click to make Captain"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onToggleCaptain) onToggleCaptain(player);
-              }}
-            >
-              V
-            </button>
-          ) : onToggleCaptain ? (
-            <button
-              type="button"
-              className="captain-ghost-btn font-mono"
-              title="Make Captain (2x Points)"
-              onClick={(e) => {
-                e.stopPropagation();
-                onToggleCaptain(player);
-              }}
-            >
-              C
-            </button>
-          ) : null}
-          {strategyBadge === 'DIFF' && (
-            <span className="diff-badge font-mono" title="Differential pick: owned by under 20% of managers">DIFF</span>
+      <button
+        type="button"
+        className="wire-token-main"
+        aria-pressed={isSubTarget || undefined}
+        aria-label={`${player.web_name}, ${pos}, £${cost}m, ${displayPts} ${unit}${mult > 1 ? ` (${mult}x)` : ''}`}
+        onClick={() => (onSelectSub ? onSelectSub(player) : onInspect?.(player))}
+        onDoubleClick={() => onInspect?.(player)}
+        title="Click to swap or inspect · Double-click for match stats"
+      >
+        <span className="wire-token-name">{player.web_name}</span>
+        <span className="wire-token-pts font-mono">
+          {displayPts}
+          <span className="wire-token-unit">{unit}</span>
+          {hasActualPoints && Number(player.actual_bonus) > 0 && (
+            <span className="wire-token-unit" title={`${player.actual_bonus} bonus points`}> +{player.actual_bonus}</span>
           )}
-          {strategyBadge === 'SHIELD' && (
-            <span className="shield-badge font-mono" title="Popular pick: high ownership to protect your rank">CORE</span>
-          )}
-          {isBoosted && player.is_bench_asset && (
-            <span className="boost-badge font-mono" title="Bench Boost Active: Scoring points this gameweek">BB</span>
-          )}
-          {/* Set-Piece Specialist Indicators (Unified PK1 + Team Tier) */}
-          {isPenaltyTaker && (
-            <span
-              className={`sp-badge pk ${penaltyTier ? `tier-${penaltyTier.tier.toLowerCase()}` : ''} font-mono`}
-              title={`First-Choice Penalty Taker · ${penaltyTier ? penaltyTier.desc : 'Club spot-kick taker'}`}
-            >
-              PK1{penaltyTier && <span className="pk-tier-sub"> · {penaltyTier.shortTier || penaltyTier.tier}</span>}
-            </span>
-          )}
-          {player.sp_ck_order === 1 && !isPenaltyTaker && (
-            <span className="sp-badge ck font-mono" title="First-Choice Corner Crosser">CK1</span>
-          )}
-          {/* M-02: Rotation/Hook & Cameo Hazard Risk Indicators */}
-          {player.cameo_risk != null && player.cameo_risk >= 0.25 ? (
-            <span className="hook-hazard-badge cameo font-mono" title={`${Math.round(player.cameo_risk * 100)}% late cameo risk`}>CAMEO</span>
-          ) : player.hook_hazard > 0.15 ? (
-            <span className="hook-hazard-badge font-mono" title={`${Math.round(player.hook_hazard * 100)}% early sub risk`}>RISK</span>
-          ) : null}
-          {isBgw && <span className="bgw-badge" title="Blank Gameweek: No game scheduled">BLANK</span>}
-          {isDgw && <span className="dgw-badge" title="Double Gameweek: 2 games scheduled">DGW</span>}
-          {/* M-06: Auto-Sub Priority Label for bench players */}
-          {player.auto_sub_label && AUTO_SUB_LABELS[player.auto_sub_label] && (
-            <span
-              className={`auto-sub-badge font-mono ${player.auto_sub_label.toLowerCase()}`}
-              title={AUTO_SUB_LABELS[player.auto_sub_label].tooltip}
-            >
-              {AUTO_SUB_LABELS[player.auto_sub_label].badge}
-            </span>
-          )}
-        </div>
-        <span className="player-cost-val font-mono">
-          {player.price_trend === 'RISING_LOCK' || player.price_trend === 'RISING_ALERT' ? (
-            <span className="price-arrow-indicator up font-mono" title="Price rise imminent">▲</span>
-          ) : player.price_trend === 'FALLING_LOCK' || player.price_trend === 'FALLING_ALERT' ? (
-            <span className="price-arrow-indicator down font-mono" title="Price drop risk">▼</span>
-          ) : null}
-          £{cost}m
         </span>
-      </div>
+      </button>
 
-      {/* Player Web Name */}
-      <div className="player-name">
-        {player.web_name}
-      </div>
-
-      {/* Team / Opponent Subtitle */}
-      <div className="player-team-row">
-        <span
-          className="player-team-tag"
-          role="button"
-          tabIndex={0}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (onOpenMatchup) {
-              onOpenMatchup(player.fixture_details || { home_team: player.team, away_team: opponent || 'Opponent' });
-            }
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              e.stopPropagation();
-              if (onOpenMatchup) {
-                onOpenMatchup(player.fixture_details || { home_team: player.team, away_team: opponent || 'Opponent' });
-              }
-            }
-          }}
-          title="Click for match preview, win odds & clean sheet chances"
+      <div className="wire-token-meta">
+        <button
+          type="button"
+          className="wire-token-fixture font-mono"
+          onClick={openMatchup}
+          title="Match preview, win odds and clean sheet chances"
         >
-          {player.team} {fixtureLabel && <span className="fixture-sub-tag font-mono">{fixtureLabel}</span>}
-        </span>
-      </div>
-
-
-      {/* Points Banner (Actual Points for Completed GWs / Expected Points for Upcoming) */}
-      <div className="player-stats-bar" style={{ justifyContent: 'center', gap: '6px' }}>
-        <span className="player-xp font-mono" style={hasActualPoints ? { color: 'var(--accent-emerald, #10B981)', fontWeight: 800 } : {}}>
-          {displayPts} <span className="xp-unit">{unit}</span>
-        </span>
-        {hasActualPoints && Number(player.actual_bonus) > 0 && (
-          <span
-            className="bonus-pts-pill font-mono"
-            title={`${player.actual_bonus} Bonus Points Awarded`}
+          {pos} · {fixtureLabel}
+        </button>
+        {onToggleCaptain ? (
+          <button
+            type="button"
+            className="wire-token-armband font-mono"
+            aria-label={armbandLabel}
+            aria-pressed={isCaptain || isTripleCaptain}
+            title={armbandLabel}
+            onClick={() => onToggleCaptain(player)}
           >
-            +{player.actual_bonus}
-          </span>
+            {armband}
+          </button>
+        ) : (isCaptain || isViceCaptain) && (
+          <span className="wire-token-armband font-mono" title={isCaptain ? 'Captain' : 'Vice-captain'}>{armband}</span>
         )}
       </div>
+
+      {status && (
+        <span className="wire-token-status font-mono" title={status.title}>{status.word}</span>
+      )}
     </div>
   );
 }
-
-

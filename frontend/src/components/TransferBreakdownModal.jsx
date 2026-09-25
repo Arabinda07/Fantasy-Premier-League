@@ -156,9 +156,7 @@ export default function TransferBreakdownModal({
         {/* Header */}
         <div className="modal-header">
           <div className="modal-title-group">
-            <div className="modal-icon-box blue">
-              <ArrowsLeftRight size={20} weight="bold" />
-            </div>
+            <ArrowsLeftRight size={22} weight="bold" className="modal-unboxed-icon" />
             <div>
               <h2 id="breakdown-modal-title" className="modal-title">
                 Transfer Recommendation

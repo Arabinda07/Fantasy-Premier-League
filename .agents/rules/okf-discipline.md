@@ -1,6 +1,6 @@
 # OKF Discipline & Context Rules for AI Coding Agents
 
-This rule file is automatically active for all AI coding agents operating in this workspace.
+These rules apply to every coding agent in this workspace; `AGENTS.md` links here so agents that don't auto-load `.agents/rules/` still see them.
 
 ## 1. Zero Hallucination Policy & Knowledge Ground Truth
 

@@ -200,39 +200,39 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
       {/* Institutional Forecaster Control Deck (52px Header) */}
       <div className="forecaster-control-deck" role="region" aria-label="Points Forecaster Controls">
         <div className="forecaster-control-left">
-          <div className="segmented-chip-rail">
+          <div className="wire-segments" role="tablist" aria-label="Forecaster Views">
             <button
               type="button"
-              className={`segmented-chip-btn pill-base pill-md ${subView === 'sandbox' ? 'active' : ''}`}
+              className="wire-segment font-mono"
               onClick={() => setSubView('sandbox')}
               aria-pressed={subView === 'sandbox'}
             >
-              <SlidersHorizontal size={14} weight={subView === 'sandbox' ? 'fill' : 'bold'} />
+              <SlidersHorizontal size={13} weight="bold" />
               <span>Formula Sandbox</span>
             </button>
             <button
               type="button"
-              className={`segmented-chip-btn pill-base pill-md ${subView === 'scorecard' ? 'active' : ''}`}
+              className="wire-segment font-mono"
               onClick={() => setSubView('scorecard')}
               aria-pressed={subView === 'scorecard'}
             >
-              <ChartLine size={14} weight={subView === 'scorecard' ? 'fill' : 'bold'} />
+              <ChartLine size={13} weight="bold" />
               <span>Accuracy Scorecard</span>
             </button>
           </div>
 
           <div className="forecaster-telemetry-chips">
-            <div className="telemetry-chip" title="Spearman rank correlation across Premier League starters">
-              <span className="telemetry-chip-label">Rank Acc:</span>
-              <span className="telemetry-chip-val font-mono" style={{ color: 'var(--accent-emerald)' }}>+{ACCURACY_DATA.rank_correlation}</span>
+            <div className="wire-telemetry-chip font-mono" title="Spearman rank correlation across Premier League starters">
+              <span className="telemetry-chip-label">RANK ACC:</span>
+              <span className="telemetry-chip-val">+{ACCURACY_DATA.rank_correlation}</span>
             </div>
-            <div className="telemetry-chip" title="Average points margin per starter playing 60+ minutes">
-              <span className="telemetry-chip-label">Margin:</span>
-              <span className="telemetry-chip-val font-mono" style={{ color: 'var(--accent-emerald)' }}>±{ACCURACY_DATA.starters_mae} pts</span>
+            <div className="wire-telemetry-chip font-mono" title="Average points margin per starter playing 60+ minutes">
+              <span className="telemetry-chip-label">MARGIN:</span>
+              <span className="telemetry-chip-val">±{ACCURACY_DATA.starters_mae} pts</span>
             </div>
-            <div className="telemetry-chip" title={`${SCORING_COMPONENTS.official_count} key scoring factors evaluated`}>
-              <span className="telemetry-chip-label">Factors:</span>
-              <span className="telemetry-chip-val font-mono">{SCORING_COMPONENTS.official_count}</span>
+            <div className="wire-telemetry-chip font-mono" title={`${SCORING_COMPONENTS.official_count} key scoring factors evaluated`}>
+              <span className="telemetry-chip-label">FACTORS:</span>
+              <span className="telemetry-chip-val">{SCORING_COMPONENTS.official_count}</span>
             </div>
           </div>
         </div>
@@ -241,13 +241,13 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
           {subView === 'sandbox' && (
             <button
               type="button"
-              className={`calibration-toggle-btn ${isCalibrationOpen ? 'active' : ''}`}
+              className={`calibration-toggle-btn font-mono ${isCalibrationOpen ? 'active' : ''}`}
               onClick={() => setIsCalibrationOpen(prev => !prev)}
               aria-expanded={isCalibrationOpen}
               title="Toggle model calibration sliders and baseline rates"
             >
-              <SlidersHorizontal size={13} weight={isCalibrationOpen ? 'fill' : 'bold'} />
-              <span>Calibration ({priorMinutes}m · {homeAdvantage.toFixed(2)}x)</span>
+              <SlidersHorizontal size={13} weight="bold" />
+              <span>Calibration (M₀={priorMinutes}m · {homeAdvantage.toFixed(2)}x)</span>
             </button>
           )}
 
@@ -293,9 +293,9 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                   <div className="slider-header">
                     <span className="slider-label">
                       <SlidersHorizontal size={15} weight="bold" />
-                      <span>Recent Form vs Long-Term Track Record</span>
+                      <span>Bayesian Prior Minutes (M₀)</span>
                     </span>
-                    <span className="slider-value-capsule font-mono">{priorMinutes} mins sample</span>
+                    <span className="wire-slug font-mono">{priorMinutes}m (w = N / (N + {priorMinutes}))</span>
                   </div>
                   <div className="slider-input-wrapper">
                     <input
@@ -310,12 +310,12 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                     />
                   </div>
                   <div className="slider-ticks font-mono">
-                    <span className="slider-tick-item left">100m (Hot Form)</span>
-                    <span className="slider-tick-item center">500m (Balanced)</span>
-                    <span className="slider-tick-item right">1200m (Career Record)</span>
+                    <span className="slider-tick-item left">100m (Fast Adaptation)</span>
+                    <span className="slider-tick-item center">500m (Balanced Prior)</span>
+                    <span className="slider-tick-item right">1200m (Conservative Anchor)</span>
                   </div>
                   <div className="slider-hint">
-                    Recent matches count more heavily: form from 8 weeks ago counts half as much as today.
+                    Shrinkage weight w = N / (N + M₀): balances observed minutes against positional career averages.
                   </div>
                 </div>
 
@@ -323,9 +323,9 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                   <div className="slider-header">
                     <span className="slider-label">
                       <Lightning size={15} weight="bold" />
-                      <span>Home Ground Advantage</span>
+                      <span>Home Ground Venue Advantage</span>
                     </span>
-                    <span className="slider-value-capsule font-mono">{homeAdvantage.toFixed(2)}x boost</span>
+                    <span className="wire-slug font-mono">{homeAdvantage.toFixed(2)}x boost</span>
                   </div>
                   <div className="slider-input-wrapper">
                     <input
@@ -341,54 +341,54 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                   </div>
                   <div className="slider-ticks font-mono">
                     <span className="slider-tick-item left">0.90x (Neutral Ground)</span>
-                    <span className="slider-tick-item center">1.10x (Avg Home Boost)</span>
+                    <span className="slider-tick-item center">1.10x (League Avg)</span>
                     <span className="slider-tick-item right">1.30x (Fortress Stadium)</span>
                   </div>
                   <div className="slider-hint">
-                    Gives a realistic boost to goal threat and clean sheet chances when playing at home.
+                    Applies a balanced {homeAdvantage.toFixed(2)}x boost to attack and clean sheet odds for home fixtures.
                   </div>
                 </div>
               </div>
 
-              {/* Positional Baseline Rates Reference */}
-              <div className="studio-baselines-panel" style={{ marginTop: '12px' }}>
+              {/* Positional Baseline Rates Reference Table */}
+              <div className="studio-baselines-panel" style={{ marginTop: '14px' }}>
                 <div className="studio-baselines-header">
                   <div>
                     <h3 className="studio-section-title">
-                      League Averages by Position (Per 90 Minutes)
+                      Positional Bayesian Baseline Rates (Per 90 Minutes)
                     </h3>
                     <div className="studio-section-subtitle">
-                      Standard league averages used to calculate baseline points when a player has limited recent minutes
+                      Prior expectations applied when a player has limited recent minutes ($M_0 = {priorMinutes}\text{m}$)
                     </div>
                   </div>
                 </div>
-                <div className="studio-baselines-grid">
-                  {Object.entries(POSITIONAL_BASELINES).map(([pos, data]) => (
-                    <div key={pos} className="baseline-card">
-                      <div className="baseline-header">
-                        <span className={`player-pos-tag pill-base pill-sm ${pos}`}>{pos}</span>
-                        <span className="baseline-label">{data.label}</span>
-                      </div>
-                      <div className="baseline-metrics-list">
-                        <div className="baseline-metric-row">
-                          <span className="metric-name">Expected Goals</span>
-                          <span className="metric-val font-mono">{data.xG90.toFixed(2)} <span className="metric-unit">xG</span></span>
-                        </div>
-                        <div className="baseline-metric-row">
-                          <span className="metric-name">Expected Assists</span>
-                          <span className="metric-val font-mono">{data.xA90.toFixed(2)} <span className="metric-unit">xA</span></span>
-                        </div>
-                        <div className="baseline-metric-row">
-                          <span className="metric-name">Clean Sheet Rate</span>
-                          <span className="metric-val font-mono">{Math.round(data.cleanSheet * 100)}%</span>
-                        </div>
-                        <div className="baseline-metric-row">
-                          <span className="metric-name">Bonus Potential</span>
-                          <span className="metric-val font-mono">{data.bonus90.toFixed(2)} <span className="metric-unit">BPS</span></span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                <div className="table-scroll-wrapper" style={{ marginTop: '8px' }}>
+                  <table className="data-table" style={{ width: '100%' }}>
+                    <thead>
+                      <tr>
+                        <th scope="col">Position</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Expected Goals (xG90)</th>
+                        <th scope="col">Expected Assists (xA90)</th>
+                        <th scope="col">Clean Sheet Probability</th>
+                        <th scope="col">Bonus Potential (BPS90)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Object.entries(POSITIONAL_BASELINES).map(([pos, data]) => (
+                        <tr key={pos}>
+                          <td>
+                            <span className="wire-pos-tag font-mono">[{pos}]</span>
+                          </td>
+                          <td style={{ fontWeight: 600 }}>{data.label}</td>
+                          <td className="font-mono">{data.xG90.toFixed(2)} xG</td>
+                          <td className="font-mono">{data.xA90.toFixed(2)} xA</td>
+                          <td className="font-mono">{Math.round(data.cleanSheet * 100)}%</td>
+                          <td className="font-mono">{data.bonus90.toFixed(2)} BPS</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
@@ -507,19 +507,19 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                       <td className="font-mono">#{startItem + idx}</td>
                       <td style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{p.web_name}</td>
                       <td>
-                        <span className={`player-position-pill ${p.position}`}>{p.position}</span>
+                        <span className="wire-pos-tag font-mono">[{p.position}]</span>
                       </td>
                       <td>{p.team}</td>
                       <td className="font-mono">£{Number(p.now_cost || p.cost || 0).toFixed(1)}m</td>
-                      <td className="font-mono" style={{ color: 'var(--accent-emerald)', fontWeight: 600 }}>{p.bayesXg.toFixed(2)}</td>
-                      <td className="font-mono" style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>{p.bayesXa.toFixed(2)}</td>
+                      <td className="font-mono">{p.bayesXg.toFixed(2)}</td>
+                      <td className="font-mono">{p.bayesXa.toFixed(2)}</td>
                       <td className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
                         <span style={{ color: 'var(--text-secondary)', fontWeight: 700 }}>
                           {(p.shrinkageWeight * 100).toFixed(0)}% Form
                         </span> · {((1 - p.shrinkageWeight) * 100).toFixed(0)}% Record
                       </td>
-                      <td className="font-mono" style={{ fontWeight: 800, color: 'var(--accent-emerald)', fontSize: '13px' }}>
-                        {p.dynamicXp.toFixed(1)} pts
+                      <td className="font-mono" style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: '13px' }}>
+                        {p.dynamicXp.toFixed(1)} xP
                       </td>
                     </tr>
                   ))}
@@ -602,49 +602,31 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
       ) : (
         /* Model Calibration & Accuracy Scorecard View */
         <div className="view-fluid">
-          {/* Scorecard Hero Panel */}
-          <div className="studio-hero-panel">
+          {/* Scorecard Hero Strip (Direction J 48px Header) */}
+          <div className="studio-hero-strip">
             <div className="studio-hero-header">
-              <div className="studio-badge">
-                <ChartLine size={14} weight="fill" />
-                <span>MODEL ACCURACY &amp; PERFORMANCE AUDIT</span>
-              </div>
-              <span className="studio-version font-mono">WEEKLY BENCHMARK</span>
+              <span className="wire-slug font-mono">MODEL ACCURACY &amp; PERFORMANCE BENCHMARKS</span>
+              <h2 className="studio-hero-title">
+                Points Projection Empirical Audit
+              </h2>
             </div>
-            <h1 className="studio-title">How Accurate Are Our Points Projections?</h1>
-            <p className="studio-description">
-              After every gameweek, we compare our pre-match expected points against actual recorded FPL scores to test accuracy, verify ranking quality, and ensure no position is over- or under-projected.
-            </p>
 
-            {/* Scorecard Top KPIs */}
-            <div className="kpi-strip" style={{ marginTop: '16px' }}>
-              <div className="kpi-card">
-                <div className="kpi-label">Average Points Margin</div>
-                <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
-                  ±{ACCURACY_DATA.starters_mae} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
-                </div>
-                <div className="kpi-subtext">Per starter playing 60+ mins</div>
+            <div className="forecaster-telemetry-chips">
+              <div className="wire-telemetry-chip font-mono">
+                <span className="telemetry-chip-label">STARTER MAE:</span>
+                <span className="telemetry-chip-val font-mono">±{ACCURACY_DATA.starters_mae} pts</span>
               </div>
-              <div className="kpi-card">
-                <div className="kpi-label">Player Rank Consistency</div>
-                <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
-                  +{ACCURACY_DATA.rank_correlation}
-                </div>
-                <div className="kpi-subtext">Correctly identifies top performers</div>
+              <div className="wire-telemetry-chip font-mono">
+                <span className="telemetry-chip-label">RANK CORR:</span>
+                <span className="telemetry-chip-val font-mono">+{ACCURACY_DATA.rank_correlation}</span>
               </div>
-              <div className="kpi-card">
-                <div className="kpi-label">Total Error Range</div>
-                <div className="kpi-value font-mono">
-                  ±{ACCURACY_DATA.overall_rmse} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>pts</span>
-                </div>
-                <div className="kpi-subtext">Across all active Premier League players</div>
+              <div className="wire-telemetry-chip font-mono">
+                <span className="telemetry-chip-label">TOTAL ERROR:</span>
+                <span className="telemetry-chip-val font-mono">±{ACCURACY_DATA.overall_rmse} pts</span>
               </div>
-              <div className="kpi-card">
-                <div className="kpi-label">Clean Sheet Accuracy</div>
-                <div className="kpi-value font-mono" style={{ color: 'var(--accent-cyan)' }}>
-                  82%
-                </div>
-                <div className="kpi-subtext">Accuracy of predicted clean sheets</div>
+              <div className="wire-telemetry-chip font-mono">
+                <span className="telemetry-chip-label">CS ACCURACY:</span>
+                <span className="telemetry-chip-val font-mono">82%</span>
               </div>
             </div>
           </div>
@@ -654,7 +636,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
             <div className="studio-table-controls">
               <div className="controls-left">
                 <span className="controls-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <ShieldCheck size={16} weight="bold" color="var(--accent-emerald)" />
+                  <ShieldCheck size={16} weight="bold" />
                   Positional Accuracy Breakdown
                 </span>
                 <span className="controls-count font-mono">4 Positions Evaluated</span>
@@ -684,22 +666,21 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                   {ACCURACY_DATA.positional.map(p => (
                     <tr key={p.pos}>
                       <td>
-                        <span className={`player-position-pill ${p.pos}`}>{p.pos}</span>
+                        <span className="wire-pos-tag font-mono">[{p.pos}]</span>
                       </td>
                       <td className="font-mono">{p.count} starters</td>
-                      <td className="font-mono" style={{ fontWeight: 700, color: 'var(--accent-emerald)' }}>
+                      <td className="font-mono" style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
                         ±{p.mae.toFixed(2)} pts
                       </td>
                       <td className="font-mono">±{p.rmse.toFixed(2)} pts</td>
                       <td className="font-mono">{p.meanPred.toFixed(2)} pts</td>
                       <td className="font-mono">{p.meanAct.toFixed(2)} pts</td>
-                      <td className="font-mono" style={{ color: Math.abs(p.bias) <= 0.20 ? 'var(--accent-emerald)' : 'var(--accent-amber)' }}>
+                      <td className="font-mono">
                         +{p.bias.toFixed(2)} pts
                       </td>
                       <td>
-                        <span className="threat-badge threat-low font-mono" style={{ fontSize: '11px' }}>
-                          <CheckCircle size={12} weight="fill" />
-                          {p.status === 'EXCELLENT' ? 'EXCELLENT' : p.status}
+                        <span className="rival-threat-tag font-mono">
+                          [{p.status === 'EXCELLENT' ? 'EXCELLENT' : p.status}]
                         </span>
                       </td>
                     </tr>
@@ -710,28 +691,30 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
           </div>
 
           {/* Prediction Surprises & Outlier Diagnostics */}
-          <div className="sidebar-panel" style={{ marginTop: '20px' }}>
-            <div className="panel-header">
-              <span className="panel-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Target size={16} weight="bold" />
-                <span>Gameweek Surprises &amp; High-Scoring Anomalies</span>
-              </span>
-              <span className="panel-badge font-mono">WEEKLY REVIEW</span>
+          <div className="data-table-container" style={{ marginTop: '20px' }}>
+            <div className="studio-table-controls">
+              <div className="controls-left">
+                <span className="controls-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Target size={16} weight="bold" />
+                  <span>Gameweek Surprises &amp; High-Scoring Anomalies</span>
+                </span>
+                <span className="controls-count font-mono">Weekly Review</span>
+              </div>
             </div>
 
-            <div className="diff-cards-list" style={{ marginTop: '12px' }}>
+            <div className="diff-cards-list" style={{ padding: '12px' }}>
               {ACCURACY_DATA.outliers.map(item => (
-                <div key={item.player} className="diff-ledger-row" style={{ background: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-sm)', padding: '10px 14px', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+                <div key={item.player} className="diff-ledger-row" style={{ background: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '10px 14px', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span className={`player-pos-tag pill-base pill-sm ${item.pos}`}>{item.pos}</span>
+                    <span className="wire-pos-tag font-mono">[{item.pos}]</span>
                     <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{item.player}</span>
                     <span className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>({item.team})</span>
                   </div>
 
                   <div className="font-mono" style={{ fontSize: '12px', display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <span>Projected: <strong style={{ color: 'var(--text-secondary)' }}>{item.pred.toFixed(1)} pts</strong></span>
-                    <span>Actual: <strong style={{ color: 'var(--accent-emerald)' }}>{item.actual} pts</strong></span>
-                    <span style={{ fontWeight: 700, color: item.diff.startsWith('+') ? 'var(--accent-emerald)' : 'var(--accent-crimson)' }}>
+                    <span>Actual: <strong style={{ color: 'var(--text-primary)' }}>{item.actual} pts</strong></span>
+                    <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
                       {item.diff} pts
                     </span>
                   </div>

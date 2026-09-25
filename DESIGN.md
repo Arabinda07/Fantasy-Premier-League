@@ -1,12 +1,12 @@
 ---
 name: FPL-Quantitative-Analytics-Terminal
-version: 1.1.0
-description: Institutional quantitative sports scouting and mathematical decision cockpit for Fantasy Premier League management.
+version: 2.0.0
+description: Matchday radio-wire decision cockpit for Fantasy Premier League management (Direction J, locked 2026-09-21).
 colors:
-  canvas: "oklch(0.12 0.02 260)"
-  surface-1: "oklch(0.15 0.025 260)"
-  surface-2: "oklch(0.20 0.035 260)"
-  surface-subtle: "oklch(0.24 0.03 260)"
+  canvas: "#18181B"
+  surface-1: "#1C1C20"
+  surface-2: "#232328"
+  surface-subtle: "#2A2A30"
   primary-emerald: "oklch(0.72 0.19 155)"
   captaincy-amber: "oklch(0.78 0.17 75)"
   hazard-crimson: "oklch(0.63 0.22 25)"
@@ -14,10 +14,10 @@ colors:
   assist-cyan: "oklch(0.74 0.14 210)"
   pitch-base: "oklch(0.24 0.08 158)"
   pitch-stripe: "oklch(0.20 0.07 158)"
-  text-primary: "#F8FAFC"
-  text-secondary: "#CBD5E1"
-  text-muted: "#94A3B8"
-  text-inverse: "#090D16"
+  text-primary: "#F4F4F5"
+  text-secondary: "#D4D4D8"
+  text-muted: "#87878F"
+  text-inverse: "#18181B"
   on-primary: "{colors.text-inverse}"
   on-amber: "{colors.text-inverse}"
   on-crimson: "{colors.text-primary}"
@@ -100,75 +100,19 @@ motion:
   duration-fast: "120ms"
   duration-normal: "180ms"
 components:
-  card-player:
-    backgroundColor: "{colors.surface-2}"
+  wire-token:
+    backgroundColor: "transparent"
     textColor: "{colors.text-primary}"
-    rounded: "{rounded.md}"
-    padding: "{spacing.sm}"
-    border: "1px solid {colors.border-subtle}"
-  card-bench:
-    backgroundColor: "{colors.surface-2}"
+    border: "none"
+  wire-bench-line:
+    backgroundColor: "transparent"
     textColor: "{colors.text-primary}"
-    rounded: "{rounded.md}"
-    padding: "{spacing.md}"
-    border: "1px solid {colors.border-subtle}"
-  panel-elevated:
-    backgroundColor: "{colors.surface-1}"
-    textColor: "{colors.text-primary}"
-    rounded: "{rounded.lg}"
-    padding: "{spacing.lg}"
-    border: "1px solid {colors.border-subtle}"
-  control-deck:
-    backgroundColor: "{colors.surface-1}"
-    textColor: "{colors.text-primary}"
-    rounded: "{rounded.md}"
-    padding: "{spacing.sm} {spacing.md}"
-    border: "1px solid {colors.border-subtle}"
-  button-chip:
-    backgroundColor: "{colors.surface-subtle}"
-    textColor: "{colors.text-secondary}"
-    rounded: "{rounded.xs}"
-    padding: "4px 8px"
-  badge-captain:
-    backgroundColor: "{colors.captaincy-amber}"
-    textColor: "{colors.on-amber}"
-    rounded: "{rounded.xs}"
-    padding: "2px 4px"
-  badge-hazard:
-    backgroundColor: "{colors.hazard-crimson}"
-    textColor: "{colors.on-crimson}"
-    rounded: "{rounded.xs}"
-    padding: "2px 4px"
-  badge-assist:
-    backgroundColor: "{colors.assist-cyan}"
-    textColor: "{colors.on-cyan}"
-    rounded: "{rounded.xs}"
-    padding: "2px 4px"
-  tag-pos-gk:
-    backgroundColor: "{colors.pos-gk}"
-    textColor: "{colors.on-amber}"
-    rounded: "{rounded.xs}"
-    padding: "1px 4px"
-  tag-pos-def:
-    backgroundColor: "{colors.pos-def}"
-    textColor: "{colors.on-blue}"
-    rounded: "{rounded.xs}"
-    padding: "1px 4px"
-  tag-pos-mid:
-    backgroundColor: "{colors.pos-mid}"
-    textColor: "{colors.on-primary}"
-    rounded: "{rounded.xs}"
-    padding: "1px 4px"
-  tag-pos-fwd:
-    backgroundColor: "{colors.pos-fwd}"
-    textColor: "{colors.on-crimson}"
-    rounded: "{rounded.xs}"
-    padding: "1px 4px"
-  pitch-surface:
-    backgroundColor: "{colors.pitch-base}"
+    border: "none"
+  wire-banner:
     textColor: "{colors.text-muted}"
-    rounded: "{rounded.lg}"
-    padding: "{spacing.xl}"
+    fontSize: 12px
+    fontWeight: 800
+    letterSpacing: 0.18em
 ---
 
 # DESIGN.md — FPL Dugout Design System & Architecture
@@ -177,23 +121,31 @@ components:
 
 **FPL Dugout Analytics Terminal** is an institutional-grade sports analytics and mathematical decision cockpit modeled after financial engineering platforms (*Bloomberg Terminal*, *StatsBomb IQ*, *OptaPro*). It is designed specifically for quantitative Fantasy Premier League managers and data scientists seeking mathematical edges, LP solver optimizations, and probabilistic risk mitigation.
 
-The terminal is governed under the Impeccable **Operate** mode:
-- **`DESIGN_VARIANCE: 6`** — Structured, systematic, data-first grid alignment.
-- **`MOTION_INTENSITY: 3`** — Deterministic $\le 180\text{ms}$ cubic feedback; zero floating glowing orbs or distracting scroll-hijacking.
-- **`VISUAL_DENSITY: 8`** — Maximum information density with compact tabular figures and strict hairline alignment.
+**Governing direction: Direction J, "Matchday Radio Wire"** (locked by the owner on 2026-09-21; full brief in `ROUND-2-CONTEXT.md`). The interface reads like a live matchday dispatch: fast typographic scanning and generous space instead of nested boxes, borders and badge pills.
+
+- **Warm charcoal ground** (`--bg-canvas: #18181B`) on every tab and viewport.
+- **Two-colour letterforms**: cream (`--text-primary`) for what matters, zinc (`--text-muted`) for context. Hierarchy comes from size and weight jumps, never fills.
+- **No decorative borders or pills.** Grouping comes from vertical rhythm, column alignment and whitespace (64px desktop / 32px mobile gutters).
+- **Tabular monospace** for every point, price and odds value.
+- **Colour exception**: FDR 1–5 and up/down deltas may use colour, but always next to a number or arrow, never alone.
+
+**Migration status:** the Lineup tab (`TacticalPitch.jsx`, `PlayerCard.jsx`) is on Direction J. The other tabs still use the legacy card components in §5 and move over in later rounds; do not add new legacy-style components.
 
 ---
 
 ## 2. Colors & Perceptual Colorimetry
 
-The palette is rooted in deep obsidian slate foundations with 1px hairline border contrast and domain-specific semantic role accents defined in the **`oklch()`** uniform perceptual color space with CSS custom property implementations.
+Warm charcoal neutrals plus a two-colour letterform system. The accent tokens below still exist for legacy tabs, FDR and deltas; new Direction J surfaces use only the text tokens.
 
 ### 2.1 Color Tokens
 
-- **Canvas Base (`oklch(0.12 0.02 260)` / `--bg-canvas: #090D16`):** Deep canvas foundation for optimal eye comfort during long analytical sessions.
-- **Surface Level 1 (`oklch(0.15 0.025 260)` / `--bg-surface-1: #111726`):** Elevated container, header, control deck, and panel layer.
-- **Surface Level 2 (`oklch(0.20 0.035 260)` / `--bg-surface-2: #182035`):** Interactive card, player card, and table row layer.
-- **Surface Subtle (`oklch(0.24 0.03 260)` / `--bg-surface-subtle: #1E293B`):** Hover states, selection fills, and segmented switcher tracks.
+- **Canvas (`--bg-canvas: #18181B`):** Warm charcoal ground, constant everywhere.
+- **Surface 1 (`--bg-surface-1: #1C1C20`):** Legacy panels, modals, select menus.
+- **Surface 2 (`--bg-surface-2: #232328`):** Legacy cards and table rows.
+- **Surface Subtle (`--bg-surface-subtle: #2A2A30`):** Legacy hover and selection fills.
+- **Cream (`--text-primary: #F4F4F5`):** Primary letterform role (about 65%): names, projected points, key telemetry.
+- **Zinc light (`--text-secondary: #D4D4D8`):** Body copy on legacy surfaces.
+- **Zinc (`--text-muted: #87878F`):** Secondary letterform role (about 35%): positions, opponents, labels, benchmarks. Deliberately lighter than J's `#71717A`, which fails WCAG AA (3.7:1) on the canvas; `#87878F` gives 5.0:1.
 - **Pitch Base (`oklch(0.24 0.08 158)` / `--bg-pitch-base: #064030`):** Pitch canvas field base.
 - **Pitch Stripe (`oklch(0.20 0.07 158)` / `--bg-pitch-stripe: #053326`):** Alternating pitch mowing pattern.
 - **Primary Emerald (`oklch(0.72 0.19 155)` / `--accent-emerald: #10B981`):** Core interactive accent, mathematical LP solver baseline, active projections, and MID role.
@@ -212,18 +164,7 @@ The palette is rooted in deep obsidian slate foundations with 1px hairline borde
 
 ### 2.2 Inherited Surface Scope Architecture
 
-Pages and major workbenches declare a semantic scope class. Nested panels, cards, and toolbars automatically inherit contextual background tokens, border colors, and role accents:
-
-```css
-/* Inherited Scope Tokens */
-.surface-scope-pitch    { --scope-accent: var(--accent-emerald); --scope-card-bg: var(--bg-surface-2); }
-.surface-scope-planner  { --scope-accent: var(--accent-cyan);    --scope-card-bg: var(--bg-surface-2); }
-.surface-scope-rivals   { --scope-accent: var(--accent-crimson); --scope-card-bg: var(--bg-surface-2); }
-.surface-scope-fixtures { --scope-accent: var(--accent-blue);    --scope-card-bg: var(--bg-surface-2); }
-.surface-scope-market   { --scope-accent: var(--accent-amber);   --scope-card-bg: var(--bg-surface-2); }
-.surface-scope-studio   { --scope-accent: var(--accent-emerald); --scope-card-bg: var(--bg-surface-2); }
-.surface-scope-vault    { --scope-accent: var(--accent-emerald); --scope-card-bg: var(--bg-surface-2); }
-```
+Each tab panel carries a `.surface-scope-<tab>` class (`pitch`, `planner`, `rivals`, `fixtures`, `market`, `studio`, `vault`). Under Direction J these are **namespaces only**: there are no per-tab accent colours, and the old `--scope-*` variables have been removed. Use the scope class to limit tab-specific rules, not to recolour.
 
 ---
 
@@ -238,8 +179,9 @@ Every colored tag, chip, or banner strictly enforces paired text tokens satisfyi
 | `hazard-crimson` | `#EF4444` | `text-primary` (`#F8FAFC`) | **4.9 : 1** (Passes AA) |
 | `defensive-blue` | `#3B82F6` | `text-primary` (`#F8FAFC`) | **5.2 : 1** (Passes AA) |
 | `assist-cyan` | `#06B6D4` | `text-inverse` (`#090D16`) | **9.6 : 1** (Passes AAA) |
-| `surface-2` | `#182035` | `text-primary` (`#F8FAFC`) | **14.2 : 1** (Passes AAA) |
-| `surface-1` | `#111726` | `text-secondary` (`#CBD5E1`) | **6.8 : 1** (Passes AA) |
+| `canvas` | `#18181B` | `text-primary` (`#F4F4F5`) | **16.1 : 1** (Passes AAA) |
+| `canvas` | `#18181B` | `text-muted` (`#87878F`) | **5.0 : 1** (Passes AA) |
+| `surface-1` | `#1C1C20` | `text-secondary` (`#D4D4D8`) | **11.5 : 1** (Passes AAA) |
 
 ---
 
@@ -262,6 +204,12 @@ Typography establishes an unambiguous distinction between **functional UI chrome
 | `--text-lg` | `14px` | `700` | `-0.01em` | Card section titles, workbench group headers |
 | `--text-xl` | `16px` | `700` | `-0.02em` | Drawer headers, modal titles, panel headlines |
 | `--text-2xl` | `18px` | `800` | `-0.02em` | Terminal brand title, major workbench titles |
+| `--text-name` | `15px` | `600` / `800` captain | `0` | Direction J player names and status values |
+| `--text-hero-mobile` | `64px` | `800` | `-0.04em` | Matchday hero number, ≤768px |
+| `--text-hero` | `88px` | `800` | `-0.04em` | Matchday hero number (line-height `0.9`) |
+| `--text-hero-xl` | `104px` | `800` | `-0.04em` | Matchday hero number, ≥1280px |
+
+Direction J banners (`.wire-banner`, `.wire-slug`) are `12px / 800 / 0.18em` uppercase in zinc; labels are `11px / 700 / 0.14em` uppercase.
 
 ### 3.2 Typesetting Rules
 1. **Never use proportional fonts for statistical metrics**: All tables, points readouts, prices, and percentages must render with `--font-mono` and `font-feature-settings: "tnum" 1`.
@@ -283,9 +231,12 @@ All layouts adhere to an **8px base spatial grid with 4px sub-increments**:
 - **`--space-6: 16px`**: Panel internal padding and section margins.
 - **`--space-7: 20px`**: Workbench gutters and bento grid gaps.
 - **`--space-8: 24px`**: Container outer padding and modal margins.
+- **`--space-9: 32px`**: Direction J mobile gutter, pitch row gap.
+- **`--space-10: 48px`**: Direction J context-column section gap.
+- **`--space-11: 64px`**: Direction J desktop gutter between summary, pitch and context.
 
 ### 4.2 Concentric Squircle Radius Scale
-We avoid arbitrary `9999px` capsule bubbles on structural cards and tables. Shapes follow a concentric mathematical squircle scale:
+Direction J surfaces have no boxes, so they use no radius. Legacy tabs keep this concentric squircle scale until they migrate:
 - **Panels, Drawers & Modals:** `8px` (`--radius-lg`)
 - **Player & Telemetry Cards:** `6px` (`--radius-md`)
 - **Interactive Switchers & Inputs:** `4px` (`--radius-sm`)
@@ -300,28 +251,34 @@ $$R_{\text{child}} = R_{\text{parent}} - \text{Padding}$$
 
 All frontend surfaces are constructed by composing the following standardized repeatable elements:
 
-### 5.1 Control Deck (`.matchday-control-deck`)
-- **Container**: Solid `#111726` with `6px` radius, 1px hairline border (`var(--border-subtle)`), 36px–40px height.
-- **Left Slot**: Scenario / Chip switcher (`Standard XI`, `Wildcard`, `Free Hit`, `Bench Boost`, `Triple Capt`).
-- **Center Slot**: Strategy mode selector (`Pure xP`, `Rank Shield`, `Diff Chase`).
-- **Right Slot**: Monospace formation telemetry (`3-5-2`) and projected score (`59.2 xP`).
+### 5.0 Header & Navigation Wire (`.top-nav` / `Header.jsx`)
+- **Container**: Flat `var(--bg-surface-1)` ground with a single hairline bottom border (`1px solid var(--border-subtle)`), zero ambient drop shadow.
+- **Brand Lockup**: Bold typographic title (`800`) with an unboxed soccer ball icon in cream (`var(--text-primary)`), accompanied by a monospace gameweek selector styled with the `.wire-select` pattern.
+- **Navigation Rail (`.segmented-nav-rail` > `.nav-tab-btn`)**: Flat, borderless horizontal wire rail. Active tab is indicated through typographic contrast (`700`, `--text-primary`) and a 2px baseline underline (`border-bottom: 2px solid var(--text-primary)`), without navy card boxes or glowing neon drop-shadows.
+- **Tab Metadata Tags (`.tab-wire-tag`)**: Minimal monospace tags in zinc (`--text-muted`) for chip state and free transfer counts.
+- **Manager Telemetry (`.live-manager-chip`)**: Flat token on `var(--bg-surface-2)` displaying manager name and `#ID` with a static 6px indicator dot in `var(--accent-emerald)` (no pulsating neon orbs).
 
-### 5.2 Contextual Directive Strip (`.matchday-directive-strip`)
-- Compact single-line banner below the control deck.
-- Tagged with structured monospace role indicator (`[MATCHDAY]`, `[STRATEGY]`, `[SCENARIO]`).
-- Visualizes transfer recommendations using `[IN]` / `[OUT]` arrow pills.
+### 5.1 Matchday Summary (`.wire-summary`)
+- Three columns (`auto 1fr auto`, 64px gap): hero number, radio status list, actions. Collapses to two columns at ≤1024px and one at ≤768px.
+- **Hero (`.wire-hero`)**: zinc slug (`GAMEWEEK 6 · PROJECTED`), mono hero number at `--text-hero` with a zinc `0.36em` unit (`XP` / `PTS`), then zinc formation line.
+- **Radio status (`.wire-status` > `.wire-status-row`)**: a `<dl>`; zinc uppercase `dt` labels in a 9.5rem column, cream `dd` values beside them. Chip is a borderless `<select class="wire-select">`; goal is `.wire-segments` of `.wire-segment` buttons (active = cream, 800, underlined, `aria-pressed`).
+- **Actions (`.wire-actions` > `.wire-action`)**: uppercase text buttons. `.is-primary` is cream and underlined. No button boxes.
+- **Inline notice (`.wire-notice`)**: `role="status"` sentence under the summary, used instead of `alert()` (for example, a swap that breaks formation rules).
 
-### 5.3 Player Pitch Card (`.player-pitch-card`)
-- **Container**: Solid `#182035`, `6px` radius, 1px border (`var(--border-subtle)`).
-- **Header**: Squircle Role Badge (`[C]`, `[V]`) + Positional Tag (`[MID]`) + Cost (`£6.0m`).
-- **Identity**: High-contrast player web name (`Plus Jakarta Sans`, `font-weight: 800`).
-- **Fixture**: Opponent link opening Match Preview Drawer (`v ARS (H)`).
-- **Metric Banner**: Centered monospace expected score (`5.4 xP`).
-- **Responsive 5-Card Scaling (`.pitch-row-count-5`)**: Fluid compact adaptation for 5-man midfield/defense lines on mobile viewports (<400px). Cards scale seamlessly (`min-width: 0; max-width: 62px;` down to `58px` on `<=380px`) with container queries (`@container pitch`), compact font hierarchy (`8.5px` name, `8.5px` points), and tight gaps (`2px` / `1.5px`) eliminating lateral clipping.
+### 5.2 Section Banner (`.wire-banner`)
+- `<h2>` in zinc, 12px / 800 / 0.18em uppercase, 24px below. Replaces panel headers and panel badges.
 
-### 5.4 Bench Strip Slot (`.bench-slot-card`)
-- 4 vertical slots (`[GK Sub]`, `[Sub 1]`, `[Sub 2]`, `[Sub 3]`) on `#182035`.
-- Bench Boost illumination activates an emerald border without neon text glow.
+### 5.3 Player Token (`.wire-token` / `PlayerCard.jsx`)
+- No background, border, radius, shadow or kit colour.
+- **Main button (`.wire-token-main`)**: cream name at `--text-name` (captain 800) over mono points with a zinc unit. Click swaps or inspects; double-click inspects.
+- **Meta row (`.wire-token-meta`)**: sibling buttons, never nested. `.wire-token-fixture` (zinc `POS · vs OPP`, opens the match preview) and `.wire-token-armband` (`C` / `VC` / `3×`, always visible, 24px minimum target, cream when active, `aria-label` and `aria-pressed`).
+- **Status word (`.wire-token-status`)**: at most one zinc uppercase word, in priority order `BLANK` > `DGW` > `CAMEO` > `RISK`.
+- **Swap target (`.is-target`)**: underlined name. No glow or colour.
+- Rows are `.wire-pitch-row` flex lines inside `.wire-pitch` (a size container); under 460px names drop to 12px.
+
+### 5.4 Bench Line (`.wire-bench` > `.wire-bench-line`)
+- An `<ol>` of full-width buttons: grid of slot (`GK`, `1`–`3`), name, zinc `POS · sub odds` (`AUTO_SUB_LABELS` badge), mono points.
+- Selected (`aria-pressed`) = bold, underlined name. Under Bench Boost, points show as `+x.x` beside a two-row Starting XI / Bench summary.
 
 ### 5.5 Transfer Workbench Row & Delta Badges (`.transfer-workbench-card`)
 - Side-by-side player replacement comparison (`Out` vs `In`).
@@ -346,27 +303,50 @@ All frontend surfaces are constructed by composing the following standardized re
 - Backtested prediction vs actual points comparison bar.
 - Archival player profile deep viewer.
 
-### 5.10 Drawers & Modals
-- **Match Preview Drawer (`.fixture-drawer`)**: Slide-over panel (`380px` width) with Poisson probability distributions, xG/xGA tables, and head-to-head records.
-- **Live Team Sync Modal (`.sync-modal`)**: Centered dialog (`480px` max-width) with Team ID input and instant squad hydration.
-- **Player DNA Inspector (`.player-dna-modal`)**: Modal displaying Recharts radar plot of threat, creativity, bonus potential, and Poisson goal distributions.
-- **Onboarding Guide (`.onboarding-modal`)**: First-run tour highlighting key cockpit capabilities.
+### 5.10 Drawers & Modals (Direction J Polish)
+- **Universal Modal Architecture (`.modal-overlay`, `.modal-content`)**:
+  - Ground & Scrim: Solid neutral scrim (`rgba(10, 10, 12, 0.82)`) with zero `backdrop-filter: blur()`. Modal shell sits on `var(--bg-surface-1)` (`#1C1C20`) with 1px hairline border (`var(--border-subtle)`), 8px radius (`var(--radius-lg)`), and tokenized institutional elevation (`var(--shadow-modal)`).
+  - Modal Action Footer (`.modal-action-footer`): Flat `var(--bg-surface-1)` bar with hairline top border. Primary action uses high-contrast cream button (`var(--text-primary)` text on `var(--text-inverse)` background, weight 700) with zero neon halos. Ghost actions use `.modal-btn-ghost` with `var(--border-medium)`.
+  - Unboxed Header Icons (`.modal-unboxed-icon`): Icons render inline without container boxes or squircle backgrounds (`color: var(--text-primary)`, flex-shrink 0).
+- **Match Preview & Probability Forecast Drawer (`.fixture-drawer`, `.drawer-content` / `FixtureProbabilityDrawer.jsx`)**:
+  - Header: Unboxed `<SoccerBall>` icon (`.modal-unboxed-icon`) paired with uppercase zinc slug (`.profile-tag.font-mono`) and clean matchup headline.
+  - Joint Probability Matrix (`.matrix-wrapper`, `.scoreline-matrix-table`, `.matrix-cell`): Monochromatic luminance heat ramp (`rgba(255, 255, 255, 0.02..0.16)`) over `var(--bg-surface-2)` with hairline borders (`var(--border-subtle)`). Zero scale transforms, zero neon halo shadows. Hover uses `var(--bg-surface-subtle)` with `var(--border-medium)`.
+  - Final Scores Grid (`.scorelines-grid`, `.scoreline-pill-card`): Flat cards on `var(--bg-surface-2)` with tabular monospace cream percentages (`.scoreline-prob` in `var(--text-primary)`).
+- **Live Team Settings & Sync Modal (`.sync-modal-content` / `LiveTeamSyncModal.jsx`)**:
+  - Header: Unboxed `<SoccerBall>` icon with two-tier typographic header.
+  - Inputs & Action: Inputs (`.sync-input`) and sync action button (`.sync-submit-btn`) built on `var(--bg-surface-2)`, `var(--text-primary)`, and `var(--border-subtle)`.
+  - Profile Spec Card (`.profile-preview-card`): Flat `var(--bg-surface-2)` card with static 6px connection dot (`.live-sync-indicator`).
+- **Player DNA Inspector (`PlayerDNAInspector.jsx`)**:
+  - Typographic Position Tag (`.dna-player-pos`): Clean uppercase zinc tags (`[MID]`, `[FWD]`) replacing saturated position pill badges.
+  - Segmented Wire Rail (`.dna-modal-switcher` > `.wire-segments` > `.wire-segment`): Borderless wire segments where active is indicated by typographic weight (`800`), cream color (`--text-primary`), and underline offset (`aria-pressed="true"`), eliminating bubble pills.
+  - Press Candor & Set-Piece Hierarchy: Pure typographic readouts in zinc (`--text-muted` / `--text-secondary`) and monospace tabular figures without pill borders.
+- **Onboarding Gateway Guide (`.onboarding-modal-content` / `OnboardingModal.jsx`)**:
+  - Header Slug (`.wire-slug`): Clean zinc uppercase slug (`FPL DUGOUT · 2026-27`) replacing green capsule pill badge.
+  - Form & Discovery Guide (`.id-finder-card`, `.id-finder-url-box`): Tokenized `var(--bg-surface-2)` cards with unboxed typographic underline indicators (`mark`).
+  - Action Pole (`.onboarding-actions`): Direction J high-contrast cream primary button (`.btn-primary-action`) and subtle zinc secondary button (`.btn-secondary-action`).
+- **Matchday Handover Checklist & Transfer Recommendation Modals (`.handover-modal-content`, `.transfer-breakdown-modal-content` / `MatchdayHandoverModal.jsx`, `TransferBreakdownModal.jsx`)**:
+  - Header: Unboxed icons (`.modal-unboxed-icon`, `<ShieldCheck>`, `<ArrowsLeftRight>`) without squircle containers.
+  - Decision Cards (`.unified-transfer-card`): Direction J 2-color letterform hierarchy:
+    - Cream (`--text-primary`, weight 700) for player web names and primary projected points ($xP$).
+    - Muted zinc (`--text-muted`) for club, cost, position tags, and bridge arrows.
+    - Pure typographic status tags (`.player-col-badge.out`, `.player-col-badge.in`) set as type without capsule backgrounds or colored borders.
+    - Tabular monospace readout for net point gain (`.delta-pill` in `var(--text-primary)` with `font-feature-settings: 'tnum' 1`).
+  - Rationale Surface (`.breakdown-rationale-card`): Unboxed zinc icons (`.rationale-icon`) without colored background squares or pill wrappers.
+  - Armband Tactical Picks (`.handover-pick-card`): Flat tokenized cards with uniform hairline borders (`var(--border-subtle)`), eliminating colored halos.
 
 ### 5.11 Progressive Disclosure Tray (`.nike-collapsible-section` / `<CollapsibleSection>`)
 - **Container**: Sharp 0px corners (`var(--radius-sharp)`), solid `#181818` background, 1px hairline border (`var(--border-subtle)`).
 - **Header**: Accessible button trigger (`role="button"`, `aria-expanded`), uppercase title, optional pill badge (`badge-neutral`, `badge-accent`, `badge-warning`), and smooth rotating chevron (`CaretDown`).
 - **Content Area**: CSS grid 0fr → 1fr zero-layout-shift transition. Eliminates viewport clutter by tucking auxiliary tables and reserves away until requested.
 
-### 5.12 Monolithic Focal Point Container (`.nike-hero-card` & `.nike-pill-cta` / `<HeroFocusCard>`)
-- **Container**: Color-blocked `#111111` canvas with generous macro-whitespace (`padding: clamp(20px, 3vw, 48px)`). Enforces the **Rule of One**.
-- **Hero Display**: Monolithic display typography (`48px` / `32px`, `font-weight: 800`, line-height: 1.0, tabular numbers).
-- **Signature Pill CTA**: 48px height, full pill radius (`9999px`), light high-contrast background (`#F5F5F5`), black text (`#111111`), and trailing action icon (`↗`).
+### 5.12 Retired
+`.nike-hero-card`, `.nike-pill-cta` and `<HeroFocusCard>` were removed in round 2 (unused, and pill CTAs break Direction J).
 
-### 5.13 Operational Matchday Lineup Architecture (`TacticalPitch.jsx`)
-- **Compact Status Bar (`.matchday-status-bar`)**: Streamlined $42\text{px}$ operational header integrating Gameweek focus, active formation tag, tabular monospace score chip (`64.2 xP`), and an inline Lock Lineup button (`[ Lock Lineup ]`). Eliminates 200px+ of viewport dead space so the pitch sits directly above the fold.
-- **Integrated Dugout Command HUD (`.tactical-hud-ribbon`)**: 4 modular operational tiles (Objective Strategy, Bonus Chips, Strategic Directive, and Matchday Scorecard) sit directly above the pitch for immediate scenario evaluation without accordion click barriers.
-- **Heroic 11-Man Pitch with Restrained Positional Semantics**: Central visual canvas featuring high-contrast, accessible semantic position chips (soft amber GK, calm blue DEF, emerald MID, muted crimson FWD) on player pitch cards and bench slots, preserving instant peripheral recognition, the gold `[C]` captaincy badge (`var(--accent-amber)`), and high-contrast player typography.
-- **Natural Substitutes Sidebar Panel (`.pitch-sidebar`)**: The 4 bench substitutes (or Bench Boost telemetry grid) sit naturally open alongside the pitch in the 2-column desktop workspace (`.pitch-workspace`), eliminating empty voids and enabling frictionless click-to-swap player substitutions.
+### 5.13 Matchday Lineup Architecture (`TacticalPitch.jsx`)
+- `.wire` root: `.wire-summary` (§5.1), optional `.wire-notice`, then `.wire-split` (`1.2fr 1fr`, 64px gap; one column at ≤768px).
+- **Left, `.wire-pitch-col`**: `Starting XI` banner and formation rows of player tokens (§5.3). Bench Boost puts all 15 on the pitch.
+- **Right, `.wire-context`**: `Recommended move` (a `.wire-directive` button listing `In … for Out …` lines, opening the reasoning modal, plus `.wire-link` to the Planner), then the bench (§5.4) and a zinc `.wire-footnote`.
+- Retired with this redesign: `.matchday-status-bar`, `.tactical-hud-ribbon`, `.pitch-workspace`, `.pitch-sidebar`, `.bench-item`, `.player-pitch-card` on the Lineup tab (the Vault still uses it), captain badges, position pills, DIFF/CORE/PK/CK/BB/price badges.
 
 ### 5.14 Fixture Ticker Legend & Difficulty Formula Popover (`.fixture-legend-bar`)
 - **Single-Line Legend Bar (`.fixture-legend-bar`)**: Replaces multi-row 90px+ header blocks with a compact 38px horizontal strip positioned beside the horizon pills. Reclaims ~60px of vertical height so 15+ clubs sit directly above the fold.
@@ -381,15 +361,32 @@ All frontend surfaces are constructed by composing the following standardized re
 - **Contextual Telemetry Notes Trigger & Popover (`.telemetry-notes-btn` & `.telemetry-popover-card`)**: Accessible on-demand popover with keyboard Escape and click-outside dismissal explaining differential edge calculations ($\text{Net Delta} = \text{Your Differentials xP} - \text{Rival Differentials xP}$) and danger pick mechanics without permanent clutter.
 - **Mobile Standings Scroll Cue (`.table-mobile-hint`) & Scroll Mask (`.rivals-scroll-wrapper`)**: Responsive visual affordance banner and dual-edge gradient masks alerting mobile users on viewports `<680px` that the standings table scrolls horizontally to access squad overlap metrics and the Head-to-Head compare action button.
 
-### 5.16 Multi-Horizon Planner Control Deck (`.planner-control-deck`)
-- **Integrated Command Strip (`.planner-control-deck`)**: Replaces the separate mode switcher bar, 240px planner hero panel, 3-card asymmetric KPI grid, and duplicate 180px workbench hero panel with a single, high-density 52px control deck. Reclaims ~350px–550px of vertical height, lifting the 5-GW strategic matrix and transfer comparison workbench directly into the initial viewport fold.
-- **Segmented Workspace Track (`.planner-segmented-rail`)**: Inline mode switcher (`[ 📅 5-Week Roadmap ] [ ⚖️ Transfer Scout ] [ ⚡ Unified Canvas ]`) with instant tab transitions and zero layout shifts.
-- **Integrated Horizon Telemetry Chips (`.planner-control-right`)**:
-  - Target Projection: Monospace total expected points (`🎯 Target: {pts} pts (~{avg}/GW)`).
-  - Point Hits Strategy: Penalty indicator (`0 Hits` in emerald / `-{hits*4} pts` in amber).
-  - Bank & Free Transfers: Combined liquidity and flexibility status (`£{bank}m in Bank` · `{ft} FT Remaining`).
-- **Collapsible Trajectory Canvas**: On-demand toggle button (`[ Hide/Show Chart ]`) allows managers to collapse the Recharts AreaChart for immediate access to the 5-GW horizon cards.
-- **Compact Comparison Cue Banner (`.compare-workbench-compact-cue`)**: Subtle dashed indicator in the marketplace view replacing the tall empty placeholder box until a player comparison is initiated.
+### 5.16 Transfer Planner & Multi-Horizon Roadmap Architecture (`MultiGwPlanner.jsx`, `TransferWorkbench.jsx`)
+- **Multi-Horizon Planner Control Deck (`.planner-control-deck`)**:
+  - Ground & Shell: Flat `var(--bg-surface-1)` with 1px hairline border (`var(--border-subtle)`), 8px radius (`var(--radius-md)`), and institutional card elevation (`var(--shadow-card)`).
+  - Wire Horizon Slug (`.planner-horizon-slug`): Unboxed zinc monospace indicator (`GW{start}–GW{end} HORIZON`) with inline `<CalendarCheck>` icon, replacing capsule badge containers.
+  - Segmented Wire Rail (`.wire-segments` > `.wire-segment`): Borderless wire segment buttons (`5-Week Roadmap`, `Transfer Scout`, `Unified Canvas`) with `aria-pressed`, active state indicated by cream letterforms (`var(--text-primary)`, weight 800) and flat subtle background (`var(--bg-surface-subtle)`), eliminating green fills.
+  - Tabular Telemetry Chips (`.planner-telemetry-chip`): Clean zinc monospace labels (`TARGET:`, `HITS:`, `BANK:`) paired with cream tabular monospace values (`var(--text-primary)`, `font-feature-settings: 'tnum' 1`), replacing pill containers and colored boxes.
+  - On-Demand Strategy Notes Popover: Accessible trigger (`.telemetry-notes-btn`) toggling flat `var(--bg-surface-1)` rules card with keyboard Escape / click-outside dismissal.
+- **5-Column Strategic Horizon Stepper (`.multi-gw-matrix-grid`, `.multi-gw-column-card`)**:
+  - Flat cards on `var(--bg-surface-1)`. Active gameweek card highlighted by crisp hairline outline (`var(--border-strong)`) and subtle surface elevation (`var(--bg-surface-2)`), eliminating neon glows.
+  - Header: Monospace title (`.gw-col-title`) with unboxed current tag (`.gw-current-tag`, `[CURRENT]`) and tabular free transfers readout (`{n} FT`).
+  - Projection: Expected points in cream (`var(--text-primary)`, weight 800) with muted zinc unit (`xP`), bank in monospace zinc.
+  - Tactical Moves (`.gw-transfer-box`, `.move-line`): Pure 2-color typography: player names in cream (`var(--text-primary)`), `<ArrowUpRight>` with `BUY:` and `<ArrowDownRight>` with `SELL:` in zinc letterforms without pill backgrounds or colored boxes.
+  - Footer: Clean uppercase status indicator (`[ACTIVE]` vs `VIEW`).
+- **Monochromatic Cumulative Trajectory Canvas (`.chart-canvas-container`)**:
+  - Recharts `<AreaChart>` using a monochromatic luminance ramp (`linearGradient` from `rgba(255, 255, 255, 0.08)` to `0.00`) and hairline stroke (`var(--text-secondary)`, 1.5px), strictly removing saturated emerald fills.
+  - X/Y Axes and Tooltip styled in `--font-mono` with tabular figures and flat tokenized surfaces (`var(--bg-surface-2)`, `var(--border-subtle)`).
+- **Side-by-Side Transfer Comparison Workbench (`.compare-workbench-container`)**:
+  - Header: Unboxed `<Scales>` icon (`.modal-unboxed-icon`) paired with uppercase monospace title (`DIRECT TRANSFER SWAP COMPARISON`) and wire close button.
+  - Player Cards (`.compare-player-card`): Flat `var(--bg-surface-2)` cards with hairline borders (`var(--border-subtle)`), removing tinted green/red container borders.
+  - Typographic Role Tags (`.transfer-role-tag`): Pure monospace indicators (`[OUT] SELLING`, `[IN] BUYING`, `[TARGET ACQUISITION]`).
+  - Unboxed Position Tags (`.dna-player-pos`): Monospace bracketed format (`[MID]`, `[FWD]`) in muted zinc, replacing rainbow position pills.
+  - Center Delta Readout (`.compare-delta-readout`): Unboxed `<TrendUp>` / `<TrendDown>` icon paired directly with tabular monospace numbers (`+X.X xP`), removing the floating `.delta-badge` pill.
+- **2-Tier Transfer Scout Filter Deck & Marketplace Table (`.scout-controls-2tier`, `.data-table`)**:
+  - Tier 1: Search input on `var(--bg-surface-2)`, `.wire-segments` position filter buttons (`ALL`, `GK`, `DEF`, `MID`, `FWD`) with `aria-pressed`, and `.wire-select` sort dropdown.
+  - Tier 2: Tokenized budget slider and quick preset buttons (`.preset-btn`) with wire borders.
+  - Table: Bracketed monospace position tags (`[MID]`), cream tabular expected points (`.table-cell-xp`, weight 700), and wire compare action button without green button fills.
 
 ### 5.17 Forecaster Control Deck & Calibration Drawer (`.forecaster-control-deck`)
 - **Streamlined Command Strip (`.forecaster-control-deck`)**: Replaces the floating sub-view switcher, 280px hero panel, 3-card asymmetric KPI strip, and static parameter sliders with an integrated 48–52px operational header. Reclaims ~640px of vertical height, pulling the 600+ player projections table and position filters directly into the initial viewport fold.
@@ -398,6 +395,32 @@ All frontend surfaces are constructed by composing the following standardized re
   - Accuracy Telemetry Micro-Chips: Monospace badges for Rank Accuracy (`Rank Acc: +0.417`), Starter Points Margin (`Margin: ±1.85 pts`), and Key Factors (`Factors: 10`).
 - **On-Demand Calibration Drawer (`.calibration-drawer-container`)**: Activated via the `[ ⚙️ Calibration (500m · 1.10x) ]` button (`.calibration-toggle-btn`), expanding the recent form weighting slider, home venue multiplier, and positional baseline rates per 90 on demand without crowding the primary evaluation table.
 - **Methodology Notes Popover (`.telemetry-notes-group` / `.telemetry-popover-card`)**: Accessible popover dialog explaining scoring factors, baseline prior weighting, and venue adjustments with keyboard Escape and outside-click dismissal.
+
+### 5.18 Mini-League Rivals Telemetry Deck & H2H Wire Duel (`.rivals-telemetry-deck`)
+- **Command Strip (`.rivals-telemetry-deck`)**: Modernized 48px telegraphic command strip replacing the legacy 280px hero panel. Renders active rival intelligence (`ACTIVE RIVAL:`, `CAPTAIN:`, `DIFFS:`, `DANGER:`) in crisp tabular monospace.
+- **Monospace Threat Tags (`.rival-threat-tag`)**: Replaces rainbow badge stacks (`[HIGH]`, `[MED]`, `[LOW]`) with pure monospace tags paired with numeric rank and cream point totals (`font-mono font-bold`).
+- **H2H Wire Duel & Segments (`.wire-segments`, `.h2h-compact-row`)**: Unboxed 2-column comparative duel using 2-color letterforms (cream/zinc), eliminating tinted green/red container borders and glow shadows. Tab switching governed by `.wire-segments > .wire-segment` with explicit `aria-pressed` states.
+
+### 5.19 Fixture Horizon Legend Bar & Heatmap Table (`.fixture-legend-bar`, `.heatmap-table`)
+- **38px Horizontal Legend Strip (`.fixture-legend-bar`)**: Replaces floating cards and detached pills with a fixed 38px horizontal strip directly above the fixture grid.
+- **Strictly Paired FDR Tags (`.legend-fdr-tag.fdr-1` .. `.fdr-5`)**: Retains official Premier League FDR 1–5 color fills strictly paired with numeric text (`1` very easy to `5` very hard) and neutral tags for blanks and past fixtures. Eliminates detached colored dots and bubble pills.
+- **Heatmap Horizon Segments (`.wire-segments`)**: Fixture planning horizon (Next 3, 5, 8 GWs) selectable via keyboard-accessible wire segments with `aria-pressed`. Average difficulty rendered as `.table-avg-diff.font-mono`.
+
+### 5.20 Market Financial Wire & Velocity Tracking (`.market-wire-panel`, `.market-wire-table`)
+- **Financial Wire Ledger (`.market-wire-panel`, `.market-wire-table`)**: Converts chunky `.velocity-card` containers into a high-density financial wire table. Columns include Player (`[POS] Web Name`), Current Price (`£X.Xm`), Net Transfers, Threshold Velocity Track, and Projected Delta.
+- **Monospace Net Deltas (`.market-wire-delta`)**: Replaces rising/falling pill capsules with directional monospace indicators (`▲ +£0.1m`, `▼ -£0.1m`) in tabular figures.
+- **Velocity Progress Rail (`.velocity-wire-track`)**: Subtle hairline bar displaying proximity to overnight price change thresholds without neon glow halos.
+
+### 5.21 Points Forecaster Bayesian Calibration & Projections Ledger (`.calibration-drawer-container`)
+- **Empirical Bayes Prior Display ($M_0 = 500\text{m}$)**: Tabular monospace display of prior weighting formula $w = \frac{N}{N + M_0}$ and recent minutes slider, reinforcing mathematical grounding without corporate jargon.
+- **Unboxed Positional Baselines**: High-density 4-column ledger (GK, DEF, MID, FWD) showing points per 90 baseline metrics in tabular figures.
+- **Projections Ledger (`.studio-players-table`)**: Tabular evaluation grid featuring bracketed position tags `[POS]`, club affiliation, and cream tabular expected points (`xP`).
+
+### 5.22 Historical Vault Timeline Scrubber & Wire Pitch (`.vault-timeline-scrubber`, `.vault-telemetry-deck`)
+- **Borderless Season Timeline Scrubber (`.vault-timeline-scrubber`)**: Sleek horizontal scrubber spanning 2016-17 to 2026-27 with smooth scroll alignment, previous/next controls, and active season indicator lines.
+- **48px Season Telemetry Deck (`.vault-telemetry-deck`)**: Telegraphic metrics strip displaying Campaign details, League Firepower (Goals/Assists), Golden Boot winner, and Season MVP in cream tabular monospace figures.
+- **Wire Pitch Tokens (`.wire-pitch`, `.vault-token`)**: Retires remaining `.player-pitch-card` instances in favor of Direction J `.wire-token` typographic elements (cream web name, cream tabular monospace points, meta strip `[{pos}] · {club} · £{cost}m`, and `[C]` armband).
+- **Hall of Fame & 10-Season Overview**: Tabular records ledger with `[{pos}]` monospace bracketed tags and wire-button navigation.
 
 ---
 
@@ -415,10 +438,12 @@ State transitions are crisp, deterministic, and instantaneous:
 | Anti-Pattern (Strictly Banned) | Institutional Requirement |
 |---|---|
 | ❌ Translucent "Dark Glass" or `backdrop-filter: blur()` | ✅ Solid, opaque tokenized surfaces (`#090D16`, `#111726`, `#182035`). |
-| ❌ Capsule bubble pills (`border-radius: 9999px`) on cards | ✅ Concentric Squircles (`3px` to `8px`). |
-| ❌ Floating glowing dots, pulsing orbs, or neon shadow halos | ✅ Crisp hairline borders (`1px solid var(--border-subtle)`). |
+| ❌ Capsule bubble pills and badge stacks | ✅ One zinc uppercase status word, set as type. |
+| ❌ Floating glowing dots, pulsing orbs, or neon shadow halos | ✅ Weight, size and underline for emphasis. |
+| ❌ Decorative 1px boxes around players, metrics or panels | ✅ Vertical rhythm, column alignment and whitespace. |
+| ❌ Colour as decoration (position colours, amber captain, per-tab accents) | ✅ Cream / zinc letterforms; colour only for FDR and deltas, always paired with a number or arrow. |
 | ❌ Decorative emojis (`⚡`, `🚀`, `🎯`, `✨`) in headers | ✅ Precise Phosphor / SVG icons and typographic tags. |
-| ❌ Multi-hue decorative gradient fills | ✅ Solid semantic role tokens (`var(--accent-emerald)`, `var(--accent-amber)`). |
+| ❌ Multi-hue decorative gradient fills | ✅ Flat charcoal ground (`var(--bg-canvas)`). |
 | ❌ Proportional fonts for numerical statistics | ✅ Fixed-width tabular monospace typography (`JetBrains Mono`). |
 | ❌ Duplicate strategy/scenario selectors stacked on one screen | ✅ Single unified control deck with contextual feedback. |
 | ❌ Hardcoded ad-hoc hex colors in JSX components | ✅ Strict CSS custom property references (`var(--text-primary)`, `var(--bg-surface-2)`). |
@@ -431,12 +456,11 @@ To eliminate design drift across multi-agent sessions, all contributors and codi
 
 1. **DESIGN.md → Code (Mandatory Consumption)**:
    - Prior to modifying any component under `frontend/src/`, agents must inspect this document.
-   - All styling must reuse the repeatable elements, surface scopes, and CSS custom property tokens defined above.
-   - Introducing one-off hex colors, custom un-tokenized paddings, or non-concentric border radii is a constitutional violation.
+   - All styling must reuse the repeatable elements and CSS custom property tokens defined above. New work follows Direction J (§1).
+   - Introducing one-off hex colors, decorative borders, pills, or un-tokenized spacing is a constitutional violation. Hex values live only in `:root` in `frontend/src/styles/index.css`.
 
 2. **Code → DESIGN.md (Mandatory Reciprocal Documentation)**:
    - When an agent implements a new repeatable UI component, layout primitive, or variant in `frontend/src/`, the agent is contractually mandated to document it in this file in the exact same pull request or task.
-   - If the component has interactive states, the agent must also register it in `frontend/src/components/ComponentStudio.jsx`.
 
 3. **Validation Gates**:
    - Run the Impeccable detector: `node .agent/skills/impeccable/scripts/detect.mjs --json frontend/src`

@@ -2,27 +2,86 @@ import React, { useMemo, useState } from 'react';
 import PlayerCard from './PlayerCard';
 import MatchdayHandoverModal from './MatchdayHandoverModal';
 import TransferBreakdownModal from './TransferBreakdownModal';
-import { formatFplPrice } from '../constants/copyTokens';
-import {
-  ShieldCheck,
-  Cards,
-  Lightning,
-  RocketLaunch,
-  Crown,
-  ArrowUpRight,
-  ArrowDownRight,
-  CaretRight,
-  Target,
-  Check,
-  ClockCounterClockwise
-} from '@phosphor-icons/react';
+import { formatFplPrice, AUTO_SUB_LABELS } from '../constants/copyTokens';
+
+// Helper to extract numeric expected points from player
+const getPlayerXp = (p) => {
+  if (!p) return 0;
+  const val = p.dynamicXp ?? p.expected_points ?? p.xp ?? p.xP ?? 0;
+  return Number(val) || 0;
+};
+
+const summaryText = (summary) =>
+  typeof summary === 'string' ? summary : (summary?.headline || summary?.action || '');
+
+const ROLL_PHRASES = ['roll transfer', 'save free transfer', 'bank'];
+const STAND_PAT_PHRASES = ['no immediate transfers', 'stand pat', 'lineup locked'];
+const includesAny = (str, phrases) => phrases.some(ph => str.toLowerCase().includes(ph));
+const isStandPat = (str) => includesAny(str, STAND_PAT_PHRASES) || str.includes('LOCKED') || str.includes('INITIAL');
+
+/**
+ * Resolve [{in, out}] transfer pairs from the solver summary.
+ * Order of preference: structured pairwise_transfers, structured transfers,
+ * the "[IN] a, b | [OUT] c, d" string format, then the first roadmap step.
+ */
+const parseTransferPairs = (summary, liveData) => {
+  if (!summary) return [];
+  if (typeof summary === 'object') {
+    const list = Array.isArray(summary.pairwise_transfers) && summary.pairwise_transfers.length > 0
+      ? summary.pairwise_transfers
+      : (Array.isArray(summary.transfers) ? summary.transfers : []);
+    if (list.length > 0) {
+      return list.map(t => ({
+        in: t.in || t.in_player || t.in_name || 'Target In',
+        out: t.out || t.out_player || t.out_name || 'Target Out'
+      }));
+    }
+  }
+
+  const str = summaryText(summary);
+  const inMatch = str.match(/\[IN\]\s*([^|\]]+)/i);
+  const outMatch = str.match(/\[OUT\]\s*([^|[]+)/i);
+  if (inMatch && outMatch) {
+    const outList = outMatch[1].split(',').map(s => s.trim()).filter(Boolean);
+    return inMatch[1].split(',').map(s => s.trim()).filter(Boolean)
+      .map((name, idx) => ({ in: name, out: outList[idx] || 'Target Out' }));
+  }
+
+  const roadmapItem = liveData?.multi_horizon_roadmap?.[0];
+  if (roadmapItem?.transfers_in?.length > 0) {
+    return roadmapItem.transfers_in.map((name, idx) => ({
+      in: name,
+      out: roadmapItem.transfers_out?.[idx] || 'Target Out'
+    }));
+  }
+  return [];
+};
+
+const parseNetGain = (summary) => {
+  if (typeof summary === 'object' && summary?.net_gain != null) return Number(summary.net_gain);
+  const match = summaryText(summary).match(/\+(\d+\.?\d*)\s*pts/i);
+  return match ? parseFloat(match[1]) : null;
+};
+
+const CHIP_OPTIONS = [
+  { id: 'none', label: 'No Chip', desc: 'Regular matchday XI' },
+  { id: 'wildcard', label: 'Wildcard', desc: 'Unlimited permanent transfers with no point hits' },
+  { id: 'freehit', label: 'Free Hit', desc: 'Unlimited transfers for this gameweek only' },
+  { id: 'bboost', label: 'Bench Boost', desc: 'All 15 players score' },
+  { id: '3xc', label: 'Triple Captain', desc: 'Captain scores 3x points' }
+];
+
+const STRATEGY_OPTIONS = [
+  { id: 'pure_xp', label: 'Max Points', desc: 'Pick the best possible starting XI for maximum points' },
+  { id: 'rank_protect', label: 'Protect Lead', desc: 'Back popular picks to defend your rank' },
+  { id: 'differential_chase', label: 'Climb Rank', desc: 'Back low-ownership picks to gain ground on rivals' }
+];
 
 export default function TacticalPitch({
   liveData,
   starters = [],
   bench = [],
   allPlayersData = [],
-  _allPlayers = [],
   selectedPlayer,
   selectedSwapPlayer,
   setSelectedSwapPlayer,
@@ -32,10 +91,6 @@ export default function TacticalPitch({
   onOpenMatchup,
   onOpenFixture,
   actionSummary,
-  startingXp = 64.7,
-  _totalXp = 64.7,
-  strategies = {},
-  chipSimulations = {},
   activeChip = 'none',
   onSelectChip = () => {},
   strategy = 'pure_xp',
@@ -48,25 +103,19 @@ export default function TacticalPitch({
   onResetToSuggested = () => {},
   isLineupLocked = false,
   onConfirmLockLineup = () => {},
-  freeTransfers = 1
+  freeTransfers = 1,
+  swapNotice = null
 }) {
-  // Extract data from liveData payload if provided
-  const effectiveChipSimulations = liveData?.chip_simulations || chipSimulations || {};
-  const effectiveStrategies = liveData?.strategies || strategies || {};
+  const effectiveChipSimulations = liveData?.chip_simulations;
+  const effectiveStrategies = liveData?.strategies || {};
   const effectiveActionSummary = liveData?.action_summary || actionSummary;
-  const effectiveStartingXp = liveData?.starting_xp != null ? liveData.starting_xp : startingXp;
   const activeSelectedPlayer = selectedSwapPlayer || selectedPlayer;
 
   const [isHandoverOpen, setIsHandoverOpen] = useState(false);
   const [isBreakdownOpen, setIsBreakdownOpen] = useState(false);
 
   const handlePlayerSelect = (p) => {
-    if (activeChip !== 'none') {
-      if (onInspectPlayer) onInspectPlayer(p);
-      return;
-    }
-
-    if (!isSimulating) {
+    if (activeChip !== 'none' || !isSimulating) {
       if (onInspectPlayer) onInspectPlayer(p);
       return;
     }
@@ -74,8 +123,8 @@ export default function TacticalPitch({
     if (onSwapPlayers && activeSelectedPlayer) {
       if ((activeSelectedPlayer.player_code || activeSelectedPlayer.code) !== (p.player_code || p.code)) {
         onSwapPlayers(activeSelectedPlayer, p);
-      } else {
-        if (setSelectedSwapPlayer) setSelectedSwapPlayer(null);
+      } else if (setSelectedSwapPlayer) {
+        setSelectedSwapPlayer(null);
       }
     } else if (setSelectedSwapPlayer) {
       setSelectedSwapPlayer(activeSelectedPlayer?.player_code === p.player_code ? null : p);
@@ -89,1049 +138,482 @@ export default function TacticalPitch({
     else if (onOpenMatchup) onOpenMatchup(details);
   };
 
-  // Helper to extract numeric expected points from player
-  const getPlayerXp = (p) => {
-    if (!p) return 0;
-    const val = p.dynamicXp ?? p.expected_points ?? p.xp ?? p.xP ?? 0;
-    return Number(val) || 0;
-  };
-
-  // Compute Dynamic Chip Simulations from current squad
+  // Compute chip simulations from the current squad when the payload has none
   const resolvedChipData = useMemo(() => {
     const capt = starters.find(p => p.is_captain) || starters[0];
     const captXp = getPlayerXp(capt);
     const baseStartersSum = starters.reduce((acc, p) => acc + getPlayerXp(p), 0);
-    const standardStartingXp = baseStartersSum + captXp;
-    const tripleCaptainXp = baseStartersSum + (captXp * 2);
-
     const benchXp = bench.reduce((acc, p) => acc + getPlayerXp(p), 0);
-    const benchBoostXp = standardStartingXp + benchXp;
+    const tripleCaptainXp = baseStartersSum + (captXp * 2);
+    const benchBoostXp = baseStartersSum + captXp + benchXp;
 
-    const result = {
+    return {
       '3xc': {
-        starters: starters,
-        bench: bench,
+        starters,
+        bench,
         starting_xp: Number(tripleCaptainXp.toFixed(1)),
-        total_xp: Number(tripleCaptainXp.toFixed(1)),
-        formation: `${starters.filter(p => p.position === 'DEF').length}-${starters.filter(p => p.position === 'MID').length}-${starters.filter(p => p.position === 'FWD').length}`,
-        label: `Triple Captain Active · 3x points on ${capt?.web_name || 'Captain'}`
+        label: `Triple Captain on ${capt?.web_name || 'your captain'}`
       },
-      'bboost': {
-        starters: starters,
+      bboost: {
+        starters,
         bench: bench.map(p => ({ ...p, is_boosted: true })),
         starting_xp: Number(benchBoostXp.toFixed(1)),
-        total_xp: Number(benchBoostXp.toFixed(1)),
-        formation: '15 Active (2-5-5-3)',
-        label: `Bench Boost Active · All 15 players scoring (+${benchXp.toFixed(1)} pts from bench)`
+        label: `Bench Boost · +${benchXp.toFixed(1)} pts from the bench`
       },
+      ...(effectiveChipSimulations || {})
     };
-
-    if (effectiveChipSimulations.wildcard) result.wildcard = effectiveChipSimulations.wildcard;
-    if (effectiveChipSimulations.freehit) result.freehit = effectiveChipSimulations.freehit;
-    if (effectiveChipSimulations.bboost) result.bboost = effectiveChipSimulations.bboost;
-    if (effectiveChipSimulations['3xc']) result['3xc'] = effectiveChipSimulations['3xc'];
-
-    return result;
   }, [starters, bench, effectiveChipSimulations]);
 
-  // Determine active strategy squad if chip is none
-  const currentStrategyData = effectiveStrategies && effectiveStrategies[strategy] ? effectiveStrategies[strategy] : null;
+  const currentStrategyData = strategy !== 'pure_xp' ? effectiveStrategies[strategy] || null : null;
 
-  // Determine active display data: Priority: Active Chip > Active Strategy (if not pure_xp) > Base Squad
-  const currentChipData = activeChip !== 'none' ? (effectiveChipSimulations[activeChip] || resolvedChipData[activeChip]) : null;
-  const isChipActive = activeChip !== 'none' && currentChipData != null;
+  // Active display data priority: chip > non-default strategy > base squad
+  const currentChipData = activeChip !== 'none' ? resolvedChipData[activeChip] || null : null;
+  const isChipActive = currentChipData != null;
   const isBenchBoost = activeChip === 'bboost';
 
   const displayStarters = isChipActive
     ? (currentChipData.starters || starters)
-    : (strategy !== 'pure_xp' && currentStrategyData
-      ? currentStrategyData.starters
-      : starters);
+    : (currentStrategyData ? currentStrategyData.starters : starters);
 
   const displayBench = isChipActive
-    ? (currentChipData.bench || (isBenchBoost ? [] : bench))
-    : (strategy !== 'pure_xp' && currentStrategyData
-      ? currentStrategyData.bench
-      : bench);
+    ? (currentChipData.bench || bench)
+    : (currentStrategyData ? currentStrategyData.bench : bench);
 
-  // Dynamically calculate expected points for active display starters + captain bonus + bench boost
-  const calculatedStartingXp = useMemo(() => {
+  const benchXp = displayBench.reduce((acc, p) => acc + getPlayerXp(p), 0);
+
+  // Starting XI xP including the captain bonus (2x, or 3x with Triple Captain)
+  const startersXp = useMemo(() => {
     if (!displayStarters || displayStarters.length === 0) return 0;
-
-    // Sum base points of all active starters
-    const startersBaseSum = displayStarters.reduce((acc, p) => acc + getPlayerXp(p), 0);
-
-    // Captain bonus: 1x additional for regular captain (total 2x), 2x additional for Triple Captain (total 3x)
+    const base = displayStarters.reduce((acc, p) => acc + getPlayerXp(p), 0);
     const capt = displayStarters.find(p => p.is_captain) || displayStarters[0];
-    const captXp = getPlayerXp(capt);
-    const captainBonus = activeChip === '3xc' ? (captXp * 2) : captXp;
+    const captainBonus = getPlayerXp(capt) * (activeChip === '3xc' ? 2 : 1);
+    return base + captainBonus;
+  }, [displayStarters, activeChip]);
 
-    // Bench Boost bonus: all bench players scoring
-    const benchBoostBonus = isBenchBoost
-      ? displayBench.reduce((acc, p) => acc + getPlayerXp(p), 0)
-      : 0;
+  const calculatedTotalXp = Number((startersXp + (isBenchBoost ? benchXp : 0)).toFixed(1));
+  const displayTotalXp = (isChipActive ? currentChipData.starting_xp : currentStrategyData?.starting_xp) ?? calculatedTotalXp;
 
-    return Number((startersBaseSum + captainBonus + benchBoostBonus).toFixed(1));
-  }, [displayStarters, displayBench, activeChip, isBenchBoost]);
-
-  const displayStartingXp = isChipActive
-    ? (currentChipData.starting_xp != null ? currentChipData.starting_xp : calculatedStartingXp)
-    : (strategy !== 'pure_xp' && currentStrategyData && currentStrategyData.starting_xp != null
-      ? currentStrategyData.starting_xp
-      : calculatedStartingXp);
-
-  // Group players for pitch rendering
+  // Bench Boost puts all 15 on the pitch
   const allPitchPlayers = useMemo(() => {
     if (!isBenchBoost) return displayStarters;
-    if (currentChipData?.starters && currentChipData.starters.length === 15) {
-      return currentChipData.starters.map(p => ({
-        ...p,
-        is_boosted: true
-      }));
-    }
-    return [
-      ...displayStarters,
-      ...displayBench.map(p => ({ ...p, is_boosted: true, is_bench_asset: true }))
-    ];
+    if (currentChipData?.starters?.length === 15) return currentChipData.starters;
+    return [...displayStarters, ...displayBench];
   }, [isBenchBoost, currentChipData, displayStarters, displayBench]);
 
-  const gks = allPitchPlayers.filter(p => p.position === 'GK');
-  const defs = allPitchPlayers.filter(p => p.position === 'DEF');
-  const mids = allPitchPlayers.filter(p => p.position === 'MID');
-  const fwds = allPitchPlayers.filter(p => p.position === 'FWD');
+  const rows = ['GK', 'DEF', 'MID', 'FWD'].map(pos => allPitchPlayers.filter(p => p.position === pos));
+  const [, defs, mids, fwds] = rows;
 
   const formation = isBenchBoost
-    ? '15 Active (2-5-5-3)'
-    : isChipActive
-    ? (currentChipData.formation || `${defs.length}-${mids.length}-${fwds.length}`)
-    : (strategy !== 'pure_xp' && currentStrategyData
-      ? currentStrategyData.formation
-      : `${defs.length}-${mids.length}-${fwds.length}`);
+    ? 'All 15 scoring'
+    : (currentChipData?.formation || currentStrategyData?.formation || `${defs.length}-${mids.length}-${fwds.length}`);
 
-  // Helper for strategy badges on player cards
-  const getStrategyBadge = (p) => {
-    if (isChipActive) return null;
-    if (strategy === 'differential_chase') {
-      const own = Number(p.ownership_pct || (p.eo || 0.1));
-      if (own < 0.20) return 'DIFF';
-    } else if (strategy === 'rank_protect') {
-      const own = Number(p.ownership_pct || (p.eo || 0.5));
-      if (own > 0.25 || p.is_captain) return 'SHIELD';
-    }
-    return null;
-  };
+  const transferPairs = useMemo(
+    () => parseTransferPairs(effectiveActionSummary, liveData),
+    [effectiveActionSummary, liveData]
+  );
 
-  const chipOptions = [
-    { id: 'none', label: 'No Chip', icon: ShieldCheck, desc: 'Regular matchday XI (No chip active)' },
-    { id: 'wildcard', label: 'Wildcard', icon: Cards, desc: 'Unlimited permanent transfers with no point hits' },
-    { id: 'freehit', label: 'Free Hit', icon: Lightning, desc: 'Make unlimited transfers for this gameweek only' },
-    { id: 'bboost', label: 'Bench Boost', icon: RocketLaunch, desc: 'Activate Bench Boost (All 15 players score)' },
-    { id: '3xc', label: 'Triple Captain', icon: Crown, desc: 'Triple Captain Active (Captain scores 3x points)' }
-  ];
-
-  const strategyOptions = [
-    { id: 'pure_xp', label: 'Max Points', shortLabel: 'Max Pts', icon: Target, desc: 'Pick the best possible starting XI for maximum points' },
-    { id: 'rank_protect', label: 'Protect Lead', shortLabel: 'Protect', icon: ShieldCheck, desc: 'Back popular picks to defend your rank and protect your lead' },
-    { id: 'differential_chase', label: 'Climb Rank', shortLabel: 'Climb', icon: Lightning, desc: 'Back low-ownership punts to gain ground on your mini-league rivals' }
-  ];
-
+  // Structured recommendation for the breakdown and handover modals
   const resolvedTransferRecommendation = useMemo(() => {
-    const summary = effectiveActionSummary;
-    if (!summary) return null;
+    if (!effectiveActionSummary) return null;
+    const str = summaryText(effectiveActionSummary);
 
-    const summaryStr = typeof summary === 'string' ? summary : (summary.headline || summary.action || '');
-    const isRoll = (
-      summaryStr.toLowerCase().includes('roll transfer') ||
-      summaryStr.toLowerCase().includes('save free transfer') ||
-      summaryStr.toLowerCase().includes('bank') ||
-      summaryStr.toLowerCase().includes('no immediate transfers') ||
-      summaryStr.toLowerCase().includes('stand pat') ||
-      summaryStr.toLowerCase().includes('lineup locked') ||
-      summaryStr.includes('LOCKED') ||
-      summaryStr.includes('INITIAL')
-    );
-
-    // 1. Check if structured pairwise transfers exist from clientOptimizer or liveData
-    let pairs = [];
-    if (typeof summary === 'object' && Array.isArray(summary.pairwise_transfers) && summary.pairwise_transfers.length > 0) {
-      pairs = summary.pairwise_transfers.map(p => ({
-        in: p.in || p.in_player || p.in_name || 'Target In',
-        out: p.out || p.out_player || p.out_name || 'Target Out'
-      }));
-    } else if (typeof summary === 'object' && Array.isArray(summary.transfers) && summary.transfers.length > 0) {
-      pairs = summary.transfers.map(t => ({
-        in: t.in || t.in_player || 'Target In',
-        out: t.out || t.out_player || 'Target Out'
-      }));
-    }
-
-    // 2. Parse string format with unicode support
-    if (pairs.length === 0 && summaryStr) {
-      const inMatch = summaryStr.match(/\[IN\]\s*([^|\]]+)/i);
-      const outMatch = summaryStr.match(/\[OUT\]\s*([^|\]]+)/i);
-
-      if (inMatch && outMatch) {
-        const inList = inMatch[1].split(',').map(s => s.trim()).filter(Boolean);
-        const outList = outMatch[1].split(',').map(s => s.trim()).filter(Boolean);
-
-        pairs = inList.map((inPlayer, idx) => ({
-          in: inPlayer,
-          out: outList[idx] || 'Target Out'
-        }));
-      }
-    }
-
-    // 3. Fallback to liveData.multi_horizon_roadmap[0]
-    if (pairs.length === 0 && liveData?.multi_horizon_roadmap?.[0]?.transfers_in?.length > 0) {
-      const roadmapItem = liveData.multi_horizon_roadmap[0];
-      pairs = roadmapItem.transfers_in.map((inPlayer, idx) => ({
-        in: inPlayer,
-        out: roadmapItem.transfers_out?.[idx] || 'Target Out'
-      }));
-    }
-
-    if (pairs.length > 0) {
-      const topPair = pairs[0];
+    if (transferPairs.length > 0) {
+      const topPair = transferPairs[0];
       const allKnown = [
         ...(allPlayersData || []),
-        ...(_allPlayers || []),
-        ...(displayStarters || []),
-        ...(displayBench || []),
+        ...displayStarters,
+        ...displayBench,
         ...(liveData?.all_players || [])
       ];
-
       const findP = (name) => {
-        if (!name) return null;
-        const target = name.toLowerCase().trim();
+        const target = (name || '').toLowerCase().trim();
+        if (!target) return null;
         return allKnown.find(p =>
-          (p.web_name && p.web_name.toLowerCase() === target) ||
-          (p.name && p.name.toLowerCase() === target) ||
-          (p.player_name && p.player_name.toLowerCase() === target)
+          [p.web_name, p.name, p.player_name].some(n => n && n.toLowerCase() === target)
         );
       };
 
       const foundIn = findP(topPair.in);
       const foundOut = findP(topPair.out);
 
-      let netGain = 1.48;
-      if (typeof summary === 'object' && summary.net_gain != null) {
-        netGain = Number(summary.net_gain);
-      } else if (summaryStr) {
-        const match = summaryStr.match(/\+(\d+\.?\d*)\s*pts/i);
-        if (match) {
-          netGain = parseFloat(match[1]);
-        } else if (foundIn && foundOut) {
-          netGain = Math.max(0.1, Number((getPlayerXp(foundIn) - getPlayerXp(foundOut)).toFixed(2)));
-        }
-      }
-
-      const resolveFixtureStr = (player, fallbackOpp, fallbackVenue = 'A', fallbackFdr = 3) => {
-        if (!player) return { fixture: `@ ${fallbackOpp}`, fdr: fallbackFdr };
+      const fixtureOf = (player) => {
+        if (!player) return { fixture: '', fdr: null };
         if (player.next_opponent || player.fixture) {
-          return {
-            fixture: player.next_opponent || player.fixture,
-            fdr: player.fdr || player.next_fdr || fallbackFdr
-          };
+          return { fixture: player.next_opponent || player.fixture, fdr: player.fdr || player.next_fdr || null };
         }
         if (player.fixture_opponent) {
-          const venue = player.fixture_venue === 'A' ? '@' : 'vs';
           return {
-            fixture: `${venue} ${player.fixture_opponent}`,
-            fdr: player.fixture_fdr || fallbackFdr
+            fixture: `${player.fixture_venue === 'A' ? '@' : 'vs'} ${player.fixture_opponent}`,
+            fdr: player.fixture_fdr || null
           };
         }
-        const pTeam = (player.team || player.team_name || '').toLowerCase();
-        let opp = fallbackOpp;
-        if (pTeam && opp.toLowerCase().includes(pTeam)) {
-          opp = pTeam.includes('chelsea') ? 'Arsenal' : 'Chelsea';
-        }
-        const venue = fallbackVenue === 'A' ? '@' : 'vs';
-        return { fixture: `${venue} ${opp}`, fdr: fallbackFdr };
+        return { fixture: '', fdr: null };
       };
 
-      const inFixtureData = resolveFixtureStr(foundIn, 'Coventry', 'A', 2);
-      const outFixtureData = resolveFixtureStr(foundOut, 'Chelsea', 'A', 4);
+      const toSide = (found, fallbackName, costOf) => ({
+        name: found?.web_name || fallbackName,
+        team: found?.team || found?.team_name || '',
+        position: found?.position || '',
+        expected_points: getPlayerXp(found),
+        cost: found ? Number(costOf(found) || 0) : 0,
+        ...fixtureOf(found)
+      });
 
-      const playerIn = {
-        name: foundIn?.web_name || topPair.in,
-        team: foundIn?.team || foundIn?.team_name || 'Brentford',
-        position: foundIn?.position || 'FWD',
-        expected_points: foundIn ? getPlayerXp(foundIn) : 5.33,
-        cost: foundIn ? Number(foundIn.now_cost || foundIn.cost || 6.1) : 6.1,
-        fixture: inFixtureData.fixture,
-        fdr: inFixtureData.fdr
-      };
+      const playerIn = toSide(foundIn, topPair.in, p => p.now_cost || p.cost);
+      const playerOut = toSide(foundOut, topPair.out, p => p.selling_price || p.now_cost || p.cost);
 
-      const playerOut = {
-        name: foundOut?.web_name || topPair.out,
-        team: foundOut?.team || foundOut?.team_name || 'Brighton',
-        position: foundOut?.position || 'FWD',
-        expected_points: foundOut ? getPlayerXp(foundOut) : 3.85,
-        cost: foundOut ? Number(foundOut.selling_price || foundOut.now_cost || foundOut.cost || 5.7) : 5.7,
-        fixture: outFixtureData.fixture,
-        fdr: outFixtureData.fdr
-      };
-
-      const costDelta = Number((playerIn.cost - playerOut.cost).toFixed(1));
+      let netGain = parseNetGain(effectiveActionSummary);
+      if (netGain == null && foundIn && foundOut) {
+        netGain = Math.max(0.1, Number((playerIn.expected_points - playerOut.expected_points).toFixed(2)));
+      }
 
       return {
         isRollFt: false,
         playerIn,
         playerOut,
         netGain,
-        costDelta
+        costDelta: Number((playerIn.cost - playerOut.cost).toFixed(1))
       };
     }
 
-    if (isRoll) {
-      return {
-        isRollFt: true,
-        playerIn: null,
-        playerOut: null,
-        netGain: 0,
-        costDelta: 0
-      };
+    if (includesAny(str, ROLL_PHRASES) || isStandPat(str)) {
+      return { isRollFt: true, playerIn: null, playerOut: null, netGain: 0, costDelta: 0 };
     }
-
     return null;
-  }, [effectiveActionSummary, liveData, allPlayersData, _allPlayers, displayStarters, displayBench]);
+  }, [effectiveActionSummary, transferPairs, liveData, allPlayersData, displayStarters, displayBench]);
 
-  const renderTransferPills = (summary) => {
-    if (!summary) return null;
-
-    // 1. Check if structured pairwise transfers exist from clientOptimizer or liveData
-    let pairs = [];
-    if (typeof summary === 'object' && Array.isArray(summary.pairwise_transfers) && summary.pairwise_transfers.length > 0) {
-      pairs = summary.pairwise_transfers.map(p => ({
-        in: p.in || p.in_player || p.in_name || 'Target In',
-        out: p.out || p.out_player || p.out_name || 'Target Out'
-      }));
-    } else if (typeof summary === 'object' && Array.isArray(summary.transfers) && summary.transfers.length > 0) {
-      pairs = summary.transfers.map(t => ({
-        in: t.in || t.in_player || 'Target In',
-        out: t.out || t.out_player || 'Target Out'
-      }));
-    }
-
-    const summaryStr = typeof summary === 'string' ? summary : (summary.headline || summary.action || '');
-
-    // 2. Parse string format with unicode support and multiple comma-separated players
-    if (pairs.length === 0 && summaryStr) {
-      // Matches [IN] Player1, Player2 | [OUT] Player3, Player4
-      const inMatch = summaryStr.match(/\[IN\]\s*([^|\]]+)/i);
-      const outMatch = summaryStr.match(/\[OUT\]\s*([^|\[]+)/i);
-
-      if (inMatch && outMatch) {
-        const inList = inMatch[1].split(',').map(s => s.trim()).filter(Boolean);
-        const outList = outMatch[1].split(',').map(s => s.trim()).filter(Boolean);
-
-        pairs = inList.map((inPlayer, idx) => ({
-          in: inPlayer,
-          out: outList[idx] || 'Target Out'
-        }));
+  // Plain-language directive for the recommended move
+  const directive = useMemo(() => {
+    const str = summaryText(effectiveActionSummary);
+    if (transferPairs.length > 0) {
+      const gain = parseNetGain(effectiveActionSummary);
+      let priceAlert = null;
+      const alertMatch = str.match(/(?:Price Risk|Price Alert):\s*([^()|]+)/i);
+      if (alertMatch && alertMatch[1].trim()) {
+        priceAlert = `Price alert: ${alertMatch[1].trim()}`;
+      } else if (!str && liveData?.falling_price_risks?.length > 0) {
+        priceAlert = `Price alert: ${liveData.falling_price_risks.join(', ')}`;
       }
+      return {
+        pairs: transferPairs,
+        detail: [gain != null ? `+${gain.toFixed(1)} pts projected gain` : null, priceAlert].filter(Boolean).join(' · ')
+      };
     }
-
-    // 3. Fallback to liveData.multi_horizon_roadmap[0] if available
-    if (pairs.length === 0 && liveData?.multi_horizon_roadmap?.[0]?.transfers_in?.length > 0) {
-      const roadmapItem = liveData.multi_horizon_roadmap[0];
-      pairs = roadmapItem.transfers_in.map((inPlayer, idx) => ({
-        in: inPlayer,
-        out: roadmapItem.transfers_out?.[idx] || 'Target Out'
-      }));
+    if (str.toLowerCase().includes('wildcard')) {
+      return { action: 'Play your Wildcard', detail: 'A full squad rebuild beats piecemeal transfers this week' };
     }
-
-    // If transfer pairs were resolved, extract clean uplift and price warnings
-    if (pairs.length > 0) {
-      // Extract uplift if present (e.g. "+4.4 pts" or net_gain)
-      let upliftText = null;
-      if (typeof summary === 'object' && summary.net_gain != null) {
-        upliftText = `+${Number(summary.net_gain).toFixed(1)} pts projected gain`;
-      } else if (summaryStr) {
-        const upliftMatch = summaryStr.match(/\+(\d+\.?\d*)\s*pts/i);
-        if (upliftMatch) {
-          upliftText = `+${upliftMatch[1]} pts projected gain`;
-        }
-      }
-
-      // Extract price alert if present (cleanly without raw numbers)
-      let priceAlertText = null;
-      if (summaryStr) {
-        const alertMatch = summaryStr.match(/(?:Price Risk|Price Alert):\s*([^()|]+)/i);
-        if (alertMatch) {
-          const names = alertMatch[1].trim();
-          if (names) {
-            priceAlertText = `Price Alert: ${names}`;
-          }
-        }
-      } else if (Array.isArray(liveData?.falling_price_risks) && liveData.falling_price_risks.length > 0) {
-        priceAlertText = `Price Alert: ${liveData.falling_price_risks.join(', ')}`;
-      }
-
-      return (
-        <div className="rec-directive-wrap">
-          <div className="rec-transfer-group">
-            {pairs.map((pair, idx) => (
-              <div key={idx} className="rec-transfer-pair">
-                <div className="rec-transfer-pill pill-base pill-md in">
-                  <ArrowUpRight size={13} weight="bold" />
-                  <span className="rec-tag font-mono">BUY</span>
-                  <span className="rec-player-name">{pair.in}</span>
-                </div>
-                <CaretRight size={13} className="rec-arrow" />
-                <div className="rec-transfer-pill pill-base pill-md out">
-                  <ArrowDownRight size={13} weight="bold" />
-                  <span className="rec-tag font-mono">SELL</span>
-                  <span className="rec-player-name">{pair.out}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-          {(upliftText || priceAlertText) && (
-            <div className="hud-directive-meta font-mono">
-              {upliftText && <span className="directive-meta-gain">{upliftText}</span>}
-              {upliftText && priceAlertText && <span className="directive-meta-sep">·</span>}
-              {priceAlertText && <span className="directive-meta-alert">{priceAlertText}</span>}
-            </div>
-          )}
-        </div>
-      );
+    if (includesAny(str, ROLL_PHRASES)) {
+      return { action: 'Save your free transfer', detail: 'Roll it to have more free transfers in coming gameweeks' };
     }
-
-    // 4. Wildcard chip activation
-    if (summaryStr.toLowerCase().includes('wildcard')) {
-      return (
-        <div className="directive-structured-text">
-          <span className="directive-action">Activate Wildcard Chip</span>
-          <span className="directive-separator font-mono">·</span>
-          <span className="directive-detail">Permanent free transfers recommended for full squad rebuild</span>
-        </div>
-      );
+    if (isStandPat(str)) {
+      return { action: 'Stand pat', detail: 'No transfers needed this gameweek' };
     }
-
-    // 5. Roll Free Transfer / Bank FT
-    if (
-      summaryStr.toLowerCase().includes('roll transfer') ||
-      summaryStr.toLowerCase().includes('save free transfer') ||
-      summaryStr.toLowerCase().includes('bank')
-    ) {
-      return (
-        <div className="directive-structured-text">
-          <span className="directive-action">Save Free Transfer (Roll FT)</span>
-          <span className="directive-separator font-mono">·</span>
-          <span className="directive-detail">Bank 1 FT to accumulate free transfers for upcoming gameweeks</span>
-        </div>
-      );
-    }
-
-    // 6. Stand Pat / Squad Locked
-    if (
-      summaryStr.toLowerCase().includes('no immediate transfers') ||
-      summaryStr.toLowerCase().includes('stand pat') ||
-      summaryStr.toLowerCase().includes('lineup locked') ||
-      summaryStr.includes('LOCKED') ||
-      summaryStr.includes('INITIAL')
-    ) {
-      return (
-        <div className="directive-structured-text">
-          <span className="directive-action">Squad Locked · Stand Pat</span>
-          <span className="directive-separator font-mono">·</span>
-          <span className="directive-detail">No immediate transfers required for this gameweek</span>
-        </div>
-      );
-    }
-
-    // 7. Clean fallthrough: strip technical solver regex prefixes and bracketed debug rationale
-    const cleanMsg = summaryStr
+    const cleanMsg = str
       .replace(/EXECUTE\s*\d*\s*FREE\s*TRANSFER\(S\):\s*/i, '')
       .replace(/\[Squad holds[^\]]*\]/gi, '')
       .replace(/\|\s*\[!\]\s*Nightly Price Risk:[^|]+/gi, '')
       .replace(/Option Hurdle:[^)]+\)/gi, '')
       .trim();
+    return { action: cleanMsg || 'Review transfers in the Planner', detail: '' };
+  }, [effectiveActionSummary, transferPairs, liveData]);
 
-    return (
-      <div className="directive-structured-text">
-        <span className="directive-action">{cleanMsg || 'Review squad transfers in Planner'}</span>
-      </div>
-    );
-  };
-
-  const boostedBenchList = useMemo(() => {
-    return displayBench.map((p, idx) => ({
-      ...p,
-      is_boosted: true,
-      slotLabel: idx === 0 ? 'GK Sub' : `Sub ${idx}`
-    }));
-  }, [displayBench]);
-
-  const benchUpliftTotal = useMemo(() => {
-    return displayBench.reduce((acc, p) => acc + Number(p.expected_points || 0), 0).toFixed(1);
-  }, [displayBench]);
-
-  // Gameweek Status Detection
+  // Gameweek status
+  const gameweek = liveData?.gameweek || 1;
   const isNonParticipating = liveData?.participated === false || (starters.length === 0 && bench.length === 0);
-  const isCompletedGw = Boolean(liveData?.is_completed || (liveData?.event_points !== undefined && liveData?.gameweek < 3));
+  const isCompletedGw = Boolean(liveData?.is_completed);
+  const canAct = !isCompletedGw && !isNonParticipating;
 
-  // Sync and Matchday Lock State
   const manager = liveData?.manager_profile;
   const isSynced = Boolean(
     manager?.entry_id ||
     (typeof window !== 'undefined' && localStorage.getItem('fpl_synced_entry_id'))
   );
+  const bank = liveData?.bank ?? manager?.bank;
+  const playedChip = manager?.active_chip;
 
+  const completedScore = liveData?.event_points ?? displayStarters.reduce(
+    (acc, p) => acc + Number(p.actual_points || 0) * (p.is_captain ? 2 : 1), 0
+  );
 
+  const heroValue = isNonParticipating ? '0' : isCompletedGw ? completedScore : Number(displayTotalXp).toFixed(1);
+  const heroUnit = isCompletedGw || isNonParticipating ? 'PTS' : 'XP';
+  const heroSlug = isNonParticipating
+    ? `Gameweek ${gameweek} · No squad entered`
+    : isCompletedGw
+    ? `Gameweek ${gameweek} · Final score`
+    : `Gameweek ${gameweek} · Projected`;
 
-
-  // Determine actual completed points
-  const completedScore = liveData?.event_points !== undefined
-    ? liveData.event_points
-    : (displayStarters.reduce((acc, p) => acc + (Number(p.actual_points || 0) * (p.is_captain ? 2 : 1)), 0));
+  const benchBanner = isBenchBoost
+    ? 'Bench Boost · all 15 score'
+    : isCompletedGw
+    ? 'Matchday bench'
+    : 'Bench';
 
   return (
-    <div>
-      <h1 className="sr-only">Gameweek {liveData?.gameweek || 1} Tactical Pitch &amp; Matchday Lineup</h1>
+    <div className="wire">
+      <h1 className="sr-only">Gameweek {gameweek} lineup</h1>
 
-      {/* Compact Matchday Status Bar */}
-      <div className="matchday-status-bar">
-        <div className="matchday-status-left">
-          <span className="matchday-status-title">
-            Gameweek {liveData?.gameweek || 2} · Starting XI
+      {/* Summary: one massive number, then the radio status column */}
+      <header className="wire-summary">
+        <div className="wire-hero">
+          <span className="wire-slug">{heroSlug}</span>
+          <span className="wire-hero-num font-mono">
+            {heroValue}
+            <span className="wire-hero-unit">{heroUnit}</span>
           </span>
-          <span className="matchday-formation-tag font-mono">
-            {isNonParticipating ? 'No Squad' : isCompletedGw ? 'Completed' : `${formation}`}
+          <span className="wire-hero-sub font-mono">
+            {isNonParticipating ? 'No squad' : isCompletedGw ? `${formation} · completed` : formation}
           </span>
         </div>
 
-        <div className="matchday-status-right">
-          <div className="matchday-score-chip font-mono">
-            <span className="matchday-score-num">
-              {isNonParticipating ? '0.0' : isCompletedGw ? completedScore : Number(displayStartingXp).toFixed(1)}
-            </span>
-            <span className="matchday-score-label">
-              {isCompletedGw ? 'pts' : 'xP'}
-            </span>
-          </div>
-
-          {!isCompletedGw && (
-            <>
-              <button
-                type="button"
-                className={`matchday-sim-btn font-mono ${isSimulating ? 'active' : ''}`}
-                onClick={onToggleSimulate}
-                title={isSimulating ? "Exit simulation mode" : "Simulate squad changes and bench substitutions"}
-              >
-                <Lightning size={13} weight={isSimulating ? "fill" : "bold"} />
-                <span>{isSimulating ? "Simulating" : "Simulate"}</span>
-              </button>
-
-              {isSimulating && (
-                <button
-                  type="button"
-                  className="matchday-reset-btn font-mono"
-                  onClick={onResetToSuggested}
-                  title="Revert squad to suggested lineup and exit simulation"
-                >
-                  <ClockCounterClockwise size={13} weight="bold" />
-                  <span>Reset to Suggested</span>
-                </button>
-              )}
-            </>
+        <dl className="wire-status">
+          {bank != null && (
+            <div className="wire-status-row">
+              <dt>Bank</dt>
+              <dd className="font-mono">£{formatFplPrice(bank)}m</dd>
+            </div>
           )}
-
-          <button
-            type="button"
-            className={`matchday-lock-btn font-mono ${isLineupLocked ? 'is-locked' : ''}`}
-            onClick={() => {
-              if (isLineupLocked) return;
-              if (!isSynced && onOpenSyncModal) {
-                onOpenSyncModal();
-                return;
-              }
-              setIsHandoverOpen(true);
-            }}
-            disabled={isLineupLocked}
-            title={isLineupLocked ? "Lineup is locked for this gameweek" : "Review matchday checklist and lock lineup"}
-          >
-            {isLineupLocked ? (
-              <>
-                <Check size={13} weight="bold" />
-                <span>Lineup Locked</span>
-              </>
-            ) : !isSynced ? (
-              <>
-                <ArrowUpRight size={13} weight="bold" />
-                <span>Connect FPL Squad</span>
-              </>
-            ) : (
-              <>
-                <ShieldCheck size={13} weight="bold" />
-                <span>Lock Lineup</span>
-              </>
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Tactical Dugout Command HUD Ribbon (4 Modular HUD Tiles) */}
-      <div className="tactical-hud-ribbon">
-          {/* Tile 1: Tactical Objective Strategy */}
-          <div className="hud-tile hud-tile-strategy">
-            <div className="hud-tile-header">
-              <span className="hud-tile-eyebrow font-mono">
-                {isCompletedGw ? 'MATCHDAY STATE' : 'OBJECTIVE'}
-              </span>
-              <span className="hud-tile-subtext font-mono">
-                {isNonParticipating
-                  ? 'Did Not Enter'
-                  : isCompletedGw
-                  ? 'Completed Gameweek'
-                  : (strategy === 'pure_xp' ? 'Max Points' : strategy === 'rank_protect' ? 'Protect Lead' : 'Climb Rank')}
-              </span>
+          {canAct && (
+            <div className="wire-status-row">
+              <dt>Free transfers</dt>
+              <dd className="font-mono">{freeTransfers}</dd>
             </div>
-            {isCompletedGw ? (
-              <div className="hud-directive-text" style={{ padding: '4px 0' }}>
-                <span className="hud-highlight-text font-mono" style={{ fontSize: '13px', color: isNonParticipating ? 'var(--text-muted)' : 'var(--accent-emerald)' }}>
-                  {isNonParticipating ? 'No Squad Registered' : `Gameweek ${liveData?.gameweek} Result`}
-                </span>
-                <span className="hud-sub-text" style={{ fontSize: '11px' }}>
-                  {isNonParticipating ? 'Zero points scored' : 'Official matchday scores recorded'}
-                </span>
-              </div>
-            ) : (
-              <div className="hud-segmented-group" role="group" aria-label="Tactical Goal">
-                {strategyOptions.map(opt => {
-                  const Icon = opt.icon;
-                  const isSelected = strategy === opt.id;
-                  return (
-                    <button
-                      key={opt.id}
-                      type="button"
-                      className={`hud-segment-btn ${isSelected ? 'active' : ''}`}
-                      onClick={() => onSelectStrategy(opt.id)}
-                      title={opt.desc}
-                    >
-                      <Icon size={12} weight={isSelected ? 'fill' : 'bold'} />
-                      <span className="hud-label-full">{opt.label}</span>
-                      <span className="hud-label-short">{opt.shortLabel || opt.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-
-          {/* Tile 2: Matchday Chip Simulator */}
-          <div className={`hud-tile hud-tile-chip ${isChipActive ? 'active-chip-tile' : ''}`}>
-            <div className="hud-tile-header">
-              <span className="hud-tile-eyebrow font-mono">
-                {isCompletedGw ? 'CHIP PLAYED' : 'MATCHDAY CHIP'}
-              </span>
-              {isCompletedGw ? (
-                <span className="hud-chip-idle-badge font-mono">
-                  {liveData?.manager_profile?.active_chip ? liveData.manager_profile.active_chip.toUpperCase() : 'NONE'}
-                </span>
-              ) : isChipActive ? (
-                <span className="hud-chip-live-badge font-mono">ACTIVE</span>
-              ) : (
-                <span className="hud-chip-idle-badge font-mono">SIMULATE</span>
-              )}
-            </div>
-            {isCompletedGw ? (
-              <div className="hud-directive-text" style={{ padding: '4px 0' }}>
-                <span className="hud-highlight-text" style={{ fontSize: '13px' }}>
-                  {liveData?.manager_profile?.active_chip
-                    ? chipOptions.find(c => c.id === liveData.manager_profile.active_chip)?.label || liveData.manager_profile.active_chip.toUpperCase()
-                    : 'Regular Squad'}
-                </span>
-                <span className="hud-sub-text" style={{ fontSize: '11px' }}>
-                  {liveData?.manager_profile?.active_chip ? 'Active during this matchday' : 'No bonus chip played'}
-                </span>
-              </div>
-            ) : (
-              <div className="hud-chip-selector-wrap">
+          )}
+          <div className="wire-status-row">
+            <dt>{isCompletedGw ? 'Chip played' : 'Chip'}</dt>
+            <dd>
+              {canAct ? (
                 <select
                   value={activeChip}
                   onChange={(e) => onSelectChip(e.target.value)}
-                  className="hud-chip-select font-mono"
-                  aria-label="Matchday Chip Selector"
+                  className="wire-select"
+                  aria-label="Matchday chip"
+                  title={CHIP_OPTIONS.find(c => c.id === activeChip)?.desc}
                 >
-                  {chipOptions.map(chip => (
-                    <option key={chip.id} value={chip.id}>
-                      {chip.label}
-                    </option>
+                  {CHIP_OPTIONS.map(chip => (
+                    <option key={chip.id} value={chip.id}>{chip.label}</option>
                   ))}
                 </select>
-                <div className="hud-chip-desc">
-                  {chipOptions.find(c => c.id === activeChip)?.desc || 'No chip active'}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Tile 3: Tactical Directive Action */}
-          <div
-            className="hud-tile hud-tile-directive"
-            onClick={() => {
-              if (!isCompletedGw && !isNonParticipating) {
-                setIsBreakdownOpen(true);
-              }
-            }}
-            style={{ cursor: (!isCompletedGw && !isNonParticipating) ? 'pointer' : 'default' }}
-            title={(!isCompletedGw && !isNonParticipating) ? "Click to view transfer recommendation breakdown" : undefined}
-          >
-            <div className="hud-tile-header">
-              <span className="hud-tile-eyebrow font-mono">
-                {isNonParticipating
-                  ? 'STATUS'
-                  : isCompletedGw
-                  ? 'MATCHDAY SUMMARY'
-                  : isChipActive
-                  ? 'ACTIVE SIMULATION'
-                  : strategy !== 'pure_xp'
-                  ? 'TACTICAL OVERRIDE'
-                  : 'RECOMMENDED MOVE'}
-              </span>
-              {!isCompletedGw && onNavigateTab && (
-                <button
-                  type="button"
-                  className="hud-directive-link font-mono"
-                  onClick={() => onNavigateTab('transfers')}
-                  title="Open Transfer Planner Workbench"
-                >
-                  Planner <ArrowUpRight size={11} weight="bold" />
-                </button>
-              )}
-            </div>
-            <div className="hud-directive-content">
-              {isNonParticipating ? (
-                <div className="hud-directive-text">
-                  <span className="hud-highlight-text" style={{ color: 'var(--text-muted)' }}>Did Not Participate</span>
-                  <span className="hud-sub-text">No lineup or points scored in Gameweek {liveData?.gameweek || 1}</span>
-                </div>
-              ) : isCompletedGw ? (
-                <div className="hud-directive-text">
-                  <span className="hud-highlight-text" style={{ color: 'var(--accent-emerald)' }}>
-                    {liveData?.event_points || completedScore} Points Scored
-                  </span>
-                  <span className="hud-sub-text">
-                    {liveData?.event_rank ? `Gameweek Rank: #${Number(liveData.event_rank).toLocaleString()}` : `Completed Gameweek ${liveData?.gameweek}`}
-                  </span>
-                </div>
-              ) : isChipActive ? (
-                <div className="hud-directive-text">
-                  <span className="hud-highlight-text">{currentChipData.label || 'Chip Active'}</span>
-                  <span className="hud-sub-text">{currentChipData.description || 'Active matchday chip projection'}</span>
-                </div>
-              ) : currentStrategyData && strategy !== 'pure_xp' ? (
-                <div className="hud-directive-text">
-                  <span className="hud-highlight-text">{currentStrategyData.label}</span>
-                  <span className="hud-sub-text">{currentStrategyData.subtitle || 'Tactical Goal Active'}</span>
-                </div>
               ) : (
-                renderTransferPills(effectiveActionSummary)
+                CHIP_OPTIONS.find(c => c.id === playedChip)?.label || (playedChip ? playedChip.toUpperCase() : 'None')
               )}
-            </div>
+            </dd>
           </div>
-        </div>
-
-      {/* Classical 2-Column Pitch Workspace (Pitch on Left, Sidebar on Right) */}
-      <div className="pitch-workspace">
-        {/* Tactical Pitch Surface (Left Column) */}
-        <div className={`pitch-container ${isBenchBoost ? 'bench-boost-active-pitch' : ''} ${isNonParticipating ? 'empty-pitch-container' : ''}`}>
-          <div className="pitch-marking-center-line" />
-          <div className="pitch-marking-center-circle" />
-          <div className="pitch-marking-penalty-top" />
-          <div className="pitch-marking-penalty-bottom" />
-
-          {isNonParticipating ? (
-            <div className="empty-pitch-overlay">
-              <div className="empty-pitch-card">
-                <div className="empty-pitch-icon font-mono">GW {liveData?.gameweek || 1}</div>
-                <span className="empty-pitch-badge font-mono">DID NOT PARTICIPATE</span>
-                <h3 className="empty-pitch-title">No Squad Active for Gameweek {liveData?.gameweek || 1}</h3>
-                <p className="empty-pitch-desc">
-                  {liveData?.manager_profile?.manager_name || 'This manager'} did not have a registered squad for this gameweek. Total score is 0 pts.
-                </p>
-                <div className="empty-pitch-stats font-mono">
-                  <div className="empty-stat-item">
-                    <span className="stat-label">Gameweek Points</span>
-                    <span className="stat-val">0 pts</span>
-                  </div>
-                  <div className="empty-stat-item">
-                    <span className="stat-label">Gameweek Rank</span>
-                    <span className="stat-val">Unranked</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <>
-              {/* Row 1: Goalkeepers */}
-              <div className={`pitch-row pitch-row-gk pitch-row-count-${gks.length}`}>
-                {gks.map(p => (
-                  <PlayerCard
-                    key={p.player_code || p.id || p.web_name}
-                    player={p}
-                    isCaptain={Boolean(p.is_captain)}
-                    isViceCaptain={Boolean(p.is_vice_captain)}
-                    isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
-                    isBoosted={Boolean(p.is_boosted || isBenchBoost)}
-                    strategyBadge={getStrategyBadge(p)}
-                    isSubTarget={activeSelectedPlayer?.player_code === p.player_code}
-                    onSelectSub={handlePlayerSelect}
-                    onInspect={onInspectPlayer}
-                    onOpenMatchup={handleMatchupClick}
-                    onToggleCaptain={onToggleCaptain}
-                  />
-                ))}
-              </div>
-
-              {/* Row 2: Defenders */}
-              <div className={`pitch-row pitch-row-def pitch-row-count-${defs.length}`}>
-                {defs.map(p => (
-                  <PlayerCard
-                    key={p.player_code || p.id || p.web_name}
-                    player={p}
-                    isCaptain={Boolean(p.is_captain)}
-                    isViceCaptain={Boolean(p.is_vice_captain)}
-                    isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
-                    isBoosted={Boolean(p.is_boosted || isBenchBoost)}
-                    strategyBadge={getStrategyBadge(p)}
-                    isSubTarget={activeSelectedPlayer?.player_code === p.player_code}
-                    onSelectSub={handlePlayerSelect}
-                    onInspect={onInspectPlayer}
-                    onOpenMatchup={handleMatchupClick}
-                    onToggleCaptain={onToggleCaptain}
-                  />
-                ))}
-              </div>
-
-              {/* Row 3: Midfielders */}
-              <div className={`pitch-row pitch-row-mid pitch-row-count-${mids.length}`}>
-                {mids.map(p => (
-                  <PlayerCard
-                    key={p.player_code || p.id || p.web_name}
-                    player={p}
-                    isCaptain={Boolean(p.is_captain)}
-                    isViceCaptain={Boolean(p.is_vice_captain)}
-                    isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
-                    isBoosted={Boolean(p.is_boosted || isBenchBoost)}
-                    strategyBadge={getStrategyBadge(p)}
-                    isSubTarget={activeSelectedPlayer?.player_code === p.player_code}
-                    onSelectSub={handlePlayerSelect}
-                    onInspect={onInspectPlayer}
-                    onOpenMatchup={handleMatchupClick}
-                    onToggleCaptain={onToggleCaptain}
-                  />
-                ))}
-              </div>
-
-              {/* Row 4: Forwards */}
-              <div className={`pitch-row pitch-row-fwd pitch-row-count-${fwds.length}`}>
-                {fwds.map(p => (
-                  <PlayerCard
-                    key={p.player_code || p.id || p.web_name}
-                    player={p}
-                    isCaptain={Boolean(p.is_captain)}
-                    isViceCaptain={Boolean(p.is_vice_captain)}
-                    isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
-                    isBoosted={Boolean(p.is_boosted || isBenchBoost)}
-                    strategyBadge={getStrategyBadge(p)}
-                    isSubTarget={activeSelectedPlayer?.player_code === p.player_code}
-                    onSelectSub={handlePlayerSelect}
-                    onInspect={onInspectPlayer}
-                    onOpenMatchup={handleMatchupClick}
-                    onToggleCaptain={onToggleCaptain}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* Sidebar (Right Column) */}
-        <div className="pitch-sidebar">
-          {isBenchBoost ? (
-              <div className="sidebar-panel bench-boost-telemetry-panel">
-                <div className="panel-header">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <RocketLaunch size={15} weight="fill" color="var(--accent-emerald)" />
-                    <h2 className="panel-title" style={{ margin: 0, fontSize: 'inherit', fontWeight: 'inherit', display: 'inline' }}>BENCH BOOST</h2>
-                  </div>
-                  <span className="panel-badge font-mono" style={{ whiteSpace: 'nowrap' }}>
-                    15 SCORING
-                  </span>
-                </div>
-
-                {/* Bench Boost Metric Grid */}
-                <div className="bb-telemetry-grid">
-                  <div className="bb-telemetry-stat">
-                    <span className="bb-stat-label">STARTING XI</span>
-                    <span className="bb-stat-val font-mono">{Number(startingXp || 64.7).toFixed(1)} <span className="bb-stat-unit">pts</span></span>
-                  </div>
-                  <div className="bb-telemetry-stat highlight">
-                    <span className="bb-stat-label">BENCH CONTRIBUTION</span>
-                    <span className="bb-stat-val font-mono emerald">+{benchUpliftTotal} <span className="bb-stat-unit">pts</span></span>
-                  </div>
-                  <div className="bb-telemetry-stat full-width">
-                    <div>
-                      <span className="bb-stat-label">TOTAL SQUAD PROJECTION</span>
-                      <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>All 15 players scoring</span>
-                    </div>
-                    <span className="bb-stat-val font-mono emerald" style={{ fontSize: '16px' }}>
-                      {displayStartingXp} <span className="bb-stat-unit">pts</span>
-                    </span>
-                  </div>
-                </div>
-
-                <div className="bb-sub-header font-mono">
-                  <span>BENCH PLAYERS SCORING THIS WEEK</span>
-                  <span className="bb-count-pill">4 ACTIVE</span>
-                </div>
-
-                <div className="bench-list">
-                  {boostedBenchList.map((p) => (
-                    <div
-                      key={p.player_code || p.id || p.web_name}
-                      className="bench-item boost-active"
-                      onClick={() => onInspectPlayer && onInspectPlayer(p)}
-                      onDoubleClick={() => onInspectPlayer && onInspectPlayer(p)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          if (onInspectPlayer) onInspectPlayer(p);
-                        }
-                      }}
-                      tabIndex={0}
-                      role="button"
-                      title="Click to view scouting report & stats"
+          {canAct && (
+            <div className="wire-status-row">
+              <dt>Goal</dt>
+              <dd>
+                <div className="wire-segments" role="group" aria-label="Tactical goal">
+                  {STRATEGY_OPTIONS.map(opt => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      className="wire-segment"
+                      aria-pressed={strategy === opt.id}
+                      onClick={() => onSelectStrategy(opt.id)}
+                      title={opt.desc}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-                        <span className="bench-slot-tag pill-base pill-xs font-mono boost-tag">
-                          {p.slotLabel || 'SUB'}
-                        </span>
-                        <span className={`player-pos-tag pill-base pill-sm ${p.position}`}>{p.position}</span>
-                        <div style={{ minWidth: 0, overflow: 'hidden' }}>
-                          <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                            {p.web_name}
-                          </div>
-                          <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                            {p.team} · £{Number(p.cost || 0).toFixed(1)}m
-                          </div>
-                        </div>
-                      </div>
-                      <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 800, color: 'var(--accent-emerald)' }}>
-                          +{Number(p.expected_points || 0).toFixed(1)} pts
-                        </div>
-                        <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                          bench pts
-                        </div>
-                      </div>
-                    </div>
+                      {opt.label}
+                    </button>
                   ))}
                 </div>
+              </dd>
+            </div>
+          )}
+          {isCompletedGw && liveData?.event_rank && (
+            <div className="wire-status-row">
+              <dt>Gameweek rank</dt>
+              <dd className="font-mono">#{Number(liveData.event_rank).toLocaleString()}</dd>
+            </div>
+          )}
+        </dl>
 
-                <div className="bench-help-text">
-                  All 15 players are active on the pitch. Double-click any player card to view their scouting report & match stats.
-                </div>
-              </div>
-            ) : (
-              <div className="sidebar-panel">
-                <div className="panel-header">
-                  <h2 className="panel-title" style={{ margin: 0, fontSize: 'inherit', fontWeight: 'inherit', display: 'inline' }}>
-                    {isNonParticipating
-                      ? 'Substitutes'
-                      : isCompletedGw
-                      ? 'MATCHDAY BENCH'
-                      : activeChip === 'wildcard'
-                      ? 'WILDCARD BENCH'
-                      : activeChip === 'freehit'
-                      ? 'FREE HIT BENCH'
-                      : activeChip === '3xc'
-                      ? 'TRIPLE CAPTAIN BENCH'
-                      : 'Substitutes'}
-                  </h2>
-                  <span className="panel-badge font-mono">
-                    {isNonParticipating ? '0 on bench' : `${displayBench.length} on bench`}
-                  </span>
-                </div>
-
-                {isNonParticipating ? (
-                  <div style={{ padding: '24px 16px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>
-                    No substitutes available for this gameweek.
-                  </div>
-                ) : (
-                  <div className="bench-list">
-                    {displayBench.map((p, idx) => {
-                      const isSelected = activeSelectedPlayer?.player_code === p.player_code;
-                      const slotLabel = idx === 0 ? 'GK Sub' : `Sub ${idx}`;
-                      const hasActualPoints = p.actual_points !== undefined;
-                      const displayBenchPts = hasActualPoints ? Number(p.actual_points) : Number(p.expected_points || 0).toFixed(1);
-                      return (
-                        <div
-                          key={p.player_code || p.id || p.web_name}
-                          className={`bench-item ${isSelected ? 'is-selected' : ''}`}
-                          onClick={() => handlePlayerSelect(p)}
-                          onDoubleClick={() => onInspectPlayer && onInspectPlayer(p)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
-                              handlePlayerSelect(p);
-                            }
-                          }}
-                          tabIndex={0}
-                          role="button"
-                          aria-label={`Bench ${slotLabel}: ${p.web_name}, ${p.position}, £${formatFplPrice(p.cost ?? p.now_cost ?? p.selling_price ?? 0)}M, ${displayBenchPts} points`}
-                          title="Click to swap with starter · Double-click for player stats"
-                        >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-                            <span className="bench-slot-tag pill-base pill-xs font-mono">
-                              {slotLabel}
-                            </span>
-                            <span className={`player-pos-tag pill-base pill-sm ${p.position}`}>{p.position}</span>
-                            <div className="bench-player-info">
-                              <div className="bench-player-name">
-                                {p.web_name}
-                              </div>
-                              <div className="bench-player-meta font-mono">
-                                {p.team} · £{formatFplPrice(p.cost ?? p.now_cost ?? p.selling_price ?? 0)}m
-                              </div>
-                            </div>
-                          </div>
-                          <div className="bench-score-column">
-                            <div className="bench-points-val font-mono">
-                              {displayBenchPts} pts
-                            </div>
-                            <div className="bench-points-label font-mono">
-                              {hasActualPoints ? 'actual pts' : 'exp pts'}
-                            </div>
-                            {/* M-06: Auto-Sub Priority */}
-                            {!hasActualPoints && p.auto_sub_label && (
-                              <div className={`bench-priority-badge font-mono priority-${p.auto_sub_label.toLowerCase()}`}>
-                                {p.auto_sub_label} PRIORITY
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-
-                <div className="bench-help-text font-mono">
-                  {isCompletedGw
-                    ? 'Official matchday scores recorded for bench substitutes.'
-                    : isSimulating
-                    ? 'Simulation Mode: Tap any starter and bench player to swap them. Click Done when finished.'
-                    : 'Tactical Cockpit: Click any player to inspect scouting report. Click Simulate to test substitutions.'}
-                </div>
-              </div>
-            )}
+        <div className="wire-actions">
+          {canAct && (
+            <button
+              type="button"
+              className="wire-action"
+              aria-pressed={isSimulating}
+              onClick={onToggleSimulate}
+              title={isSimulating ? 'Stop testing swaps' : 'Test bench swaps before you commit'}
+            >
+              {isSimulating ? 'Done swapping' : 'Try swaps'}
+            </button>
+          )}
+          {canAct && isSimulating && (
+            <button type="button" className="wire-action" onClick={onResetToSuggested}>
+              Reset to suggested
+            </button>
+          )}
+          {!isCompletedGw && (
+            <button
+              type="button"
+              className="wire-action is-primary"
+              onClick={() => {
+                if (!isSynced && onOpenSyncModal) {
+                  onOpenSyncModal();
+                  return;
+                }
+                setIsHandoverOpen(true);
+              }}
+              disabled={isLineupLocked}
+            >
+              {isLineupLocked ? 'Lineup locked' : isSynced ? 'Lock lineup' : 'Connect FPL squad'}
+            </button>
+          )}
         </div>
+      </header>
+
+      {swapNotice && (
+        <p className="wire-notice" role="status">{swapNotice}</p>
+      )}
+
+      <div className="wire-split">
+        {/* Primary tactical surface */}
+        <section className="wire-pitch-col" aria-labelledby="wire-xi-banner">
+          <h2 id="wire-xi-banner" className="wire-banner">
+            {isBenchBoost ? 'Full squad' : 'Starting XI'}
+            {isSimulating && canAct && <span className="zinc"> · tap two players to swap</span>}
+          </h2>
+
+          {isNonParticipating ? (
+            <div className="wire-empty">
+              <p className="wire-empty-title">No squad for Gameweek {gameweek}</p>
+              <p className="zinc">
+                {manager?.manager_name || 'This manager'} had no registered squad this gameweek, so the score is 0.
+              </p>
+            </div>
+          ) : (
+            <div className={`wire-pitch ${isBenchBoost ? 'is-full-squad' : ''}`}>
+              {rows.map((row, idx) => (
+                <div key={idx} className={`wire-pitch-row pitch-row-count-${row.length}`}>
+                  {row.map(p => (
+                    <PlayerCard
+                      key={p.player_code || p.id || p.web_name}
+                      player={p}
+                      isCaptain={Boolean(p.is_captain)}
+                      isViceCaptain={Boolean(p.is_vice_captain)}
+                      isTripleCaptain={activeChip === '3xc' && Boolean(p.is_captain)}
+                      isSubTarget={activeSelectedPlayer?.player_code === p.player_code}
+                      onSelectSub={handlePlayerSelect}
+                      onInspect={onInspectPlayer}
+                      onOpenMatchup={handleMatchupClick}
+                      onToggleCaptain={canAct ? onToggleCaptain : undefined}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Situational context */}
+        <aside className="wire-context">
+          <section aria-labelledby="wire-move-banner">
+            <h2 id="wire-move-banner" className="wire-banner">
+              {isCompletedGw ? 'Matchday summary' : isChipActive ? 'Chip preview' : currentStrategyData ? 'Goal override' : 'Recommended move'}
+            </h2>
+            {isNonParticipating ? (
+              <p className="zinc">Did not take part in Gameweek {gameweek}.</p>
+            ) : isCompletedGw ? (
+              <p className="wire-directive-action">{completedScore} points scored</p>
+            ) : isChipActive ? (
+              <p className="wire-directive-action">{currentChipData.label || 'Chip active'}</p>
+            ) : currentStrategyData ? (
+              <>
+                <p className="wire-directive-action">{currentStrategyData.label}</p>
+                {currentStrategyData.subtitle && <p className="zinc">{currentStrategyData.subtitle}</p>}
+              </>
+            ) : (
+              <button
+                type="button"
+                className="wire-directive"
+                onClick={() => setIsBreakdownOpen(true)}
+                title="See why this move is recommended"
+              >
+                {directive.pairs ? (
+                  <ul className="wire-moves">
+                    {directive.pairs.map((pair, idx) => (
+                      <li key={idx}>
+                        <span className="wire-move-tag">In</span> {pair.in}
+                        <span className="zinc"> for </span>
+                        <span className="wire-move-tag">Out</span> {pair.out}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <span className="wire-directive-action">{directive.action}</span>
+                )}
+                {directive.detail && <span className="wire-directive-detail font-mono">{directive.detail}</span>}
+                <span className="wire-directive-more">See the reasoning</span>
+              </button>
+            )}
+            {canAct && onNavigateTab && (
+              <button type="button" className="wire-link" onClick={() => onNavigateTab('transfers')}>
+                Open the Planner
+              </button>
+            )}
+          </section>
+
+          {!isNonParticipating && (
+            <section aria-labelledby="wire-bench-banner">
+              <h2 id="wire-bench-banner" className="wire-banner">{benchBanner}</h2>
+
+              {isBenchBoost && (
+                <dl className="wire-status wire-status-tight">
+                  <div className="wire-status-row">
+                    <dt>Starting XI</dt>
+                    <dd className="font-mono">{startersXp.toFixed(1)}</dd>
+                  </div>
+                  <div className="wire-status-row">
+                    <dt>Bench ({displayBench.length})</dt>
+                    <dd className="font-mono">+{benchXp.toFixed(1)}</dd>
+                  </div>
+                </dl>
+              )}
+
+              <ol className="wire-bench">
+                {displayBench.map((p, idx) => {
+                  const isSelected = activeSelectedPlayer?.player_code === p.player_code;
+                  const hasActualPoints = p.actual_points !== undefined;
+                  const pts = hasActualPoints ? Number(p.actual_points) : getPlayerXp(p).toFixed(1);
+                  const subOdds = !hasActualPoints && AUTO_SUB_LABELS[p.auto_sub_label];
+                  const slot = idx === 0 ? 'GK' : String(idx);
+                  return (
+                    <li key={p.player_code || p.id || p.web_name}>
+                      <button
+                        type="button"
+                        className="wire-bench-line"
+                        aria-pressed={isSelected || undefined}
+                        aria-label={`Bench ${slot}: ${p.web_name}, ${p.position}, £${formatFplPrice(p.cost ?? p.now_cost ?? p.selling_price ?? 0)}m, ${pts} ${hasActualPoints ? 'points' : 'expected points'}`}
+                        onClick={() => (isBenchBoost ? onInspectPlayer?.(p) : handlePlayerSelect(p))}
+                        onDoubleClick={() => onInspectPlayer?.(p)}
+                      >
+                        <span className="wire-bench-slot font-mono">{slot}</span>
+                        <span className="wire-bench-name">{p.web_name}</span>
+                        <span className="wire-bench-meta font-mono">
+                          {p.position}
+                          {subOdds && <span title={subOdds.tooltip}> · {subOdds.badge}</span>}
+                        </span>
+                        <span className="wire-bench-pts font-mono">{isBenchBoost ? `+${pts}` : pts}</span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ol>
+
+              <p className="wire-footnote">
+                {isCompletedGw
+                  ? 'Official bench scores for this gameweek.'
+                  : isSimulating
+                  ? 'Tap a starter, then a bench player, to swap them. Press Done swapping when finished.'
+                  : 'Tap any player for their scouting report. Press Try swaps to test bench changes.'}
+              </p>
+            </section>
+          )}
+        </aside>
       </div>
 
-      {/* Matchday Handover Checklist & FPL Official Link Modal */}
       <MatchdayHandoverModal
         isOpen={isHandoverOpen}
         onClose={() => setIsHandoverOpen(false)}
@@ -1141,24 +623,22 @@ export default function TacticalPitch({
         liveData={liveData}
         starters={displayStarters}
         bench={displayBench}
-        managerId={manager?.entry_id || '9500404'}
-        managerName={manager?.manager_name || 'Arabinda Saha'}
-        teamName={manager?.team_name || 'Fuljhore Giants'}
+        managerId={manager?.entry_id}
+        managerName={manager?.manager_name}
+        teamName={manager?.team_name}
         freeTransfers={freeTransfers}
         isLocked={isLineupLocked}
         recommendedTransfer={resolvedTransferRecommendation}
       />
 
-      {/* Transfer Recommendation Mathematical Breakdown Modal */}
       <TransferBreakdownModal
         isOpen={isBreakdownOpen}
         onClose={() => setIsBreakdownOpen(false)}
-        managerId={manager?.entry_id || '9500404'}
-        gameweek={liveData?.gameweek || 6}
+        managerId={manager?.entry_id}
+        gameweek={gameweek}
         recommendedTransfer={resolvedTransferRecommendation}
-        bank={liveData?.bank || liveData?.manager_profile?.bank || 0.4}
+        bank={bank}
       />
     </div>
   );
 }
-

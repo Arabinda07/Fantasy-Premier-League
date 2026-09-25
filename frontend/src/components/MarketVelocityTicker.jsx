@@ -132,104 +132,134 @@ export default function MarketVelocityTicker({ allPlayers, allPlayersData, liveD
       <h1 className="sr-only">Transfer Market Velocity &amp; Price Trends</h1>
       <div className="market-panels-grid">
         {/* Rising Assets Radar */}
-        <div className="sidebar-panel">
-          <div className="panel-header">
-            <h2 className="market-section-title rising" style={{ margin: 0, fontSize: 'inherit', fontWeight: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <TrendUp size={16} weight="bold" />
-              <span>Players Set to Rise Tonight (+£0.1m)</span>
-            </h2>
+        <div className="data-table-container market-wire-panel">
+          <div className="studio-table-controls">
+            <div className="controls-left">
+              <span className="controls-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <TrendUp size={16} weight="bold" />
+                <span>Players Set to Rise Tonight (+£0.1m)</span>
+              </span>
+              <span className="controls-count font-mono">{risingAssets.length} Assets</span>
+            </div>
           </div>
 
-          <div className="market-asset-list">
-            {risingAssets.map(p => (
-              <div
-                key={p.web_name}
-                onClick={() => handleInspect(p)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleInspect(p);
-                  }
-                }}
-                tabIndex={0}
-                role="button"
-                className="market-asset-row"
-                title="Click to view player scouting report & stats"
-              >
-                <div className="asset-main-info">
-                  <div className="market-asset-identity">
-                    <span className={`player-pos-tag pill-base pill-sm ${p.pos}`}>{p.pos}</span>
-                    <span className="asset-player-name">{p.web_name}</span>
-                    <span className="asset-team-name font-mono">({p.team})</span>
-                  </div>
-                  <div className="market-asset-meta font-mono">
-                    £{p.cost.toFixed(1)}m · +{p.net_vel.toLocaleString()} net transfers
-                  </div>
-                  {/* Thermometer Progress Bar */}
-                  <div className="velocity-thermometer-track">
-                    <div
-                      className={`velocity-thermometer-fill ${p.progress >= 100 ? 'saturated' : ''}`}
-                      style={{ transform: `scaleX(${Math.min(1, p.progress / 100)})` }}
-                    />
-                  </div>
-                </div>
-                <div className="market-asset-trend">
-                  <span className="market-trend-badge rising">{p.trend}</span>
-                  <div className="market-trend-ratio font-mono">{p.ratio}</div>
-                </div>
-              </div>
-            ))}
+          <div className="table-scroll-wrapper">
+            <table className="data-table market-wire-table">
+              <thead>
+                <tr>
+                  <th scope="col">Player</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Net Transfers</th>
+                  <th scope="col">Threshold</th>
+                  <th scope="col">Projected Move</th>
+                </tr>
+              </thead>
+              <tbody>
+                {risingAssets.map(p => (
+                  <tr
+                    key={p.web_name}
+                    onClick={() => handleInspect(p)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleInspect(p);
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    style={{ cursor: 'pointer' }}
+                    title={`Click to view ${p.web_name} scouting report`}
+                  >
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span className="wire-pos-tag font-mono">[{p.pos}]</span>
+                        <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{p.web_name}</span>
+                        <span className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>({p.team})</span>
+                      </div>
+                    </td>
+                    <td className="font-mono" style={{ fontWeight: 700 }}>£{p.cost.toFixed(1)}m</td>
+                    <td className="font-mono">+{p.net_vel.toLocaleString()}</td>
+                    <td className="font-mono">
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span>{p.ratio}</span>
+                        <div className="velocity-wire-track">
+                          <div className="velocity-wire-fill" style={{ width: `${Math.min(100, p.progress)}%` }} />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="font-mono">
+                      <span className="market-wire-delta rising font-mono">▲ +£0.1m</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
 
         {/* Falling Assets Radar */}
-        <div className="sidebar-panel">
-          <div className="panel-header">
-            <h2 className="market-section-title falling" style={{ margin: 0, fontSize: 'inherit', fontWeight: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <TrendDown size={16} weight="bold" />
-              <span>Players Set to Fall Tonight (-£0.1m)</span>
-            </h2>
+        <div className="data-table-container market-wire-panel">
+          <div className="studio-table-controls">
+            <div className="controls-left">
+              <span className="controls-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <TrendDown size={16} weight="bold" />
+                <span>Players Set to Fall Tonight (-£0.1m)</span>
+              </span>
+              <span className="controls-count font-mono">{fallingAssets.length} Assets</span>
+            </div>
           </div>
 
-          <div className="market-asset-list">
-            {fallingAssets.map(p => (
-              <div
-                key={p.web_name}
-                onClick={() => handleInspect(p)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleInspect(p);
-                  }
-                }}
-                tabIndex={0}
-                role="button"
-                className="market-asset-row"
-                title="Click to view player scouting report & stats"
-              >
-                <div className="asset-main-info">
-                  <div className="market-asset-identity">
-                    <span className={`player-pos-tag pill-base pill-sm ${p.pos}`}>{p.pos}</span>
-                    <span className="asset-player-name">{p.web_name}</span>
-                    <span className="asset-team-name font-mono">({p.team})</span>
-                  </div>
-                  <div className="market-asset-meta font-mono">
-                    £{p.cost.toFixed(1)}m · {p.net_vel.toLocaleString()} net transfers
-                  </div>
-                  {/* Thermometer Progress Bar */}
-                  <div className="velocity-thermometer-track">
-                    <div
-                      className={`velocity-thermometer-fill falling ${p.progress >= 100 ? 'saturated-falling' : ''}`}
-                      style={{ transform: `scaleX(${Math.min(1, p.progress / 100)})` }}
-                    />
-                  </div>
-                </div>
-                <div className="market-asset-trend">
-                  <span className="market-trend-badge falling">{p.trend}</span>
-                  <div className="market-trend-ratio font-mono">{p.ratio}</div>
-                </div>
-              </div>
-            ))}
+          <div className="table-scroll-wrapper">
+            <table className="data-table market-wire-table">
+              <thead>
+                <tr>
+                  <th scope="col">Player</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Net Transfers</th>
+                  <th scope="col">Threshold</th>
+                  <th scope="col">Projected Move</th>
+                </tr>
+              </thead>
+              <tbody>
+                {fallingAssets.map(p => (
+                  <tr
+                    key={p.web_name}
+                    onClick={() => handleInspect(p)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleInspect(p);
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    style={{ cursor: 'pointer' }}
+                    title={`Click to view ${p.web_name} scouting report`}
+                  >
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span className="wire-pos-tag font-mono">[{p.pos}]</span>
+                        <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{p.web_name}</span>
+                        <span className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>({p.team})</span>
+                      </div>
+                    </td>
+                    <td className="font-mono" style={{ fontWeight: 700 }}>£{p.cost.toFixed(1)}m</td>
+                    <td className="font-mono">{p.net_vel.toLocaleString()}</td>
+                    <td className="font-mono">
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span>{p.ratio}</span>
+                        <div className="velocity-wire-track">
+                          <div className="velocity-wire-fill" style={{ width: `${Math.min(100, p.progress)}%` }} />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="font-mono">
+                      <span className="market-wire-delta falling font-mono">▼ -£0.1m</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

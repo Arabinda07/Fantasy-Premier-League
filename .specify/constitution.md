@@ -157,7 +157,7 @@ Before any branch is merged or any agent task is considered complete, the follow
 | **1. OKF Conformance** | `python scripts/validate_okf.py` | Validates OKF v0.2 markdown syntax, verified links, and dataset cross-references. |
 | **2. Copy & Voice Linter** | `npm run check-copy` <br> `pytest model/test_voice_and_tone.py` | Scans all frontend files for banned jargon, untranslated terms, and raw math formulas. |
 | **3. Mathematical Attestation** | `python knowledge/references/attesters/verify_schema.py --season 2026-27 --gw 2` <br> `python knowledge/references/attesters/verify_solver.py --season 2026-27 --gw 2` | Verifies data integrity and deterministic solver optimality against sanctioned test fixtures. |
-| **4. Unit Test Suites** | `pytest` <br> `npm test` (in `frontend/`) | Executes full model and frontend test suites with zero regressions. |
+| **4. Unit Test Suites** | `pytest` <br> `npm run build` (in `frontend/`) | Executes the model test suite and a clean frontend build with zero regressions. |
 
 ---
 

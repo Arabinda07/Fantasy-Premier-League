@@ -134,9 +134,7 @@ export default function Header({
         {/* Tier 1: Brand section */}
         <div className="brand-section">
           <div className="brand-badge-group">
-            <div className="brand-icon-box">
-              <SoccerBall size={16} weight="fill" />
-            </div>
+            <SoccerBall size={18} weight="fill" className="brand-icon" />
             <span className="brand-title brand-title-full">FPL Dugout</span>
             <span className="brand-title brand-title-short">Dugout</span>
           </div>
@@ -182,7 +180,7 @@ export default function Header({
                   <span className="tab-label-full">{tab.label}</span>
                   <span className="tab-label-short">{tab.shortLabel}</span>
                   {tab.badge && (
-                    <span className={`tab-pip pill-base pill-xs font-mono ${tab.badgeType || ''}`}>
+                    <span className={`tab-wire-tag font-mono ${tab.badgeType || ''}`}>
                       {tab.badge}
                     </span>
                   )}
@@ -200,7 +198,7 @@ export default function Header({
             title="Configure FPL Team ID & Mini-League Tracker"
             aria-label="Manager Settings"
           >
-            <span className="live-sync-pulse" />
+            <span className="live-sync-dot" />
             <User size={13} weight="bold" />
             <span className="manager-chip-name">
               {manager?.manager_name

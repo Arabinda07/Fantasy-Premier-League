@@ -169,8 +169,8 @@ export default function FixtureHeatmap({
         </div>
 
         <div className="ticker-window-controls" role="group" aria-label="Select fixture planning horizon">
-          <span className="ticker-window-label font-mono">Horizon</span>
-          <div className="segmented-chip-rail">
+          <span className="ticker-window-label font-mono">HORIZON:</span>
+          <div className="wire-segments" role="group" aria-label="Planning Horizon">
             {horizonOptions.map(h => (
               <button
                 key={h.id}
@@ -178,7 +178,7 @@ export default function FixtureHeatmap({
                 onClick={() => setHorizon(h.id)}
                 aria-label={`Planning horizon: ${h.label}`}
                 aria-pressed={horizon === h.id}
-                className={`segmented-chip-btn pill-base pill-md ${horizon === h.id ? 'active' : ''}`}
+                className="wire-segment font-mono"
               >
                 <span>{h.label}</span>
               </button>
@@ -192,39 +192,32 @@ export default function FixtureHeatmap({
         <div className="legend-scale-group">
           <span className="legend-label font-mono">FDR:</span>
           <div className="legend-items">
-            <div className="legend-chip legend-fdr-1" title="FDR 1: Very Easy (Home vs promoted / bottom tier)">
-              <span className="legend-dot" style={{ background: 'var(--fdr-1)' }} />
-              <span className="legend-fdr-num font-mono">1</span>
+            <div className="legend-chip" title="FDR 1: Very Easy (Home vs promoted / bottom tier)">
+              <span className="legend-fdr-tag font-mono fdr-1">1</span>
               <span className="legend-text">Very Easy</span>
             </div>
-            <div className="legend-chip legend-fdr-2" title="FDR 2: Easy (Home vs lower-half opponent)">
-              <span className="legend-dot" style={{ background: 'var(--fdr-2)' }} />
-              <span className="legend-fdr-num font-mono">2</span>
+            <div className="legend-chip" title="FDR 2: Easy (Home vs lower-half opponent)">
+              <span className="legend-fdr-tag font-mono fdr-2">2</span>
               <span className="legend-text">Easy</span>
             </div>
-            <div className="legend-chip legend-fdr-3" title="FDR 3: Moderate (Mid-table matchup)">
-              <span className="legend-dot" style={{ background: 'var(--fdr-3)' }} />
-              <span className="legend-fdr-num font-mono">3</span>
+            <div className="legend-chip" title="FDR 3: Moderate (Mid-table matchup)">
+              <span className="legend-fdr-tag font-mono fdr-3">3</span>
               <span className="legend-text">Moderate</span>
             </div>
-            <div className="legend-chip legend-fdr-4" title="FDR 4: Tough (Away vs top-six)">
-              <span className="legend-dot" style={{ background: 'var(--fdr-4)' }} />
-              <span className="legend-fdr-num font-mono">4</span>
+            <div className="legend-chip" title="FDR 4: Tough (Away vs top-six)">
+              <span className="legend-fdr-tag font-mono fdr-4">4</span>
               <span className="legend-text">Tough</span>
             </div>
-            <div className="legend-chip legend-fdr-5" title="FDR 5: Very Tough (Away vs title contenders)">
-              <span className="legend-dot" style={{ background: 'var(--fdr-5)' }} />
-              <span className="legend-fdr-num font-mono">5</span>
+            <div className="legend-chip" title="FDR 5: Very Tough (Away vs title contenders)">
+              <span className="legend-fdr-tag font-mono fdr-5">5</span>
               <span className="legend-text">Very Tough</span>
             </div>
-            <div className="legend-chip legend-fdr-blank" title="Blank Gameweek: No fixture scheduled">
-              <span className="legend-dot" style={{ background: 'var(--border-subtle)' }} />
-              <span className="legend-fdr-num font-mono">-</span>
+            <div className="legend-chip" title="Blank Gameweek: No fixture scheduled">
+              <span className="legend-fdr-tag font-mono fdr-blank">-</span>
               <span className="legend-text">Blank</span>
             </div>
-            <div className="legend-chip legend-fdr-past" title="Completed Matchday">
-              <span className="legend-dot" style={{ background: 'var(--text-muted)', opacity: 0.6 }} />
-              <span className="legend-fdr-num font-mono">✓</span>
+            <div className="legend-chip" title="Completed Matchday">
+              <span className="legend-fdr-tag font-mono fdr-past">✓</span>
               <span className="legend-text">Past</span>
             </div>
           </div>
@@ -297,7 +290,7 @@ export default function FixtureHeatmap({
                       <span className="team-name">{team.name}</span>
                     </th>
                     <td className="avg-cell font-mono">
-                      <span className="avg-badge pill-base pill-sm" style={{ color: team.avgDiff <= 2.6 ? 'var(--accent-emerald)' : team.avgDiff >= 3.6 ? 'var(--accent-crimson)' : 'var(--text-primary)' }}>
+                      <span className="table-avg-diff font-mono">
                         {team.avgDiff.toFixed(2)}
                       </span>
                     </td>

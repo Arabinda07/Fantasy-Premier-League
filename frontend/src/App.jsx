@@ -25,6 +25,7 @@ import {
 } from './utils/loadLatestMatchday';
 import useDataLoader from './utils/useDataLoader';
 import { buildLiveMatchdayPayload } from './utils/clientOptimizer';
+import { VALIDATION_MESSAGES } from './constants/copyTokens';
 
 // Helper to map tab IDs to hash routes
 const TAB_TO_HASH = {
@@ -95,6 +96,7 @@ export default function App() {
   const [starters, setStarters] = useState(initialMatchday.data?.starters || []);
   const [bench, setBench] = useState(initialMatchday.data?.bench || []);
   const [selectedSwapPlayer, setSelectedSwapPlayer] = useState(null);
+  const [swapNotice, setSwapNotice] = useState(null);
   const [activeStrategy, setActiveStrategy] = useState(initialMatchday.data?.strategy || 'pure_xp');
   const [isSimulating, setIsSimulating] = useState(false);
   const [isLineupLocked, setIsLineupLocked] = useState(() => {
@@ -349,6 +351,7 @@ export default function App() {
 
   // Pitch Starter <-> Bench Swap Handler
   const handleSwapPlayers = (p1, p2) => {
+    setSwapNotice(null);
     const isP1Starter = starters.some(s => (s.player_code || s.code) === (p1.player_code || p1.code));
     const isP2Starter = starters.some(s => (s.player_code || s.code) === (p2.player_code || p2.code));
 
@@ -365,7 +368,7 @@ export default function App() {
         setBench(newBench);
         setSelectedSwapPlayer(null);
       } else {
-        alert('Invalid Formation: Must have 1 GK, 3-5 DEFs, 2-5 MIDs, 1-3 FWDs.');
+        setSwapNotice(VALIDATION_MESSAGES.formation.invalid);
         setSelectedSwapPlayer(null);
       }
     } else if (!isP1Starter && isP2Starter) {
@@ -381,7 +384,7 @@ export default function App() {
         setBench(newBench);
         setSelectedSwapPlayer(null);
       } else {
-        alert('Invalid Formation: Must have 1 GK, 3-5 DEFs, 2-5 MIDs, 1-3 FWDs.');
+        setSwapNotice(VALIDATION_MESSAGES.formation.invalid);
         setSelectedSwapPlayer(null);
       }
     } else {
@@ -411,14 +414,14 @@ export default function App() {
           };
         });
       } else {
-        // Promote target to Captain; demote previous Captain to Vice-Captain
+        // Promote target to Captain; previous Captain becomes the only Vice-Captain
+        const oldCaptCode = currentCapt ? (currentCapt.player_code || currentCapt.code) : null;
         return prev.map(p => {
           const c = p.player_code || p.code;
-          const wasCapt = Boolean(p.is_captain);
           return {
             ...p,
             is_captain: c === targetCode,
-            is_vice_captain: wasCapt && c !== targetCode ? true : (c === targetCode ? false : p.is_vice_captain)
+            is_vice_captain: oldCaptCode ? c === oldCaptCode : (c !== targetCode && Boolean(p.is_vice_captain))
           };
         });
       }
@@ -495,6 +498,7 @@ export default function App() {
                     isLineupLocked={isLineupLocked}
                     onConfirmLockLineup={handleConfirmLockLineup}
                     freeTransfers={freeTransfers}
+                    swapNotice={swapNotice}
                   />
                 </div>
               </ErrorBoundary>

@@ -4,50 +4,16 @@ import {
   Crown,
   SoccerBall,
   Calendar,
-  TrendUp,
   CaretLeft,
   CaretRight,
   CaretUp,
   CaretDown,
   Medal,
-  Sparkle,
   Terminal,
-  ArrowsLeftRight,
   ArrowUpRight,
-  X,
-  Star,
-  User,
-  ShieldCheck,
-  Flame,
-  Funnel
+  X
 } from '@phosphor-icons/react';
 import vaultData from '../data/historical_vault.json';
-
-// Premier League club kit stripe identifiers matching the terminal design system
-const getClubKitClass = (teamName) => {
-  const t = (teamName || '').toLowerCase().replace(/[^a-z]/g, '');
-  if (t.includes('arsenal')) return 'kit-arsenal';
-  if (t.includes('aston') || t.includes('villa')) return 'kit-aston-villa';
-  if (t.includes('bournemouth')) return 'kit-bournemouth';
-  if (t.includes('brentford')) return 'kit-brentford';
-  if (t.includes('brighton')) return 'kit-brighton';
-  if (t.includes('chelsea')) return 'kit-chelsea';
-  if (t.includes('palace')) return 'kit-crystal-palace';
-  if (t.includes('everton')) return 'kit-everton';
-  if (t.includes('fulham')) return 'kit-fulham';
-  if (t.includes('ipswich')) return 'kit-ipswich';
-  if (t.includes('leicester')) return 'kit-leicester';
-  if (t.includes('liverpool')) return 'kit-liverpool';
-  if (t.includes('city') || t.includes('mancity')) return 'kit-man-city';
-  if (t.includes('utd') || t.includes('united') || t.includes('manutd')) return 'kit-man-utd';
-  if (t.includes('newcastle')) return 'kit-newcastle';
-  if (t.includes('nottingham') || t.includes('forest')) return 'kit-nottingham-forest';
-  if (t.includes('southampton')) return 'kit-southampton';
-  if (t.includes('tottenham') || t.includes('spurs')) return 'kit-tottenham';
-  if (t.includes('westham')) return 'kit-west-ham';
-  if (t.includes('wolves')) return 'kit-wolves';
-  return 'kit-generic';
-};
 
 export default function HistoricalVault({ onInspectPlayer }) {
   const seasonsList = vaultData.seasons || [];
@@ -60,9 +26,9 @@ export default function HistoricalVault({ onInspectPlayer }) {
   const [sortKey, setSortKey] = useState('season');
   const [sortDir, setSortDir] = useState('desc');
 
-  // Pill scroll track & element references for automatic smooth alignment
+  // Timeline scrubber references for automatic smooth alignment
   const trackRef = useRef(null);
-  const pillRefs = useRef({});
+  const nodeRefs = useRef({});
 
   // Current season metadata
   const currentSeasonMeta = useMemo(() => {
@@ -102,7 +68,6 @@ export default function HistoricalVault({ onInspectPlayer }) {
   const fwds = currentDreamTeam.starters.filter(p => p.position === 'FWD');
 
   // Season Navigation Helpers
-  // In seasonsList, index 0 is most recent (e.g. 2025-26), index 9 is oldest (2016-17)
   const currentSeasonIndex = seasonsList.findIndex(s => s.season === selectedSeason);
   const handleNewerSeason = () => {
     if (currentSeasonIndex > 0) {
@@ -115,9 +80,9 @@ export default function HistoricalVault({ onInspectPlayer }) {
     }
   };
 
-  // Auto-scroll the active season pill into view whenever selection changes
+  // Auto-scroll the active season node into view whenever selection changes
   useEffect(() => {
-    const activeEl = pillRefs.current[selectedSeason];
+    const activeEl = nodeRefs.current[selectedSeason];
     if (activeEl && trackRef.current) {
       activeEl.scrollIntoView({
         behavior: 'smooth',
@@ -168,31 +133,28 @@ export default function HistoricalVault({ onInspectPlayer }) {
 
   const handlePlayerClick = (player) => {
     setInspectedHistoricalPlayer(player);
+    if (onInspectPlayer) {
+      onInspectPlayer(player);
+    }
   };
 
   return (
     <div className="historical-vault-view surface-scope-vault" style={{ padding: '0 0 40px 0' }}>
-      {/* 1. Header Banner & View Mode Switcher with Responsive Labels */}
+      {/* 1. Header Banner & View Mode Switcher with Direction J Wire Segments */}
       <div className="vault-hero-bar">
         <div className="vault-hero-inner">
           <div>
-            <h1 style={{
-              fontSize: 'clamp(18px, 2.2vw, 22px)',
-              fontWeight: 800,
-              color: 'var(--text-primary)',
-              letterSpacing: '-0.02em',
-              margin: 0
-            }}>
+            <h1 className="vault-hero-title">
               Premier League Time Machine
             </h1>
-            <p style={{ fontSize: 'clamp(11.5px, 1.2vw, 12.5px)', color: 'var(--text-secondary)', margin: '4px 0 0 0' }}>
-              Explore official season-by-season Dream Teams on the tactical pitch, all-time record hauls, and league trends.
+            <p className="vault-hero-subtitle zinc">
+              Official season-by-season Dream Teams on the tactical pitch, all-time record hauls, and league trends.
             </p>
           </div>
 
-          {/* Segmented View Switcher with Full ARIA tablist Semantics & Adaptive Labels */}
+          {/* Wire Segments Navigation Rail */}
           <div
-            className="vault-tab-rail"
+            className="wire-segments font-mono"
             role="tablist"
             aria-label="Historical Vault Views"
           >
@@ -203,12 +165,12 @@ export default function HistoricalVault({ onInspectPlayer }) {
               aria-selected={activeTab === 'pitch'}
               aria-controls="vault-panel-pitch"
               tabIndex={activeTab === 'pitch' ? 0 : -1}
-              className={`hud-segment-btn ${activeTab === 'pitch' ? 'active' : ''}`}
+              className="wire-segment"
+              aria-pressed={activeTab === 'pitch'}
               onClick={() => setActiveTab('pitch')}
             >
-              <Trophy size={14} weight={activeTab === 'pitch' ? 'fill' : 'bold'} />
-              <span className="tab-label-full">Dream Team Pitch</span>
-              <span className="tab-label-short">Pitch</span>
+              <Trophy size={13} weight={activeTab === 'pitch' ? 'fill' : 'bold'} />
+              <span>Dream Team Pitch</span>
             </button>
             <button
               type="button"
@@ -217,12 +179,12 @@ export default function HistoricalVault({ onInspectPlayer }) {
               aria-selected={activeTab === 'records'}
               aria-controls="vault-panel-records"
               tabIndex={activeTab === 'records' ? 0 : -1}
-              className={`hud-segment-btn ${activeTab === 'records' ? 'active' : ''}`}
+              className="wire-segment"
+              aria-pressed={activeTab === 'records'}
               onClick={() => setActiveTab('records')}
             >
-              <Medal size={14} weight={activeTab === 'records' ? 'fill' : 'bold'} />
-              <span className="tab-label-full">All-Time Records</span>
-              <span className="tab-label-short">Records</span>
+              <Medal size={13} weight={activeTab === 'records' ? 'fill' : 'bold'} />
+              <span>All-Time Records</span>
             </button>
             <button
               type="button"
@@ -231,12 +193,12 @@ export default function HistoricalVault({ onInspectPlayer }) {
               aria-selected={activeTab === 'comparison'}
               aria-controls="vault-panel-comparison"
               tabIndex={activeTab === 'comparison' ? 0 : -1}
-              className={`hud-segment-btn ${activeTab === 'comparison' ? 'active' : ''}`}
+              className="wire-segment"
+              aria-pressed={activeTab === 'comparison'}
               onClick={() => setActiveTab('comparison')}
             >
-              <Calendar size={14} weight={activeTab === 'comparison' ? 'fill' : 'bold'} />
-              <span className="tab-label-full">10-Season Overview</span>
-              <span className="tab-label-short">Overview</span>
+              <Calendar size={13} weight={activeTab === 'comparison' ? 'fill' : 'bold'} />
+              <span>10-Season Overview</span>
             </button>
             <button
               type="button"
@@ -245,144 +207,98 @@ export default function HistoricalVault({ onInspectPlayer }) {
               aria-selected={activeTab === 'lab'}
               aria-controls="vault-panel-lab"
               tabIndex={activeTab === 'lab' ? 0 : -1}
-              className={`hud-segment-btn ${activeTab === 'lab' ? 'active' : ''}`}
+              className="wire-segment"
+              aria-pressed={activeTab === 'lab'}
               onClick={() => setActiveTab('lab')}
             >
-              <Terminal size={14} weight={activeTab === 'lab' ? 'fill' : 'bold'} />
-              <span className="tab-label-full">Marimo & SQL Lab</span>
-              <span className="tab-label-short">SQL Lab</span>
+              <Terminal size={13} weight={activeTab === 'lab' ? 'fill' : 'bold'} />
+              <span>SQL Lab</span>
             </button>
           </div>
         </div>
       </div>
 
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 clamp(12px, 2vw, 20px)' }}>
-        {/* 2 & 3. Season Selector Rail & Season KPI Deck (Only relevant for Dream Team Pitch) */}
+        {/* 2 & 3. Season Timeline Scrubber & 48px Telemetry Deck (Pitch View) */}
         {activeTab === 'pitch' && (
           <>
-            <div className="vault-season-rail-container">
-              {/* Left Arrow: Moves to Newer Seasons (left in the visual array) */}
+            {/* Borderless Season Timeline Scrubber */}
+            <div className="vault-timeline-scrubber font-mono" role="region" aria-label="Season Timeline">
               <button
                 type="button"
-                className="vault-season-nav-btn"
+                className="timeline-nav-btn font-mono"
                 onClick={handleNewerSeason}
                 disabled={currentSeasonIndex <= 0}
                 title="Newer Season"
                 aria-label="Navigate to newer season"
               >
-                <CaretLeft size={14} weight="bold" />
-                <span>Newer</span>
+                <CaretLeft size={13} weight="bold" />
+                <span>NEWER</span>
               </button>
 
-              {/* Season Pills Scroll Track */}
-              <div className="vault-season-scroll-track" ref={trackRef}>
+              <div className="timeline-track" ref={trackRef}>
                 {seasonsList.map(s => {
                   const isSelected = s.season === selectedSeason;
                   return (
                     <button
                       key={s.season}
-                      ref={el => { pillRefs.current[s.season] = el; }}
+                      ref={el => { nodeRefs.current[s.season] = el; }}
                       type="button"
                       onClick={() => setSelectedSeason(s.season)}
-                      className={`vault-season-pill ${isSelected ? 'active' : ''}`}
+                      className={`timeline-node font-mono ${isSelected ? 'is-active' : ''}`}
                       aria-pressed={isSelected}
                       aria-label={`Select season ${s.season}`}
                     >
-                      {s.season}
+                      <span className="timeline-year">{s.season}</span>
+                      {isSelected && <span className="timeline-indicator" />}
                     </button>
                   );
                 })}
               </div>
 
-              {/* Right Arrow: Moves to Older Seasons (right in the visual array) */}
               <button
                 type="button"
-                className="vault-season-nav-btn"
+                className="timeline-nav-btn font-mono"
                 onClick={handleOlderSeason}
                 disabled={currentSeasonIndex >= seasonsList.length - 1}
                 title="Older Season"
                 aria-label="Navigate to older season"
               >
-                <span>Older</span>
-                <CaretRight size={14} weight="bold" />
+                <span>OLDER</span>
+                <CaretRight size={13} weight="bold" />
               </button>
             </div>
 
-            {/* 3. Season KPI Deck (Adaptive HUD Ribbon: 4-col desktop, 2x2 tablet & mobile) */}
-            <div className="vault-hud-ribbon">
-              {/* Tile 1: Campaign Profile */}
-              <div className="hud-tile hud-tile-strategy">
-                <div className="hud-tile-header">
-                  <span className="hud-tile-eyebrow font-mono">CAMPAIGN PROFILE</span>
-                  <span className="hud-strategy-badge font-mono" style={{ backgroundColor: 'rgba(245, 158, 11, 0.15)', color: 'var(--accent-amber)' }}>
-                    {selectedSeason}
-                  </span>
-                </div>
-                <div className="hud-directive-text" style={{ padding: '2px 0' }}>
-                  <span className="hud-highlight-text font-mono" style={{ fontSize: '15px' }}>
-                    38 Gameweeks
-                  </span>
-                  <span className="hud-sub-text font-mono" style={{ fontSize: '11px', marginTop: '2px' }}>
-                    {currentSeasonMeta?.total_players?.toLocaleString() || '0'} Players
-                  </span>
-                </div>
+            {/* 48px Direction J Telemetry Deck */}
+            <div className="vault-telemetry-deck font-mono" role="region" aria-label="Season Telemetry">
+              <div className="telemetry-cell">
+                <span className="cell-label zinc">CAMPAIGN:</span>
+                <span className="cell-val cream">{selectedSeason}</span>
+                <span className="cell-sub zinc">(38 GWs · {currentSeasonMeta?.total_players?.toLocaleString() || '0'} players)</span>
               </div>
 
-              {/* Tile 2: League Firepower */}
-              <div className="hud-tile hud-tile-chip">
-                <div className="hud-tile-header">
-                  <span className="hud-tile-eyebrow font-mono">LEAGUE FIREPOWER</span>
-                  <span className="hud-chip-live-badge font-mono" style={{ backgroundColor: 'var(--accent-cyan)', color: 'var(--text-inverse)' }}>
-                    OFFICIAL
-                  </span>
-                </div>
-                <div className="hud-directive-text" style={{ padding: '2px 0' }}>
-                  <span className="hud-highlight-text font-mono" style={{ fontSize: '15px', color: 'var(--accent-cyan)' }}>
-                    {currentSeasonMeta?.total_goals?.toLocaleString() || '0'} Goals
-                  </span>
-                  <span className="hud-sub-text font-mono" style={{ fontSize: '11px', marginTop: '2px' }}>
-                    {currentSeasonMeta?.total_assists?.toLocaleString() || '0'} Assists logged
-                  </span>
-                </div>
+              <div className="telemetry-divider" aria-hidden="true" />
+
+              <div className="telemetry-cell">
+                <span className="cell-label zinc">FIREPOWER:</span>
+                <span className="cell-val cream">{currentSeasonMeta?.total_goals?.toLocaleString() || '0'} G</span>
+                <span className="cell-sub zinc">· {currentSeasonMeta?.total_assists?.toLocaleString() || '0'} A</span>
               </div>
 
-              {/* Tile 3: Golden Boot Winner */}
-              <div className="hud-tile hud-tile-directive">
-                <div className="hud-tile-header">
-                  <span className="hud-tile-eyebrow font-mono">GOLDEN BOOT</span>
-                  <span className="hud-chip-idle-badge font-mono">
-                    {currentSeasonMeta?.top_scorer_goals} GOALS
-                  </span>
-                </div>
-                <div className="hud-directive-text" style={{ padding: '2px 0' }}>
-                  <span className="hud-highlight-text" style={{ fontSize: '15px', color: 'var(--accent-crimson)', fontWeight: 800 }}>
-                    {currentSeasonMeta?.top_scorer_name || '-'}
-                  </span>
-                  <span className="hud-sub-text font-mono" style={{ fontSize: '11px', marginTop: '2px' }}>
-                    Top goalscorer in Premier League
-                  </span>
-                </div>
+              <div className="telemetry-divider" aria-hidden="true" />
+
+              <div className="telemetry-cell">
+                <span className="cell-label zinc">GOLDEN BOOT:</span>
+                <span className="cell-val cream">{currentSeasonMeta?.top_scorer_name || '-'}</span>
+                <span className="cell-sub zinc">({currentSeasonMeta?.top_scorer_goals} G)</span>
               </div>
 
-              {/* Tile 4: Top Point Hauler / Season MVP */}
-              <div className="hud-tile hud-tile-scorecard">
-                <div className="hud-tile-header">
-                  <span className="hud-tile-eyebrow font-mono">SEASON MVP</span>
-                  <span className="hud-squad-status font-mono" style={{ color: 'var(--accent-amber)' }}>
-                    {currentSeasonMeta?.top_points_name || '-'}
-                  </span>
-                </div>
-                <div className="hud-scorecard-body">
-                  <div className="hud-score-main">
-                    <span className="hud-score-val font-mono" style={{ color: 'var(--accent-amber)', fontSize: '20px', fontWeight: 800 }}>
-                      {currentSeasonMeta?.top_points || 0}
-                    </span>
-                    <span className="hud-score-unit font-mono">pts</span>
-                  </div>
-                  <div className="hud-score-meta font-mono" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '2px' }}>
-                    <span className="hud-formation-pill">{currentDreamTeam.formation} Formation</span>
-                  </div>
-                </div>
+              <div className="telemetry-divider" aria-hidden="true" />
+
+              <div className="telemetry-cell">
+                <span className="cell-label zinc">SEASON MVP:</span>
+                <span className="cell-val cream">{currentSeasonMeta?.top_points_name || '-'}</span>
+                <span className="cell-sub zinc">({currentSeasonMeta?.top_points || 0} pts)</span>
               </div>
             </div>
           </>
@@ -397,144 +313,96 @@ export default function HistoricalVault({ onInspectPlayer }) {
             tabIndex={0}
             className="vault-pitch-workspace"
           >
-            {/* Tactical Pitch Surface */}
-            <div className="pitch-container" style={{ minHeight: 'clamp(520px, 62vh, 640px)' }}>
-              <div className="pitch-marking-center-line" />
-              <div className="pitch-marking-center-circle" />
-              <div className="pitch-marking-penalty-top" />
-              <div className="pitch-marking-penalty-bottom" />
-
-              {/* Pitch Banner */}
-              <div style={{
-                position: 'relative',
-                zIndex: 10,
-                textAlign: 'center',
-                backgroundColor: 'rgba(9, 13, 22, 0.82)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                borderRadius: 'var(--radius-md)',
-                padding: '6px 14px',
-                margin: '0 auto 10px auto',
-                maxWidth: 'fit-content',
-                backdropFilter: 'blur(8px)',
-                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4)'
-              }}>
-                <span className="font-mono" style={{ fontSize: 'clamp(9.5px, 1.1vw, 11px)', fontWeight: 800, color: 'var(--accent-emerald)', letterSpacing: '0.04em' }}>
-                  {selectedSeason} OFFICIAL DREAM TEAM ({currentDreamTeam.formation}) · {currentDreamTeam.totalStarterPts.toLocaleString()} STARTER PTS
-                </span>
+            {/* Tactical Pitch Column */}
+            <div className="vault-pitch-col">
+              {/* Pitch Telemetry Strip */}
+              <div className="vault-pitch-header font-mono">
+                <span className="zinc">OFFICIAL DREAM TEAM:</span>
+                <span className="cream font-bold">{selectedSeason}</span>
+                <span className="zinc">·</span>
+                <span className="cream">{currentDreamTeam.formation} FORMATION</span>
+                <span className="zinc">·</span>
+                <span className="cream font-bold">{currentDreamTeam.totalStarterPts.toLocaleString()} STARTER PTS</span>
               </div>
 
-              {/* Row 1: Goalkeepers */}
-              <div className="pitch-row">
-                {gks.map(p => (
-                  <HistoricalPlayerCard
-                    key={`${selectedSeason}-${p.player_code}`}
-                    player={p}
-                    isCaptain={p.player_code === currentDreamTeam.captainCode}
-                    onInspect={handlePlayerClick}
-                  />
-                ))}
-              </div>
+              {/* Direction J Wire Pitch */}
+              <div className="wire-pitch vault-wire-pitch">
+                {/* Row 1: Goalkeepers */}
+                <div className={`wire-pitch-row pitch-row-count-${gks.length}`}>
+                  {gks.map(p => (
+                    <HistoricalPlayerCard
+                      key={`${selectedSeason}-${p.player_code}`}
+                      player={p}
+                      isCaptain={p.player_code === currentDreamTeam.captainCode}
+                      onInspect={handlePlayerClick}
+                    />
+                  ))}
+                </div>
 
-              {/* Row 2: Defenders */}
-              <div className="pitch-row">
-                {defs.map(p => (
-                  <HistoricalPlayerCard
-                    key={`${selectedSeason}-${p.player_code}`}
-                    player={p}
-                    isCaptain={p.player_code === currentDreamTeam.captainCode}
-                    onInspect={handlePlayerClick}
-                  />
-                ))}
-              </div>
+                {/* Row 2: Defenders */}
+                <div className={`wire-pitch-row pitch-row-count-${defs.length}`}>
+                  {defs.map(p => (
+                    <HistoricalPlayerCard
+                      key={`${selectedSeason}-${p.player_code}`}
+                      player={p}
+                      isCaptain={p.player_code === currentDreamTeam.captainCode}
+                      onInspect={handlePlayerClick}
+                    />
+                  ))}
+                </div>
 
-              {/* Row 3: Midfielders */}
-              <div className="pitch-row">
-                {mids.map(p => (
-                  <HistoricalPlayerCard
-                    key={`${selectedSeason}-${p.player_code}`}
-                    player={p}
-                    isCaptain={p.player_code === currentDreamTeam.captainCode}
-                    onInspect={handlePlayerClick}
-                  />
-                ))}
-              </div>
+                {/* Row 3: Midfielders */}
+                <div className={`wire-pitch-row pitch-row-count-${mids.length}`}>
+                  {mids.map(p => (
+                    <HistoricalPlayerCard
+                      key={`${selectedSeason}-${p.player_code}`}
+                      player={p}
+                      isCaptain={p.player_code === currentDreamTeam.captainCode}
+                      onInspect={handlePlayerClick}
+                    />
+                  ))}
+                </div>
 
-              {/* Row 4: Forwards */}
-              <div className="pitch-row">
-                {fwds.map(p => (
-                  <HistoricalPlayerCard
-                    key={`${selectedSeason}-${p.player_code}`}
-                    player={p}
-                    isCaptain={p.player_code === currentDreamTeam.captainCode}
-                    onInspect={handlePlayerClick}
-                  />
-                ))}
+                {/* Row 4: Forwards */}
+                <div className={`wire-pitch-row pitch-row-count-${fwds.length}`}>
+                  {fwds.map(p => (
+                    <HistoricalPlayerCard
+                      key={`${selectedSeason}-${p.player_code}`}
+                      player={p}
+                      isCaptain={p.player_code === currentDreamTeam.captainCode}
+                      onInspect={handlePlayerClick}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Right Sidebar: Dream Team Bench & Squad Breakdown */}
             <div className="vault-bench-totals-container">
               {/* Bench Container */}
-              <div style={{
-                backgroundColor: 'var(--bg-surface-1)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: 'var(--radius-lg)',
-                padding: '16px'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                  <span className="font-mono" style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-secondary)', letterSpacing: '0.04em' }}>
-                    DREAM TEAM BENCH
-                  </span>
-                  <span className="font-mono" style={{ fontSize: '11px', color: 'var(--accent-emerald)', fontWeight: 700 }}>
-                    +{currentDreamTeam.totalBenchPts} pts
-                  </span>
+              <div className="vault-sidebar-card">
+                <div className="vault-sidebar-header font-mono">
+                  <span className="zinc">DREAM TEAM BENCH</span>
+                  <span className="cream font-bold">+{currentDreamTeam.totalBenchPts} pts</span>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div className="vault-bench-list">
                   {currentDreamTeam.bench.map((sub) => (
                     <button
                       key={`${selectedSeason}-sub-${sub.player_code}`}
                       type="button"
                       onClick={() => handlePlayerClick(sub)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        backgroundColor: 'var(--bg-surface-2)',
-                        border: '1px solid var(--border-subtle)',
-                        borderRadius: 'var(--radius-md)',
-                        padding: '9px 12px',
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                        transition: 'all 0.15s ease'
-                      }}
-                      className="historical-bench-item"
+                      className="vault-bench-row font-mono"
+                      aria-label={`${sub.web_name}, ${sub.position}, ${sub.total_points} pts`}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <span className="font-mono" style={{
-                          fontSize: '9.5px',
-                          fontWeight: 800,
-                          backgroundColor: sub.position === 'GK' ? 'rgba(245, 158, 11, 0.2)' : sub.position === 'DEF' ? 'rgba(59, 130, 246, 0.2)' : sub.position === 'MID' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                          color: sub.position === 'GK' ? 'var(--accent-amber)' : sub.position === 'DEF' ? 'var(--accent-blue)' : sub.position === 'MID' ? 'var(--accent-emerald)' : 'var(--accent-crimson)',
-                          padding: '2px 6px',
-                          borderRadius: 'var(--radius-xs)'
-                        }}>
-                          {sub.position}
-                        </span>
-                        <div>
-                          <div style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text-primary)' }}>
-                            {sub.web_name}
-                          </div>
-                          <div style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>
-                            {sub.team_name} · £{Number(sub.now_cost).toFixed(1)}m
-                          </div>
-                        </div>
+                      <div className="bench-row-left">
+                        <span className="bench-pos zinc">[{sub.position}]</span>
+                        <span className="bench-name cream font-bold">{sub.web_name}</span>
+                        <span className="bench-meta zinc">{sub.team_name} · £{Number(sub.now_cost).toFixed(1)}m</span>
                       </div>
-                      <div className="font-mono" style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)' }}>
-                          {sub.total_points}
-                        </div>
-                        <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>pts</div>
+                      <div className="bench-row-right">
+                        <span className="bench-pts cream font-bold">{sub.total_points}</span>
+                        <span className="bench-unit zinc">pts</span>
                       </div>
                     </button>
                   ))}
@@ -542,33 +410,22 @@ export default function HistoricalVault({ onInspectPlayer }) {
               </div>
 
               {/* Season Dream Team Summary Card */}
-              <div style={{
-                backgroundColor: 'var(--bg-surface-1)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: 'var(--radius-lg)',
-                padding: '16px'
-              }}>
-                <span className="font-mono" style={{ fontSize: '10px', fontWeight: 800, color: 'var(--accent-amber)', letterSpacing: '0.04em' }}>
-                  CAMPAIGN TOTALS
-                </span>
-                <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                    <span style={{ color: 'var(--text-secondary)' }}>Starters Points</span>
-                    <span className="font-mono" style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
-                      {currentDreamTeam.totalStarterPts} pts
-                    </span>
+              <div className="vault-sidebar-card font-mono">
+                <div className="vault-sidebar-header">
+                  <span className="zinc">CAMPAIGN TOTALS</span>
+                </div>
+                <div className="vault-totals-rows">
+                  <div className="vault-totals-row">
+                    <span className="zinc">Starters Points</span>
+                    <span className="cream font-bold">{currentDreamTeam.totalStarterPts} pts</span>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                    <span style={{ color: 'var(--text-secondary)' }}>Full 15-Man Total</span>
-                    <span className="font-mono" style={{ fontWeight: 700, color: 'var(--accent-emerald)' }}>
-                      {currentDreamTeam.totalStarterPts + currentDreamTeam.totalBenchPts} pts
-                    </span>
+                  <div className="vault-totals-row">
+                    <span className="zinc">Full 15-Man Total</span>
+                    <span className="cream font-bold">{currentDreamTeam.totalStarterPts + currentDreamTeam.totalBenchPts} pts</span>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                    <span style={{ color: 'var(--text-secondary)' }}>Armband Pick (C)</span>
-                    <span className="font-mono" style={{ fontWeight: 700, color: 'var(--accent-amber)' }}>
-                      {currentSeasonMeta?.top_points_name} ({currentSeasonMeta?.top_points} pts)
-                    </span>
+                  <div className="vault-totals-row">
+                    <span className="zinc">Armband Pick [C]</span>
+                    <span className="cream font-bold">{currentSeasonMeta?.top_points_name} ({currentSeasonMeta?.top_points} pts)</span>
                   </div>
                 </div>
               </div>
@@ -576,10 +433,9 @@ export default function HistoricalVault({ onInspectPlayer }) {
           </div>
         )}
 
-        {/* 5. Tab View 2: All-Time Records (Hall of Fame) with Responsive Filter */}
+        {/* 5. Tab View 2: All-Time Records (Hall of Fame) with Wire Segments */}
         {activeTab === 'records' && (
           <div>
-            {/* Filter Toggle on Narrow Screens */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -589,41 +445,41 @@ export default function HistoricalVault({ onInspectPlayer }) {
               gap: '12px'
             }}>
               <div>
-                <h2 style={{ fontSize: '17px', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
+                <h2 style={{ fontSize: '16px', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
                   Premier League Hall of Fame
                 </h2>
-                <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: '2px 0 0 0' }}>
+                <p className="zinc" style={{ fontSize: '12px', margin: '3px 0 0 0' }}>
                   The 15 greatest individual seasons in modern Premier League fantasy history.
                 </p>
               </div>
 
-              {/* Segmented Filter */}
-              <div className="hud-segmented-group" style={{ backgroundColor: 'var(--bg-surface-2)', padding: '3px' }}>
+              {/* Wire Segments Filter */}
+              <div className="wire-segments font-mono" role="group" aria-label="Records Filter">
                 <button
                   type="button"
                   onClick={() => setRecordsFilter('all')}
-                  className={`hud-segment-btn ${recordsFilter === 'all' ? 'active' : ''}`}
-                  style={{ padding: '5px 12px', fontSize: '11px', fontWeight: 700 }}
+                  className="wire-segment"
+                  aria-pressed={recordsFilter === 'all'}
                 >
                   All Records
                 </button>
                 <button
                   type="button"
                   onClick={() => setRecordsFilter('points')}
-                  className={`hud-segment-btn ${recordsFilter === 'points' ? 'active' : ''}`}
-                  style={{ padding: '5px 12px', fontSize: '11px', fontWeight: 700 }}
+                  className="wire-segment"
+                  aria-pressed={recordsFilter === 'points'}
                 >
-                  <Crown size={13} weight="fill" style={{ color: 'var(--accent-amber)' }} />
-                  Points
+                  <Crown size={13} weight="bold" />
+                  <span>Points</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setRecordsFilter('goals')}
-                  className={`hud-segment-btn ${recordsFilter === 'goals' ? 'active' : ''}`}
-                  style={{ padding: '5px 12px', fontSize: '11px', fontWeight: 700 }}
+                  className="wire-segment"
+                  aria-pressed={recordsFilter === 'goals'}
                 >
-                  <SoccerBall size={13} weight="fill" style={{ color: 'var(--accent-crimson)' }} />
-                  Goals
+                  <SoccerBall size={13} weight="bold" />
+                  <span>Goals</span>
                 </button>
               </div>
             </div>
@@ -637,88 +493,45 @@ export default function HistoricalVault({ onInspectPlayer }) {
             >
               {/* Hall of Fame: Points */}
               {(recordsFilter === 'all' || recordsFilter === 'points') && (
-                <div style={{
-                  backgroundColor: 'var(--bg-surface-1)',
-                  border: '1px solid var(--border-subtle)',
-                  borderRadius: 'var(--radius-lg)',
-                  padding: '18px'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
-                    <div style={{
-                      backgroundColor: 'rgba(245, 158, 11, 0.15)',
-                      padding: '8px',
-                      borderRadius: 'var(--radius-sm)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      <Crown size={20} weight="fill" style={{ color: 'var(--accent-amber)' }} />
-                    </div>
+                <div className="vault-sidebar-card">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                    <Crown size={16} weight="bold" style={{ color: 'var(--accent-amber)' }} />
                     <div>
-                      <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
+                      <h3 style={{ fontSize: '13px', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
                         All-Time Highest Scoring Seasons
                       </h3>
-                      <p style={{ fontSize: '11.5px', color: 'var(--text-secondary)', margin: '2px 0 0 0' }}>
+                      <p className="zinc" style={{ fontSize: '11px', margin: '2px 0 0 0' }}>
                         Top individual player campaigns across 10 seasons
                       </p>
                     </div>
                   </div>
 
-                  <div className="vault-records-scrollable" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <div className="vault-records-scrollable" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     {(vaultData.hall_of_fame_points || []).map((record, index) => (
                       <div
                         key={`hof-pts-${index}`}
                         onClick={() => handlePlayerClick(record)}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          backgroundColor: index === 0 ? 'rgba(245, 158, 11, 0.09)' : 'var(--bg-surface-2)',
-                          border: index === 0 ? '1px solid rgba(245, 158, 11, 0.35)' : '1px solid var(--border-subtle)',
-                          borderRadius: 'var(--radius-md)',
-                          padding: '8px 12px',
-                          cursor: 'pointer',
-                          transition: 'all 0.15s ease'
-                        }}
-                        className="historical-hof-row"
+                        className={`vault-record-row font-mono ${index === 0 ? 'is-leader' : ''}`}
                         title={`Click to inspect ${record.web_name}'s full ${record.season} season haul`}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handlePlayerClick(record);
+                          }
+                        }}
                       >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <span className="font-mono" style={{
-                            fontSize: '11px',
-                            fontWeight: 800,
-                            width: '22px',
-                            color: index === 0 ? 'var(--accent-amber)' : index < 3 ? 'var(--text-primary)' : 'var(--text-muted)'
-                          }}>
-                            #{index + 1}
-                          </span>
-                          <div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
-                                {record.web_name}
-                              </span>
-                              <span className="font-mono" style={{
-                                fontSize: '9.5px',
-                                fontWeight: 800,
-                                padding: '1px 5px',
-                                borderRadius: 'var(--radius-xs)',
-                                backgroundColor: record.position === 'MID' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                                color: record.position === 'MID' ? 'var(--accent-emerald)' : 'var(--accent-crimson)'
-                              }}>
-                                {record.position}
-                              </span>
-                            </div>
-                            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                              {record.team_name} · <strong style={{ color: 'var(--text-secondary)' }}>{record.season}</strong> · {record.goals_scored}G / {record.assists}A
-                            </div>
-                          </div>
+                        <div className="record-left">
+                          <span className="record-rank zinc">#{index + 1}</span>
+                          <span className="record-pos zinc">[{record.position}]</span>
+                          <span className="record-name cream font-bold">{record.web_name}</span>
+                          <span className="record-meta zinc">{record.team_name} · <span className="cream">{record.season}</span> · {record.goals_scored}G / {record.assists}A</span>
                         </div>
 
-                        <div className="font-mono" style={{ textAlign: 'right' }}>
-                          <span style={{ fontSize: '15px', fontWeight: 800, color: index === 0 ? 'var(--accent-amber)' : 'var(--text-primary)' }}>
-                            {record.total_points}
-                          </span>
-                          <span style={{ fontSize: '10px', color: 'var(--text-muted)', marginLeft: '3px' }}>pts</span>
+                        <div className="record-right font-mono">
+                          <span className="record-val cream font-bold">{record.total_points}</span>
+                          <span className="record-unit zinc">pts</span>
                         </div>
                       </div>
                     ))}
@@ -728,88 +541,45 @@ export default function HistoricalVault({ onInspectPlayer }) {
 
               {/* Hall of Fame: Goals (Golden Boots) */}
               {(recordsFilter === 'all' || recordsFilter === 'goals') && (
-                <div style={{
-                  backgroundColor: 'var(--bg-surface-1)',
-                  border: '1px solid var(--border-subtle)',
-                  borderRadius: 'var(--radius-lg)',
-                  padding: '18px'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
-                    <div style={{
-                      backgroundColor: 'rgba(239, 68, 68, 0.15)',
-                      padding: '8px',
-                      borderRadius: 'var(--radius-sm)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      <SoccerBall size={20} weight="fill" style={{ color: 'var(--accent-crimson)' }} />
-                    </div>
+                <div className="vault-sidebar-card">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                    <SoccerBall size={16} weight="bold" style={{ color: 'var(--text-primary)' }} />
                     <div>
-                      <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
+                      <h3 style={{ fontSize: '13px', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
                         All-Time Most Prolific Goal Seasons
                       </h3>
-                      <p style={{ fontSize: '11.5px', color: 'var(--text-secondary)', margin: '2px 0 0 0' }}>
+                      <p className="zinc" style={{ fontSize: '11px', margin: '2px 0 0 0' }}>
                         Most clinical individual finishing campaigns since 2016
                       </p>
                     </div>
                   </div>
 
-                  <div className="vault-records-scrollable" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <div className="vault-records-scrollable" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     {(vaultData.hall_of_fame_goals || []).map((record, index) => (
                       <div
                         key={`hof-goals-${index}`}
                         onClick={() => handlePlayerClick(record)}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          backgroundColor: index === 0 ? 'rgba(239, 68, 68, 0.09)' : 'var(--bg-surface-2)',
-                          border: index === 0 ? '1px solid rgba(239, 68, 68, 0.35)' : '1px solid var(--border-subtle)',
-                          borderRadius: 'var(--radius-md)',
-                          padding: '8px 12px',
-                          cursor: 'pointer',
-                          transition: 'all 0.15s ease'
-                        }}
-                        className="historical-hof-row"
+                        className={`vault-record-row font-mono ${index === 0 ? 'is-leader' : ''}`}
                         title={`Click to inspect ${record.web_name}'s full ${record.season} campaign stats`}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handlePlayerClick(record);
+                          }
+                        }}
                       >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <span className="font-mono" style={{
-                            fontSize: '11px',
-                            fontWeight: 800,
-                            width: '22px',
-                            color: index === 0 ? 'var(--accent-crimson)' : index < 3 ? 'var(--text-primary)' : 'var(--text-muted)'
-                          }}>
-                            #{index + 1}
-                          </span>
-                          <div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
-                                {record.web_name}
-                              </span>
-                              <span className="font-mono" style={{
-                                fontSize: '9.5px',
-                                fontWeight: 800,
-                                padding: '1px 5px',
-                                borderRadius: 'var(--radius-xs)',
-                                backgroundColor: record.position === 'MID' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                                color: record.position === 'MID' ? 'var(--accent-emerald)' : 'var(--accent-crimson)'
-                              }}>
-                                {record.position}
-                              </span>
-                            </div>
-                            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                              {record.team_name} · <strong style={{ color: 'var(--text-secondary)' }}>{record.season}</strong> · {record.assists} assists
-                            </div>
-                          </div>
+                        <div className="record-left">
+                          <span className="record-rank zinc">#{index + 1}</span>
+                          <span className="record-pos zinc">[{record.position}]</span>
+                          <span className="record-name cream font-bold">{record.web_name}</span>
+                          <span className="record-meta zinc">{record.team_name} · <span className="cream">{record.season}</span> · {record.assists} assists</span>
                         </div>
 
-                        <div className="font-mono" style={{ textAlign: 'right' }}>
-                          <span style={{ fontSize: '15px', fontWeight: 800, color: index === 0 ? 'var(--accent-crimson)' : 'var(--text-primary)' }}>
-                            {record.goals_scored}
-                          </span>
-                          <span style={{ fontSize: '10px', color: 'var(--text-muted)', marginLeft: '3px' }}>goals</span>
+                        <div className="record-right font-mono">
+                          <span className="record-val cream font-bold">{record.goals_scored}</span>
+                          <span className="record-unit zinc">goals</span>
                         </div>
                       </div>
                     ))}
@@ -827,19 +597,19 @@ export default function HistoricalVault({ onInspectPlayer }) {
             id="vault-panel-comparison"
             aria-labelledby="vault-tab-comparison"
             tabIndex={0}
-            className="vault-table-container"
+            className="data-table-container vault-table-container"
           >
-            <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+            <div style={{ marginBottom: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
               <div>
-                <h3 style={{ fontSize: '16px', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
+                <h3 style={{ fontSize: '15px', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
                   10-Season Premier League Comparative Matrix
                 </h3>
-                <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: '4px 0 0 0' }}>
+                <p className="zinc" style={{ fontSize: '12px', margin: '3px 0 0 0' }}>
                   Click column headers to sort by total goals, assists, top point haulers, or Golden Boot tallies.
                 </p>
               </div>
               <span className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                Sorted by: <strong style={{ color: 'var(--accent-amber)' }}>{sortKey.replace('_', ' ').toUpperCase()} ({sortDir.toUpperCase()})</strong>
+                Sorted by: <strong className="cream">{sortKey.replace('_', ' ').toUpperCase()} ({sortDir.toUpperCase()})</strong>
               </span>
             </div>
 
@@ -933,55 +703,43 @@ export default function HistoricalVault({ onInspectPlayer }) {
                       key={`comp-row-${s.season}`}
                       style={{
                         borderBottom: '1px solid var(--border-subtle)',
-                        backgroundColor: isCurrent ? 'rgba(245, 158, 11, 0.08)' : 'transparent',
-                        fontSize: '12.5px',
-                        transition: 'background-color 0.15s ease'
+                        backgroundColor: isCurrent ? 'var(--bg-surface-2)' : 'transparent',
+                        fontSize: '12px'
                       }}
                     >
                       <th scope="row" className="font-mono vault-table-sticky-col" style={{
-                        padding: '12px',
-                        fontWeight: 800,
+                        padding: '10px 12px',
+                        fontWeight: 700,
                         textAlign: 'left',
-                        color: isCurrent ? 'var(--accent-amber)' : 'var(--text-primary)',
-                        borderLeft: isCurrent ? '3px solid var(--accent-amber)' : '3px solid transparent'
+                        color: isCurrent ? 'var(--text-primary)' : 'var(--text-secondary)',
+                        borderLeft: isCurrent ? '2px solid var(--text-primary)' : '2px solid transparent'
                       }}>
                         {s.season}
                       </th>
-                      <td style={{ padding: '12px' }}>
-                        <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{s.top_points_name}</span>{' '}
-                        <span className="font-mono" style={{ color: 'var(--accent-amber)', fontSize: '11px', fontWeight: 700 }}>({s.top_points} pts)</span>
+                      <td style={{ padding: '10px 12px' }}>
+                        <span className="cream font-bold">{s.top_points_name}</span>{' '}
+                        <span className="font-mono zinc" style={{ fontSize: '11px' }}>({s.top_points} pts)</span>
                       </td>
-                      <td style={{ padding: '12px' }}>
-                        <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{s.top_scorer_name}</span>{' '}
-                        <span className="font-mono" style={{ color: 'var(--accent-crimson)', fontSize: '11px', fontWeight: 700 }}>({s.top_scorer_goals} goals)</span>
+                      <td style={{ padding: '10px 12px' }}>
+                        <span className="cream font-bold">{s.top_scorer_name}</span>{' '}
+                        <span className="font-mono zinc" style={{ fontSize: '11px' }}>({s.top_scorer_goals} goals)</span>
                       </td>
-                      <td className="font-mono" style={{ padding: '12px', textAlign: 'right', color: 'var(--text-primary)', fontWeight: 600 }}>
+                      <td className="font-mono cream font-bold" style={{ padding: '10px 12px', textAlign: 'right' }}>
                         {s.total_goals?.toLocaleString()}
                       </td>
-                      <td className="font-mono" style={{ padding: '12px', textAlign: 'right', color: 'var(--text-secondary)' }}>
+                      <td className="font-mono zinc" style={{ padding: '10px 12px', textAlign: 'right' }}>
                         {s.total_assists?.toLocaleString()}
                       </td>
-                      <td className="font-mono" style={{ padding: '12px', textAlign: 'right', color: 'var(--text-muted)' }}>
+                      <td className="font-mono zinc" style={{ padding: '10px 12px', textAlign: 'right' }}>
                         {s.total_players}
                       </td>
-                      <td style={{ padding: '12px', textAlign: 'center' }}>
+                      <td style={{ padding: '10px 12px', textAlign: 'center' }}>
                         <button
                           type="button"
-                          className="font-mono"
+                          className="wire-btn font-mono"
                           onClick={() => {
                             setSelectedSeason(s.season);
                             setActiveTab('pitch');
-                          }}
-                          style={{
-                            backgroundColor: isCurrent ? 'var(--accent-amber)' : 'var(--bg-surface-2)',
-                            color: isCurrent ? 'var(--text-inverse)' : 'var(--text-primary)',
-                            border: '1px solid var(--border-subtle)',
-                            borderRadius: 'var(--radius-xs)',
-                            padding: '4px 10px',
-                            fontSize: '10.5px',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            transition: 'all 0.15s ease'
                           }}
                           aria-label={`View tactical pitch for ${s.season}`}
                         >
@@ -996,30 +754,25 @@ export default function HistoricalVault({ onInspectPlayer }) {
           </div>
         )}
 
-        {/* 7. Tab View 4: In-Browser Marimo & SQL WASM Laboratory */}
+        {/* 7. Tab View 4: In-Browser SQL WASM Laboratory */}
         {activeTab === 'lab' && (
           <div
             role="tabpanel"
             id="vault-panel-lab"
             aria-labelledby="vault-tab-lab"
             tabIndex={0}
-            style={{
-              backgroundColor: 'var(--bg-surface-1)',
-              border: '1px solid var(--border-subtle)',
-              borderRadius: 'var(--radius-lg)',
-              padding: '20px'
-            }}
+            className="vault-sidebar-card"
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Terminal size={18} weight="bold" style={{ color: 'var(--accent-amber)' }} />
-                  <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
+                  <Terminal size={16} weight="bold" style={{ color: 'var(--text-primary)' }} />
+                  <h3 style={{ fontSize: '14px', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
                     Client-Side Python & SQL Sandbox (WebAssembly / Pyodide)
                   </h3>
                 </div>
-                <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: '4px 0 0 0' }}>
-                  Runs completely inside your browser via WebAssembly with zero server dependencies. Adjust scoring parameters and execute live SQL queries.
+                <p className="zinc" style={{ fontSize: '12px', margin: '4px 0 0 0' }}>
+                  Runs completely inside your browser via WebAssembly with zero server dependencies.
                 </p>
               </div>
 
@@ -1028,32 +781,26 @@ export default function HistoricalVault({ onInspectPlayer }) {
                   href="/lab.html"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hud-segment-btn"
+                  className="wire-btn font-mono"
                   style={{
-                    backgroundColor: 'var(--bg-surface-2)',
-                    color: 'var(--text-primary)',
                     textDecoration: 'none',
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '6px',
-                    padding: '8px 14px',
-                    fontSize: '11px',
-                    fontWeight: 700,
-                    borderRadius: 'var(--radius-sm)'
+                    gap: '6px'
                   }}
                 >
-                  <ArrowUpRight size={14} weight="bold" />
+                  <ArrowUpRight size={13} weight="bold" />
                   <span>Open Full Lab in New Tab</span>
                 </a>
               </div>
             </div>
 
             <div style={{
-              borderRadius: 'var(--radius-md)',
+              borderRadius: 'var(--radius-sm)',
               overflow: 'hidden',
               border: '1px solid var(--border-subtle)',
               height: '700px',
-              backgroundColor: '#090D16'
+              backgroundColor: 'var(--bg-surface-0)'
             }}>
               <iframe
                 src="/lab.html"
@@ -1070,7 +817,7 @@ export default function HistoricalVault({ onInspectPlayer }) {
         )}
       </div>
 
-      {/* 9. Dedicated Historical Player Detail Modal (Retrospective Achievements) */}
+      {/* 8. Dedicated Historical Player Detail Modal */}
       {inspectedHistoricalPlayer && (
         <HistoricalPlayerDetailModal
           player={inspectedHistoricalPlayer}
@@ -1081,71 +828,46 @@ export default function HistoricalVault({ onInspectPlayer }) {
   );
 }
 
-// Subcomponent: Historical Player Pitch Card
+// Subcomponent: Direction J Historical Player Token
 function HistoricalPlayerCard({ player, isCaptain, onInspect }) {
   if (!player) return null;
 
-  const kitClass = getClubKitClass(player.team_name);
   const pos = (player.position || 'MID').toUpperCase();
   const cost = Number(player.now_cost || 0).toFixed(1);
 
   return (
     <div
-      className={`player-pitch-card vault-player-card ${kitClass}`}
-      style={{ cursor: 'pointer' }}
-      onClick={() => onInspect && onInspect(player)}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onInspect && onInspect(player);
-        }
-      }}
-      title={`${player.web_name} (${player.team_name}) · ${player.total_points} pts in ${player.season}. Click to inspect full season haul.`}
-      aria-label={`${player.web_name}, ${player.position}, ${player.team_name}, ${player.total_points} total points`}
+      className={`wire-token vault-token ${isCaptain ? 'is-captain' : ''}`}
     >
-      {/* Top Row: Tag + Captain Badge + Cost */}
-      <div className="player-card-top-row">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          {isCaptain && (
-            <span className="captain-badge font-mono" style={{ fontSize: '9px', padding: '1px 4px' }}>
-              [C]
-            </span>
-          )}
-          <span className={`pos-tag pill-base pill-sm pos-${pos.toLowerCase()} font-mono`}>
-            {pos}
-          </span>
-        </div>
-        <span className="player-cost font-mono">
-          £{cost}m
-        </span>
-      </div>
-
-      {/* Middle: Player Web Name */}
-      <div className="player-web-name" style={{ fontWeight: 800, padding: '2px 0' }}>
-        {player.web_name}
-      </div>
-
-      {/* Team Name */}
-      <div style={{ fontSize: 'clamp(8.5px, 1vw, 10px)', color: 'var(--text-muted)', marginBottom: '3px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-        {player.team_name}
-      </div>
-
-      {/* Season Total Points */}
-      <div className="player-xp-banner" style={{ backgroundColor: 'var(--bg-surface-subtle)', borderRadius: 'var(--radius-xs)', padding: '2px 0' }}>
-        <span className="xp-val font-mono" style={{ fontWeight: 800, color: 'var(--accent-amber)' }}>
+      <button
+        type="button"
+        className="wire-token-main"
+        aria-label={`${player.web_name}, ${pos}, £${cost}m, ${player.total_points} pts`}
+        onClick={() => onInspect && onInspect(player)}
+        title={`Inspect ${player.web_name} (${player.season})`}
+      >
+        <span className="wire-token-name">{player.web_name}</span>
+        <span className="wire-token-pts font-mono">
           {player.total_points}
+          <span className="wire-token-unit">pts</span>
         </span>
-        <span className="xp-unit font-mono" style={{ fontSize: '9px', marginLeft: '2px', color: 'var(--text-muted)' }}>
-          pts
+      </button>
+
+      <div className="wire-token-meta">
+        <span className="wire-token-fixture font-mono">
+          [{pos}] · {player.team_name} · £{cost}m
         </span>
+        {isCaptain && (
+          <span className="wire-token-armband font-mono" title="Armband pick (Season Top Scorer)">
+            [C]
+          </span>
+        )}
       </div>
     </div>
   );
 }
 
-// Subcomponent: Dedicated Historical Player Inspection Modal
+// Subcomponent: Dedicated Historical Player Inspection Modal (Direction J)
 function HistoricalPlayerDetailModal({ player, onClose }) {
   if (!player) return null;
 
@@ -1177,16 +899,15 @@ function HistoricalPlayerDetailModal({ player, onClose }) {
         style={{
           backgroundColor: 'var(--bg-surface-1)',
           border: '1px solid var(--border-medium)',
-          borderRadius: 'var(--radius-lg)',
+          borderRadius: 'var(--radius-sm)',
           maxWidth: '520px',
           width: '100%',
-          overflow: 'hidden',
-          boxShadow: '0 24px 64px rgba(0, 0, 0, 0.8)'
+          overflow: 'hidden'
         }}
       >
         {/* Header Strip */}
         <div style={{
-          padding: '16px 20px',
+          padding: '12px 16px',
           backgroundColor: 'var(--bg-surface-2)',
           borderBottom: '1px solid var(--border-subtle)',
           display: 'flex',
@@ -1194,52 +915,38 @@ function HistoricalPlayerDetailModal({ player, onClose }) {
           justifyContent: 'space-between'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span className="font-mono" style={{
-              fontSize: '10px',
-              fontWeight: 800,
-              backgroundColor: 'rgba(245, 158, 11, 0.15)',
-              color: 'var(--accent-amber)',
-              border: '1px solid rgba(245, 158, 11, 0.3)',
-              padding: '2px 8px',
-              borderRadius: 'var(--radius-xs)',
-              letterSpacing: '0.04em'
-            }}>
-              {player.season} CAMPAIGN RETROSPECTIVE
+            <span className="font-mono zinc" style={{ fontSize: '11px', letterSpacing: '0.04em' }}>
+              [{player.season} RETROSPECTIVE]
             </span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="hud-segment-btn"
-            style={{ padding: '4px 8px', borderRadius: 'var(--radius-xs)', cursor: 'pointer' }}
+            className="wire-btn font-mono"
+            style={{ padding: '2px 6px' }}
             aria-label="Close modal"
           >
-            <X size={16} weight="bold" />
+            <X size={14} weight="bold" />
           </button>
         </div>
 
         {/* Player Profile Hero */}
-        <div style={{ padding: '20px' }}>
+        <div style={{ padding: '16px 20px' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '16px' }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                <span className={`pos-tag pill-base pill-sm pos-${pos.toLowerCase()} font-mono`}>
-                  {pos}
-                </span>
-                <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
-                  {player.team_name}
-                </span>
+              <div className="font-mono zinc" style={{ fontSize: '12px', marginBottom: '4px' }}>
+                [{pos}] · {player.team_name}
               </div>
-              <h2 id="historical-player-title" style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)', margin: 0, letterSpacing: '-0.02em' }}>
+              <h2 id="historical-player-title" className="cream font-bold" style={{ fontSize: '20px', margin: 0, letterSpacing: '-0.02em' }}>
                 {player.first_name ? `${player.first_name} ${player.second_name}` : player.web_name}
               </h2>
             </div>
 
             <div className="font-mono" style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '28px', fontWeight: 900, color: 'var(--accent-amber)', lineHeight: 1 }}>
+              <div className="cream font-bold" style={{ fontSize: '26px', lineHeight: 1 }}>
                 {player.total_points}
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>
+              <div className="zinc" style={{ fontSize: '10px', marginTop: '2px' }}>
                 TOTAL POINTS
               </div>
             </div>
@@ -1249,69 +956,69 @@ function HistoricalPlayerDetailModal({ player, onClose }) {
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '10px',
+            gap: '8px',
             marginBottom: '16px'
           }}>
-            <div style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 700 }}>CAMPAIGN PRICE</div>
-              <div className="font-mono" style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
+            <div style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '8px 10px' }}>
+              <div className="zinc font-mono" style={{ fontSize: '10px' }}>CAMPAIGN PRICE</div>
+              <div className="font-mono cream font-bold" style={{ fontSize: '15px', marginTop: '2px' }}>
                 £{cost}m
               </div>
             </div>
 
-            <div style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 700 }}>GOALS SCORED</div>
-              <div className="font-mono" style={{ fontSize: '16px', fontWeight: 800, color: 'var(--accent-crimson)', marginTop: '2px' }}>
+            <div style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '8px 10px' }}>
+              <div className="zinc font-mono" style={{ fontSize: '10px' }}>GOALS SCORED</div>
+              <div className="font-mono cream font-bold" style={{ fontSize: '15px', marginTop: '2px' }}>
                 {player.goals_scored || 0}
               </div>
             </div>
 
-            <div style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 700 }}>ASSISTS LOGGED</div>
-              <div className="font-mono" style={{ fontSize: '16px', fontWeight: 800, color: 'var(--accent-cyan)', marginTop: '2px' }}>
+            <div style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '8px 10px' }}>
+              <div className="zinc font-mono" style={{ fontSize: '10px' }}>ASSISTS LOGGED</div>
+              <div className="font-mono cream font-bold" style={{ fontSize: '15px', marginTop: '2px' }}>
                 {player.assists || 0}
               </div>
             </div>
 
-            <div style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 700 }}>CLEAN SHEETS</div>
-              <div className="font-mono" style={{ fontSize: '16px', fontWeight: 800, color: 'var(--accent-emerald)', marginTop: '2px' }}>
+            <div style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '8px 10px' }}>
+              <div className="zinc font-mono" style={{ fontSize: '10px' }}>CLEAN SHEETS</div>
+              <div className="font-mono cream font-bold" style={{ fontSize: '15px', marginTop: '2px' }}>
                 {player.clean_sheets || 0}
               </div>
             </div>
 
-            <div style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 700 }}>BONUS POINTS (BPS)</div>
-              <div className="font-mono" style={{ fontSize: '16px', fontWeight: 800, color: 'var(--accent-amber)', marginTop: '2px' }}>
+            <div style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '8px 10px' }}>
+              <div className="zinc font-mono" style={{ fontSize: '10px' }}>BONUS POINTS</div>
+              <div className="font-mono cream font-bold" style={{ fontSize: '15px', marginTop: '2px' }}>
                 {player.bonus || 0}
               </div>
             </div>
 
-            <div style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 700 }}>MINUTES PLAYED</div>
-              <div className="font-mono" style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-secondary)', marginTop: '2px' }}>
+            <div style={{ backgroundColor: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '8px 10px' }}>
+              <div className="zinc font-mono" style={{ fontSize: '10px' }}>MINUTES PLAYED</div>
+              <div className="font-mono cream font-bold" style={{ fontSize: '15px', marginTop: '2px' }}>
                 {player.minutes ? Number(player.minutes).toLocaleString() : '-'}
               </div>
             </div>
           </div>
 
-          {/* Squad Status Pill */}
+          {/* Squad Status Strip */}
           <div style={{
             backgroundColor: 'var(--bg-surface-2)',
             border: '1px solid var(--border-subtle)',
-            borderRadius: 'var(--radius-md)',
-            padding: '10px 14px',
+            borderRadius: 'var(--radius-xs)',
+            padding: '8px 12px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Trophy size={16} weight="fill" style={{ color: 'var(--accent-amber)' }} />
-              <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>
+              <Trophy size={14} weight="bold" style={{ color: 'var(--text-primary)' }} />
+              <span className="cream" style={{ fontSize: '11px', fontWeight: 600 }}>
                 {player.is_starter === 1 ? 'Official Dream Team XI Starter' : 'Dream Team Squad Bench'}
               </span>
             </div>
-            <span className="font-mono" style={{ fontSize: '11px', color: 'var(--accent-emerald)', fontWeight: 700 }}>
+            <span className="font-mono zinc" style={{ fontSize: '11px' }}>
               {player.season} Campaign
             </span>
           </div>
@@ -1319,7 +1026,7 @@ function HistoricalPlayerDetailModal({ player, onClose }) {
 
         {/* Footer */}
         <div style={{
-          padding: '12px 20px',
+          padding: '10px 16px',
           backgroundColor: 'var(--bg-surface-2)',
           borderTop: '1px solid var(--border-subtle)',
           display: 'flex',
@@ -1327,16 +1034,8 @@ function HistoricalPlayerDetailModal({ player, onClose }) {
         }}>
           <button
             type="button"
-            className="hud-segment-btn"
+            className="wire-btn font-mono"
             onClick={onClose}
-            style={{
-              padding: '6px 16px',
-              fontSize: '12px',
-              fontWeight: 700,
-              backgroundColor: 'var(--bg-surface-1)',
-              color: 'var(--text-primary)',
-              cursor: 'pointer'
-            }}
           >
             Close Retrospective
           </button>

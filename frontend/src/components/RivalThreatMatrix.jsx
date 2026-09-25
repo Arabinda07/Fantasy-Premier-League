@@ -226,45 +226,45 @@ export default function RivalThreatMatrix({
       <div className="rivals-telemetry-deck" role="region" aria-label="Mini-League Tactical Telemetry">
         <div className="rivals-telemetry-left">
           <div className="rivals-league-badge">
-            <UsersThree size={14} weight="fill" />
+            <UsersThree size={14} weight="bold" />
             <span className="rivals-league-name">{leagueName}</span>
           </div>
-          <span className="rivals-id-pill font-mono">ID #{leagueId}</span>
-          <span className="rivals-count-pill font-mono">{rivals.length} Rivals Tracked</span>
+          <span className="wire-slug font-mono">ID #{leagueId}</span>
+          <span className="wire-slug font-mono">{rivals.length} RIVALS TRACKED</span>
         </div>
 
         <div className="rivals-telemetry-right">
           {/* Captain Consensus Chip */}
           <div
-            className="telemetry-chip chip-captain"
+            className="wire-telemetry-chip font-mono"
             title={`${captainBackingPct}% of rivals in your league (${captainBackingCount}/${rivals.length}) picked ${myCaptain}`}
           >
-            <Crown size={14} weight="fill" className="telemetry-chip-icon" />
-            <span className="telemetry-chip-label">Captain</span>
-            <span className="telemetry-chip-val font-mono">{myCaptain}</span>
-            <span className="telemetry-chip-meta font-mono">{captainBackingPct}% backing</span>
+            <Crown size={13} weight="bold" className="telemetry-chip-icon" />
+            <span className="telemetry-chip-label">CAPTAIN:</span>
+            <span className="telemetry-chip-val">{myCaptain}</span>
+            <span className="telemetry-chip-sub">({captainBackingPct}%)</span>
           </div>
 
           {/* Differential Edge Chip */}
           <div
-            className="telemetry-chip chip-diff"
+            className="wire-telemetry-chip font-mono"
             title={`${userDiffNames.length} unique differentials generating +${yourUpside.toFixed(1)} xP potential`}
           >
-            <ShieldCheck size={14} weight="bold" className="telemetry-chip-icon" />
-            <span className="telemetry-chip-label">Differentials</span>
-            <span className="telemetry-chip-val font-mono">{userDiffNames.length} Unique</span>
-            <span className="telemetry-chip-meta font-mono">+{yourUpside.toFixed(1)} xP</span>
+            <ShieldCheck size={13} weight="bold" className="telemetry-chip-icon" />
+            <span className="telemetry-chip-label">DIFFS:</span>
+            <span className="telemetry-chip-val">{userDiffNames.length} Unique</span>
+            <span className="telemetry-chip-sub">(+{yourUpside.toFixed(1)} xP)</span>
           </div>
 
           {/* Danger Threat Chip */}
           <div
-            className="telemetry-chip chip-danger"
+            className="wire-telemetry-chip font-mono"
             title={`Biggest threat to your rank: ${topThreatPlayer} owned by ${threatFrequency} of ${rivals.length} rivals`}
           >
-            <ShieldWarning size={14} weight="bold" className="telemetry-chip-icon" />
-            <span className="telemetry-chip-label">Danger Pick</span>
-            <span className="telemetry-chip-val font-mono">{topThreatPlayer}</span>
-            <span className="telemetry-chip-meta font-mono">{threatFrequency}/{rivals.length} rivals</span>
+            <ShieldWarning size={13} weight="bold" className="telemetry-chip-icon" />
+            <span className="telemetry-chip-label">DANGER:</span>
+            <span className="telemetry-chip-val">{topThreatPlayer}</span>
+            <span className="telemetry-chip-sub">({threatFrequency}/{rivals.length})</span>
           </div>
 
           {/* On-Demand Tactical Notes Popover */}
@@ -300,7 +300,7 @@ export default function RivalThreatMatrix({
         <div className="data-table-container">
           <div className="studio-table-controls">
             <div className="controls-left">
-              <span className="controls-title">Mini-League Table</span>
+              <span className="controls-title">Mini-League Standings</span>
               <span className="controls-count font-mono">{rivals.length} Rivals Tracked</span>
             </div>
           </div>
@@ -325,7 +325,6 @@ export default function RivalThreatMatrix({
               <tbody>
                 {rivals.map((r, idx) => {
                   const isSelected = selectedRival?.entry_id === r.entry_id;
-                  const threatClass = r.threat_level === 'HIGH' ? 'threat-high' : r.threat_level === 'MEDIUM' ? 'threat-med' : 'threat-low';
                   const overlapCount = r.shared_players?.length || r.overlap_count || 3;
                   const overlapPctVal = r.overlap_pct !== undefined
                     ? (r.overlap_pct > 1 ? Math.round(r.overlap_pct) : Math.round(r.overlap_pct * 100))
@@ -352,23 +351,23 @@ export default function RivalThreatMatrix({
                         <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{r.manager_name}</div>
                         <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{r.team_name}</div>
                       </td>
-                      <td className="font-mono col-points" style={{ fontWeight: 700, color: 'var(--accent-emerald)' }}>
+                      <td className="font-mono col-points" style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
                         {r.overall_points || r.total_points || 70}
                       </td>
                       <td className="col-captain">
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <span style={{ fontWeight: 600 }}>{r.captain_name || 'Haaland'}</span>
-                          <Crown size={12} weight="fill" color="var(--accent-amber)" />
+                          <Crown size={12} weight="bold" />
                         </div>
                       </td>
                       <td className="font-mono col-overlap">{overlapCount}/15 shared ({overlapPctVal}%)</td>
-                      <td className="col-threat">
-                        <span className={`threat-badge ${threatClass}`}>{r.threat_level === 'HIGH' ? 'HIGH' : r.threat_level === 'LOW' ? 'LOW' : 'MEDIUM'}</span>
+                      <td className="col-threat font-mono">
+                        <span className="rival-threat-tag font-mono">[{r.threat_level || 'MEDIUM'}]</span>
                       </td>
                       <td className="col-action">
                         <button
                           type="button"
-                          className="table-action-btn"
+                          className="table-action-btn font-mono"
                           aria-label={isSelected ? `Currently comparing with ${r.manager_name}` : `Compare squad with ${r.manager_name}`}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -394,7 +393,7 @@ export default function RivalThreatMatrix({
                 <span className="panel-title">Head-to-Head Tactical Duel</span>
                 <span className="panel-subtitle">Differential edge analysis &amp; swing risk</span>
               </div>
-              <span className="panel-badge font-mono">vs {selectedRival.manager_name}</span>
+              <span className="wire-slug font-mono">vs {selectedRival.manager_name}</span>
             </div>
 
             {/* Swing Risk Range Gauge */}
@@ -404,7 +403,7 @@ export default function RivalThreatMatrix({
                   <Gauge size={14} weight="bold" />
                   <span>Projected Matchup Swing</span>
                 </span>
-                <span className="h2h-swing-val font-mono" style={{ color: netDelta >= 0 ? 'var(--accent-emerald)' : 'var(--accent-crimson)' }}>
+                <span className="h2h-swing-val font-mono">
                   {netDelta >= 0 ? `+${netDelta.toFixed(1)} pts projected lead` : `${netDelta.toFixed(1)} pts projected deficit`}
                 </span>
               </div>
@@ -413,8 +412,7 @@ export default function RivalThreatMatrix({
                   className="h2h-swing-fill"
                   style={{
                     left: netDelta >= 0 ? '50%' : `${Math.max(5, 50 + netDelta * 2.0)}%`,
-                    width: `${Math.min(48, Math.abs(netDelta) * 2.0)}%`,
-                    background: netDelta >= 0 ? 'var(--accent-emerald)' : 'var(--accent-crimson)'
+                    width: `${Math.min(48, Math.abs(netDelta) * 2.0)}%`
                   }}
                 />
                 <div className="h2h-swing-center-mark" />
@@ -427,24 +425,27 @@ export default function RivalThreatMatrix({
             </div>
 
             {/* View Mode Switcher */}
-            <div className="h2h-view-tabs" role="tablist">
+            <div className="wire-segments" role="tablist" aria-label="Head-to-Head Views">
               <button
                 type="button"
-                className={`h2h-tab-btn ${h2hView === 'split' ? 'active' : ''}`}
+                className="wire-segment font-mono"
+                aria-pressed={h2hView === 'split'}
                 onClick={() => setH2hView('split')}
               >
                 <span>Split View</span>
               </button>
               <button
                 type="button"
-                className={`h2h-tab-btn ${h2hView === 'yours' ? 'active' : ''}`}
+                className="wire-segment font-mono"
+                aria-pressed={h2hView === 'yours'}
                 onClick={() => setH2hView('yours')}
               >
                 <span>Your Differentials ({userDiffCards.length})</span>
               </button>
               <button
                 type="button"
-                className={`h2h-tab-btn ${h2hView === 'danger' ? 'active' : ''}`}
+                className="wire-segment font-mono"
+                aria-pressed={h2hView === 'danger'}
                 onClick={() => setH2hView('danger')}
               >
                 <span>Danger Players ({rivalDiffCards.length})</span>
@@ -455,19 +456,19 @@ export default function RivalThreatMatrix({
             <div className={`h2h-diff-layout ${h2hView}`}>
               {/* Your Unique Differentials */}
               {(h2hView === 'split' || h2hView === 'yours') && (
-                <div className="h2h-diff-col green">
-                  <div className="h2h-col-header green">
+                <div className="h2h-diff-col">
+                  <div className="h2h-col-header">
                     <div className="h2h-col-title">
                       <ShieldCheck size={14} weight="bold" />
                       <span>Your Differentials ({userDiffCards.length})</span>
                     </div>
-                    <span className="h2h-upside-pill green font-mono">+{yourUpside.toFixed(1)} xP</span>
+                    <span className="h2h-upside-readout font-mono">+{yourUpside.toFixed(1)} xP</span>
                   </div>
                   <div className="h2h-cards-scroll">
                     {userDiffCards.map(p => (
                       <div
                         key={p.name}
-                        className="h2h-compact-row green"
+                        className="h2h-compact-row"
                         onClick={() => handleInspect(p.name, p)}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' || e.key === ' ') {
@@ -481,13 +482,13 @@ export default function RivalThreatMatrix({
                         tabIndex={0}
                       >
                         <div className="h2h-player-meta">
-                          <span className={`player-pos-tag pill-base pill-sm ${p.pos || 'MID'}`}>{p.pos || 'MID'}</span>
+                          <span className="wire-pos-tag font-mono">[{p.pos || 'MID'}]</span>
                           <span className="h2h-player-name">{p.name}</span>
                           {p.team && <span className="h2h-team-tag font-mono">{p.team}</span>}
                         </div>
                         <div className="h2h-player-stats font-mono">
                           <span className="h2h-cost">£{formatFplPrice(p.cost)}m</span>
-                          <span className="h2h-xp green">+{Number(p.xp || 4.5).toFixed(1)}</span>
+                          <span className="h2h-xp font-mono">+{Number(p.xp || 4.5).toFixed(1)} xP</span>
                         </div>
                       </div>
                     ))}
@@ -497,19 +498,19 @@ export default function RivalThreatMatrix({
 
               {/* Rival's Danger Men */}
               {(h2hView === 'split' || h2hView === 'danger') && (
-                <div className="h2h-diff-col red">
-                  <div className="h2h-col-header red">
+                <div className="h2h-diff-col">
+                  <div className="h2h-col-header">
                     <div className="h2h-col-title">
                       <ShieldWarning size={14} weight="bold" />
                       <span>Danger Players ({rivalDiffCards.length})</span>
                     </div>
-                    <span className="h2h-upside-pill red font-mono">+{rivalUpside.toFixed(1)} xP</span>
+                    <span className="h2h-upside-readout font-mono">+{rivalUpside.toFixed(1)} xP</span>
                   </div>
                   <div className="h2h-cards-scroll">
                     {rivalDiffCards.map(p => (
                       <div
                         key={p.name}
-                        className="h2h-compact-row red"
+                        className="h2h-compact-row"
                         onClick={() => handleInspect(p.name, p)}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' || e.key === ' ') {
@@ -523,13 +524,13 @@ export default function RivalThreatMatrix({
                         tabIndex={0}
                       >
                         <div className="h2h-player-meta">
-                          <span className={`player-pos-tag pill-base pill-sm ${p.pos || 'MID'}`}>{p.pos || 'MID'}</span>
+                          <span className="wire-pos-tag font-mono">[{p.pos || 'MID'}]</span>
                           <span className="h2h-player-name">{p.name}</span>
                           {p.team && <span className="h2h-team-tag font-mono">{p.team}</span>}
                         </div>
                         <div className="h2h-player-stats font-mono">
                           <span className="h2h-cost">£{formatFplPrice(p.cost)}m</span>
-                          <span className="h2h-xp red">+{Number(p.xp || 4.5).toFixed(1)}</span>
+                          <span className="h2h-xp font-mono">+{Number(p.xp || 4.5).toFixed(1)} xP</span>
                         </div>
                       </div>
                     ))}

@@ -132,13 +132,13 @@ export default function PlayerDNAInspector({ player, onClose }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '14px', marginBottom: '14px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span className={`player-position-pill ${pos}`}>{pos}</span>
+              <span className="dna-player-pos font-mono">[{pos}]</span>
               <h2 id="dna-modal-title" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
                 {player.web_name}
               </h2>
             </div>
             <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px', fontFamily: 'var(--font-mono)' }}>
-              {player.team} · £{Number(player.now_cost || player.cost || 0).toFixed(1)}m · Projected: <span style={{ color: 'var(--accent-emerald)', fontWeight: 800 }}>{xp.toFixed(1)} pts</span>
+              {player.team} · £{Number(player.now_cost || player.cost || 0).toFixed(1)}m · Projected: <span style={{ color: 'var(--text-primary)', fontWeight: 800 }}>{xp.toFixed(1)} pts</span>
             </div>
           </div>
           <button
@@ -152,25 +152,25 @@ export default function PlayerDNAInspector({ player, onClose }) {
 
         {/* View Mode Segmented Switcher */}
         <div className="dna-modal-switcher">
-          <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <span className="dna-switcher-title font-mono">
             {activeView === 'chart' ? 'Expected Points Breakdown' : 'Player Strengths vs League Average'}
           </span>
-          <div className="segmented-chip-rail">
+          <div className="wire-segments" role="tablist">
             <button
               type="button"
-              className={`segmented-chip-btn pill-base pill-md ${activeView === 'chart' ? 'active' : ''}`}
+              className="wire-segment font-mono"
+              aria-pressed={activeView === 'chart'}
               onClick={() => setActiveView('chart')}
             >
-              <ChartBar size={12} weight="bold" />
-              <span>Points Breakdown</span>
+              Points Breakdown
             </button>
             <button
               type="button"
-              className={`segmented-chip-btn pill-base pill-md ${activeView === 'radar' ? 'active' : ''}`}
+              className="wire-segment font-mono"
+              aria-pressed={activeView === 'radar'}
               onClick={() => setActiveView('radar')}
             >
-              <Polygon size={12} weight="bold" />
-              <span>Attribute Radar</span>
+              Attribute Radar
             </button>
           </div>
         </div>
@@ -334,13 +334,9 @@ export default function PlayerDNAInspector({ player, onClose }) {
               <span
                 className="font-mono"
                 style={{
-                  fontSize: '9px',
-                  fontWeight: 800,
-                  background: player.manager_candor?.score >= 2 ? 'rgba(245, 158, 11, 0.18)' : 'rgba(16, 185, 129, 0.18)',
-                  color: player.manager_candor?.score >= 2 ? 'var(--accent-amber)' : 'var(--accent-emerald)',
-                  border: '1px solid rgba(255, 255, 255, 0.12)',
-                  borderRadius: '3px',
-                  padding: '1px 5px'
+                  fontSize: '10px',
+                  fontWeight: 700,
+                  color: 'var(--text-secondary)'
                 }}
               >
                 {player.manager_candor?.label || 'Generally Reliable'}
@@ -366,13 +362,9 @@ export default function PlayerDNAInspector({ player, onClose }) {
             <span
               className="font-mono"
               style={{
-                fontSize: '9px',
-                fontWeight: 800,
-                background: 'rgba(239, 68, 68, 0.18)',
-                color: '#F87171',
-                border: '1px solid rgba(239, 68, 68, 0.4)',
-                borderRadius: '3px',
-                padding: '1px 5px'
+                fontSize: '10px',
+                fontWeight: 700,
+                color: 'var(--text-muted)'
               }}
             >
               {getPenaltyTierForTeam(player.team).badge}

@@ -8,6 +8,7 @@
     "check-copy": "node ../scripts/check_copy.cjs",
     "build": "node ../scripts/check_copy.cjs && vite build",
     "lint": "oxlint",
+    "test": "node src/utils/clientOptimizer.test.js && node src/utils/playerMetadataHelper.test.js && node src/utils/transferRationaleEngine.test.js",
     "preview": "vite preview"
   },
   "dependencies": {

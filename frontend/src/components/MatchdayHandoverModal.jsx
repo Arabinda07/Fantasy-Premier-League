@@ -144,9 +144,7 @@ export default function MatchdayHandoverModal({
         {/* Header */}
         <div className="modal-header">
           <div className="modal-title-group">
-            <div className="modal-icon-box emerald">
-              <ShieldCheck size={20} weight="fill" />
-            </div>
+            <ShieldCheck size={22} weight="fill" className="modal-unboxed-icon" />
             <div>
               <h2 id="handover-modal-title" className="modal-title">
                 Matchday Checklist
@@ -263,7 +261,7 @@ export default function MatchdayHandoverModal({
               <div className="handover-picks-grid">
                 <div className="handover-pick-card captain">
                   <div className="pick-card-header font-mono">
-                    <Crown size={14} weight="fill" color="var(--accent-amber)" />
+                    <Crown size={14} weight="fill" color="var(--text-muted)" />
                     <span>CAPTAIN</span>
                   </div>
                   <div className="pick-card-name">{capt?.web_name || 'Gibbs-White'}</div>
@@ -274,7 +272,7 @@ export default function MatchdayHandoverModal({
 
                 <div className="handover-pick-card vice">
                   <div className="pick-card-header font-mono">
-                    <ShieldCheck size={14} weight="bold" color="var(--accent-cyan)" />
+                    <ShieldCheck size={14} weight="bold" color="var(--text-muted)" />
                     <span>VICE-CAPTAIN</span>
                   </div>
                   <div className="pick-card-name">{vc?.web_name || 'B.Fernandes'}</div>

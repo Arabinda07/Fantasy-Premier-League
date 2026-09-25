@@ -204,11 +204,9 @@ export default function FixtureProbabilityDrawer({
         {/* Drawer Header */}
         <div className="modal-header fixture-drawer-header">
           <div className="fixture-drawer-title-group">
-            <div className="sync-icon-wrapper">
-              <SoccerBall size={20} weight="fill" />
-            </div>
+            <SoccerBall size={22} weight="fill" className="modal-unboxed-icon" />
             <div>
-              <span className="profile-tag">MATCH PREVIEW &amp; PROBABILITY FORECAST</span>
+              <span className="profile-tag font-mono">MATCH PREVIEW · PROBABILITIES</span>
               <h2 id="drawer-title" className="modal-title fixture-drawer-title">
                 {activeFixture.home_team} vs {activeFixture.away_team}
               </h2>
@@ -335,12 +333,8 @@ export default function FixtureProbabilityDrawer({
                             const pct = (cell.prob * 100).toFixed(1);
                             const intensity = Math.min(1, cell.prob / maxProb);
 
-                            // Heatmap color calculation
-                            const baseColor = isHomeWin
-                              ? `rgba(59, 130, 246, ${0.08 + intensity * 0.40})`
-                              : isAwayWin
-                              ? `rgba(16, 185, 129, ${0.08 + intensity * 0.40})`
-                              : `rgba(245, 158, 11, ${0.08 + intensity * 0.35})`;
+                            // Direction J tokenized monochromatic luminance ramp
+                            const baseColor = `rgba(255, 255, 255, ${(0.02 + intensity * 0.14).toFixed(3)})`;
 
                             return (
                               <td
@@ -364,7 +358,7 @@ export default function FixtureProbabilityDrawer({
                 {/* Matrix Hover Readout */}
                 <div style={{ marginTop: '8px', minHeight: '22px', fontSize: '11.5px', textAlign: 'center', fontFamily: 'var(--font-mono)' }}>
                   {hoveredCell ? (
-                    <span style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>
+                    <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>
                       Scoreline: {activeFixture.home_team} {hoveredCell.home} – {hoveredCell.away} {activeFixture.away_team} · {(hoveredCell.prob * 100).toFixed(2)}% ({hoveredCell.home > hoveredCell.away ? `${activeFixture.home_team} Win` : hoveredCell.home < hoveredCell.away ? `${activeFixture.away_team} Win` : 'Draw'})
                     </span>
                   ) : (
@@ -380,7 +374,7 @@ export default function FixtureProbabilityDrawer({
                 <div className="kpi-strip" style={{ marginBottom: 0 }}>
                   <div className="kpi-card">
                     <div className="kpi-label">{activeFixture.home_team} Clean Sheet</div>
-                    <div className="kpi-value font-mono" style={{ color: 'var(--accent-blue)' }}>
+                    <div className="kpi-value font-mono" style={{ color: 'var(--text-primary)' }}>
                       {Math.round((activeFixture.home_cs_prob || 0.28) * 100)}%
                     </div>
                     <div className="kpi-subtext">Chance of shutting out {activeFixture.away_team}</div>
@@ -388,7 +382,7 @@ export default function FixtureProbabilityDrawer({
 
                   <div className="kpi-card">
                     <div className="kpi-label">{activeFixture.away_team} Clean Sheet</div>
-                    <div className="kpi-value font-mono" style={{ color: 'var(--accent-emerald)' }}>
+                    <div className="kpi-value font-mono" style={{ color: 'var(--text-primary)' }}>
                       {Math.round((activeFixture.away_cs_prob || 0.32) * 100)}%
                     </div>
                     <div className="kpi-subtext">Chance of shutting out {activeFixture.home_team}</div>
@@ -396,7 +390,7 @@ export default function FixtureProbabilityDrawer({
 
                   <div className="kpi-card">
                     <div className="kpi-label">Both Teams to Score</div>
-                    <div className="kpi-value font-mono" style={{ color: 'var(--accent-amber)' }}>
+                    <div className="kpi-value font-mono" style={{ color: 'var(--text-primary)' }}>
                       {Math.round((activeFixture.btts_prob || 0.54) * 100)}%
                     </div>
                     <div className="kpi-subtext">Both sides find the net</div>

@@ -156,9 +156,7 @@ export default function LiveTeamSyncModal({
       >
         <div className="modal-header">
           <div className="modal-title-group">
-            <div className="modal-icon-box">
-              <SoccerBall size={18} weight="fill" />
-            </div>
+            <SoccerBall size={20} weight="fill" className="modal-unboxed-icon" />
             <div>
               <h2 id="sync-modal-title" className="modal-title">
                 Team Settings & Sync
@@ -215,7 +213,7 @@ export default function LiveTeamSyncModal({
               />
               <button
                 type="submit"
-                className="btn-primary sync-submit-btn font-mono"
+                className="sync-submit-btn font-mono"
                 disabled={isLoading}
               >
                 <ArrowsClockwise

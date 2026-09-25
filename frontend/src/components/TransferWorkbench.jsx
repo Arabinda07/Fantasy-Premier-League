@@ -170,7 +170,7 @@ export default function TransferWorkbench({
               </span>
             </div>
             <span className="rec-panel-badge font-mono">
-              {recommendedPairs.length} {recommendedPairs.length === 1 ? 'Transfer' : 'Transfers'}
+              {recommendedPairs.length} {recommendedPairs.length === 1 ? 'TRANSFER' : 'TRANSFERS'}
             </span>
           </div>
 
@@ -198,7 +198,7 @@ export default function TransferWorkbench({
                       <span className="rec-action-badge out font-mono">SELL</span>
                       <span className="rec-card-name">{pair.outName}</span>
                       <span className="rec-card-meta font-mono">
-                        {pair.outPlayer.position} · £{Number(pair.outPlayer.cost || pair.outPlayer.now_cost || 0).toFixed(1)}m
+                        [{pair.outPlayer.position}] · £{Number(pair.outPlayer.cost || pair.outPlayer.now_cost || 0).toFixed(1)}m
                       </span>
                     </div>
 
@@ -208,22 +208,22 @@ export default function TransferWorkbench({
                       <span className="rec-action-badge in font-mono">BUY</span>
                       <span className="rec-card-name">{pair.inName}</span>
                       <span className="rec-card-meta font-mono">
-                        {pair.inPlayer.position} · £{Number(pair.inPlayer.cost || pair.inPlayer.now_cost || 0).toFixed(1)}m
+                        [{pair.inPlayer.position}] · £{Number(pair.inPlayer.cost || pair.inPlayer.now_cost || 0).toFixed(1)}m
                       </span>
                     </div>
                   </div>
 
                   <div className="rec-pair-footer font-mono">
-                    <span className={`rec-delta-tag ${pair.xpDelta >= 0 ? 'gain' : 'loss'}`}>
-                      {pair.xpDelta >= 0 ? `+${pair.xpDelta} xP Gain` : `${pair.xpDelta} xP`}
+                    <span className="rec-delta-tag font-mono">
+                      {pair.xpDelta >= 0 ? `+${pair.xpDelta.toFixed(1)}` : pair.xpDelta.toFixed(1)} xP
                     </span>
-                    <span className="rec-cost-tag">
+                    <span className="rec-cost-tag font-mono">
                       {pair.costDelta <= 0
                         ? `Saves £${Math.abs(pair.costDelta).toFixed(1)}m`
                         : `Costs +£${pair.costDelta.toFixed(1)}m`}
                     </span>
-                    <span className={`rec-status-tag ${isCurrentActive ? 'active' : ''}`}>
-                      {isCurrentActive ? '● LOADED IN WORKBENCH' : 'COMPARE IN WORKBENCH ↗'}
+                    <span className={`rec-status-tag font-mono ${isCurrentActive ? 'active' : ''}`}>
+                      {isCurrentActive ? '[ACTIVE IN WORKBENCH]' : 'COMPARE ↗'}
                     </span>
                   </div>
                 </button>
@@ -238,19 +238,18 @@ export default function TransferWorkbench({
         <div className="compare-workbench-container">
           <div className="compare-workbench-header">
             <div className="compare-header-title">
-              <div className="compare-icon-wrap">
-                <Scales size={16} weight="bold" />
-              </div>
-              <span className="compare-title-text">
-                Direct Transfer Swap Comparison
+              <Scales size={16} weight="bold" className="modal-unboxed-icon" />
+              <span className="compare-title-text font-mono">
+                DIRECT TRANSFER SWAP COMPARISON
               </span>
             </div>
             <button
               onClick={handleClearCompare}
               className="compare-close-btn font-mono"
+              aria-label="Close Comparison"
             >
               <X size={14} weight="bold" />
-              <span>Close Comparison</span>
+              <span>Close</span>
             </button>
           </div>
 
@@ -258,14 +257,14 @@ export default function TransferWorkbench({
             {/* Player OUT Card */}
             <div className="compare-player-card out-card">
               <div className="card-role-header">
-                <span className="transfer-label out font-mono">SELLING (OUT)</span>
+                <span className="transfer-role-tag out font-mono">[OUT] SELLING</span>
                 <select
                   value={playerOut?.player_code || ''}
                   onChange={(e) => {
                     const found = defaultSquadList.find(p => String(p.player_code) === e.target.value);
                     if (found) setPlayerOut(found);
                   }}
-                  className="nav-select compare-player-select"
+                  className="wire-select compare-player-select font-mono"
                   aria-label="Select squad player to transfer out"
                 >
                   {defaultSquadList.map(p => (
@@ -277,7 +276,7 @@ export default function TransferWorkbench({
               </div>
 
               <div className="compare-player-name-row">
-                <span className={`player-pos-tag pill-base pill-sm ${playerOut?.position}`}>{playerOut?.position}</span>
+                <span className="dna-player-pos font-mono">[{playerOut?.position}]</span>
                 <span className="compare-player-name">{playerOut?.web_name}</span>
                 <span className="compare-player-team font-mono">({playerOut?.team})</span>
               </div>
@@ -304,11 +303,11 @@ export default function TransferWorkbench({
 
             {/* Delta Indicator (Center Column) */}
             <div className="compare-delta-column">
-              <div className={`delta-badge ${xpDelta >= 0 ? 'positive' : 'negative'}`}>
+              <div className={`compare-delta-readout font-mono ${xpDelta >= 0 ? 'positive' : 'negative'}`}>
                 {xpDelta >= 0 ? <TrendUp size={16} weight="bold" /> : <TrendDown size={16} weight="bold" />}
-                <span className="font-mono">{xpDelta >= 0 ? `+${xpDelta.toFixed(1)} xP Gain` : `${xpDelta.toFixed(1)} xP`}</span>
+                <span>{xpDelta >= 0 ? `+${xpDelta.toFixed(1)}` : xpDelta.toFixed(1)} xP</span>
               </div>
-              <div className="delta-cost-tag font-mono" style={{ color: costDelta <= 0 ? 'var(--accent-emerald)' : 'var(--accent-amber)' }}>
+              <div className="delta-cost-tag font-mono">
                 {costDelta <= 0 ? `Saves £${Math.abs(costDelta).toFixed(1)}m` : `Costs +£${costDelta.toFixed(1)}m`}
               </div>
             </div>
@@ -316,17 +315,17 @@ export default function TransferWorkbench({
             {/* Player IN Card */}
             <div className="compare-player-card in-card">
               <div className="card-role-header">
-                <span className="transfer-label in font-mono">BUYING (IN)</span>
-                <span className="in-target-badge font-mono">TARGET ACQUISITION</span>
+                <span className="transfer-role-tag in font-mono">[IN] BUYING</span>
+                <span className="in-target-tag font-mono">[TARGET ACQUISITION]</span>
               </div>
 
               <div className="compare-player-name-row">
-                <span className={`player-pos-tag pill-base pill-sm ${playerIn?.position}`}>{playerIn?.position}</span>
+                <span className="dna-player-pos font-mono">[{playerIn?.position}]</span>
                 <span className="compare-player-name">{playerIn?.web_name}</span>
                 <span className="compare-player-team font-mono">({playerIn?.team})</span>
               </div>
 
-              <div className="compare-xp-val emerald font-mono">
+              <div className="compare-xp-val font-mono">
                 {xpIn.toFixed(1)} <span className="xp-unit">xP next match</span>
               </div>
 
@@ -350,7 +349,7 @@ export default function TransferWorkbench({
       ) : (
         <div className="compare-workbench-compact-cue font-mono">
           <div className="cue-content">
-            <Scales size={15} weight="bold" className="cue-icon" />
+            <Scales size={14} weight="bold" className="cue-icon" />
             <span>Select any player in the marketplace below to simulate a direct swap against your squad</span>
           </div>
         </div>
@@ -369,17 +368,18 @@ export default function TransferWorkbench({
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 aria-label="Search players by name or club"
-                className="scout-search-input"
+                className="scout-search-input font-mono"
               />
             </div>
 
-            <div role="group" aria-label="Filter by player position" className="pos-btn-group">
+            <div role="group" aria-label="Filter by player position" className="wire-segments">
               {['ALL', 'GK', 'DEF', 'MID', 'FWD'].map(pos => (
                 <button
                   key={pos}
+                  type="button"
                   onClick={() => setSelectedPos(pos)}
                   aria-pressed={selectedPos === pos}
-                  className={`pos-filter-btn ${selectedPos === pos ? 'active' : ''}`}
+                  className={`wire-segment font-mono ${selectedPos === pos ? 'active' : ''}`}
                 >
                   {pos}
                 </button>
@@ -390,7 +390,7 @@ export default function TransferWorkbench({
               value={sortBy}
               onChange={e => setSortBy(e.target.value)}
               aria-label="Sort players by metric"
-              className="scout-sort-select font-mono"
+              className="wire-select scout-sort-select font-mono"
             >
               <option value="xP">Most Expected Points</option>
               <option value="cost_desc">Price (High to Low)</option>
@@ -415,7 +415,7 @@ export default function TransferWorkbench({
             </div>
 
             <div className="scout-budget-presets font-mono">
-              <span className="presets-label">QUICK:</span>
+              <span className="presets-label font-mono">QUICK:</span>
               {[
                 { label: '< £5.0m', val: 5.0 },
                 { label: '< £7.5m', val: 7.5 },
@@ -425,7 +425,7 @@ export default function TransferWorkbench({
                 <button
                   key={preset.label}
                   type="button"
-                  className={`preset-btn ${maxPrice === preset.val ? 'active' : ''}`}
+                  className={`preset-btn font-mono ${maxPrice === preset.val ? 'active' : ''}`}
                   onClick={() => setMaxPrice(preset.val)}
                 >
                   {preset.label}
@@ -471,11 +471,11 @@ export default function TransferWorkbench({
                     {p.web_name}
                   </th>
                   <td>
-                    <span className={`player-pos-tag pill-base pill-sm ${p.position}`}>{p.position}</span>
+                    <span className="dna-player-pos font-mono">[{p.position}]</span>
                   </td>
                   <td className="font-mono" style={{ color: 'var(--text-secondary)' }}>{p.team}</td>
                   <td className="font-mono">£{Number(p.now_cost || p.cost || 0).toFixed(1)}m</td>
-                  <td className="font-mono" style={{ fontWeight: 800, color: 'var(--accent-emerald)' }}>
+                  <td className="font-mono table-cell-xp">
                     {Number(p.expected_points ?? p.xp ?? p.xP ?? 0).toFixed(1)} pts
                   </td>
                   <td className="font-mono">{Number(p.expected_goals_per_90 ?? p.short_form_expected_goals_90 ?? p.xg90 ?? 0).toFixed(2)}</td>
@@ -483,12 +483,9 @@ export default function TransferWorkbench({
                   <td className="font-mono">{((p.p_start || 0.85) * 100).toFixed(0)}%</td>
                   <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                     <button
+                      type="button"
                       onClick={() => handleSelectCompareIn(p)}
-                      className="pos-filter-btn compare-action-btn font-mono"
-                      style={{
-                        background: playerIn?.web_name === p.web_name ? 'var(--accent-emerald)' : undefined,
-                        color: playerIn?.web_name === p.web_name ? 'var(--text-inverse)' : undefined
-                      }}
+                      className={`compare-action-btn font-mono ${playerIn?.web_name === p.web_name ? 'active' : ''}`}
                       title="Compare this player against your squad"
                     >
                       {playerIn?.web_name === p.web_name ? 'Comparing' : 'Compare'}
