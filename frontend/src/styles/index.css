@@ -8056,13 +8056,12 @@ tr:hover .vault-table-sticky-col {
   outline-offset: 3px;
 }
 
-/* Summary: hero number / radio status / actions */
-.wire-summary {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: var(--space-11);
-  align-items: end;
-  margin-bottom: var(--space-11);
+/* Header: Level 1 Hero & Level 2 Squad Controls Strip */
+.wire-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin-bottom: var(--space-10);
 }
 
 .wire-hero {
@@ -8105,26 +8104,24 @@ tr:hover .vault-table-sticky-col {
   color: var(--text-muted);
 }
 
-.wire-status {
-  display: grid;
-  gap: var(--space-4);
-  margin: 0;
+/* Horizontal Gameweek Controls Strip */
+.wire-controls-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-6) var(--space-9);
+  padding: var(--space-5) 0;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
-.wire-status-tight {
-  margin-bottom: var(--space-6);
-}
-
-.wire-status-row {
-  display: grid;
-  grid-template-columns: 9.5rem minmax(0, 1fr);
+.wire-control-item {
+  display: flex;
   align-items: baseline;
-  gap: var(--space-6);
-  font-size: var(--text-name);
-  font-weight: 600;
+  gap: var(--space-4);
 }
 
-.wire-status-row dt {
+.wire-control-label {
   font-size: var(--text-base);
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -8133,8 +8130,25 @@ tr:hover .vault-table-sticky-col {
   white-space: nowrap;
 }
 
-.wire-status-row dd {
-  margin: 0;
+.wire-control-value {
+  font-size: var(--text-name);
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: baseline;
+}
+
+.wire-control-text {
+  font-size: var(--text-name);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.wire-select-wrapper {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  cursor: pointer;
 }
 
 .wire-select {
@@ -8147,8 +8161,22 @@ tr:hover .vault-table-sticky-col {
   padding: 0;
 }
 
+.wire-select-caret {
+  font-size: 11px;
+  color: var(--text-muted);
+  user-select: none;
+  pointer-events: none;
+  margin-left: 2px;
+}
+
 .wire-select option {
   background: var(--bg-surface-1);
+}
+
+.wire-control-item-strategy {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-5);
 }
 
 .wire-segments {
@@ -8172,13 +8200,6 @@ tr:hover .vault-table-sticky-col {
   text-underline-offset: 6px;
 }
 
-.wire-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--space-5);
-}
-
 .wire-action,
 .wire-link,
 .wire-directive-more {
@@ -8192,7 +8213,7 @@ tr:hover .vault-table-sticky-col {
 .wire-action:hover,
 .wire-action[aria-pressed="true"],
 .wire-link:hover,
-.wire-directive:hover .wire-directive-more {
+.wire-directive-more:hover {
   color: var(--text-primary);
 }
 
@@ -8253,8 +8274,19 @@ tr:hover .vault-table-sticky-col {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: var(--space-2);
   text-align: center;
+  padding: var(--space-3) var(--space-2);
+  border-radius: var(--radius-sm);
+  transition: background-color var(--motion-duration-fast) var(--motion-curve-instant);
+}
+
+.wire-token:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.wire-token.is-target {
+  background-color: rgba(16, 185, 129, 0.06);
 }
 
 .wire-token-main {
@@ -8334,11 +8366,32 @@ tr:hover .vault-table-sticky-col {
   letter-spacing: 0.14em;
 }
 
-/* Context column */
-.wire-directive {
+/* Context column: Decision module (recommendation + actions) */
+.wire-decision-module {
+  margin-bottom: var(--space-2);
+}
+
+.wire-decision-header {
   display: grid;
-  gap: var(--space-4);
-  width: 100%;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-7);
+  align-items: start;
+}
+
+.wire-decision-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.wire-decision-info .wire-banner {
+  margin: 0 0 var(--space-6);
+}
+
+.wire-directive-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }
 
 .wire-moves {
@@ -8364,11 +8417,35 @@ tr:hover .vault-table-sticky-col {
   margin: 0;
   font-size: var(--text-xl);
   font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-primary);
 }
 
 .wire-directive-detail {
+  margin: 0;
   font-size: var(--text-md);
   color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.wire-directive-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-6);
+  margin-top: var(--space-4);
+}
+
+.wire-directive-links .wire-link {
+  margin-top: 0;
+}
+
+.wire-decision-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-4);
+  padding-top: var(--space-1);
 }
 
 .wire-link {
@@ -8443,25 +8520,35 @@ tr:hover .vault-table-sticky-col {
 }
 
 @media (max-width: 1024px) {
-  .wire-summary {
-    grid-template-columns: auto 1fr;
-    gap: var(--space-10);
-  }
-
-  .wire-actions {
-    grid-column: 1 / -1;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--space-8);
+  .wire-controls-strip {
+    gap: var(--space-5) var(--space-7);
   }
 }
 
 @media (max-width: 768px) {
-  .wire-summary {
+  .wire-header {
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
+  }
+
+  .wire-controls-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding: var(--space-4) 0;
+  }
+
+  .wire-decision-header {
     grid-template-columns: 1fr;
-    gap: var(--space-9);
-    margin-bottom: var(--space-9);
+    gap: var(--space-6);
+  }
+
+  .wire-decision-actions {
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-6);
+    padding-top: 0;
   }
 
   .wire-hero-num {

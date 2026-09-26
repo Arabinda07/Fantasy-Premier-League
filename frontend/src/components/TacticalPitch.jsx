@@ -353,8 +353,8 @@ export default function TacticalPitch({
     <div className="wire">
       <h1 className="sr-only">Gameweek {gameweek} lineup</h1>
 
-      {/* Summary: one massive number, then the radio status column */}
-      <header className="wire-summary">
+      {/* Level 1: Status Hero & Level 2: Horizontal Squad Controls Strip */}
+      <header className="wire-header">
         <div className="wire-hero">
           <span className="wire-slug">{heroSlug}</span>
           <span className="wire-hero-num font-mono">
@@ -366,100 +366,72 @@ export default function TacticalPitch({
           </span>
         </div>
 
-        <dl className="wire-status">
+        {/* Level 2: Horizontal Gameweek Controls Strip */}
+        <div className="wire-controls-strip" role="region" aria-label="Gameweek Controls">
           {bank != null && (
-            <div className="wire-status-row">
-              <dt>Bank</dt>
-              <dd className="font-mono">£{formatFplPrice(bank)}m</dd>
+            <div className="wire-control-item">
+              <span className="wire-control-label">Bank</span>
+              <span className="wire-control-value font-mono">£{formatFplPrice(bank)}m</span>
             </div>
           )}
           {canAct && (
-            <div className="wire-status-row">
-              <dt>Free transfers</dt>
-              <dd className="font-mono">{freeTransfers}</dd>
+            <div className="wire-control-item">
+              <span className="wire-control-label">Free transfers</span>
+              <span className="wire-control-value font-mono">{freeTransfers}</span>
             </div>
           )}
-          <div className="wire-status-row">
-            <dt>{isCompletedGw ? 'Chip played' : 'Chip'}</dt>
-            <dd>
+          <div className="wire-control-item">
+            <label htmlFor="wire-chip-select" className="wire-control-label">
+              {isCompletedGw ? 'Chip played' : 'Chip'}
+            </label>
+            <div className="wire-control-value">
               {canAct ? (
-                <select
-                  value={activeChip}
-                  onChange={(e) => onSelectChip(e.target.value)}
-                  className="wire-select"
-                  aria-label="Matchday chip"
-                  title={CHIP_OPTIONS.find(c => c.id === activeChip)?.desc}
-                >
-                  {CHIP_OPTIONS.map(chip => (
-                    <option key={chip.id} value={chip.id}>{chip.label}</option>
-                  ))}
-                </select>
+                <div className="wire-select-wrapper">
+                  <select
+                    id="wire-chip-select"
+                    value={activeChip}
+                    onChange={(e) => onSelectChip(e.target.value)}
+                    className="wire-select"
+                    aria-label="Matchday chip"
+                    title={CHIP_OPTIONS.find(c => c.id === activeChip)?.desc}
+                  >
+                    {CHIP_OPTIONS.map(chip => (
+                      <option key={chip.id} value={chip.id}>{chip.label}</option>
+                    ))}
+                  </select>
+                  <span className="wire-select-caret" aria-hidden="true">▾</span>
+                </div>
               ) : (
-                CHIP_OPTIONS.find(c => c.id === playedChip)?.label || (playedChip ? playedChip.toUpperCase() : 'None')
+                <span className="wire-control-text">
+                  {CHIP_OPTIONS.find(c => c.id === playedChip)?.label || (playedChip ? playedChip.toUpperCase() : 'None')}
+                </span>
               )}
-            </dd>
+            </div>
           </div>
           {canAct && (
-            <div className="wire-status-row">
-              <dt>Goal</dt>
-              <dd>
-                <div className="wire-segments" role="group" aria-label="Tactical goal">
-                  {STRATEGY_OPTIONS.map(opt => (
-                    <button
-                      key={opt.id}
-                      type="button"
-                      className="wire-segment"
-                      aria-pressed={strategy === opt.id}
-                      onClick={() => onSelectStrategy(opt.id)}
-                      title={opt.desc}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </dd>
+            <div className="wire-control-item wire-control-item-strategy">
+              <span className="wire-control-label">Goal</span>
+              <div className="wire-segments" role="group" aria-label="Tactical goal">
+                {STRATEGY_OPTIONS.map(opt => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    className="wire-segment"
+                    aria-pressed={strategy === opt.id}
+                    onClick={() => onSelectStrategy(opt.id)}
+                    title={opt.desc}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
           {isCompletedGw && liveData?.event_rank && (
-            <div className="wire-status-row">
-              <dt>Gameweek rank</dt>
-              <dd className="font-mono">#{Number(liveData.event_rank).toLocaleString()}</dd>
+            <div className="wire-control-item">
+              <span className="wire-control-label">Gameweek rank</span>
+              <span className="wire-control-value font-mono">#{Number(liveData.event_rank).toLocaleString()}</span>
             </div>
-          )}
-        </dl>
-
-        <div className="wire-actions">
-          {canAct && (
-            <button
-              type="button"
-              className="wire-action"
-              aria-pressed={isSimulating}
-              onClick={onToggleSimulate}
-              title={isSimulating ? 'Stop testing swaps' : 'Test bench swaps before you commit'}
-            >
-              {isSimulating ? 'Done swapping' : 'Try swaps'}
-            </button>
-          )}
-          {canAct && isSimulating && (
-            <button type="button" className="wire-action" onClick={onResetToSuggested}>
-              Reset to suggested
-            </button>
-          )}
-          {!isCompletedGw && (
-            <button
-              type="button"
-              className="wire-action is-primary"
-              onClick={() => {
-                if (!isSynced && onOpenSyncModal) {
-                  onOpenSyncModal();
-                  return;
-                }
-                setIsHandoverOpen(true);
-              }}
-              disabled={isLineupLocked}
-            >
-              {isLineupLocked ? 'Lineup locked' : isSynced ? 'Lock lineup' : 'Connect FPL squad'}
-            </button>
           )}
         </div>
       </header>
@@ -509,50 +481,98 @@ export default function TacticalPitch({
 
         {/* Situational context */}
         <aside className="wire-context">
-          <section aria-labelledby="wire-move-banner">
-            <h2 id="wire-move-banner" className="wire-banner">
-              {isCompletedGw ? 'Matchday summary' : isChipActive ? 'Chip preview' : currentStrategyData ? 'Goal override' : 'Recommended move'}
-            </h2>
-            {isNonParticipating ? (
-              <p className="zinc">Did not take part in Gameweek {gameweek}.</p>
-            ) : isCompletedGw ? (
-              <p className="wire-directive-action">{completedScore} points scored</p>
-            ) : isChipActive ? (
-              <p className="wire-directive-action">{currentChipData.label || 'Chip active'}</p>
-            ) : currentStrategyData ? (
-              <>
-                <p className="wire-directive-action">{currentStrategyData.label}</p>
-                {currentStrategyData.subtitle && <p className="zinc">{currentStrategyData.subtitle}</p>}
-              </>
-            ) : (
-              <button
-                type="button"
-                className="wire-directive"
-                onClick={() => setIsBreakdownOpen(true)}
-                title="See why this move is recommended"
-              >
-                {directive.pairs ? (
-                  <ul className="wire-moves">
-                    {directive.pairs.map((pair, idx) => (
-                      <li key={idx}>
-                        <span className="wire-move-tag">In</span> {pair.in}
-                        <span className="zinc"> for </span>
-                        <span className="wire-move-tag">Out</span> {pair.out}
-                      </li>
-                    ))}
-                  </ul>
+          <section className="wire-decision-module" aria-labelledby="wire-move-banner">
+            <div className="wire-decision-header">
+              <div className="wire-decision-info">
+                <h2 id="wire-move-banner" className="wire-banner">
+                  {isCompletedGw ? 'Matchday summary' : isChipActive ? 'Chip preview' : currentStrategyData ? 'Goal override' : 'Recommended move'}
+                </h2>
+                {isNonParticipating ? (
+                  <p className="zinc">Did not take part in Gameweek {gameweek}.</p>
+                ) : isCompletedGw ? (
+                  <p className="wire-directive-action">{completedScore} points scored</p>
+                ) : isChipActive ? (
+                  <p className="wire-directive-action">{currentChipData.label || 'Chip active'}</p>
+                ) : currentStrategyData ? (
+                  <>
+                    <p className="wire-directive-action">{currentStrategyData.label}</p>
+                    {currentStrategyData.subtitle && <p className="zinc">{currentStrategyData.subtitle}</p>}
+                  </>
                 ) : (
-                  <span className="wire-directive-action">{directive.action}</span>
+                  <div className="wire-directive-body">
+                    {directive.pairs ? (
+                      <ul className="wire-moves">
+                        {directive.pairs.map((pair, idx) => (
+                          <li key={idx}>
+                            <span className="wire-move-tag">In</span> {pair.in}
+                            <span className="zinc"> for </span>
+                            <span className="wire-move-tag">Out</span> {pair.out}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="wire-directive-action">{directive.action}</p>
+                    )}
+                    {directive.detail && <p className="wire-directive-detail font-mono">{directive.detail}</p>}
+                    <div className="wire-directive-links">
+                      <button
+                        type="button"
+                        className="wire-link"
+                        onClick={() => setIsBreakdownOpen(true)}
+                        title="See why this move is recommended"
+                      >
+                        See the reasoning →
+                      </button>
+                      {canAct && onNavigateTab && (
+                        <button
+                          type="button"
+                          className="wire-link"
+                          onClick={() => onNavigateTab('transfers')}
+                        >
+                          Open the Planner →
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 )}
-                {directive.detail && <span className="wire-directive-detail font-mono">{directive.detail}</span>}
-                <span className="wire-directive-more">See the reasoning</span>
-              </button>
-            )}
-            {canAct && onNavigateTab && (
-              <button type="button" className="wire-link" onClick={() => onNavigateTab('transfers')}>
-                Open the Planner
-              </button>
-            )}
+              </div>
+
+              {/* Action buttons stacked and aligned with top third */}
+              {!isCompletedGw && !isNonParticipating && (
+                <div className="wire-decision-actions">
+                  {canAct && (
+                    <button
+                      type="button"
+                      className="wire-action"
+                      aria-pressed={isSimulating}
+                      onClick={onToggleSimulate}
+                      title={isSimulating ? 'Stop testing swaps' : 'Test bench swaps before you commit'}
+                    >
+                      {isSimulating ? 'Done swapping' : 'Try swaps'}
+                    </button>
+                  )}
+                  {canAct && isSimulating && (
+                    <button type="button" className="wire-action" onClick={onResetToSuggested}>
+                      Reset to suggested
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className="wire-action is-primary"
+                    onClick={() => {
+                      if (!isSynced && onOpenSyncModal) {
+                        onOpenSyncModal();
+                        return;
+                      }
+                      setIsHandoverOpen(true);
+                    }}
+                    disabled={isLineupLocked}
+                  >
+                    {isLineupLocked ? 'Lineup locked' : isSynced ? 'Lock lineup' : 'Connect FPL squad'}
+                  </button>
+                </div>
+              )}
+            </div>
           </section>
 
           {!isNonParticipating && (

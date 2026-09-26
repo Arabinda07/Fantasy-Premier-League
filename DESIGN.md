@@ -258,22 +258,21 @@ All frontend surfaces are constructed by composing the following standardized re
 - **Tab Metadata Tags (`.tab-wire-tag`)**: Minimal monospace tags in zinc (`--text-muted`) for chip state and free transfer counts.
 - **Manager Telemetry (`.live-manager-chip`)**: Flat token on `var(--bg-surface-2)` displaying manager name and `#ID` with a static 6px indicator dot in `var(--accent-emerald)` (no pulsating neon orbs).
 
-### 5.1 Matchday Summary (`.wire-summary`)
-- Three columns (`auto 1fr auto`, 64px gap): hero number, radio status list, actions. Collapses to two columns at ≤1024px and one at ≤768px.
-- **Hero (`.wire-hero`)**: zinc slug (`GAMEWEEK 6 · PROJECTED`), mono hero number at `--text-hero` with a zinc `0.36em` unit (`XP` / `PTS`), then zinc formation line.
-- **Radio status (`.wire-status` > `.wire-status-row`)**: a `<dl>`; zinc uppercase `dt` labels in a 9.5rem column, cream `dd` values beside them. Chip is a borderless `<select class="wire-select">`; goal is `.wire-segments` of `.wire-segment` buttons (active = cream, 800, underlined, `aria-pressed`).
-- **Actions (`.wire-actions` > `.wire-action`)**: uppercase text buttons. `.is-primary` is cream and underlined. No button boxes.
+### 5.1 Matchday Header & Controls Strip (`.wire-header`, `.wire-controls-strip`)
+- Two-tier horizontal command architecture:
+  - **Level 1 — Status Hero (`.wire-hero`)**: zinc slug (`GAMEWEEK 6 · PROJECTED`), mono hero number at `--text-hero` with a zinc `0.36em` unit (`XP` / `PTS`), then zinc formation line.
+  - **Level 2 — Gameweek Controls Strip (`.wire-controls-strip`)**: compact horizontal command bar with hairline borders (`1px solid var(--border-subtle)`). Clearly distinguishes Data (`Bank`), Resource (`Free transfers`), Action (`Chip` select with dropdown caret), Strategy (`Goal` segmented switcher with bold cream underline), and Rank (when completed). Eliminates dead space and collapses gracefully on mobile (`≤768px`).
 - **Inline notice (`.wire-notice`)**: `role="status"` sentence under the summary, used instead of `alert()` (for example, a swap that breaks formation rules).
 
 ### 5.2 Section Banner (`.wire-banner`)
 - `<h2>` in zinc, 12px / 800 / 0.18em uppercase, 24px below. Replaces panel headers and panel badges.
 
 ### 5.3 Player Token (`.wire-token` / `PlayerCard.jsx`)
-- No background, border, radius, shadow or kit colour.
+- Restrained grounding: subtle 4px radius with micro-padding (`padding: 6px 8px`) and ultra-subtle hover feedback (`background-color: rgba(255, 255, 255, 0.03)`), eliminating perceived emptiness on wide canvases without adding heavy cards or decorative pills.
 - **Main button (`.wire-token-main`)**: cream name at `--text-name` (captain 800) over mono points with a zinc unit. Click swaps or inspects; double-click inspects.
 - **Meta row (`.wire-token-meta`)**: sibling buttons, never nested. `.wire-token-fixture` (zinc `POS · vs OPP`, opens the match preview) and `.wire-token-armband` (`C` / `VC` / `3×`, always visible, 24px minimum target, cream when active, `aria-label` and `aria-pressed`).
 - **Status word (`.wire-token-status`)**: at most one zinc uppercase word, in priority order `BLANK` > `DGW` > `CAMEO` > `RISK`.
-- **Swap target (`.is-target`)**: underlined name. No glow or colour.
+- **Swap target (`.is-target`)**: underlined name and subtle emerald tint (`rgba(16, 185, 129, 0.06)`).
 - Rows are `.wire-pitch-row` flex lines inside `.wire-pitch` (a size container); under 460px names drop to 12px.
 
 ### 5.4 Bench Line (`.wire-bench` > `.wire-bench-line`)
@@ -343,10 +342,10 @@ All frontend surfaces are constructed by composing the following standardized re
 `.nike-hero-card`, `.nike-pill-cta` and `<HeroFocusCard>` were removed in round 2 (unused, and pill CTAs break Direction J).
 
 ### 5.13 Matchday Lineup Architecture (`TacticalPitch.jsx`)
-- `.wire` root: `.wire-summary` (§5.1), optional `.wire-notice`, then `.wire-split` (`1.2fr 1fr`, 64px gap; one column at ≤768px).
-- **Left, `.wire-pitch-col`**: `Starting XI` banner and formation rows of player tokens (§5.3). Bench Boost puts all 15 on the pitch.
-- **Right, `.wire-context`**: `Recommended move` (a `.wire-directive` button listing `In … for Out …` lines, opening the reasoning modal, plus `.wire-link` to the Planner), then the bench (§5.4) and a zinc `.wire-footnote`.
-- Retired with this redesign: `.matchday-status-bar`, `.tactical-hud-ribbon`, `.pitch-workspace`, `.pitch-sidebar`, `.bench-item`, `.player-pitch-card` on the Lineup tab (the Vault still uses it), captain badges, position pills, DIFF/CORE/PK/CK/BB/price badges.
+- `.wire` root: `.wire-header` (Level 1 Hero + Level 2 Controls Strip, §5.1), optional `.wire-notice`, then `.wire-split` (`1.2fr 1fr`, 64px gap; one column at ≤768px).
+- **Left, `.wire-pitch-col`**: `Starting XI` banner and formation rows of restrained player tokens (§5.3). Bench Boost puts all 15 on the pitch.
+- **Right, `.wire-context`**: Unified **Decision Module (`.wire-decision-module`)** pairing recommendation intelligence (`RECOMMENDED MOVE`, `Play your Wildcard`, projected gain, `See the reasoning →`, `Open the Planner →`) with aligned decision actions (`Try swaps`, `Reset to suggested`, `Lock lineup` / `Connect FPL squad`), followed by the bench (§5.4) and a zinc `.wire-footnote`.
+- Retired with this redesign: `.wire-summary`, `.wire-status`, `.matchday-status-bar`, `.tactical-hud-ribbon`, `.pitch-workspace`, `.pitch-sidebar`, `.bench-item`, `.player-pitch-card` on the Lineup tab (the Vault still uses it), captain badges, position pills, DIFF/CORE/PK/CK/BB/price badges.
 
 ### 5.14 Fixture Ticker Legend & Difficulty Formula Popover (`.fixture-legend-bar`)
 - **Single-Line Legend Bar (`.fixture-legend-bar`)**: Replaces multi-row 90px+ header blocks with a compact 38px horizontal strip positioned beside the horizon pills. Reclaims ~60px of vertical height so 15+ clubs sit directly above the fold.
