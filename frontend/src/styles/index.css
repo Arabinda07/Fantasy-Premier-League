@@ -4567,8 +4567,6 @@ p,
   gap: var(--space-4);
 }
 
-.market-asset-row {
-  display: flex;
 .market-wire-panel {
   background: var(--bg-surface-1);
   border: 1px solid var(--border-subtle);
