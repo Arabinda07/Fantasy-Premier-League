@@ -55,8 +55,8 @@
   "bench_codes": [
     80201,
     169528,
-    122798,
-    177815
+    177815,
+    122798
   ],
   "captain_code": 141746,
   "vice_captain_code": 446008,
@@ -64,5 +64,5 @@
   "free_transfers": 1,
   "transfers_recommended": 0,
   "hits_recommended": 0,
-  "updated_at": "2026-09-26 10:27:58 UTC"
+  "updated_at": "2026-09-27 10:59:26 UTC"
 }
