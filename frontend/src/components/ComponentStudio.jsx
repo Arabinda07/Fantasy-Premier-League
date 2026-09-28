@@ -358,7 +358,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                       Positional Bayesian Baseline Rates (Per 90 Minutes)
                     </h3>
                     <div className="studio-section-subtitle">
-                      Prior expectations applied when a player has limited recent minutes ($M_0 = {priorMinutes}\text{m}$)
+                      Prior expectations applied when a player has limited recent minutes (M₀ = {priorMinutes}m)
                     </div>
                   </div>
                 </div>

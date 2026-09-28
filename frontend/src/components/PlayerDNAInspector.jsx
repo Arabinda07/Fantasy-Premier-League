@@ -78,14 +78,14 @@ export default function PlayerDNAInspector({ player, onClose }) {
     : ((pos === 'GK' || pos === 'DEF') ? -0.45 : 0.0);
 
   const componentsData = [
-    { name: 'Appearance (60+m)', value: Number(c1_c2.toFixed(2)), color: '#3B82F6', desc: 'Guaranteed 2 pts for 60+ minutes' },
-    { name: 'Goal Threat (xG)', value: c8_goals, color: '#10B981', desc: `Based on ${xG90.toFixed(2)} xG/90` },
-    { name: 'Assist Threat (xA)', value: c7_assists, color: '#06B6D4', desc: `Based on ${xA90.toFixed(2)} xA/90` },
-    { name: 'Clean Sheet', value: c9_cleansheet, color: '#3B82F6', desc: 'Adjusted for heavy-defeat risk' },
-    { name: 'Bonus Points (BPS)', value: c6_bonus, color: '#F59E0B', desc: 'Match-balanced bonus allocation' },
-    ...(pos === 'GK' || c3_saves > 0 ? [{ name: 'Goalkeeper Saves', value: c3_saves, color: '#F59E0B', desc: 'Save point baseline' }] : []),
-    { name: 'Discipline Risk', value: c4_c5_cards, color: '#EF4444', desc: 'Yellow / red card deductions' },
-    ...(c10_gc_penalty !== 0 ? [{ name: 'Goals Conceded', value: c10_gc_penalty, color: '#DC2626', desc: 'Penalties including heavy-defeat risk' }] : [])
+    { name: 'Appearance (60+m)', value: Number(c1_c2.toFixed(2)), color: 'var(--accent-blue)', desc: 'Guaranteed 2 pts for 60+ minutes' },
+    { name: 'Goal Threat (xG)', value: c8_goals, color: 'var(--accent-emerald)', desc: `Based on ${xG90.toFixed(2)} xG/90` },
+    { name: 'Assist Threat (xA)', value: c7_assists, color: 'var(--accent-cyan)', desc: `Based on ${xA90.toFixed(2)} xA/90` },
+    { name: 'Clean Sheet', value: c9_cleansheet, color: 'var(--accent-blue)', desc: 'Adjusted for heavy-defeat risk' },
+    { name: 'Bonus Points (BPS)', value: c6_bonus, color: 'var(--accent-amber)', desc: 'Match-balanced bonus allocation' },
+    ...(pos === 'GK' || c3_saves > 0 ? [{ name: 'Goalkeeper Saves', value: c3_saves, color: 'var(--accent-amber)', desc: 'Save point baseline' }] : []),
+    { name: 'Discipline Risk', value: c4_c5_cards, color: 'var(--accent-crimson)', desc: 'Yellow / red card deductions' },
+    ...(c10_gc_penalty !== 0 ? [{ name: 'Goals Conceded', value: c10_gc_penalty, color: 'var(--accent-crimson)', desc: 'Penalties including heavy-defeat risk' }] : [])
   ];
 
   const pMins60 = player.p_mins_60 != null ? Math.round(player.p_mins_60 * 100) : 92;
@@ -204,12 +204,13 @@ export default function PlayerDNAInspector({ player, onClose }) {
                 <ReferenceLine x={0} stroke="rgba(255,255,255,0.25)" />
                 <Tooltip
                   contentStyle={{
-                    background: 'var(--bg-surface-2)',
-                    border: '1px solid var(--border-medium)',
-                    borderRadius: '4px',
-                    fontSize: '12px',
+                    background: 'var(--bg-surface-1)',
+                    border: '1px solid var(--border-subtle)',
+                    borderRadius: 'var(--radius-sm)',
+                    fontSize: '11px',
+                    fontFamily: 'var(--font-mono)',
                     color: 'var(--text-primary)',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
+                    boxShadow: 'var(--shadow-card)'
                   }}
                   formatter={(val) => [`${Number(val).toFixed(2)} pts`, 'Point Contribution']}
                 />
@@ -226,8 +227,8 @@ export default function PlayerDNAInspector({ player, onClose }) {
                 <PolarGrid stroke="rgba(255,255,255,0.08)" />
                 <PolarAngleAxis dataKey="subject" stroke="var(--text-secondary)" fontSize={11} />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="rgba(255,255,255,0.05)" />
-                <Radar name={player.web_name} dataKey="Player" stroke="#10B981" fill="#10B981" fillOpacity={0.35} />
-                <Radar name="Position Baseline" dataKey="Baseline" stroke="#64748B" fill="#64748B" fillOpacity={0.15} />
+                <Radar name={player.web_name} dataKey="Player" stroke="var(--text-primary)" fill="var(--text-primary)" fillOpacity={0.25} />
+                <Radar name="Position Baseline" dataKey="Baseline" stroke="var(--text-muted)" fill="var(--text-muted)" fillOpacity={0.12} />
                 <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '4px' }} />
               </RadarChart>
             </ResponsiveContainer>

@@ -265,7 +265,7 @@ export default function MultiGwPlanner({
                     />
                     <Tooltip
                       contentStyle={{
-                        background: 'var(--bg-surface-2)',
+                        background: 'var(--bg-surface-1)',
                         border: '1px solid var(--border-subtle)',
                         borderRadius: 'var(--radius-sm)',
                         fontSize: '11px',
