@@ -48,7 +48,7 @@ jobs:
           pytest -v
 
   frontend-constitutional-gates:
-    name: Frontend Quality Gates (Copy Check & Production Build)
+    name: Frontend Quality Gates (Copy, Tests & Production Build)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -69,6 +69,48 @@ jobs:
         working-directory: frontend
         run: npm run check-copy
 
-      - name: "Gate 4: Production Build Verification"
+      - name: "Gate 3: Frontend Unit Tests (Optimizer, Metadata, Transfers)"
+        working-directory: frontend
+        run: npm test
+
+      - name: "Gate 4: Serverless API Contract Tests"
+        run: |
+          node tests/test_api_sync.js
+
+      - name: "Gate 5: Production Build Verification"
         working-directory: frontend
         run: npm run build
+
+  notify-on-failure:
+    name: Alert on CI Failure
+    runs-on: ubuntu-latest
+    needs: [python-constitutional-gates, frontend-constitutional-gates]
+    if: failure()
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `❌ CI Failed: ${context.workflow} #${context.runNumber}`;
+            const body = [
+              `### Workflow Failure`,
+              ``,
+              `| Field | Value |`,
+              `|-------|-------|`,
+              `| **Workflow** | ${context.workflow} |`,
+              `| **Run** | [#${context.runNumber}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) |`,
+              `| **Branch** | \`${context.ref.replace('refs/heads/', '')}\` |`,
+              `| **Commit** | \`${context.sha.substring(0, 8)}\` |`,
+              `| **Triggered by** | @${context.actor} |`,
+              ``,
+              `> Check the [workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for detailed failure logs.`,
+            ].join('\n');
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['ci-failure', 'automated'],
+            });

@@ -13,6 +13,7 @@ if REPO_ROOT not in sys.path:
 
 from model.pipeline_automation import (
     detect_active_gameweek,
+    detect_international_break,
     sync_api_data,
     record_price_snapshot,
     rebuild_dataset,
@@ -237,3 +238,80 @@ class TestErrorHandlingAndFallback:
         assert 'price_snapshot' not in stage_names
         assert 'live_solver' not in stage_names
         assert 'predictions' in stage_names
+
+    def test_pipeline_break_reduced_sync(self):
+        """During international break, sync mode only does api_sync and price_snapshot."""
+        result = run_live_pipeline(
+            season='2026-27',
+            gw=6,
+            mode='sync',
+            data_root='data',
+            offline=True,
+            export_excel=False,
+            export_json=False,
+        )
+        stage_names = [s.stage for s in result.stages]
+        assert 'api_sync' in stage_names
+        assert 'price_snapshot' in stage_names
+        assert 'predictions' not in stage_names
+        assert 'live_solver' not in stage_names
+
+
+class TestDetectInternationalBreak:
+    """Verify international break detection logic and threshold handling."""
+
+    def test_detect_break_real_data(self):
+        """Should detect the current break or return a valid 3-tuple."""
+        is_break, days, kickoff = detect_international_break(
+            season='2026-27', data_root='data', offline=True, threshold_days=10
+        )
+        assert isinstance(is_break, bool)
+        if kickoff is not None:
+            assert isinstance(days, int)
+            assert isinstance(kickoff, str)
+            assert is_break is True
+            assert days >= 10
+
+    def test_detect_break_custom_threshold(self):
+        """With very high threshold, break should be False."""
+        is_break, days, kickoff = detect_international_break(
+            season='2026-27', data_root='data', offline=True, threshold_days=999
+        )
+        assert is_break is False
+
+    def test_detect_break_nonexistent_season(self):
+        """For nonexistent season, returns (False, None, None)."""
+        is_break, days, kickoff = detect_international_break(
+            season='nonexistent-season', data_root='data', offline=True
+        )
+        assert is_break is False
+        assert days is None
+        assert kickoff is None
+
+    def test_detect_break_synthetic_fixture(self):
+        """Test with temporary fixtures.csv having a fixture in 5 days vs 15 days."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            season_dir = os.path.join(tmpdir, '2026-27')
+            os.makedirs(season_dir, exist_ok=True)
+            fix_path = os.path.join(season_dir, 'fixtures.csv')
+
+            # 5 days in future -> not a break at threshold 10
+            future_5d = (pd.Timestamp.now(tz='UTC') + pd.Timedelta(days=5)).isoformat()
+            pd.DataFrame([
+                {'finished': False, 'kickoff_time': future_5d, 'event': 6}
+            ]).to_csv(fix_path, index=False)
+
+            is_b, d, _ = detect_international_break('2026-27', data_root=tmpdir, offline=True, threshold_days=10)
+            assert is_b is False
+            assert d == 5
+
+            # 15 days in future -> is a break at threshold 10
+            future_15d = (pd.Timestamp.now(tz='UTC') + pd.Timedelta(days=15)).isoformat()
+            pd.DataFrame([
+                {'finished': False, 'kickoff_time': future_15d, 'event': 6}
+            ]).to_csv(fix_path, index=False)
+
+            is_b, d, _ = detect_international_break('2026-27', data_root=tmpdir, offline=True, threshold_days=10)
+            assert is_b is True
+            assert d == 15
+

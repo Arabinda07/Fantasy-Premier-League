@@ -14,19 +14,68 @@ on:
       mode:
         description: 'Pipeline Mode (sync / full / solver_only)'
         required: false
-        default: 'sync'
+        default: 'full'
         type: choice
         options:
           - sync
           - full
           - solver_only
+      force_run:
+        description: 'Force run even during international break'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
+  # ------------------------------------------------------------------
+  # Pre-flight: detect international break to skip unnecessary runs
+  # ------------------------------------------------------------------
+  check-break:
+    name: Detect International Break
+    runs-on: ubuntu-latest
+    outputs:
+      is_break: ${{ steps.detect.outputs.is_break }}
+      days_until: ${{ steps.detect.outputs.days_until }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Detect International Break
+        id: detect
+        run: |
+          python -c "
+          import sys, os
+          sys.path.insert(0, '.')
+          from model.pipeline_automation import detect_international_break
+          is_break, days, ko = detect_international_break(season='2026-27')
+          print(f'Break: {is_break}, Days until next fixture: {days}, Next kickoff: {ko}')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f'is_break={str(is_break).lower()}\n')
+              f.write(f'days_until={days or 0}\n')
+          "
+
+  # ------------------------------------------------------------------
+  # Main pipeline: full rebuild + scraping + solver + deploy
+  # ------------------------------------------------------------------
   weekly_refresh:
     runs-on: ubuntu-latest
+    needs: check-break
+    if: ${{ needs.check-break.outputs.is_break != 'true' || github.event.inputs.force_run == 'true' }}
     name: Weekly ML Pipeline, Solver Validation & Deployment
 
     steps:
@@ -58,16 +107,16 @@ jobs:
           cd frontend
           npm ci || npm install
 
-      - name: Execute FPL Pipeline Automation & Predictions
+      - name: Execute FPL Full Pipeline with xG Scraping
         run: |
           GW_ARG=""
           if [ -n "${{ github.event.inputs.gameweek }}" ]; then
             GW_ARG="--gw ${{ github.event.inputs.gameweek }}"
           fi
-          
-          MODE="${{ github.event.inputs.mode || 'sync' }}"
-          echo "Running pipeline in mode: $MODE $GW_ARG"
-          python -m model.pipeline_automation --season 2026-27 --mode "$MODE" --team-id 9500404 --league-id 1305495 $GW_ARG
+
+          MODE="${{ github.event.inputs.mode || 'full' }}"
+          echo "Running pipeline in mode: $MODE $GW_ARG (with --scrape)"
+          python -m model.pipeline_automation --season 2026-27 --mode "$MODE" --scrape --team-id 9500404 --league-id 1305495 $GW_ARG
 
       - name: Enrich Frontend Player Costs & Element IDs
         run: |
@@ -85,9 +134,9 @@ jobs:
         run: |
           python scripts/validate_okf.py
 
-      - name: Run Client Optimizer Contract Tests
-        run: |
-          node frontend/src/utils/clientOptimizer.test.js
+      - name: Run Frontend Unit & Contract Tests
+        working-directory: frontend
+        run: npm test
 
       - name: Run Serverless API Contract Tests
         run: |
@@ -103,7 +152,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/ frontend/src/data/ knowledge/
-          
+
           # Check if there are changes to commit
           if git diff --staged --quiet; then
             echo "No data changes detected. Skipping commit."
@@ -112,3 +161,68 @@ jobs:
             git commit -m "chore(data): automated weekly FPL predictions & matchday sync ($TODAY) [skip ci]"
             git push origin HEAD:master
           fi
+
+      - name: Deploy to Vercel Production
+        if: github.ref == 'refs/heads/master'
+        run: |
+          cd frontend
+          npx -y vercel --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+  # ------------------------------------------------------------------
+  # Break skip: log when weekly pipeline is intentionally skipped
+  # ------------------------------------------------------------------
+  break-skipped:
+    name: Log International Break Skip
+    runs-on: ubuntu-latest
+    needs: check-break
+    if: ${{ needs.check-break.outputs.is_break == 'true' && github.event.inputs.force_run != 'true' }}
+    steps:
+      - name: Log Break Status
+        run: |
+          echo "=========================================="
+          echo "  WEEKLY PIPELINE SKIPPED"
+          echo "  International break detected."
+          echo "  Days until next fixture: ${{ needs.check-break.outputs.days_until }}"
+          echo "  Use workflow_dispatch with force_run=true to override."
+          echo "=========================================="
+
+  # ------------------------------------------------------------------
+  # Failure notification: auto-create GitHub Issue on pipeline failure
+  # ------------------------------------------------------------------
+  notify-on-failure:
+    name: Alert on Weekly Pipeline Failure
+    runs-on: ubuntu-latest
+    needs: [check-break, weekly_refresh]
+    if: failure()
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `🔴 Weekly Pipeline Failed: ${context.workflow} #${context.runNumber}`;
+            const body = [
+              `### Weekly Pipeline Failure`,
+              ``,
+              `| Field | Value |`,
+              `|-------|-------|`,
+              `| **Workflow** | ${context.workflow} |`,
+              `| **Run** | [#${context.runNumber}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) |`,
+              `| **Trigger** | \`${context.eventName}\` |`,
+              `| **Time (UTC)** | ${new Date().toISOString()} |`,
+              ``,
+              `> The weekly FPL predictions pipeline failed. This pipeline includes full data rebuild, xG scraping, solver optimization, and Vercel deployment.`,
+              ``,
+              `> [View workflow run →](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`,
+            ].join('\n');
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['pipeline-failure', 'automated'],
+            });

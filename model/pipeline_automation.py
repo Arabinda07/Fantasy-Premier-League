@@ -129,6 +129,73 @@ def detect_active_gameweek(
     return current_gw, next_gw, deadline
 
 
+def detect_international_break(
+    season: str = '2026-27',
+    data_root: str = 'data',
+    offline: bool = False,
+    threshold_days: int = 10,
+) -> Tuple[bool, Optional[int], Optional[str]]:
+    """Detect whether we are currently in an international break or long hiatus.
+
+    Checks the upcoming fixtures kickoff times. If the next scheduled match is
+    more than `threshold_days` days away from current UTC time, flags as break.
+
+    Args:
+        season: season string.
+        data_root: root data directory.
+        offline: if True, do not attempt to call FPL API.
+        threshold_days: gap in days to qualify as an international break (default 10).
+
+    Returns:
+        Tuple of (is_break, days_until_next, next_kickoff_iso_str).
+    """
+    next_kickoff_str = None
+
+    # First attempt: live fixtures if online
+    if not offline:
+        try:
+            from getters import get_fixtures_data
+            fixtures = get_fixtures_data()
+            if fixtures:
+                unfinished = [
+                    f for f in fixtures
+                    if not f.get('finished') and f.get('kickoff_time')
+                ]
+                unfinished.sort(key=lambda x: x['kickoff_time'])
+                if unfinished:
+                    next_kickoff_str = unfinished[0]['kickoff_time']
+        except Exception as e:
+            print(f"[Pipeline] Notice: Could not fetch live fixtures for break check: {e}")
+
+    # Fallback attempt: cached fixtures.csv
+    if not next_kickoff_str:
+        fixtures_path = os.path.join(data_root, season, 'fixtures.csv')
+        if os.path.exists(fixtures_path):
+            try:
+                fix_df = pd.read_csv(fixtures_path)
+                if 'finished' in fix_df.columns and 'kickoff_time' in fix_df.columns:
+                    unfinished = fix_df[
+                        (fix_df['finished'] == False) & fix_df['kickoff_time'].notna()
+                    ].sort_values('kickoff_time')
+                    if not unfinished.empty:
+                        next_kickoff_str = str(unfinished['kickoff_time'].iloc[0])
+            except Exception as e:
+                print(f"[Pipeline] Notice: Could not read fixtures.csv for break check: {e}")
+
+    if not next_kickoff_str:
+        return False, None, None
+
+    try:
+        next_dt = pd.to_datetime(next_kickoff_str, utc=True)
+        now_dt = datetime.now(timezone.utc)
+        diff_days = int(round((next_dt - now_dt).total_seconds() / 86400.0))
+        is_break = diff_days > threshold_days
+        return is_break, diff_days, next_kickoff_str
+    except Exception as e:
+        print(f"[Pipeline] Warning: Failed parsing kickoff timestamp '{next_kickoff_str}': {e}")
+        return False, None, next_kickoff_str
+
+
 def sync_api_data(
     season: str = '2026-27',
     data_root: str = 'data',
@@ -803,6 +870,16 @@ def run_live_pipeline(
         resolved_gw = gw or 1
 
     print(f"[Pipeline] Active GW: {active_gw} | Next GW: {next_gw} | Target GW: {resolved_gw} | Deadline: {deadline or 'N/A'}")
+
+    # ------------------------------------------------------------------
+    # International Break Detection
+    # ------------------------------------------------------------------
+    is_break, days_until_next, next_kickoff_str = detect_international_break(
+        season=season, data_root=data_root, offline=offline,
+    )
+    break_reduced = is_break and mode == 'sync'
+    if break_reduced:
+        print(f"[Pipeline] BREAK REDUCED SYNC: API + price tracking only ({days_until_next}d to GW{resolved_gw})")
     print("-" * 90)
 
     # ------------------------------------------------------------------
@@ -846,9 +923,9 @@ def run_live_pipeline(
             print(f"[Pipeline] Warning: Historical rebuild failed — {hist_result.error}")
 
     # ------------------------------------------------------------------
-    # Stage 3: Dataset Rebuild (sync + full modes)
+    # Stage 3: Dataset Rebuild (sync + full modes, skipped during break)
     # ------------------------------------------------------------------
-    if mode in ('sync', 'full'):
+    if mode in ('sync', 'full') and not break_reduced:
         ds_result = rebuild_dataset(
             season=season, gw=resolved_gw, data_root=data_root,
             skip_scrape=not scrape,
@@ -858,9 +935,9 @@ def run_live_pipeline(
             print(f"[Pipeline] Warning: Dataset rebuild failed — {ds_result.error}")
 
     # ------------------------------------------------------------------
-    # Stage 4: Predictions (sync + full + predictions_only modes)
+    # Stage 4: Predictions (sync + full + predictions_only, skipped during break)
     # ------------------------------------------------------------------
-    if mode in ('sync', 'full', 'predictions_only'):
+    if mode in ('sync', 'full', 'predictions_only') and not break_reduced:
         pred_result = generate_predictions(
             season=season, gw=resolved_gw, data_root=data_root,
         )
@@ -869,10 +946,10 @@ def run_live_pipeline(
             print(f"[Pipeline] Warning: Predictions failed — {pred_result.error}")
 
     # ------------------------------------------------------------------
-    # Stage 5: Live Solver (sync + full + solver_only modes)
+    # Stage 5: Live Solver (sync + full + solver_only, skipped during break)
     # ------------------------------------------------------------------
     matchday_payload = None
-    if mode in ('sync', 'full', 'solver_only'):
+    if mode in ('sync', 'full', 'solver_only') and not break_reduced:
         solver_result = run_live_solver(
             season=season,
             gw=resolved_gw,
@@ -916,9 +993,9 @@ def run_live_pipeline(
                 export_json = False
 
     # ------------------------------------------------------------------
-    # Stage 6: Frontend Enrichment (when JSON export is enabled)
+    # Stage 6: Frontend Enrichment (skipped during break)
     # ------------------------------------------------------------------
-    if export_json and mode in ('sync', 'full', 'solver_only'):
+    if export_json and mode in ('sync', 'full', 'solver_only') and not break_reduced:
         enrich_result = enrich_frontend_stage(
             season=season, gw=resolved_gw, data_root=data_root,
         )
@@ -944,7 +1021,8 @@ def run_live_pipeline(
         status = "OK" if s.success else "FAIL"
         print(f"  [{status:<4}] {s.stage:<22} | {s.duration_seconds:>6.1f}s | {s.message}")
     print("-" * 90)
-    print(f"  Total Duration: {total_time:.1f}s | Overall: {'SUCCESS' if all_success else 'PARTIAL FAILURE'}")
+    break_note = f" | INTL BREAK ({days_until_next}d)" if is_break else ""
+    print(f"  Total Duration: {total_time:.1f}s | Overall: {'SUCCESS' if all_success else 'PARTIAL FAILURE'}{break_note}")
     print("=" * 90 + "\n")
 
     return PipelineResult(
