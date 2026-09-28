@@ -116,7 +116,7 @@ export default function MultiGwPlanner({
   const totalHits = activeRoadmap.reduce((acc, r) => acc + (r.hits_taken || 0), 0);
 
   return (
-    <div className="view-fluid">
+    <div className="view-fluid wire">
       {/* Multi-Horizon Planner Control Deck */}
       <div className="planner-control-deck" role="region" aria-label="Transfer Planner Workspace Controls">
         <div className="planner-control-left">

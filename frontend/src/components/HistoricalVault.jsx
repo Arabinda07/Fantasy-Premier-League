@@ -139,7 +139,7 @@ export default function HistoricalVault({ onInspectPlayer }) {
   };
 
   return (
-    <div className="historical-vault-view surface-scope-vault" style={{ padding: '0 0 40px 0' }}>
+    <div className="historical-vault-view surface-scope-vault wire" style={{ padding: '0 0 40px 0' }}>
       {/* 1. Header Banner & View Mode Switcher with Direction J Wire Segments */}
       <div className="vault-hero-bar">
         <div className="vault-hero-inner">

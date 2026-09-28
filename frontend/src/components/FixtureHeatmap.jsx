@@ -153,7 +153,7 @@ export default function FixtureHeatmap({
   ];
 
   return (
-    <div className="view-fluid">
+    <div className="view-fluid wire">
       {/* Ticker Header & Controls Bar */}
       <div className="ticker-controls-bar">
         <div className="ticker-title-group">

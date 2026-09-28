@@ -196,7 +196,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
   };
 
   return (
-    <div className="studio-container">
+    <div className="studio-container wire">
       {/* Institutional Forecaster Control Deck (52px Header) */}
       <div className="forecaster-control-deck" role="region" aria-label="Points Forecaster Controls">
         <div className="forecaster-control-left">

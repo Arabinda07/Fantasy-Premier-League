@@ -221,7 +221,7 @@ export default function RivalThreatMatrix({
     : Number((yourUpside - rivalUpside).toFixed(1));
 
   return (
-    <div className="view-fluid">
+    <div className="view-fluid wire">
       {/* Mini-League Tactical Telemetry Deck */}
       <div className="rivals-telemetry-deck" role="region" aria-label="Mini-League Tactical Telemetry">
         <div className="rivals-telemetry-left">

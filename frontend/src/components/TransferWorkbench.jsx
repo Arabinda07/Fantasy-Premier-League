@@ -156,7 +156,7 @@ export default function TransferWorkbench({
   const xaIn = Number(playerIn?.expected_assists_per_90 ?? playerIn?.short_form_expected_assists_90 ?? playerIn?.xa90 ?? 0);
 
   return (
-    <div className="view-fluid">
+    <div className="view-fluid wire">
       {/* Recommended Tactical Moves Panel */}
       {recommendedPairs.length > 0 && (
         <div className="recommended-moves-panel">

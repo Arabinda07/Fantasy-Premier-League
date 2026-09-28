@@ -128,7 +128,7 @@ export default function MarketVelocityTicker({ allPlayers, allPlayersData, liveD
   };
 
   return (
-    <div className="view-fluid">
+    <div className="view-fluid wire">
       <h1 className="sr-only">Transfer Market Velocity &amp; Price Trends</h1>
       <div className="market-panels-grid">
         {/* Rising Assets Radar */}

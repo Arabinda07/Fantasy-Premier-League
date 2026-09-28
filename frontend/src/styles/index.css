@@ -10,8 +10,10 @@
   /* Surfaces & Canvas (OKLCH Perceptually Uniform & Hex Fallbacks) */
   /* Direction J (Matchday Radio Wire) ground: warm charcoal, constant everywhere */
   --bg-canvas: #18181B;
+  --bg-surface-0: #141416;
   --bg-surface-1: #1C1C20;
   --bg-surface-2: #232328;
+  --bg-surface-3: #2E2E36;
   --bg-surface-subtle: #2A2A30;
   --bg-pitch-base: #064030;
   --bg-pitch-stripe: #053326;
@@ -198,6 +200,20 @@ summary,
 [role="button"],
 [tabindex] {
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Universal Base Button Reset */
+button {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-align: inherit;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 :focus-visible {
@@ -8185,16 +8201,50 @@ tr:hover .vault-table-sticky-col {
   gap: var(--space-2) var(--space-6);
 }
 
-.wire-segment {
+.wire-segment,
+.wire-segments button,
+.wire-segments > button,
+button.wire-segment {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  outline: none;
+  box-shadow: none !important;
+  padding: var(--space-2) var(--space-3);
+  margin: 0;
+  font: inherit;
+  font-size: var(--text-base);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-xs);
+  transition: color var(--duration-fast) var(--ease-snappy);
 }
 
 .wire-segment:hover,
-.wire-segment[aria-pressed="true"] {
-  color: var(--text-primary);
+.wire-segments button:hover,
+.wire-segment[aria-pressed="true"],
+.wire-segment[aria-selected="true"],
+.wire-segment.active,
+.wire-segments button[aria-pressed="true"],
+.wire-segments button[aria-selected="true"],
+.wire-segments button.active {
+  color: var(--text-primary) !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
-.wire-segment[aria-pressed="true"] {
+.wire-segment[aria-pressed="true"],
+.wire-segment[aria-selected="true"],
+.wire-segment.active,
+.wire-segments button[aria-pressed="true"],
+.wire-segments button[aria-selected="true"],
+.wire-segments button.active {
   font-weight: 800;
   text-decoration: underline;
   text-underline-offset: 6px;
@@ -8289,12 +8339,26 @@ tr:hover .vault-table-sticky-col {
   background-color: rgba(16, 185, 129, 0.06);
 }
 
-.wire-token-main {
+.wire-token-main,
+button.wire-token-main,
+.vault-token button,
+.vault-token .wire-token-main {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
   max-width: 100%;
+  width: 100%;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
 }
 
 .wire-token-name {
