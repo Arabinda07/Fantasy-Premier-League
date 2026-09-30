@@ -5,12 +5,12 @@
   "is_completed": false,
   "participated": true,
   "overall_points": 270,
-  "overall_rank": 7007685,
+  "overall_rank": 7007622,
   "manager_profile": {
     "entry_id": 9500404,
     "manager_name": "Arabinda Saha",
     "team_name": "Fuljhore Giants",
-    "overall_rank": 7007685,
+    "overall_rank": 7007622,
     "overall_points": 270,
     "bank": 2.2,
     "team_value": 100.9,
@@ -1253,10 +1253,11 @@
     "points_on_bench": 10,
     "gw": 6
   },
-  "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds \u00a31.9M in trapped bench capital (Calvert-Lewin). Pruning via 2 FTs yields +2.1 pts into starters without burning Wildcard (Option Hurdle: 22.7 pts). | [!] Price Alert: B.Fernandes (-149,772), Szoboszlai (-169,398) approaching drop",
+  "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds \u00a31.9M in trapped bench capital (Calvert-Lewin). Pruning via 2 FTs yields +2.1 pts into starters without burning Wildcard (Option Hurdle: 22.7 pts). | [!] Price Alert: B.Fernandes (-151,684), Szoboszlai (-173,294), Palmer (-116,346) approaching drop",
   "falling_price_risks": [
-    "B.Fernandes (-149,772)",
-    "Szoboszlai (-169,398)"
+    "B.Fernandes (-151,684)",
+    "Szoboszlai (-173,294)",
+    "Palmer (-116,346)"
   ],
   "chip_recommendations": {
     "3xc": {
