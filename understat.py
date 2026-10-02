@@ -182,6 +182,15 @@ def match_ids(understat_dir, data_dir):
         fpl_inf = csv.DictReader(fpl_file)
         for row in fpl_inf:
             fpl_players[row['first_name'] + ' ' + row['second_name']] = row['id']
+    # Initialize entity resolver for diacritic / compound name reconciliation
+    try:
+        from model.player_entity_resolver import PlayerEntityResolver
+        season_str = os.path.basename(data_dir.rstrip('/\\'))
+        root_str = os.path.dirname(data_dir) or 'data'
+        resolver = PlayerEntityResolver(season=season_str, data_root=root_str)
+    except Exception as e:
+        resolver = None
+
     players = []
     found = {}
     for k, v in ustat_players.items():
@@ -189,6 +198,15 @@ def match_ids(understat_dir, data_dir):
             player = PlayerID(v, fpl_players[k], k, k)
             players += [player]
             found[k] = True
+        elif resolver:
+            res = resolver.resolve(external_name=k)
+            if res and res.fpl_id:
+                player = PlayerID(v, res.fpl_id, k, res.canonical_name or k)
+                players += [player]
+                found[res.canonical_name or k] = True
+            else:
+                player = PlayerID(v, -1, k, "")
+                players += [player]
         else:
             player = PlayerID(v, -1, k, "")
             players += [player]

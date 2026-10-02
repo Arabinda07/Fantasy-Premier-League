@@ -75,13 +75,32 @@ def enrich_player_costs(season: str = "2026-27") -> bool:
             p["player_code"] = fallback["code"]
             matched += 1
         else:
-            # Fallback to existing cost or positional baseline
-            pos = p.get("position", "MID")
-            default_cost = 4.5 if pos in ("GK", "DEF") else 5.0
-            p["now_cost"] = float(p.get("cost", default_cost) or default_cost)
-            p["id"] = p.get("id", code)
-            p["element_id"] = p.get("element_id", code)
-            p["code"] = code
+            # Semantic Entity Resolver Fallback for diacritics / compound names
+            resolved_code = None
+            try:
+                from model.player_entity_resolver import PlayerEntityResolver
+                resolver = PlayerEntityResolver(season=season, data_root=os.path.join(repo_root, "data"))
+                res = resolver.resolve(external_name=p.get("web_name", ""))
+                if res and res.fpl_code and res.fpl_code in cost_map:
+                    resolved_code = res.fpl_code
+            except Exception:
+                resolved_code = None
+
+            if resolved_code and resolved_code in cost_map:
+                p["now_cost"] = cost_map[resolved_code]
+                p["id"] = elem_map[resolved_code]
+                p["element_id"] = elem_map[resolved_code]
+                p["code"] = resolved_code
+                p["player_code"] = resolved_code
+                matched += 1
+            else:
+                # Fallback to existing cost or positional baseline
+                pos = p.get("position", "MID")
+                default_cost = 4.5 if pos in ("GK", "DEF") else 5.0
+                p["now_cost"] = float(p.get("cost", default_cost) or default_cost)
+                p["id"] = p.get("id", code)
+                p["element_id"] = p.get("element_id", code)
+                p["code"] = code
 
     print(f"Matched costs & IDs for {matched}/{len(players)} players")
 

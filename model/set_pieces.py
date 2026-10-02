@@ -250,21 +250,114 @@ def compute_set_piece_equity(
     }
 
 
+def elect_substitute_set_piece_taker(
+    team_name: str,
+    active_starters: List[Dict[str, Any]],
+    role: str = 'penalty',
+    bridge: Optional[Any] = None,
+) -> Tuple[Optional[int], float]:
+    """Elect secondary set-piece taker from active outfield starters using TypeSafe Jev.
+
+    When the primary designated taker is absent or doubtful (P(Start) < 0.35),
+    Jev evaluates active starting outfielders by role, position, and attacking form
+    to preserve set-piece equity.
+    """
+    if not active_starters:
+        return None, 0.0
+
+    outfield = [p for p in active_starters if str(p.get('position', '')).upper() != 'GK']
+    if not outfield:
+        return None, 0.0
+
+    if len(outfield) == 1:
+        return int(outfield[0]['player_code']), 1.0
+
+    state = {
+        "team_name": team_name,
+        "set_piece_role": role,
+        "active_starters": [
+            {
+                "option_key": f"starter_{p['player_code']}",
+                "player_code": p['player_code'],
+                "name": p.get('web_name', str(p['player_code'])),
+                "position": p.get('position', 'MID'),
+                "xp": _safe_float(p.get('expected_points', 0.0)),
+            }
+            for p in outfield
+        ]
+    }
+
+    criteria = {
+        f"starter_{p['player_code']}": f"{p.get('web_name', p['player_code'])} ({p.get('position', 'MID')})"
+        for p in outfield
+    }
+    criteria["none_of_these"] = "None of the active starters are suitable takers."
+
+    questions = {
+        "elected_taker": {
+            "type": "choice",
+            "instructions": (
+                f"Which active starter should inherit primary {role} duties for {team_name} "
+                "given that the designated primary taker is absent? "
+                "Evaluate attacking position, historical goal-scoring/playmaking profile, and seniority. "
+                "If none are suitable, choose 'none_of_these'."
+            ),
+            "criteria": criteria,
+        }
+    }
+
+    # Deterministic heuristic fallback (top attacking FWD/MID by xP)
+    sorted_outfield = sorted(
+        outfield,
+        key=lambda x: (
+            0 if str(x.get('position', '')).upper() == 'FWD' else (1 if str(x.get('position', '')).upper() == 'MID' else 2),
+            -_safe_float(x.get('expected_points', 0.0))
+        )
+    )
+    fallback_code = int(sorted_outfield[0]['player_code'])
+    fallback_answers = {
+        "elected_taker": {
+            "type": "choice",
+            "choice": f"starter_{fallback_code}",
+            "confidence": 0.80,
+            "probabilities": {f"starter_{fallback_code}": 0.80},
+        }
+    }
+
+    try:
+        from model.typesafe_bridge import TypeSafeBridge
+        b = bridge or TypeSafeBridge()
+        resp = b.ask(state=state, questions=questions, mock_fallback=fallback_answers)
+        ans = resp.answers.get("elected_taker") or {}
+        chosen_key = ans.get("choice", "none_of_these") if isinstance(ans, dict) else getattr(ans, "value", "none_of_these")
+        confidence = float(ans.get("confidence", 0.0) if isinstance(ans, dict) else getattr(ans, "confidence", 0.0))
+
+        if chosen_key != "none_of_these" and confidence >= 0.65:
+            code = int(chosen_key.replace("starter_", ""))
+            return code, confidence
+    except Exception:
+        pass
+
+    return fallback_code, 0.75
+
+
 def enrich_predictions_with_set_pieces(
     pred_df: pd.DataFrame,
     season: str = '2026-27',
     data_root: str = 'data',
+    bridge: Optional[Any] = None,
 ) -> pd.DataFrame:
     """Add set-piece equity columns to an existing predictions DataFrame.
 
     Enriches the DataFrame with delta_c7_sp, delta_c8_sp, sp_pk_order,
     sp_fk_order, sp_ck_order columns, and adjusts expected_points to include
-    set-piece equity.
+    set-piece equity. Dynamically elects substitute takers when primaries are absent.
 
     Args:
         pred_df: predictions DataFrame with player_code, position, p_start columns.
         season: season string.
         data_root: root data directory.
+        bridge: optional TypeSafeBridge instance for succession testing.
 
     Returns:
         Enriched DataFrame copy.
@@ -290,6 +383,51 @@ def enrich_predictions_with_set_pieces(
         }
 
     df = pred_df.copy()
+
+    # Pre-scan: Identify team-by-team primary taker status and elect substitutes if absent
+    elected_pk_substitutes: Dict[str, int] = {}
+    elected_ck_substitutes: Dict[str, int] = {}
+
+    teams = df['team'].dropna().unique() if 'team' in df.columns else []
+    for team in teams:
+        team_df = df[df['team'] == team]
+        starters = team_df[team_df['p_start'] >= 0.50]
+        if starters.empty:
+            starters = team_df.sort_values('expected_points', ascending=False).head(11)
+
+        starters_list = starters.to_dict('records')
+
+        # Check Penalty Taker Succession
+        has_active_pk1 = any(
+            role_lookup.get(int(r.get('player_code', 0)), {}).get('pk_order') == 1.0
+            and _safe_float(r.get('p_start', 0.0)) >= 0.35
+            for r in team_df.to_dict('records')
+        )
+        has_active_pk2 = any(
+            role_lookup.get(int(r.get('player_code', 0)), {}).get('pk_order') == 2.0
+            and _safe_float(r.get('p_start', 0.0)) >= 0.35
+            for r in starters_list
+        )
+        if not has_active_pk1 and not has_active_pk2 and starters_list:
+            sub_code, _ = elect_substitute_set_piece_taker(
+                team_name=str(team), active_starters=starters_list, role='penalty', bridge=bridge
+            )
+            if sub_code:
+                elected_pk_substitutes[str(team)] = sub_code
+
+        # Check Corner Taker Succession
+        has_active_ck1 = any(
+            role_lookup.get(int(r.get('player_code', 0)), {}).get('ck_order') == 1.0
+            and _safe_float(r.get('p_start', 0.0)) >= 0.35
+            for r in team_df.to_dict('records')
+        )
+        if not has_active_ck1 and starters_list:
+            sub_code, _ = elect_substitute_set_piece_taker(
+                team_name=str(team), active_starters=starters_list, role='corner', bridge=bridge
+            )
+            if sub_code:
+                elected_ck_substitutes[str(team)] = sub_code
+
     delta_c7_list = []
     delta_c8_list = []
     pk_orders = []
@@ -302,7 +440,14 @@ def enrich_predictions_with_set_pieces(
         p_start = _safe_float(row.get('p_start', 0.0))
         team = str(row.get('team', ''))
 
-        roles = role_lookup.get(p_code, {'pk_order': 0.0, 'fk_order': 0.0, 'ck_order': 0.0})
+        roles = role_lookup.get(p_code, {'pk_order': 0.0, 'fk_order': 0.0, 'ck_order': 0.0}).copy()
+
+        # Apply elected succession if primary is absent
+        if elected_pk_substitutes.get(team) == p_code and roles['pk_order'] == 0.0:
+            roles['pk_order'] = 1.0
+        if elected_ck_substitutes.get(team) == p_code and roles['ck_order'] == 0.0:
+            roles['ck_order'] = 1.0
+
         team_pk = get_team_pk_rate(team)
 
         equity = compute_set_piece_equity(

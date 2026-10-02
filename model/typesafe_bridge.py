@@ -60,12 +60,7 @@ def resolve_typesafe_api_key(explicit_key: Optional[str] = None) -> Optional[str
     if explicit_key is not None:
         return explicit_key.strip() if explicit_key.strip() else None
 
-    # 1. Check process environment
-    env_key = os.environ.get("TYPESAFE_API_KEY")
-    if env_key and env_key.strip():
-        return env_key.strip()
-
-    # 2. Check Windows User Registry
+    # 1. Check Windows User Registry first on win32 to pick up live registry updates
     if sys.platform == "win32":
         try:
             import winreg
@@ -75,6 +70,11 @@ def resolve_typesafe_api_key(explicit_key: Optional[str] = None) -> Optional[str
                     return str(val).strip()
         except Exception:
             pass
+
+    # 2. Check process environment fallback
+    env_key = os.environ.get("TYPESAFE_API_KEY")
+    if env_key and env_key.strip():
+        return env_key.strip()
 
     return None
 
