@@ -409,6 +409,10 @@ def enrich_predictions_with_set_pieces(
         starters_list = starters.to_dict('records')
 
         # Check Penalty Taker Succession
+        has_designated_pk1 = any(
+            role_lookup.get(int(r.get('player_code', 0)), {}).get('pk_order') == 1.0
+            for r in team_df.to_dict('records')
+        )
         has_active_pk1 = any(
             role_lookup.get(int(r.get('player_code', 0)), {}).get('pk_order') == 1.0
             and _safe_float(r.get('p_start', default_p_start), default=default_p_start) >= 0.35
@@ -419,7 +423,7 @@ def enrich_predictions_with_set_pieces(
             and _safe_float(r.get('p_start', default_p_start), default=default_p_start) >= 0.35
             for r in starters_list
         )
-        if not has_active_pk1 and not has_active_pk2 and starters_list:
+        if has_designated_pk1 and not has_active_pk1 and not has_active_pk2 and starters_list:
             sub_code, _ = elect_substitute_set_piece_taker(
                 team_name=str(team), active_starters=starters_list, role='penalty', bridge=bridge
             )
@@ -427,12 +431,16 @@ def enrich_predictions_with_set_pieces(
                 elected_pk_substitutes[str(team)] = sub_code
 
         # Check Corner Taker Succession
+        has_designated_ck1 = any(
+            role_lookup.get(int(r.get('player_code', 0)), {}).get('ck_order') == 1.0
+            for r in team_df.to_dict('records')
+        )
         has_active_ck1 = any(
             role_lookup.get(int(r.get('player_code', 0)), {}).get('ck_order') == 1.0
             and _safe_float(r.get('p_start', default_p_start), default=default_p_start) >= 0.35
             for r in team_df.to_dict('records')
         )
-        if not has_active_ck1 and starters_list:
+        if has_designated_ck1 and not has_active_ck1 and starters_list:
             sub_code, _ = elect_substitute_set_piece_taker(
                 team_name=str(team), active_starters=starters_list, role='corner', bridge=bridge
             )

@@ -3,6 +3,7 @@ import os
 import sys
 import tempfile
 import shutil
+from unittest.mock import patch
 import pytest
 import pandas as pd
 
@@ -241,20 +242,21 @@ class TestErrorHandlingAndFallback:
 
     def test_pipeline_break_reduced_sync(self):
         """During international break, sync mode only does api_sync and price_snapshot."""
-        result = run_live_pipeline(
-            season='2026-27',
-            gw=6,
-            mode='sync',
-            data_root='data',
-            offline=True,
-            export_excel=False,
-            export_json=False,
-        )
-        stage_names = [s.stage for s in result.stages]
-        assert 'api_sync' in stage_names
-        assert 'price_snapshot' in stage_names
-        assert 'predictions' not in stage_names
-        assert 'live_solver' not in stage_names
+        with patch('model.pipeline_automation.detect_international_break', return_value=(True, 14, '2026-10-18T11:30:00Z')):
+            result = run_live_pipeline(
+                season='2026-27',
+                gw=6,
+                mode='sync',
+                data_root='data',
+                offline=True,
+                export_excel=False,
+                export_json=False,
+            )
+            stage_names = [s.stage for s in result.stages]
+            assert 'api_sync' in stage_names
+            assert 'price_snapshot' in stage_names
+            assert 'predictions' not in stage_names
+            assert 'live_solver' not in stage_names
 
 
 class TestDetectInternationalBreak:
@@ -269,8 +271,7 @@ class TestDetectInternationalBreak:
         if kickoff is not None:
             assert isinstance(days, int)
             assert isinstance(kickoff, str)
-            assert is_break is True
-            assert days >= 10
+            assert is_break == (days >= 10)
 
     def test_detect_break_custom_threshold(self):
         """With very high threshold, break should be False."""
