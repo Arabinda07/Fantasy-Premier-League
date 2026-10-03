@@ -389,23 +389,34 @@ def enrich_predictions_with_set_pieces(
     elected_ck_substitutes: Dict[str, int] = {}
 
     teams = df['team'].dropna().unique() if 'team' in df.columns else []
+    has_p_start = 'p_start' in df.columns
+    default_p_start = 1.0 if not has_p_start else 0.0
+
     for team in teams:
         team_df = df[df['team'] == team]
-        starters = team_df[team_df['p_start'] >= 0.50]
+        if has_p_start:
+            p_start_series = pd.to_numeric(team_df['p_start'], errors='coerce').fillna(1.0)
+            starters = team_df[p_start_series >= 0.50]
+        else:
+            starters = team_df
+
         if starters.empty:
-            starters = team_df.sort_values('expected_points', ascending=False).head(11)
+            if 'expected_points' in team_df.columns:
+                starters = team_df.sort_values('expected_points', ascending=False).head(11)
+            else:
+                starters = team_df.head(11)
 
         starters_list = starters.to_dict('records')
 
         # Check Penalty Taker Succession
         has_active_pk1 = any(
             role_lookup.get(int(r.get('player_code', 0)), {}).get('pk_order') == 1.0
-            and _safe_float(r.get('p_start', 0.0)) >= 0.35
+            and _safe_float(r.get('p_start', default_p_start), default=default_p_start) >= 0.35
             for r in team_df.to_dict('records')
         )
         has_active_pk2 = any(
             role_lookup.get(int(r.get('player_code', 0)), {}).get('pk_order') == 2.0
-            and _safe_float(r.get('p_start', 0.0)) >= 0.35
+            and _safe_float(r.get('p_start', default_p_start), default=default_p_start) >= 0.35
             for r in starters_list
         )
         if not has_active_pk1 and not has_active_pk2 and starters_list:
@@ -418,7 +429,7 @@ def enrich_predictions_with_set_pieces(
         # Check Corner Taker Succession
         has_active_ck1 = any(
             role_lookup.get(int(r.get('player_code', 0)), {}).get('ck_order') == 1.0
-            and _safe_float(r.get('p_start', 0.0)) >= 0.35
+            and _safe_float(r.get('p_start', default_p_start), default=default_p_start) >= 0.35
             for r in team_df.to_dict('records')
         )
         if not has_active_ck1 and starters_list:

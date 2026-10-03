@@ -235,3 +235,16 @@ class TestSetPieceSuccession:
         martinelli_row = res_df[res_df['player_code'] == 118].iloc[0]
         assert martinelli_row['delta_c8_sp'] > 0.0
         assert martinelli_row['expected_points'] > 5.0
+
+    def test_enrich_predictions_without_p_start_column(self, temp_data_root):
+        """Ensure DataFrames without a p_start column (e.g. synthetic solver fixtures) execute safely."""
+        pred_df = pd.DataFrame([
+            {"player_code": 112, "web_name": "Saka", "position": "MID", "team": "1", "expected_points": 5.0},
+            {"player_code": 118, "web_name": "Martinelli", "position": "MID", "team": "1", "expected_points": 4.5},
+        ])
+        res_df = enrich_predictions_with_set_pieces(
+            pred_df, season="2026-27", data_root=temp_data_root
+        )
+        assert len(res_df) == 2
+        assert "sp_pk_order" in res_df.columns
+
