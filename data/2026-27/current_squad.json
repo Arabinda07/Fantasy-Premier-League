@@ -29,7 +29,7 @@
     465730,
     424876,
     154561,
-    244851,
+    244858,
     466075,
     226597,
     222531,
@@ -45,24 +45,24 @@
     465730,
     424876,
     154561,
-    244851,
+    244858,
     466075,
     226597,
     222531,
-    446008,
-    216646
+    169528,
+    446008
   ],
   "bench_codes": [
     80201,
-    169528,
+    216646,
     177815,
     122798
   ],
   "captain_code": 141746,
-  "vice_captain_code": 446008,
+  "vice_captain_code": 244858,
   "bank": 2.2,
   "free_transfers": 1,
-  "transfers_recommended": 0,
+  "transfers_recommended": 1,
   "hits_recommended": 0,
-  "updated_at": "2026-10-05 12:55:59 UTC"
+  "updated_at": "2026-10-06 11:02:07 UTC"
 }
