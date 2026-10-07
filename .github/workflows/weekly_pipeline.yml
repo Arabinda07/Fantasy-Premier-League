@@ -90,10 +90,10 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: Set up Node.js 20
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: 'frontend/package-lock.json'
 
@@ -163,13 +163,14 @@ jobs:
           fi
 
       - name: Deploy to Vercel Production
-        if: github.ref == 'refs/heads/master'
-        run: |
-          cd frontend
-          npx -y vercel --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+        if: github.ref == 'refs/heads/master' && secrets.VERCEL_TOKEN != ''
         env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          cd frontend
+          npx -y vercel --prod --yes --token="$VERCEL_TOKEN"
 
   # ------------------------------------------------------------------
   # Break skip: log when weekly pipeline is intentionally skipped
