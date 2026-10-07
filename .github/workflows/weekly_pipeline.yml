@@ -163,12 +163,17 @@ jobs:
           fi
 
       - name: Deploy to Vercel Production
-        if: github.ref == 'refs/heads/master' && secrets.VERCEL_TOKEN != ''
+        if: github.ref == 'refs/heads/master'
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "VERCEL_TOKEN secret is not configured. Skipping Vercel CLI deployment."
+            echo "Production build deployed via Vercel Git integration on push."
+            exit 0
+          fi
           cd frontend
           npx -y vercel --prod --yes --token="$VERCEL_TOKEN"
 
