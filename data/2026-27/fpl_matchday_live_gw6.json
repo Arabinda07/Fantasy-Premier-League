@@ -5,12 +5,12 @@
   "is_completed": false,
   "participated": true,
   "overall_points": 270,
-  "overall_rank": 7007415,
+  "overall_rank": 7007379,
   "manager_profile": {
     "entry_id": 9500404,
     "manager_name": "Arabinda Saha",
     "team_name": "Fuljhore Giants",
-    "overall_rank": 7007415,
+    "overall_rank": 7007379,
     "overall_points": 270,
     "bank": 2.2,
     "team_value": 100.9,
@@ -18,7 +18,6 @@
     "active_chip": null,
     "squad_codes": [
       80201,
-      141746,
       551466,
       586309,
       465730,
@@ -31,10 +30,10 @@
       169528,
       446008,
       216646,
+      243413,
       122798
     ],
     "starter_codes": [
-      141746,
       551466,
       586309,
       465730,
@@ -44,15 +43,16 @@
       466075,
       226597,
       222531,
+      169528,
       446008
     ],
     "bench_codes": [
       80201,
-      169528,
+      243413,
       216646,
       122798
     ],
-    "captain_code": 141746,
+    "captain_code": 446008,
     "vice_captain_code": 244858,
     "selling_prices": {},
     "purchase_prices": {},
@@ -88,27 +88,20 @@
           "Thomas"
         ],
         "user_differentials": [
-          "B.Fernandes",
           "Gonzalo",
           "De Cuyper",
           "Raya",
           "Carvalho",
           "Gabriel",
           "Gibbs-White",
+          "Robinson",
           "Mbeumo",
           "Leno",
-          "Robinson",
+          "Slater",
           "Wissa",
           "Robertson"
         ],
         "user_differential_cards": [
-          {
-            "name": "B.Fernandes",
-            "pos": "MID",
-            "team": "MUN",
-            "cost": 11.9,
-            "xp": 4.3
-          },
           {
             "name": "Gonzalo",
             "pos": "FWD",
@@ -152,6 +145,13 @@
             "xp": 4.4
           },
           {
+            "name": "Robinson",
+            "pos": "DEF",
+            "team": "FUL",
+            "cost": 4.5,
+            "xp": 3.9
+          },
+          {
             "name": "Mbeumo",
             "pos": "MID",
             "team": "MUN",
@@ -166,11 +166,11 @@
             "xp": 4.1
           },
           {
-            "name": "Robinson",
-            "pos": "DEF",
-            "team": "FUL",
+            "name": "Slater",
+            "pos": "MID",
+            "team": "HUL",
             "cost": 4.5,
-            "xp": 3.9
+            "xp": 3.5
           },
           {
             "name": "Wissa",
@@ -273,9 +273,9 @@
             "xp": 4.4
           }
         ],
-        "your_upside": 55.7,
+        "your_upside": 54.9,
         "rival_upside": 45.5,
-        "net_delta": 10.2,
+        "net_delta": 9.4,
         "threat_level": "HIGH",
         "overlap_count": 3,
         "overlap_pct": 20.0
@@ -311,26 +311,19 @@
           "Virgil"
         ],
         "user_differentials": [
-          "B.Fernandes",
           "Gonzalo",
           "De Cuyper",
           "Szoboszlai",
           "Carvalho",
           "Gabriel",
           "Gibbs-White",
-          "Leno",
           "Robinson",
+          "Leno",
+          "Slater",
           "Wissa",
           "Robertson"
         ],
         "user_differential_cards": [
-          {
-            "name": "B.Fernandes",
-            "pos": "MID",
-            "team": "MUN",
-            "cost": 11.9,
-            "xp": 4.3
-          },
           {
             "name": "Gonzalo",
             "pos": "FWD",
@@ -374,6 +367,13 @@
             "xp": 4.4
           },
           {
+            "name": "Robinson",
+            "pos": "DEF",
+            "team": "FUL",
+            "cost": 4.5,
+            "xp": 3.9
+          },
+          {
             "name": "Leno",
             "pos": "GK",
             "team": "FUL",
@@ -381,11 +381,11 @@
             "xp": 4.1
           },
           {
-            "name": "Robinson",
-            "pos": "DEF",
-            "team": "FUL",
+            "name": "Slater",
+            "pos": "MID",
+            "team": "HUL",
             "cost": 4.5,
-            "xp": 3.9
+            "xp": 3.5
           },
           {
             "name": "Wissa",
@@ -481,9 +481,9 @@
             "xp": 3.3
           }
         ],
-        "your_upside": 50.0,
+        "your_upside": 49.2,
         "rival_upside": 42.5,
-        "net_delta": 7.5,
+        "net_delta": 6.7,
         "threat_level": "HIGH",
         "overlap_count": 4,
         "overlap_pct": 26.7
@@ -519,27 +519,20 @@
           "Jo\u00e3o Pedro"
         ],
         "user_differentials": [
-          "B.Fernandes",
           "Gonzalo",
           "Barry",
           "De Cuyper",
           "Carvalho",
           "Gabriel",
           "Gibbs-White",
+          "Robinson",
           "Mbeumo",
           "Leno",
-          "Robinson",
+          "Slater",
           "Wissa",
           "Robertson"
         ],
         "user_differential_cards": [
-          {
-            "name": "B.Fernandes",
-            "pos": "MID",
-            "team": "MUN",
-            "cost": 11.9,
-            "xp": 4.3
-          },
           {
             "name": "Gonzalo",
             "pos": "FWD",
@@ -583,6 +576,13 @@
             "xp": 4.4
           },
           {
+            "name": "Robinson",
+            "pos": "DEF",
+            "team": "FUL",
+            "cost": 4.5,
+            "xp": 3.9
+          },
+          {
             "name": "Mbeumo",
             "pos": "MID",
             "team": "MUN",
@@ -597,11 +597,11 @@
             "xp": 4.1
           },
           {
-            "name": "Robinson",
-            "pos": "DEF",
-            "team": "FUL",
+            "name": "Slater",
+            "pos": "MID",
+            "team": "HUL",
             "cost": 4.5,
-            "xp": 3.9
+            "xp": 3.5
           },
           {
             "name": "Wissa",
@@ -704,9 +704,9 @@
             "xp": 4.9
           }
         ],
-        "your_upside": 54.7,
+        "your_upside": 53.9,
         "rival_upside": 44.5,
-        "net_delta": 10.2,
+        "net_delta": 9.4,
         "threat_level": "HIGH",
         "overlap_count": 3,
         "overlap_pct": 20.0
@@ -723,7 +723,6 @@
         "captain_name": "B.Fernandes",
         "captain_code": 141746,
         "shared_players": [
-          "B.Fernandes",
           "De Cuyper",
           "Raya",
           "Calafiori",
@@ -733,6 +732,7 @@
         "differentials": [
           "Truffert",
           "Gvardiol",
+          "B.Fernandes",
           "Palmer",
           "Ndiaye",
           "M.Sangar\u00e9",
@@ -747,9 +747,10 @@
           "Szoboszlai",
           "Carvalho",
           "Gabriel",
+          "Robinson",
           "Mbeumo",
           "Leno",
-          "Robinson",
+          "Slater",
           "Robertson"
         ],
         "user_differential_cards": [
@@ -789,6 +790,13 @@
             "xp": 5.0
           },
           {
+            "name": "Robinson",
+            "pos": "DEF",
+            "team": "FUL",
+            "cost": 4.5,
+            "xp": 3.9
+          },
+          {
             "name": "Mbeumo",
             "pos": "MID",
             "team": "MUN",
@@ -803,11 +811,11 @@
             "xp": 4.1
           },
           {
-            "name": "Robinson",
-            "pos": "DEF",
-            "team": "FUL",
+            "name": "Slater",
+            "pos": "MID",
+            "team": "HUL",
             "cost": 4.5,
-            "xp": 3.9
+            "xp": 3.5
           },
           {
             "name": "Robertson",
@@ -831,6 +839,13 @@
             "team": "MCI",
             "cost": 5.7,
             "xp": 3.1
+          },
+          {
+            "name": "B.Fernandes",
+            "pos": "MID",
+            "team": "MUN",
+            "cost": 11.9,
+            "xp": 4.3
           },
           {
             "name": "Palmer",
@@ -882,12 +897,12 @@
             "xp": 0.2
           }
         ],
-        "your_upside": 42.3,
-        "rival_upside": 31.5,
-        "net_delta": 10.8,
+        "your_upside": 45.8,
+        "rival_upside": 35.8,
+        "net_delta": 10.0,
         "threat_level": "HIGH",
-        "overlap_count": 6,
-        "overlap_pct": 40.0
+        "overlap_count": 5,
+        "overlap_pct": 33.3
       },
       {
         "entry_id": 1670132,
@@ -920,7 +935,6 @@
           "Jo\u00e3o Pedro"
         ],
         "user_differentials": [
-          "B.Fernandes",
           "Gonzalo",
           "Barry",
           "Szoboszlai",
@@ -929,19 +943,13 @@
           "Calafiori",
           "Gabriel",
           "Gibbs-White",
-          "Mbeumo",
           "Robinson",
+          "Mbeumo",
+          "Slater",
           "Wissa",
           "Robertson"
         ],
         "user_differential_cards": [
-          {
-            "name": "B.Fernandes",
-            "pos": "MID",
-            "team": "MUN",
-            "cost": 11.9,
-            "xp": 4.3
-          },
           {
             "name": "Gonzalo",
             "pos": "FWD",
@@ -999,6 +1007,13 @@
             "xp": 4.4
           },
           {
+            "name": "Robinson",
+            "pos": "DEF",
+            "team": "FUL",
+            "cost": 4.5,
+            "xp": 3.9
+          },
+          {
             "name": "Mbeumo",
             "pos": "MID",
             "team": "MUN",
@@ -1006,11 +1021,11 @@
             "xp": 4.9
           },
           {
-            "name": "Robinson",
-            "pos": "DEF",
-            "team": "FUL",
+            "name": "Slater",
+            "pos": "MID",
+            "team": "HUL",
             "cost": 4.5,
-            "xp": 3.9
+            "xp": 3.5
           },
           {
             "name": "Wissa",
@@ -1120,9 +1135,9 @@
             "xp": 4.9
           }
         ],
-        "your_upside": 60.3,
+        "your_upside": 59.5,
         "rival_upside": 49.7,
-        "net_delta": 10.6,
+        "net_delta": 9.8,
         "threat_level": "HIGH",
         "overlap_count": 2,
         "overlap_pct": 13.3
@@ -1158,26 +1173,19 @@
           "Olusesi"
         ],
         "user_differentials": [
-          "B.Fernandes",
           "Gonzalo",
           "Barry",
           "Raya",
           "Carvalho",
           "Gabriel",
           "Gibbs-White",
+          "Robinson",
           "Mbeumo",
           "Leno",
-          "Robinson",
+          "Slater",
           "Robertson"
         ],
         "user_differential_cards": [
-          {
-            "name": "B.Fernandes",
-            "pos": "MID",
-            "team": "MUN",
-            "cost": 11.9,
-            "xp": 4.3
-          },
           {
             "name": "Gonzalo",
             "pos": "FWD",
@@ -1221,6 +1229,13 @@
             "xp": 4.4
           },
           {
+            "name": "Robinson",
+            "pos": "DEF",
+            "team": "FUL",
+            "cost": 4.5,
+            "xp": 3.9
+          },
+          {
             "name": "Mbeumo",
             "pos": "MID",
             "team": "MUN",
@@ -1235,11 +1250,11 @@
             "xp": 4.1
           },
           {
-            "name": "Robinson",
-            "pos": "DEF",
-            "team": "FUL",
+            "name": "Slater",
+            "pos": "MID",
+            "team": "HUL",
             "cost": 4.5,
-            "xp": 3.9
+            "xp": 3.5
           },
           {
             "name": "Robertson",
@@ -1328,9 +1343,9 @@
             "xp": 0.2
           }
         ],
-        "your_upside": 51.8,
+        "your_upside": 51.0,
         "rival_upside": 39.5,
-        "net_delta": 12.3,
+        "net_delta": 11.5,
         "threat_level": "HIGH",
         "overlap_count": 4,
         "overlap_pct": 26.7
@@ -1343,10 +1358,9 @@
     "points_on_bench": 10,
     "gw": 6
   },
-  "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Slater | [OUT] B.Fernandes [Squad holds \u00a32.1M in trapped bench capital (Wissa). Pruning via 2 FTs yields +2.3 pts into starters without burning Wildcard (Option Hurdle: 22.7 pts).] | [!] Nightly Price Risk: B.Fernandes (-163,257), Szoboszlai (-204,945) (Execute before 01:15 GMT to protect value)",
+  "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Kostoulas | [OUT] Barry [Squad holds \u00a32.1M in trapped bench capital (Wissa). Pruning via 2 FTs yields +2.3 pts into starters without burning Wildcard (Option Hurdle: 22.7 pts).] | [!] Nightly Price Risk: Szoboszlai (-221,969) (Execute before 01:15 GMT to protect value)",
   "falling_price_risks": [
-    "B.Fernandes (-163,257)",
-    "Szoboszlai (-204,945)"
+    "Szoboszlai (-221,969)"
   ],
   "chip_recommendations": {
     "3xc": {
@@ -1380,7 +1394,7 @@
       "chip": "wildcard_1",
       "target_gw": 6,
       "expected_value_delta": 35.0,
-      "rationale": "Gameweek 6: Early-season fixture swing structural pivot (target Arsenal, Man City, Liverpool fixture runs). Current 3-GW distress gap is +15.0 pts (0 starters distressed).",
+      "rationale": "Gameweek 6: Early-season fixture swing structural pivot (target Arsenal, Man City, Liverpool fixture runs). Current 3-GW distress gap is +18.8 pts (0 starters distressed).",
       "is_active_now": false,
       "distress_score": 0.0,
       "urgent_reason": null
@@ -1395,58 +1409,11 @@
       "urgent_reason": null
     }
   },
-  "starting_xp": 62.29,
-  "total_xp": 77.5,
-  "captain": "B.Fernandes",
+  "starting_xp": 60.73,
+  "total_xp": 75.81,
+  "captain": "Mbeumo",
   "vice_captain": "Carvalho",
   "starters": [
-    {
-      "player_code": 141746,
-      "web_name": "B.Fernandes",
-      "team": "Man Utd",
-      "position": "MID",
-      "cost": 11.9,
-      "expected_points": 5.5,
-      "is_starter": true,
-      "is_captain": true,
-      "is_vice_captain": false,
-      "bench_order": null,
-      "floor_p10": 1.9,
-      "median_p50": 5.2,
-      "ceiling_p90": 10.7,
-      "haul_prob": 0.079,
-      "p_start": 1.0,
-      "p_mins_60": 0.96,
-      "p_sub": 0.0,
-      "hook_hazard": 0.04,
-      "cameo_risk": 0.0,
-      "rest_days": 7,
-      "sp_pk_order": 1,
-      "sp_ck_order": 1,
-      "sp_fk_order": 1,
-      "capt_conf": 1.0,
-      "c11_included_in_xp": false,
-      "now_cost": 11.9,
-      "purchase_price": 11.9,
-      "selling_price": 11.9,
-      "retained_profit": 0.0,
-      "price_trend": "RISING_ALERT",
-      "manager_name": "Erik ten Hag",
-      "manager_candor": {
-        "score": 1,
-        "label": "Generally Reliable",
-        "tag": "RELIABLE"
-      },
-      "fixture_details": {
-        "home_team": "Man Utd",
-        "away_team": "Spurs",
-        "home_cs_prob": 0.317,
-        "away_cs_prob": 0.235,
-        "most_likely_score": "1-1",
-        "opp_defensive_line": 1.0,
-        "opp_transition_vulnerability": 1.0
-      }
-    },
     {
       "player_code": 551466,
       "web_name": "Gonzalo",
@@ -1871,6 +1838,53 @@
       }
     },
     {
+      "player_code": 169528,
+      "web_name": "Robinson",
+      "team": "Fulham",
+      "position": "DEF",
+      "cost": 4.5,
+      "expected_points": 3.98,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": null,
+      "floor_p10": 1.4,
+      "median_p50": 3.8,
+      "ceiling_p90": 6.7,
+      "haul_prob": 0.02,
+      "p_start": 1.0,
+      "p_mins_60": 0.96,
+      "p_sub": 0.0,
+      "hook_hazard": 0.04,
+      "cameo_risk": 0.0,
+      "rest_days": 7,
+      "sp_pk_order": 2,
+      "sp_ck_order": null,
+      "sp_fk_order": null,
+      "capt_conf": 1.0,
+      "c11_included_in_xp": false,
+      "now_cost": 4.5,
+      "purchase_price": 4.5,
+      "selling_price": 4.5,
+      "retained_profit": 0.0,
+      "price_trend": "STABLE",
+      "manager_name": "Marco Silva",
+      "manager_candor": {
+        "score": 1,
+        "label": "Generally Reliable",
+        "tag": "RELIABLE"
+      },
+      "fixture_details": {
+        "home_team": "Ipswich Town",
+        "away_team": "Fulham",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.235,
+        "most_likely_score": "1-1",
+        "opp_defensive_line": 1.0115,
+        "opp_transition_vulnerability": 1.1524
+      }
+    },
+    {
       "player_code": 446008,
       "web_name": "Mbeumo",
       "team": "Man Utd",
@@ -1878,7 +1892,7 @@
       "cost": 7.9,
       "expected_points": 5.46,
       "is_starter": true,
-      "is_captain": false,
+      "is_captain": true,
       "is_vice_captain": false,
       "bench_order": null,
       "floor_p10": 1.9,
@@ -1970,50 +1984,50 @@
       "auto_sub_label": "LOW"
     },
     {
-      "player_code": 169528,
-      "web_name": "Robinson",
-      "team": "Fulham",
-      "position": "DEF",
+      "player_code": 243413,
+      "web_name": "Slater",
+      "team": "Hull City",
+      "position": "MID",
       "cost": 4.5,
-      "expected_points": 3.98,
+      "expected_points": 3.85,
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
       "bench_order": 2,
-      "floor_p10": 1.4,
-      "median_p50": 3.8,
-      "ceiling_p90": 6.7,
+      "floor_p10": 1.3,
+      "median_p50": 3.7,
+      "ceiling_p90": 7.5,
       "haul_prob": 0.02,
       "p_start": 1.0,
-      "p_mins_60": 0.96,
+      "p_mins_60": 0.95,
       "p_sub": 0.0,
-      "hook_hazard": 0.04,
+      "hook_hazard": 0.05,
       "cameo_risk": 0.0,
       "rest_days": 7,
-      "sp_pk_order": 2,
-      "sp_ck_order": null,
+      "sp_pk_order": null,
+      "sp_ck_order": 1,
       "sp_fk_order": null,
-      "capt_conf": 1.0,
+      "capt_conf": 0.8,
       "c11_included_in_xp": false,
       "now_cost": 4.5,
       "purchase_price": 4.5,
       "selling_price": 4.5,
       "retained_profit": 0.0,
       "price_trend": "STABLE",
-      "manager_name": "Marco Silva",
+      "manager_name": "Premier League Manager",
       "manager_candor": {
         "score": 1,
         "label": "Generally Reliable",
         "tag": "RELIABLE"
       },
       "fixture_details": {
-        "home_team": "Ipswich Town",
-        "away_team": "Fulham",
+        "home_team": "Hull City",
+        "away_team": "Everton",
         "home_cs_prob": 0.317,
         "away_cs_prob": 0.235,
         "most_likely_score": "1-1",
-        "opp_defensive_line": 1.0115,
-        "opp_transition_vulnerability": 1.1524
+        "opp_defensive_line": 1.0,
+        "opp_transition_vulnerability": 1.0
       },
       "bench_slot_weight": 0.674,
       "bench_slot_key": "sub_1",
@@ -2121,18 +2135,6 @@
     }
   ],
   "actual_starters": [
-    {
-      "player_code": 141746,
-      "web_name": "B.Fernandes",
-      "team": "Man Utd",
-      "position": "MID",
-      "cost": 119.0,
-      "expected_points": 5.5,
-      "is_starter": true,
-      "is_captain": true,
-      "is_vice_captain": false,
-      "bench_order": null
-    },
     {
       "player_code": 551466,
       "web_name": "Gonzalo",
@@ -2242,6 +2244,18 @@
       "bench_order": null
     },
     {
+      "player_code": 169528,
+      "web_name": "Robinson",
+      "team": "Fulham",
+      "position": "DEF",
+      "cost": 45.0,
+      "expected_points": 3.98,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": null
+    },
+    {
       "player_code": 446008,
       "web_name": "Mbeumo",
       "team": "Man Utd",
@@ -2249,7 +2263,7 @@
       "cost": 79.0,
       "expected_points": 5.46,
       "is_starter": true,
-      "is_captain": false,
+      "is_captain": true,
       "is_vice_captain": false,
       "bench_order": null
     }
@@ -2268,12 +2282,12 @@
       "bench_order": 1
     },
     {
-      "player_code": 169528,
-      "web_name": "Robinson",
-      "team": "Fulham",
-      "position": "DEF",
+      "player_code": 243413,
+      "web_name": "Slater",
+      "team": "Hull City",
+      "position": "MID",
       "cost": 45.0,
-      "expected_points": 3.98,
+      "expected_points": 3.85,
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
@@ -2318,12 +2332,12 @@
       "bench_order": null
     },
     {
-      "player_code": 586309,
-      "web_name": "Barry",
-      "team": "Everton",
+      "player_code": 647850,
+      "web_name": "Kostoulas",
+      "team": "Brighton",
       "position": "FWD",
-      "cost": 5.7,
-      "expected_points": 4.176236,
+      "cost": 5.6,
+      "expected_points": 5.06,
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
@@ -2488,40 +2502,40 @@
       "bench_order": 4
     }
   ],
-  "recommended_starting_xp": 55.2651,
-  "recommended_total_xp": 60.7239,
+  "recommended_starting_xp": 56.1488,
+  "recommended_total_xp": 61.6076,
   "multi_horizon_roadmap": [
     {
       "gw": 6,
       "transfers_in": [
-        "Slater"
+        "Kostoulas"
       ],
       "transfers_out": [
-        "B.Fernandes"
+        "Barry"
       ],
       "hits_taken": 0,
-      "net_xp": 60.7239,
-      "bank": 9.6
+      "net_xp": 61.6076,
+      "bank": 2.3
     },
     {
       "gw": 7,
       "transfers_in": [
-        "Haaland"
+        "O'Reilly"
       ],
       "transfers_out": [
-        "Gonzalo"
+        "De Cuyper"
       ],
       "hits_taken": 0,
-      "net_xp": 71.3815,
-      "bank": 0.0
+      "net_xp": 65.0576,
+      "bank": 1.0
     },
     {
       "gw": 8,
       "transfers_in": [],
       "transfers_out": [],
       "hits_taken": 0,
-      "net_xp": 63.8475,
-      "bank": 0.0
+      "net_xp": 62.8364,
+      "bank": 1.0
     }
   ],
   "dixon_coles_fixtures": [
@@ -2917,8 +2931,8 @@
       "label": "Pure xP Maximizer",
       "subtitle": "Unbiased mathematical expectation (baseline LP solver)",
       "formation": "4-4-2",
-      "starting_xp": 55.3,
-      "total_xp": 60.7,
+      "starting_xp": 56.1,
+      "total_xp": 61.6,
       "captain": "Mbeumo",
       "vice_captain": "Raya",
       "starters": [
@@ -2933,8 +2947,8 @@
           "is_captain": 0,
           "is_vice_captain": 1,
           "bench_order": null,
-          "ownership_pct": 0.424,
-          "eo": 0.6641,
+          "ownership_pct": 0.425,
+          "eo": 0.6657,
           "floor_p10": 1.8,
           "median_p50": 4.8,
           "ceiling_p90": 8.5,
@@ -3129,8 +3143,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.281,
-          "eo": 0.4131,
+          "ownership_pct": 0.284,
+          "eo": 0.4175,
           "floor_p10": 1.5,
           "median_p50": 4.0,
           "ceiling_p90": 7.1,
@@ -3168,52 +3182,52 @@
           }
         },
         {
-          "player_code": 586309,
-          "web_name": "Barry",
-          "team": "Everton",
+          "player_code": 647850,
+          "web_name": "Kostoulas",
+          "team": "Brighton",
           "position": "FWD",
-          "cost": 5.7,
-          "expected_points": 4.1762,
+          "cost": 5.6,
+          "expected_points": 5.06,
           "is_starter": 1,
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.084,
-          "eo": 0.1234,
-          "floor_p10": 1.5,
-          "median_p50": 4.0,
-          "ceiling_p90": 8.1,
-          "haul_prob": 0.02,
+          "ownership_pct": 0.051,
+          "eo": 0.0799,
+          "floor_p10": 1.8,
+          "median_p50": 4.8,
+          "ceiling_p90": 9.9,
+          "haul_prob": 0.046,
           "p_start": 1.0,
-          "p_mins_60": 0.93,
+          "p_mins_60": 0.94,
           "p_sub": 0.0,
-          "hook_hazard": 0.07,
+          "hook_hazard": 0.06,
           "cameo_risk": 0.0,
           "rest_days": 7,
-          "sp_pk_order": 1,
+          "sp_pk_order": null,
           "sp_ck_order": null,
           "sp_fk_order": null,
-          "capt_conf": 1.0,
+          "capt_conf": 0.83,
           "c11_included_in_xp": false,
-          "now_cost": 5.7,
-          "purchase_price": 5.7,
-          "selling_price": 5.7,
+          "now_cost": 5.6,
+          "purchase_price": 5.6,
+          "selling_price": 5.6,
           "retained_profit": 0.0,
-          "price_trend": "STABLE",
-          "manager_name": "Sean Dyche",
+          "price_trend": "RISING_ALERT",
+          "manager_name": "Fabian H\u00fcrzeler",
           "manager_candor": {
-            "score": 0,
-            "label": "Direct & Transparent",
-            "tag": "TRANSPARENT"
+            "score": 1,
+            "label": "Generally Reliable",
+            "tag": "RELIABLE"
           },
           "fixture_details": {
-            "home_team": "Hull City",
-            "away_team": "Everton",
+            "home_team": "Sunderland",
+            "away_team": "Brighton",
             "home_cs_prob": 0.317,
             "away_cs_prob": 0.235,
             "most_likely_score": "1-1",
-            "opp_defensive_line": 0.9075,
-            "opp_transition_vulnerability": 1.0825
+            "opp_defensive_line": 1.0,
+            "opp_transition_vulnerability": 1.0
           }
         },
         {
@@ -3276,8 +3290,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.042,
-          "eo": 0.0699,
+          "ownership_pct": 0.044,
+          "eo": 0.0733,
           "floor_p10": 2.1,
           "median_p50": 5.6,
           "ceiling_p90": 11.6,
@@ -3325,8 +3339,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.325,
-          "eo": 0.5081,
+          "ownership_pct": 0.323,
+          "eo": 0.505,
           "floor_p10": 1.8,
           "median_p50": 4.8,
           "ceiling_p90": 9.8,
@@ -3374,8 +3388,8 @@
           "is_captain": 1,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.205,
-          "eo": 0.3305,
+          "ownership_pct": 0.204,
+          "eo": 0.3289,
           "floor_p10": 1.9,
           "median_p50": 5.2,
           "ceiling_p90": 10.7,
@@ -3474,8 +3488,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": 1,
-          "ownership_pct": 0.034,
-          "eo": 0.0496,
+          "ownership_pct": 0.035,
+          "eo": 0.0511,
           "floor_p10": 1.4,
           "median_p50": 3.9,
           "ceiling_p90": 6.9,
@@ -3660,15 +3674,15 @@
           }
         }
       ],
-      "budget_used": 88.6
+      "budget_used": 88.5
     },
     "rank_protect": {
       "strategy_id": "rank_protect",
       "label": "Rank Shield",
       "subtitle": "Effective Ownership weighting to protect lead against template hauls",
       "formation": "4-4-2",
-      "starting_xp": 55.3,
-      "total_xp": 60.0,
+      "starting_xp": 56.1,
+      "total_xp": 60.8,
       "captain": "Calafiori",
       "vice_captain": "Raya",
       "starters": [
@@ -3683,8 +3697,8 @@
           "is_captain": 0,
           "is_vice_captain": 1,
           "bench_order": null,
-          "ownership_pct": 0.424,
-          "eo": 0.6641,
+          "ownership_pct": 0.425,
+          "eo": 0.6657,
           "floor_p10": 1.8,
           "median_p50": 4.8,
           "ceiling_p90": 8.5,
@@ -3879,8 +3893,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.281,
-          "eo": 0.4131,
+          "ownership_pct": 0.284,
+          "eo": 0.4175,
           "floor_p10": 1.5,
           "median_p50": 4.0,
           "ceiling_p90": 7.1,
@@ -3918,52 +3932,52 @@
           }
         },
         {
-          "player_code": 586309,
-          "web_name": "Barry",
-          "team": "Everton",
+          "player_code": 647850,
+          "web_name": "Kostoulas",
+          "team": "Brighton",
           "position": "FWD",
-          "cost": 5.7,
-          "expected_points": 4.1762,
+          "cost": 5.6,
+          "expected_points": 5.06,
           "is_starter": 1,
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.084,
-          "eo": 0.1234,
-          "floor_p10": 1.5,
-          "median_p50": 4.0,
-          "ceiling_p90": 8.1,
-          "haul_prob": 0.02,
+          "ownership_pct": 0.051,
+          "eo": 0.0799,
+          "floor_p10": 1.8,
+          "median_p50": 4.8,
+          "ceiling_p90": 9.9,
+          "haul_prob": 0.046,
           "p_start": 1.0,
-          "p_mins_60": 0.93,
+          "p_mins_60": 0.94,
           "p_sub": 0.0,
-          "hook_hazard": 0.07,
+          "hook_hazard": 0.06,
           "cameo_risk": 0.0,
           "rest_days": 7,
-          "sp_pk_order": 1,
+          "sp_pk_order": null,
           "sp_ck_order": null,
           "sp_fk_order": null,
-          "capt_conf": 1.0,
+          "capt_conf": 0.83,
           "c11_included_in_xp": false,
-          "now_cost": 5.7,
-          "purchase_price": 5.7,
-          "selling_price": 5.7,
+          "now_cost": 5.6,
+          "purchase_price": 5.6,
+          "selling_price": 5.6,
           "retained_profit": 0.0,
-          "price_trend": "STABLE",
-          "manager_name": "Sean Dyche",
+          "price_trend": "RISING_ALERT",
+          "manager_name": "Fabian H\u00fcrzeler",
           "manager_candor": {
-            "score": 0,
-            "label": "Direct & Transparent",
-            "tag": "TRANSPARENT"
+            "score": 1,
+            "label": "Generally Reliable",
+            "tag": "RELIABLE"
           },
           "fixture_details": {
-            "home_team": "Hull City",
-            "away_team": "Everton",
+            "home_team": "Sunderland",
+            "away_team": "Brighton",
             "home_cs_prob": 0.317,
             "away_cs_prob": 0.235,
             "most_likely_score": "1-1",
-            "opp_defensive_line": 0.9075,
-            "opp_transition_vulnerability": 1.0825
+            "opp_defensive_line": 1.0,
+            "opp_transition_vulnerability": 1.0
           }
         },
         {
@@ -4026,8 +4040,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.042,
-          "eo": 0.0699,
+          "ownership_pct": 0.044,
+          "eo": 0.0733,
           "floor_p10": 2.1,
           "median_p50": 5.6,
           "ceiling_p90": 11.6,
@@ -4075,8 +4089,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.325,
-          "eo": 0.5081,
+          "ownership_pct": 0.323,
+          "eo": 0.505,
           "floor_p10": 1.8,
           "median_p50": 4.8,
           "ceiling_p90": 9.8,
@@ -4124,8 +4138,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.205,
-          "eo": 0.3305,
+          "ownership_pct": 0.204,
+          "eo": 0.3289,
           "floor_p10": 1.9,
           "median_p50": 5.2,
           "ceiling_p90": 10.7,
@@ -4224,8 +4238,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": 1,
-          "ownership_pct": 0.034,
-          "eo": 0.0496,
+          "ownership_pct": 0.035,
+          "eo": 0.0511,
           "floor_p10": 1.4,
           "median_p50": 3.9,
           "ceiling_p90": 6.9,
@@ -4410,15 +4424,15 @@
           }
         }
       ],
-      "budget_used": 88.6
+      "budget_used": 88.5
     },
     "differential_chase": {
       "strategy_id": "differential_chase",
       "label": "Differential Chase",
       "subtitle": "Rewards low-EO assets (<20%) to accelerate rank climb",
       "formation": "3-5-2",
-      "starting_xp": 53.5,
-      "total_xp": 58.9,
+      "starting_xp": 54.3,
+      "total_xp": 59.8,
       "captain": "Mbeumo",
       "vice_captain": "Gabriel",
       "starters": [
@@ -4531,8 +4545,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.281,
-          "eo": 0.4131,
+          "ownership_pct": 0.284,
+          "eo": 0.4175,
           "floor_p10": 1.5,
           "median_p50": 4.0,
           "ceiling_p90": 7.1,
@@ -4570,52 +4584,52 @@
           }
         },
         {
-          "player_code": 586309,
-          "web_name": "Barry",
-          "team": "Everton",
+          "player_code": 647850,
+          "web_name": "Kostoulas",
+          "team": "Brighton",
           "position": "FWD",
-          "cost": 5.7,
-          "expected_points": 4.1762,
+          "cost": 5.6,
+          "expected_points": 5.06,
           "is_starter": 1,
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.084,
-          "eo": 0.1234,
-          "floor_p10": 1.5,
-          "median_p50": 4.0,
-          "ceiling_p90": 8.1,
-          "haul_prob": 0.02,
+          "ownership_pct": 0.051,
+          "eo": 0.0799,
+          "floor_p10": 1.8,
+          "median_p50": 4.8,
+          "ceiling_p90": 9.9,
+          "haul_prob": 0.046,
           "p_start": 1.0,
-          "p_mins_60": 0.93,
+          "p_mins_60": 0.94,
           "p_sub": 0.0,
-          "hook_hazard": 0.07,
+          "hook_hazard": 0.06,
           "cameo_risk": 0.0,
           "rest_days": 7,
-          "sp_pk_order": 1,
+          "sp_pk_order": null,
           "sp_ck_order": null,
           "sp_fk_order": null,
-          "capt_conf": 1.0,
+          "capt_conf": 0.83,
           "c11_included_in_xp": false,
-          "now_cost": 5.7,
-          "purchase_price": 5.7,
-          "selling_price": 5.7,
+          "now_cost": 5.6,
+          "purchase_price": 5.6,
+          "selling_price": 5.6,
           "retained_profit": 0.0,
-          "price_trend": "STABLE",
-          "manager_name": "Sean Dyche",
+          "price_trend": "RISING_ALERT",
+          "manager_name": "Fabian H\u00fcrzeler",
           "manager_candor": {
-            "score": 0,
-            "label": "Direct & Transparent",
-            "tag": "TRANSPARENT"
+            "score": 1,
+            "label": "Generally Reliable",
+            "tag": "RELIABLE"
           },
           "fixture_details": {
-            "home_team": "Hull City",
-            "away_team": "Everton",
+            "home_team": "Sunderland",
+            "away_team": "Brighton",
             "home_cs_prob": 0.317,
             "away_cs_prob": 0.235,
             "most_likely_score": "1-1",
-            "opp_defensive_line": 0.9075,
-            "opp_transition_vulnerability": 1.0825
+            "opp_defensive_line": 1.0,
+            "opp_transition_vulnerability": 1.0
           }
         },
         {
@@ -4629,8 +4643,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.034,
-          "eo": 0.0496,
+          "ownership_pct": 0.035,
+          "eo": 0.0511,
           "floor_p10": 1.4,
           "median_p50": 3.9,
           "ceiling_p90": 6.9,
@@ -4727,8 +4741,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.042,
-          "eo": 0.0699,
+          "ownership_pct": 0.044,
+          "eo": 0.0733,
           "floor_p10": 2.1,
           "median_p50": 5.6,
           "ceiling_p90": 11.6,
@@ -4825,8 +4839,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.325,
-          "eo": 0.5081,
+          "ownership_pct": 0.323,
+          "eo": 0.505,
           "floor_p10": 1.8,
           "median_p50": 4.8,
           "ceiling_p90": 9.8,
@@ -4874,8 +4888,8 @@
           "is_captain": 1,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.205,
-          "eo": 0.3305,
+          "ownership_pct": 0.204,
+          "eo": 0.3289,
           "floor_p10": 1.9,
           "median_p50": 5.2,
           "ceiling_p90": 10.7,
@@ -4974,8 +4988,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": 1,
-          "ownership_pct": 0.424,
-          "eo": 0.6641,
+          "ownership_pct": 0.425,
+          "eo": 0.6657,
           "floor_p10": 1.8,
           "median_p50": 4.8,
           "ceiling_p90": 8.5,
@@ -5160,7 +5174,7 @@
           }
         }
       ],
-      "budget_used": 88.6
+      "budget_used": 88.5
     }
   },
   "chip_simulations": {
@@ -5234,8 +5248,8 @@
           "is_captain": 1,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.142,
-          "eo": 0.2332,
+          "ownership_pct": 0.145,
+          "eo": 0.2381,
           "floor_p10": 2.0,
           "median_p50": 5.4,
           "ceiling_p90": 11.2,
@@ -5332,8 +5346,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.047,
-          "eo": 0.0737,
+          "ownership_pct": 0.051,
+          "eo": 0.0799,
           "floor_p10": 1.8,
           "median_p50": 4.8,
           "ceiling_p90": 9.9,
@@ -5430,8 +5444,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.007,
-          "eo": 0.0107,
+          "ownership_pct": 0.008,
+          "eo": 0.0122,
           "floor_p10": 1.6,
           "median_p50": 4.5,
           "ceiling_p90": 7.9,
@@ -5479,8 +5493,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.042,
-          "eo": 0.0699,
+          "ownership_pct": 0.044,
+          "eo": 0.0733,
           "floor_p10": 2.1,
           "median_p50": 5.6,
           "ceiling_p90": 11.6,
@@ -5577,8 +5591,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.384,
-          "eo": 0.6208,
+          "ownership_pct": 0.383,
+          "eo": 0.6192,
           "floor_p10": 1.9,
           "median_p50": 5.2,
           "ceiling_p90": 10.7,
@@ -5626,8 +5640,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.205,
-          "eo": 0.3305,
+          "ownership_pct": 0.204,
+          "eo": 0.3289,
           "floor_p10": 1.9,
           "median_p50": 5.2,
           "ceiling_p90": 10.7,
@@ -5675,8 +5689,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.177,
-          "eo": 0.27,
+          "ownership_pct": 0.179,
+          "eo": 0.273,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 7.9,
@@ -5922,7 +5936,7 @@
       "starting_xp": 59.7,
       "total_xp": 65.4,
       "captain": "Saka",
-      "vice_captain": "Haaland",
+      "vice_captain": "Carvalho",
       "starters": [
         {
           "player_code": 226597,
@@ -5984,8 +5998,8 @@
           "is_captain": 1,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.142,
-          "eo": 0.2332,
+          "ownership_pct": 0.145,
+          "eo": 0.2381,
           "floor_p10": 2.0,
           "median_p50": 5.4,
           "ceiling_p90": 11.2,
@@ -6031,7 +6045,7 @@
           "expected_points": 7.1312,
           "is_starter": 1,
           "is_captain": 0,
-          "is_vice_captain": 0,
+          "is_vice_captain": 1,
           "bench_order": null,
           "ownership_pct": 0.0,
           "eo": 0.0,
@@ -6082,8 +6096,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.047,
-          "eo": 0.0737,
+          "ownership_pct": 0.051,
+          "eo": 0.0799,
           "floor_p10": 1.8,
           "median_p50": 4.8,
           "ceiling_p90": 9.9,
@@ -6180,8 +6194,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.007,
-          "eo": 0.0107,
+          "ownership_pct": 0.008,
+          "eo": 0.0122,
           "floor_p10": 1.6,
           "median_p50": 4.5,
           "ceiling_p90": 7.9,
@@ -6229,8 +6243,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.042,
-          "eo": 0.0699,
+          "ownership_pct": 0.044,
+          "eo": 0.0733,
           "floor_p10": 2.1,
           "median_p50": 5.6,
           "ceiling_p90": 11.6,
@@ -6276,7 +6290,7 @@
           "expected_points": 5.4155,
           "is_starter": 1,
           "is_captain": 0,
-          "is_vice_captain": 1,
+          "is_vice_captain": 0,
           "bench_order": null,
           "ownership_pct": 0.739,
           "eo": 1.188,
@@ -6327,8 +6341,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.384,
-          "eo": 0.6208,
+          "ownership_pct": 0.383,
+          "eo": 0.6192,
           "floor_p10": 1.9,
           "median_p50": 5.2,
           "ceiling_p90": 10.7,
@@ -6376,8 +6390,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.205,
-          "eo": 0.3305,
+          "ownership_pct": 0.204,
+          "eo": 0.3289,
           "floor_p10": 1.9,
           "median_p50": 5.2,
           "ceiling_p90": 10.7,
@@ -6425,8 +6439,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.177,
-          "eo": 0.27,
+          "ownership_pct": 0.179,
+          "eo": 0.273,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 7.9,
@@ -6466,9 +6480,9 @@
       ],
       "bench": [
         {
-          "player_code": 167825,
-          "web_name": "Phillips",
-          "team": "Hull City",
+          "player_code": 235448,
+          "web_name": "Balcombe",
+          "team": "Brentford",
           "position": "GK",
           "cost": 4.0,
           "expected_points": 0.1784,
@@ -6476,8 +6490,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": 1,
-          "ownership_pct": 0.014,
-          "eo": 0.0143,
+          "ownership_pct": 0.0,
+          "eo": 0.0,
           "floor_p10": 1.0,
           "median_p50": 0.2,
           "ceiling_p90": 0.3,
@@ -6498,15 +6512,15 @@
           "selling_price": 4.0,
           "retained_profit": 0.0,
           "price_trend": "FALLING_ALERT",
-          "manager_name": "Premier League Manager",
+          "manager_name": "Thomas Frank",
           "manager_candor": {
-            "score": 1,
-            "label": "Generally Reliable",
-            "tag": "RELIABLE"
+            "score": 0,
+            "label": "Direct & Transparent",
+            "tag": "TRANSPARENT"
           },
           "fixture_details": {
-            "home_team": "Hull City",
-            "away_team": "Everton",
+            "home_team": "Aston Villa",
+            "away_team": "Brentford",
             "home_cs_prob": 0.317,
             "away_cs_prob": 0.235,
             "most_likely_score": "1-1",
@@ -6669,8 +6683,8 @@
       "label": "Bench Boost Active (+0 xP from Bench Assets \u00b7 15 Scoring)",
       "description": "All 15 players are active point scorers. Optimizes both Starting XI and all 4 bench slots.",
       "formation": "5-5-3",
-      "starting_xp": 70.3,
-      "total_xp": 75.8,
+      "starting_xp": 71.2,
+      "total_xp": 76.7,
       "captain": "Mbeumo",
       "vice_captain": "Leno",
       "starters": [
@@ -6685,8 +6699,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.424,
-          "eo": 0.6641,
+          "ownership_pct": 0.425,
+          "eo": 0.6657,
           "floor_p10": 1.8,
           "median_p50": 4.8,
           "ceiling_p90": 8.5,
@@ -6881,8 +6895,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.281,
-          "eo": 0.4131,
+          "ownership_pct": 0.284,
+          "eo": 0.4175,
           "floor_p10": 1.5,
           "median_p50": 4.0,
           "ceiling_p90": 7.1,
@@ -6920,52 +6934,52 @@
           }
         },
         {
-          "player_code": 586309,
-          "web_name": "Barry",
-          "team": "Everton",
+          "player_code": 647850,
+          "web_name": "Kostoulas",
+          "team": "Brighton",
           "position": "FWD",
-          "cost": 5.7,
-          "expected_points": 4.1762,
+          "cost": 5.6,
+          "expected_points": 5.06,
           "is_starter": 1,
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.084,
-          "eo": 0.1234,
-          "floor_p10": 1.5,
-          "median_p50": 4.0,
-          "ceiling_p90": 8.1,
-          "haul_prob": 0.02,
+          "ownership_pct": 0.051,
+          "eo": 0.0799,
+          "floor_p10": 1.8,
+          "median_p50": 4.8,
+          "ceiling_p90": 9.9,
+          "haul_prob": 0.046,
           "p_start": 1.0,
-          "p_mins_60": 0.93,
+          "p_mins_60": 0.94,
           "p_sub": 0.0,
-          "hook_hazard": 0.07,
+          "hook_hazard": 0.06,
           "cameo_risk": 0.0,
           "rest_days": 7,
-          "sp_pk_order": 1,
+          "sp_pk_order": null,
           "sp_ck_order": null,
           "sp_fk_order": null,
-          "capt_conf": 1.0,
+          "capt_conf": 0.83,
           "c11_included_in_xp": false,
-          "now_cost": 5.7,
-          "purchase_price": 5.7,
-          "selling_price": 5.7,
+          "now_cost": 5.6,
+          "purchase_price": 5.6,
+          "selling_price": 5.6,
           "retained_profit": 0.0,
-          "price_trend": "STABLE",
-          "manager_name": "Sean Dyche",
+          "price_trend": "RISING_ALERT",
+          "manager_name": "Fabian H\u00fcrzeler",
           "manager_candor": {
-            "score": 0,
-            "label": "Direct & Transparent",
-            "tag": "TRANSPARENT"
+            "score": 1,
+            "label": "Generally Reliable",
+            "tag": "RELIABLE"
           },
           "fixture_details": {
-            "home_team": "Hull City",
-            "away_team": "Everton",
+            "home_team": "Sunderland",
+            "away_team": "Brighton",
             "home_cs_prob": 0.317,
             "away_cs_prob": 0.235,
             "most_likely_score": "1-1",
-            "opp_defensive_line": 0.9075,
-            "opp_transition_vulnerability": 1.0825
+            "opp_defensive_line": 1.0,
+            "opp_transition_vulnerability": 1.0
           }
         },
         {
@@ -6979,8 +6993,8 @@
           "is_captain": 0,
           "is_vice_captain": 1,
           "bench_order": null,
-          "ownership_pct": 0.034,
-          "eo": 0.0496,
+          "ownership_pct": 0.035,
+          "eo": 0.0511,
           "floor_p10": 1.4,
           "median_p50": 3.9,
           "ceiling_p90": 6.9,
@@ -7077,8 +7091,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.042,
-          "eo": 0.0699,
+          "ownership_pct": 0.044,
+          "eo": 0.0733,
           "floor_p10": 2.1,
           "median_p50": 5.6,
           "ceiling_p90": 11.6,
@@ -7175,8 +7189,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.325,
-          "eo": 0.5081,
+          "ownership_pct": 0.323,
+          "eo": 0.505,
           "floor_p10": 1.8,
           "median_p50": 4.8,
           "ceiling_p90": 9.8,
@@ -7224,8 +7238,8 @@
           "is_captain": 1,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.205,
-          "eo": 0.3305,
+          "ownership_pct": 0.204,
+          "eo": 0.3289,
           "floor_p10": 1.9,
           "median_p50": 5.2,
           "ceiling_p90": 10.7,
@@ -7411,15 +7425,15 @@
         }
       ],
       "bench": [],
-      "budget_used": 88.6
+      "budget_used": 88.5
     },
     "3xc": {
       "chip_name": "Triple Captain",
       "label": "Triple Captain Active (Mbeumo 3x Multiplier Active)",
       "description": "Triples the point returns of your selected captain (+3x multiplier instead of standard 2x).",
       "formation": "4-4-2",
-      "starting_xp": 55.3,
-      "total_xp": 66.2,
+      "starting_xp": 56.1,
+      "total_xp": 67.1,
       "captain": "Mbeumo",
       "vice_captain": "Raya",
       "starters": [
@@ -7434,8 +7448,8 @@
           "is_captain": 0,
           "is_vice_captain": 1,
           "bench_order": null,
-          "ownership_pct": 0.424,
-          "eo": 0.6641,
+          "ownership_pct": 0.425,
+          "eo": 0.6657,
           "floor_p10": 1.8,
           "median_p50": 4.8,
           "ceiling_p90": 8.5,
@@ -7630,8 +7644,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.281,
-          "eo": 0.4131,
+          "ownership_pct": 0.284,
+          "eo": 0.4175,
           "floor_p10": 1.5,
           "median_p50": 4.0,
           "ceiling_p90": 7.1,
@@ -7669,52 +7683,52 @@
           }
         },
         {
-          "player_code": 586309,
-          "web_name": "Barry",
-          "team": "Everton",
+          "player_code": 647850,
+          "web_name": "Kostoulas",
+          "team": "Brighton",
           "position": "FWD",
-          "cost": 5.7,
-          "expected_points": 4.1762,
+          "cost": 5.6,
+          "expected_points": 5.06,
           "is_starter": 1,
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.084,
-          "eo": 0.1234,
-          "floor_p10": 1.5,
-          "median_p50": 4.0,
-          "ceiling_p90": 8.1,
-          "haul_prob": 0.02,
+          "ownership_pct": 0.051,
+          "eo": 0.0799,
+          "floor_p10": 1.8,
+          "median_p50": 4.8,
+          "ceiling_p90": 9.9,
+          "haul_prob": 0.046,
           "p_start": 1.0,
-          "p_mins_60": 0.93,
+          "p_mins_60": 0.94,
           "p_sub": 0.0,
-          "hook_hazard": 0.07,
+          "hook_hazard": 0.06,
           "cameo_risk": 0.0,
           "rest_days": 7,
-          "sp_pk_order": 1,
+          "sp_pk_order": null,
           "sp_ck_order": null,
           "sp_fk_order": null,
-          "capt_conf": 1.0,
+          "capt_conf": 0.83,
           "c11_included_in_xp": false,
-          "now_cost": 5.7,
-          "purchase_price": 5.7,
-          "selling_price": 5.7,
+          "now_cost": 5.6,
+          "purchase_price": 5.6,
+          "selling_price": 5.6,
           "retained_profit": 0.0,
-          "price_trend": "STABLE",
-          "manager_name": "Sean Dyche",
+          "price_trend": "RISING_ALERT",
+          "manager_name": "Fabian H\u00fcrzeler",
           "manager_candor": {
-            "score": 0,
-            "label": "Direct & Transparent",
-            "tag": "TRANSPARENT"
+            "score": 1,
+            "label": "Generally Reliable",
+            "tag": "RELIABLE"
           },
           "fixture_details": {
-            "home_team": "Hull City",
-            "away_team": "Everton",
+            "home_team": "Sunderland",
+            "away_team": "Brighton",
             "home_cs_prob": 0.317,
             "away_cs_prob": 0.235,
             "most_likely_score": "1-1",
-            "opp_defensive_line": 0.9075,
-            "opp_transition_vulnerability": 1.0825
+            "opp_defensive_line": 1.0,
+            "opp_transition_vulnerability": 1.0
           }
         },
         {
@@ -7777,8 +7791,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.042,
-          "eo": 0.0699,
+          "ownership_pct": 0.044,
+          "eo": 0.0733,
           "floor_p10": 2.1,
           "median_p50": 5.6,
           "ceiling_p90": 11.6,
@@ -7826,8 +7840,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.325,
-          "eo": 0.5081,
+          "ownership_pct": 0.323,
+          "eo": 0.505,
           "floor_p10": 1.8,
           "median_p50": 4.8,
           "ceiling_p90": 9.8,
@@ -7875,8 +7889,8 @@
           "is_captain": 1,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.205,
-          "eo": 0.3305,
+          "ownership_pct": 0.204,
+          "eo": 0.3289,
           "floor_p10": 1.9,
           "median_p50": 5.2,
           "ceiling_p90": 10.7,
@@ -7975,8 +7989,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": 1,
-          "ownership_pct": 0.034,
-          "eo": 0.0496,
+          "ownership_pct": 0.035,
+          "eo": 0.0511,
           "floor_p10": 1.4,
           "median_p50": 3.9,
           "ceiling_p90": 6.9,
@@ -8161,41 +8175,41 @@
           }
         }
       ],
-      "budget_used": 88.6
+      "budget_used": 88.5
     }
   },
   "multi_horizon_plan": [
     {
       "gw": 6,
       "transfers_in": [
-        "Slater"
+        "Kostoulas"
       ],
       "transfers_out": [
-        "B.Fernandes"
+        "Barry"
       ],
       "hits_taken": 0,
-      "net_xp": 60.7239,
-      "bank": 9.6
+      "net_xp": 61.6076,
+      "bank": 2.3
     },
     {
       "gw": 7,
       "transfers_in": [
-        "Haaland"
+        "O'Reilly"
       ],
       "transfers_out": [
-        "Gonzalo"
+        "De Cuyper"
       ],
       "hits_taken": 0,
-      "net_xp": 71.3815,
-      "bank": 0.0
+      "net_xp": 65.0576,
+      "bank": 1.0
     },
     {
       "gw": 8,
       "transfers_in": [],
       "transfers_out": [],
       "hits_taken": 0,
-      "net_xp": 63.8475,
-      "bank": 0.0
+      "net_xp": 62.8364,
+      "bank": 1.0
     }
   ]
 }
