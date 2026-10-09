@@ -638,5 +638,21 @@
       "outlier_flags": []
     },
     "gameweek": 6
+  },
+  {
+    "passed": true,
+    "severity_score": 0.1,
+    "abort_probability": 0.02,
+    "anomaly_type": "clean",
+    "recommendation": "proceed",
+    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
+    "timestamp": "2026-10-09T20:40:36.867925+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £3.9M in trapped bench capital (O'Reilly, Wissa). Pruning via 2 FTs yields +4.2 pts into starters without burning Wildcard (Option Hurdle: 22.7 pts). | [!] Price Alert: Szoboszlai (-327,578), Mbeumo (-128,046), O'Reilly (-143,301) approaching drop",
+      "outlier_flags": []
+    },
+    "gameweek": 6
   }
 ]

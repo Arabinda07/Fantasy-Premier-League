@@ -16,9 +16,9 @@
     466075,
     226597,
     222531,
-    169528,
     446008,
     216646,
+    472769,
     243413,
     122798
   ],
@@ -62,7 +62,7 @@
   "vice_captain_code": 244858,
   "bank": 2.2,
   "free_transfers": 1,
-  "transfers_recommended": 1,
+  "transfers_recommended": 0,
   "hits_recommended": 0,
-  "updated_at": "2026-10-09 12:14:35 UTC"
+  "updated_at": "2026-10-09 20:40:26 UTC"
 }
