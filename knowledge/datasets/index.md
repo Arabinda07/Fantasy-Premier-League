@@ -11,3 +11,4 @@ This section defines the canonical schemas, column names, data types, and join k
 * [Fixture-Adjusted Predictions (`fixture_predictions.csv`)](/datasets/fixture-predictions.md) - Venue- and opponent-scaled point predictions for upcoming gameweeks.
 * [Teams & Fixture Schedules (`teams.csv`, `fixtures.csv`)](/datasets/teams-and-fixtures.md) - Premier League team ratings, venue strengths, and match schedules.
 * [Matchday Live State (`fpl_matchday_live_gw*.json`)](/datasets/matchday-live-state.md) - Real-time matchday state schema for live points, auto-subs, and minutes.
+* [Manager Squad Ground Truth & Recommendations (`actual_squad.json`, `recommended_squad_gw*.json`)](/datasets/manager-squad.md) - Authoritative manager squad state versus ephemeral solver recommendations.

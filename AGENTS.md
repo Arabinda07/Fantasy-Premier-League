@@ -20,6 +20,7 @@ Do not read all project documentation upfront. Consult relevant reference docume
 - **Statistical models or solver invariants**: Consult [`knowledge/models/`](file:///e:/Fantasy-Premier-League/knowledge/models/index.md) (empirical Bayes $M_0=500$, Poisson clean sheet formulations, conjugate venue symmetry, FPL 50% profit retention formula).
 - **Frontend UI components or styling**: Consult [`DESIGN.md`](file:///e:/Fantasy-Premier-League/DESIGN.md) for surface scopes, tokenized CSS variables, and the repeatable component catalog.
 - **Copy, tooltips, chip advice, or error states**: Consult [`docs/voice-and-tone-guide.md`](file:///e:/Fantasy-Premier-League/docs/voice-and-tone-guide.md) and import shared tokens from [`frontend/src/constants/copyTokens.js`](file:///e:/Fantasy-Premier-League/frontend/src/constants/copyTokens.js). Ban corporate jargon and raw math names.
+- **Squad Advice & Manager Lineup Ground Truth**: Consult [`knowledge/datasets/manager-squad.md`](file:///e:/Fantasy-Premier-League/knowledge/datasets/manager-squad.md). NEVER assume local `current_squad.json` contains fresh human transfers without checking [`data/2026-27/actual_squad.json`](file:///e:/Fantasy-Premier-League/data/2026-27/actual_squad.json) or running `python scripts/sync_live_squad.py --entry-id <ID>`. Proposed solver transfers must NEVER mutate actual squad ground truth.
 
 ## Autonomy, Permissions & Definition of Done
 You are fully authorized to run safe local verification commands, inspect the output, and fix failures without seeking approval at every intermediate step:

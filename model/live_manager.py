@@ -330,9 +330,12 @@ def manage_gameweek(
                 'last_updated_gw': gw,
                 'squad_status': 'RECOMMENDED_READY_FOR_EXECUTION',
                 'baseline_squad_codes': current_squad_codes,
-                'squad_codes': proposed_squad_codes,
-                'starter_codes': proposed_starter_codes,
-                'bench_codes': proposed_bench_codes,
+                'squad_codes': current_squad_codes,  # Ground truth actual owned squad
+                'proposed_squad_codes': proposed_squad_codes,
+                'proposed_starter_codes': proposed_starter_codes,
+                'proposed_bench_codes': proposed_bench_codes,
+                'starter_codes': proposed_starter_codes if set(proposed_squad_codes) == set(current_squad_codes) else [c for c in current_squad_codes if c in proposed_starter_codes] + [c for c in current_squad_codes if c not in proposed_starter_codes][:max(0, 11 - len([c for c in current_squad_codes if c in proposed_starter_codes]))],
+                'bench_codes': proposed_bench_codes if set(proposed_squad_codes) == set(current_squad_codes) else [c for c in current_squad_codes if c not in proposed_starter_codes],
                 'captain_code': active_sq.captain.player_code if active_sq and active_sq.captain else None,
                 'vice_captain_code': active_sq.vice_captain.player_code if active_sq and active_sq.vice_captain else None,
                 'bank': bank,
@@ -341,6 +344,28 @@ def manage_gameweek(
                 'hits_recommended': curr_plan.hits_taken if curr_plan else 0,
                 'updated_at': time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime()),
             }
+
+            # Save distinct recommended squad artifact
+            rec_payload = {
+                'entry_id': team_id,
+                'season': season,
+                'gameweek': gw,
+                'proposed_squad_codes': proposed_squad_codes,
+                'proposed_starter_codes': proposed_starter_codes,
+                'proposed_bench_codes': proposed_bench_codes,
+                'transfers_in': [p.player_code for p in curr_plan.transfers_in] if curr_plan else [],
+                'transfers_out': [p.player_code for p in curr_plan.transfers_out] if curr_plan else [],
+                'transfers_count': curr_plan.transfers_count if curr_plan else 0,
+                'hits_taken': curr_plan.hits_taken if curr_plan else 0,
+                'starting_xp': active_sq.starting_xp if active_sq else 0.0,
+                'captain_code': active_sq.captain.player_code if active_sq and active_sq.captain else None,
+                'vice_captain_code': active_sq.vice_captain.player_code if active_sq and active_sq.vice_captain else None,
+                'updated_at': time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime()),
+            }
+            rec_snap_path = os.path.join(season_dir, f'recommended_squad_gw{gw}.json')
+            with open(rec_snap_path, 'w', encoding='utf-8') as rf:
+                json.dump(rec_payload, rf, indent=2)
+
             import tempfile
             fd, tmp_path = tempfile.mkstemp(suffix='.json.tmp', dir=season_dir)
             with os.fdopen(fd, 'w') as tmp_f:

@@ -134,9 +134,11 @@ def save_manager_squad_snapshot(
 
     team_snapshot = os.path.join(season_dir, f'manager_squad_{profile.entry_id}.json')
     current_snapshot = os.path.join(season_dir, 'current_squad.json')
+    actual_snapshot = os.path.join(season_dir, 'actual_squad.json')
+    actual_team_snapshot = os.path.join(season_dir, f'manager_squad_{profile.entry_id}_actual.json')
 
     import tempfile
-    for target in (team_snapshot, current_snapshot):
+    for target in (team_snapshot, current_snapshot, actual_snapshot, actual_team_snapshot):
         dir_name = os.path.dirname(target)
         fd, tmp_path = tempfile.mkstemp(suffix='.json.tmp', dir=dir_name)
         try:
@@ -158,6 +160,8 @@ def load_manager_squad_snapshot(
 ) -> Optional[Dict[str, Any]]:
     """Load the latest authoritative 15-man squad snapshot from disk.
 
+    Prioritizes verified actual squad snapshots over simulation proposals.
+
     Args:
         entry_id: Optional FPL entry ID to check team-specific snapshot.
         season: Season string.
@@ -169,6 +173,9 @@ def load_manager_squad_snapshot(
     season_dir = os.path.join(data_root, season)
     candidates = []
     if entry_id:
+        candidates.append(os.path.join(season_dir, f'manager_squad_{entry_id}_actual.json'))
+    candidates.append(os.path.join(season_dir, 'actual_squad.json'))
+    if entry_id:
         candidates.append(os.path.join(season_dir, f'manager_squad_{entry_id}.json'))
     candidates.append(os.path.join(season_dir, 'current_squad.json'))
 
@@ -177,6 +184,12 @@ def load_manager_squad_snapshot(
             try:
                 with open(path, 'r', encoding='utf-8') as f:
                     data = json.load(f)
+                    # Guardrail: If snapshot is a solver recommendation, prefer baseline squad codes
+                    status = data.get('squad_status', '')
+                    if status != 'EXECUTED' and 'baseline_squad_codes' in data:
+                        base_codes = data.get('baseline_squad_codes', [])
+                        if isinstance(base_codes, list) and len(base_codes) == 15:
+                            data['squad_codes'] = base_codes
                     codes = data.get('squad_codes', [])
                     if isinstance(codes, list) and len(codes) == 15:
                         return data
@@ -650,11 +663,12 @@ def sync_manager_profile(
         if 'purchase_price' in p:
             purchase_prices[code] = float(p['purchase_price']) / 10.0
 
-    # Check if a forward-looking local snapshot for target GW exists (e.g. user already executed transfers for upcoming GW)
+    # Check if a forward-looking local snapshot for target GW exists (ONLY if explicitly executed by the manager)
     snapshot = load_manager_squad_snapshot(entry_id=entry_id, season=season, data_root=data_root)
     if (snapshot 
         and snapshot.get('entry_id') == entry_id 
         and int(snapshot.get('last_updated_gw', 0)) == gw 
+        and snapshot.get('squad_status') == 'EXECUTED'
         and len(snapshot.get('squad_codes', [])) == 15):
         print(f"[*] Preserving forward-looking squad snapshot for GW{gw} ({len(snapshot['squad_codes'])} players)")
         squad_codes = [int(c) for c in snapshot.get('squad_codes', [])]
@@ -683,6 +697,7 @@ def sync_manager_profile(
     if (snapshot 
         and snapshot.get('entry_id') == entry_id 
         and int(snapshot.get('last_updated_gw', 0)) == gw 
+        and snapshot.get('squad_status') == 'EXECUTED'
         and 'free_transfers' in snapshot):
         free_transfers = int(snapshot['free_transfers'])
 
