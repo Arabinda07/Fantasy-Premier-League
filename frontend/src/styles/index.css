@@ -8271,6 +8271,13 @@ tr:hover .vault-table-sticky-col {
   flex: 1 1 auto;
 }
 
+.wire-controls-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-5) var(--space-8);
+}
+
 /* Backward-compatibility fallback styles */
 .wire-header {
   display: flex;
@@ -8306,6 +8313,7 @@ tr:hover .vault-table-sticky-col {
   display: flex;
   align-items: baseline;
   gap: var(--space-4);
+  white-space: nowrap;
 }
 
 .wire-control-label {
@@ -8339,6 +8347,9 @@ tr:hover .vault-table-sticky-col {
 }
 
 .wire-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   background: transparent;
   color: var(--text-primary);
   border: 0;
@@ -8362,31 +8373,35 @@ tr:hover .vault-table-sticky-col {
 
 .wire-control-item-strategy {
   display: flex;
-  align-items: baseline;
-  gap: var(--space-5);
+  align-items: center;
+  gap: var(--space-4);
 }
 
 .wire-segments {
-  display: flex;
+  display: inline-flex;
+  align-items: center;
   flex-wrap: wrap;
-  gap: var(--space-2) var(--space-6);
+  gap: 2px;
+  background: var(--bg-surface-0);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 2px;
 }
 
 .wire-segment,
 .wire-segments button,
 .wire-segments > button,
 button.wire-segment {
-  background: transparent !important;
-  background-color: transparent !important;
-  border: 0 !important;
+  background: transparent;
+  border: 0;
   outline: none;
-  box-shadow: none !important;
-  padding: var(--space-2) var(--space-3);
+  box-shadow: none;
+  padding: var(--space-2) var(--space-4);
   margin: 0;
   font: inherit;
   font-size: var(--text-base);
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-muted);
   cursor: pointer;
@@ -8394,11 +8409,16 @@ button.wire-segment {
   align-items: center;
   gap: var(--space-2);
   border-radius: var(--radius-xs);
-  transition: color var(--duration-fast) var(--ease-snappy);
+  transition: background-color var(--duration-fast) var(--ease-snappy), color var(--duration-fast) var(--ease-snappy), box-shadow var(--duration-fast) var(--ease-snappy);
+  white-space: nowrap;
 }
 
 .wire-segment:hover,
-.wire-segments button:hover,
+.wire-segments button:hover {
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
 .wire-segment[aria-pressed="true"],
 .wire-segment[aria-selected="true"],
 .wire-segment.active,
@@ -8406,54 +8426,127 @@ button.wire-segment {
 .wire-segments button[aria-selected="true"],
 .wire-segments button.active {
   color: var(--text-primary) !important;
-  background: transparent !important;
-  background-color: transparent !important;
-}
-
-.wire-segment[aria-pressed="true"],
-.wire-segment[aria-selected="true"],
-.wire-segment.active,
-.wire-segments button[aria-pressed="true"],
-.wire-segments button[aria-selected="true"],
-.wire-segments button.active {
-  font-weight: 800;
-  text-decoration: underline;
-  text-underline-offset: 6px;
-}
-
-.wire-action,
-.wire-link,
-.wire-directive-more {
-  font-size: var(--text-base);
+  background: var(--bg-surface-3) !important;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  text-decoration: none !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Ghost Action Key (Secondary Actions & Simulation Toggles) */
+.wire-action {
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: var(--space-2) var(--space-4);
+  font: inherit;
+  font-size: var(--text-base);
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-muted);
+  cursor: pointer;
+  text-decoration: none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  transition: all var(--duration-fast) var(--ease-snappy);
+  white-space: nowrap;
 }
 
-.wire-action:hover,
-.wire-action[aria-pressed="true"],
+.wire-action:hover:not(:disabled) {
+  color: var(--text-primary);
+  border-color: var(--border-medium);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.wire-action[aria-pressed="true"] {
+  background: var(--bg-surface-3);
+  border-color: var(--border-active);
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  font-weight: 700;
+}
+
+/* Solid Institutional Key (Primary Matchday CTA) */
+.wire-action.is-primary {
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  font-size: var(--text-base);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-xs);
+  border: 1px solid transparent;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  transition: background-color var(--duration-fast) var(--ease-snappy),
+              transform var(--duration-fast) var(--ease-snappy),
+              box-shadow var(--duration-fast) var(--ease-snappy);
+  text-decoration: none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.wire-action.is-primary:hover:not(:disabled) {
+  background: #FFFFFF;
+  color: var(--text-inverse);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+}
+
+.wire-action.is-primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.wire-action.is-primary:disabled,
+.wire-action:disabled {
+  background: var(--bg-surface-3);
+  border-color: transparent;
+  color: var(--text-muted);
+  box-shadow: none;
+  cursor: default;
+  transform: none;
+}
+
+/* Kinetic Navigational Link (Directional Arrow Slide) */
+.wire-link,
+.wire-directive-more {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-size: var(--text-base);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none !important;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-snappy);
+}
+
 .wire-link:hover,
 .wire-directive-more:hover {
   color: var(--text-primary);
+  text-decoration: none !important;
 }
 
-.wire-action.is-primary,
-.wire-link,
-.wire-directive-more {
-  text-decoration: underline;
-  text-underline-offset: 6px;
+.wire-link-arrow {
+  display: inline-block;
+  transition: transform var(--duration-fast) var(--ease-snappy);
 }
 
-.wire-action.is-primary {
-  font-size: var(--text-lg);
-  color: var(--text-primary);
-}
-
-.wire-action:disabled {
-  color: var(--text-muted);
-  text-decoration: none;
-  cursor: default;
+.wire-link:hover .wire-link-arrow,
+.wire-directive-more:hover .wire-link-arrow {
+  transform: translateX(3px);
 }
 
 .wire-notice {
@@ -8761,15 +8854,18 @@ button.wire-token-main,
   .wire-controls-strip {
     gap: var(--space-4) var(--space-6);
   }
+  .wire-controls-metrics {
+    gap: var(--space-4) var(--space-6);
+  }
 }
 
 @media (max-width: 768px) {
   .wire-command-deck {
     flex-direction: column;
     align-items: stretch;
-    gap: var(--space-4);
-    padding: var(--space-4) 0;
-    margin-bottom: var(--space-6);
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    margin-bottom: var(--space-5);
   }
 
   .wire-telemetry-lead {
@@ -8792,11 +8888,34 @@ button.wire-token-main,
   }
 
   .wire-controls-strip {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-4);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-3) var(--space-6);
     padding: 0;
     width: 100%;
+  }
+
+  .wire-controls-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2) var(--space-5);
+  }
+
+  .wire-control-item {
+    gap: var(--space-2);
+  }
+
+  .wire-control-item-strategy {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .wire-segments {
+    gap: 2px;
   }
 
   .wire-decision-header {
@@ -8819,6 +8938,49 @@ button.wire-token-main,
   .wire-split {
     grid-template-columns: 1fr;
     gap: var(--space-9);
+  }
+}
+
+@media (max-width: 520px) {
+  .wire-controls-strip {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .wire-controls-metrics {
+    width: 100%;
+    gap: var(--space-2) var(--space-4);
+  }
+
+  .wire-control-item-strategy {
+    width: 100%;
+    gap: var(--space-3);
+  }
+
+  .wire-segments {
+    gap: 2px;
+  }
+}
+
+@media (max-width: 360px) {
+  .wire-controls-metrics {
+    gap: var(--space-2) var(--space-3);
+  }
+
+  .wire-control-item {
+    gap: var(--space-1);
+  }
+
+  .wire-segments {
+    gap: 2px;
+  }
+
+  .wire-segment,
+  .wire-segments button,
+  button.wire-segment {
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--text-sm);
   }
 }
 

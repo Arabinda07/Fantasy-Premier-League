@@ -373,45 +373,53 @@ export default function TacticalPitch({
 
         {/* Squad Controls: Bank, FT, Chip, Goal / Rank */}
         <div className="wire-controls-strip" role="group" aria-label="Squad Controls">
-          {bank != null && (
+          <div className="wire-controls-metrics">
+            {bank != null && (
+              <div className="wire-control-item">
+                <span className="wire-control-label">Bank</span>
+                <span className="wire-control-value font-mono">£{formatFplPrice(bank)}m</span>
+              </div>
+            )}
+            {canAct && (
+              <div className="wire-control-item">
+                <span className="wire-control-label">Free transfers</span>
+                <span className="wire-control-value font-mono">{freeTransfers}</span>
+              </div>
+            )}
             <div className="wire-control-item">
-              <span className="wire-control-label">Bank</span>
-              <span className="wire-control-value font-mono">£{formatFplPrice(bank)}m</span>
+              <label htmlFor="wire-chip-select" className="wire-control-label">
+                {isCompletedGw ? 'Chip played' : 'Chip'}
+              </label>
+              <div className="wire-control-value">
+                {canAct ? (
+                  <div className="wire-select-wrapper">
+                    <select
+                      id="wire-chip-select"
+                      value={activeChip}
+                      onChange={(e) => onSelectChip(e.target.value)}
+                      className="wire-select"
+                      aria-label="Matchday chip"
+                      title={CHIP_OPTIONS.find(c => c.id === activeChip)?.desc}
+                    >
+                      {CHIP_OPTIONS.map(chip => (
+                        <option key={chip.id} value={chip.id}>{chip.label}</option>
+                      ))}
+                    </select>
+                    <span className="wire-select-caret" aria-hidden="true">▾</span>
+                  </div>
+                ) : (
+                  <span className="wire-control-text">
+                    {CHIP_OPTIONS.find(c => c.id === playedChip)?.label || (playedChip ? playedChip.toUpperCase() : 'None')}
+                  </span>
+                )}
+              </div>
             </div>
-          )}
-          {canAct && (
-            <div className="wire-control-item">
-              <span className="wire-control-label">Free transfers</span>
-              <span className="wire-control-value font-mono">{freeTransfers}</span>
-            </div>
-          )}
-          <div className="wire-control-item">
-            <label htmlFor="wire-chip-select" className="wire-control-label">
-              {isCompletedGw ? 'Chip played' : 'Chip'}
-            </label>
-            <div className="wire-control-value">
-              {canAct ? (
-                <div className="wire-select-wrapper">
-                  <select
-                    id="wire-chip-select"
-                    value={activeChip}
-                    onChange={(e) => onSelectChip(e.target.value)}
-                    className="wire-select"
-                    aria-label="Matchday chip"
-                    title={CHIP_OPTIONS.find(c => c.id === activeChip)?.desc}
-                  >
-                    {CHIP_OPTIONS.map(chip => (
-                      <option key={chip.id} value={chip.id}>{chip.label}</option>
-                    ))}
-                  </select>
-                  <span className="wire-select-caret" aria-hidden="true">▾</span>
-                </div>
-              ) : (
-                <span className="wire-control-text">
-                  {CHIP_OPTIONS.find(c => c.id === playedChip)?.label || (playedChip ? playedChip.toUpperCase() : 'None')}
-                </span>
-              )}
-            </div>
+            {isCompletedGw && liveData?.event_rank && (
+              <div className="wire-control-item">
+                <span className="wire-control-label">Gameweek rank</span>
+                <span className="wire-control-value font-mono">#{Number(liveData.event_rank).toLocaleString()}</span>
+              </div>
+            )}
           </div>
           {canAct && (
             <div className="wire-control-item wire-control-item-strategy">
@@ -430,12 +438,6 @@ export default function TacticalPitch({
                   </button>
                 ))}
               </div>
-            </div>
-          )}
-          {isCompletedGw && liveData?.event_rank && (
-            <div className="wire-control-item">
-              <span className="wire-control-label">Gameweek rank</span>
-              <span className="wire-control-value font-mono">#{Number(liveData.event_rank).toLocaleString()}</span>
             </div>
           )}
         </div>
@@ -526,7 +528,7 @@ export default function TacticalPitch({
                         onClick={() => setIsBreakdownOpen(true)}
                         title="See why this move is recommended"
                       >
-                        See the reasoning →
+                        See the reasoning <span className="wire-link-arrow">→</span>
                       </button>
                       {canAct && onNavigateTab && (
                         <button
@@ -534,7 +536,7 @@ export default function TacticalPitch({
                           className="wire-link"
                           onClick={() => onNavigateTab('transfers')}
                         >
-                          Open the Planner →
+                          Open the Planner <span className="wire-link-arrow">→</span>
                         </button>
                       )}
                     </div>
