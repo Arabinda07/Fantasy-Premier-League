@@ -421,6 +421,11 @@ All frontend surfaces are constructed by composing the following standardized re
 - **Wire Pitch Tokens (`.wire-pitch`, `.vault-token`)**: Retires remaining `.player-pitch-card` instances in favor of Direction J `.wire-token` typographic elements (cream web name, cream tabular monospace points, meta strip `[{pos}] · {club} · £{cost}m`, and `[C]` armband).
 - **Hall of Fame & 10-Season Overview**: Tabular records ledger with `[{pos}]` monospace bracketed tags and wire-button navigation.
 
+### 5.23 Unified Matchday Command Deck (`.wire-command-deck`)
+- **Integrated Operational Deck (`.wire-command-deck`)**: Unifies the gameweek status hero and horizontal controls strip into a single high-velocity command bar. Reclaims ~140px of vertical height and eliminates the desktop right-hand dead zone by scaling the projected score from a stadium billboard (88px) down to an authoritative, balanced telemetry readout (`--text-command: 28px` / `--text-command-lg: 32px`).
+- **Telemetry Lead Block (`.wire-telemetry-lead`, `.wire-telemetry-stat`)**: Pairs the gameweek slug (`GAMEWEEK 6 · PROJECTED`) with tabular monospace points (`.wire-telemetry-num`, e.g. `61.9 XP`) and formation metadata (`.wire-telemetry-sub`, `4-4-2`) separated by hairline border accents (`var(--border-subtle)`).
+- **Hairline Divider & Squad Controls (`.wire-command-divider`, `.wire-controls-strip`)**: Connects the telemetry lead directly to managerial controls (Bank, Free transfers, Chip, Tactical goal) without nested boxes, borders, or pills, ensuring starters and captaincy are immediately visible above the fold on all viewports.
+
 ---
 
 ## 6. Motion & Interaction Physics

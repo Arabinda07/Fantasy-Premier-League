@@ -353,21 +353,26 @@ export default function TacticalPitch({
     <div className="wire">
       <h1 className="sr-only">Gameweek {gameweek} lineup</h1>
 
-      {/* Level 1: Status Hero & Level 2: Horizontal Squad Controls Strip */}
-      <header className="wire-header">
-        <div className="wire-hero">
+      {/* Unified Matchday Command Deck */}
+      <header className="wire-command-deck" role="region" aria-label="Gameweek Command Deck">
+        {/* Telemetry Lead: GW Forecast / Score & Formation */}
+        <div className="wire-telemetry-lead">
           <span className="wire-slug">{heroSlug}</span>
-          <span className="wire-hero-num font-mono">
-            {heroValue}
-            <span className="wire-hero-unit">{heroUnit}</span>
-          </span>
-          <span className="wire-hero-sub font-mono">
-            {isNonParticipating ? 'No squad' : isCompletedGw ? `${formation} · completed` : formation}
-          </span>
+          <div className="wire-telemetry-stat">
+            <span className="wire-telemetry-num font-mono">
+              {heroValue}
+              <span className="wire-telemetry-unit">{heroUnit}</span>
+            </span>
+            <span className="wire-telemetry-sub font-mono">
+              {isNonParticipating ? 'No squad' : isCompletedGw ? `${formation} · completed` : formation}
+            </span>
+          </div>
         </div>
 
-        {/* Level 2: Horizontal Gameweek Controls Strip */}
-        <div className="wire-controls-strip" role="region" aria-label="Gameweek Controls">
+        <div className="wire-command-divider" aria-hidden="true" />
+
+        {/* Squad Controls: Bank, FT, Chip, Goal / Rank */}
+        <div className="wire-controls-strip" role="group" aria-label="Squad Controls">
           {bank != null && (
             <div className="wire-control-item">
               <span className="wire-control-label">Bank</span>

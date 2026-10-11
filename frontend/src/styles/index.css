@@ -116,6 +116,8 @@
   --text-2xl: 18px;
   /* Direction J voice steps */
   --text-name: 15px;
+  --text-command: 28px;
+  --text-command-lg: 32px;
   --text-hero-mobile: 64px;
   --text-hero: 88px;
   --text-hero-xl: 104px;
@@ -8187,23 +8189,28 @@ tr:hover .vault-table-sticky-col {
   outline-offset: 3px;
 }
 
-/* Header: Level 1 Hero & Level 2 Squad Controls Strip */
-.wire-header {
+/* Unified Matchday Command Deck (§5.23 Direction J Option 1) */
+.wire-command-deck {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
-  margin-bottom: var(--space-10);
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-5) var(--space-8);
+  padding: var(--space-4) 0;
+  margin-bottom: var(--space-8);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
-.wire-hero {
+.wire-telemetry-lead {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-2);
+  flex-shrink: 0;
 }
 
 .wire-slug,
 .wire-banner {
-  font-size: var(--text-md);
+  font-size: var(--text-base);
   font-weight: 800;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -8214,36 +8221,85 @@ tr:hover .vault-table-sticky-col {
   margin: 0 0 var(--space-8);
 }
 
-.wire-hero-num {
-  font-size: var(--text-hero);
+.wire-telemetry-stat {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.wire-telemetry-num {
+  font-size: var(--text-command);
   font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 0.9;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--text-primary);
 }
 
-.wire-hero-unit {
-  font-size: 0.36em;
-  letter-spacing: 0;
+.wire-telemetry-unit {
+  font-size: 0.44em;
+  font-weight: 700;
+  letter-spacing: 0.05em;
   color: var(--text-muted);
-  margin-left: var(--space-4);
+  margin-left: var(--space-2);
 }
 
-.wire-hero-sub {
-  font-size: 13px;
+.wire-telemetry-sub {
+  font-size: var(--text-md);
+  font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-muted);
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--border-subtle);
+  line-height: 1.2;
 }
 
-/* Horizontal Gameweek Controls Strip */
+.wire-command-divider {
+  width: 1px;
+  height: 32px;
+  background-color: var(--border-subtle);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* Horizontal Gameweek Controls Strip (Integrated within Command Deck) */
 .wire-controls-strip {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-6) var(--space-9);
-  padding: var(--space-5) 0;
-  border-top: 1px solid var(--border-subtle);
-  border-bottom: 1px solid var(--border-subtle);
+  gap: var(--space-5) var(--space-8);
+  flex: 1 1 auto;
+}
+
+/* Backward-compatibility fallback styles */
+.wire-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+.wire-hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.wire-hero-num {
+  font-size: var(--text-command-lg);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.wire-hero-unit {
+  font-size: 0.36em;
+  letter-spacing: 0;
+  color: var(--text-muted);
+  margin-left: var(--space-3);
+}
+.wire-hero-sub {
+  font-size: var(--text-md);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
 .wire-control-item {
@@ -8693,18 +8749,43 @@ button.wire-token-main,
 }
 
 @media (min-width: 1280px) {
-  .wire-hero-num {
-    font-size: var(--text-hero-xl);
+  .wire-telemetry-num {
+    font-size: var(--text-command-lg);
   }
 }
 
 @media (max-width: 1024px) {
+  .wire-command-deck {
+    gap: var(--space-4) var(--space-6);
+  }
   .wire-controls-strip {
-    gap: var(--space-5) var(--space-7);
+    gap: var(--space-4) var(--space-6);
   }
 }
 
 @media (max-width: 768px) {
+  .wire-command-deck {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+    padding: var(--space-4) 0;
+    margin-bottom: var(--space-6);
+  }
+
+  .wire-telemetry-lead {
+    width: 100%;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .wire-command-divider {
+    display: none;
+  }
+
+  .wire-telemetry-num {
+    font-size: 24px;
+  }
+
   .wire-header {
     gap: var(--space-6);
     margin-bottom: var(--space-8);
@@ -8714,7 +8795,8 @@ button.wire-token-main,
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-4);
-    padding: var(--space-4) 0;
+    padding: 0;
+    width: 100%;
   }
 
   .wire-decision-header {
@@ -8731,7 +8813,7 @@ button.wire-token-main,
   }
 
   .wire-hero-num {
-    font-size: var(--text-hero-mobile);
+    font-size: 24px;
   }
 
   .wire-split {
