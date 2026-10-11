@@ -21,16 +21,37 @@ class TestLiveManager:
     @pytest.fixture(autouse=True)
     def clean_env(self):
         squad_path = os.path.join('data', '2026-27', 'current_squad.json')
-        orig_content = None
+        actual_path = os.path.join('data', '2026-27', 'actual_squad.json')
+        orig_current = None
+        orig_actual = None
         if os.path.exists(squad_path):
             with open(squad_path, 'r', encoding='utf-8', newline='') as f:
-                orig_content = f.read()
+                orig_current = f.read()
+        if os.path.exists(actual_path):
+            with open(actual_path, 'r', encoding='utf-8', newline='') as f:
+                orig_actual = f.read()
         try:
             yield
         finally:
-            if orig_content is not None:
+            if orig_current is not None:
                 with open(squad_path, 'w', encoding='utf-8', newline='') as f:
-                    f.write(orig_content)
+                    f.write(orig_current)
+            elif os.path.exists(squad_path):
+                os.remove(squad_path)
+
+            if orig_actual is not None:
+                with open(actual_path, 'w', encoding='utf-8', newline='') as f:
+                    f.write(orig_actual)
+            elif os.path.exists(actual_path):
+                os.remove(actual_path)
+
+            for extra in ('recommended_squad_gw1.json',):
+                epath = os.path.join('data', '2026-27', extra)
+                if os.path.exists(epath):
+                    try:
+                        os.remove(epath)
+                    except Exception:
+                        pass
 
     def test_injury_dampening(self):
         sample_df = pd.DataFrame([
@@ -41,12 +62,14 @@ class TestLiveManager:
         assert res_df.loc[0, 'expected_points'] == 6.0
 
     def test_live_manager_execution(self):
+        # Explicit force_new_squad ensures execution is independent of persistent squad files on disk
         res = manage_gameweek(
             season='2026-27',
             gw=1,
             bank=0.0,
             free_transfers=1,
             horizon=2,
+            force_new_squad=True,
             export_excel=False,
             export_json=False,
         )
@@ -54,5 +77,6 @@ class TestLiveManager:
         assert 'squad_solution' in res
         assert 'multi_horizon_solution' in res
         assert 'chip_plan' in res
+        assert res['squad_solution'] is not None
         assert res['squad_solution'].status == "Optimal"
         assert res['multi_horizon_solution'].status == "Optimal"

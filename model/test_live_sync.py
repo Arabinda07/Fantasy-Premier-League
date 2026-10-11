@@ -24,21 +24,43 @@ class TestLiveSyncUnit:
     @pytest.fixture(autouse=True)
     def clean_env(self):
         squad_path = os.path.join('data', '2026-27', 'current_squad.json')
-        orig_content = None
+        actual_path = os.path.join('data', '2026-27', 'actual_squad.json')
+        orig_current = None
+        orig_actual = None
         if os.path.exists(squad_path):
             with open(squad_path, 'r', encoding='utf-8', newline='') as f:
-                orig_content = f.read()
+                orig_current = f.read()
+        if os.path.exists(actual_path):
+            with open(actual_path, 'r', encoding='utf-8', newline='') as f:
+                orig_actual = f.read()
         try:
             yield
         finally:
-            if orig_content is not None:
+            if orig_current is not None:
                 with open(squad_path, 'w', encoding='utf-8', newline='') as f:
-                    f.write(orig_content)
+                    f.write(orig_current)
+            elif os.path.exists(squad_path):
+                os.remove(squad_path)
+
+            if orig_actual is not None:
+                with open(actual_path, 'w', encoding='utf-8', newline='') as f:
+                    f.write(orig_actual)
+            elif os.path.exists(actual_path):
+                os.remove(actual_path)
+
             for tid in (77777, 88888, 99999):
-                tpath = os.path.join('data', '2026-27', f'manager_squad_{tid}.json')
-                if os.path.exists(tpath):
+                for suffix in ('', '_actual'):
+                    tpath = os.path.join('data', '2026-27', f'manager_squad_{tid}{suffix}.json')
+                    if os.path.exists(tpath):
+                        try:
+                            os.remove(tpath)
+                        except Exception:
+                            pass
+            for extra in ('recommended_squad_gw1.json',):
+                epath = os.path.join('data', '2026-27', extra)
+                if os.path.exists(epath):
                     try:
-                        os.remove(tpath)
+                        os.remove(epath)
                     except Exception:
                         pass
 
@@ -196,10 +218,10 @@ class TestLiveSyncUnit:
             'last_deadline_value': 1030,
             'current_event': 1,
         }
-        # 15 valid squad elements (2 GK, 5 DEF, 5 MID, 3 FWD)
-        valid_elements = [1, 2, 4, 8, 9, 10, 11, 12, 13, 14, 15, 17, 25, 26, 27]
+        # 15 valid squad elements across 5 clubs (2 GK, 5 DEF, 5 MID, 3 FWD, max 3 per club)
+        valid_elements = [1, 2, 4, 30, 32, 33, 60, 67, 68, 86, 94, 95, 125, 137, 138]
         mock_picks = [
-            {'element': elem, 'position': idx + 1, 'multiplier': 2 if idx == 11 else (0 if idx >= 11 else 1), 'is_captain': (idx == 11), 'is_vice_captain': (idx == 12)}
+            {'element': elem, 'position': idx + 1, 'multiplier': 2 if idx == 10 else (0 if idx >= 11 else 1), 'is_captain': (idx == 10), 'is_vice_captain': (idx == 9)}
             for idx, elem in enumerate(valid_elements)
         ]
         mock_picks_resp = {
@@ -226,3 +248,58 @@ class TestLiveSyncUnit:
             assert res['live_profile'] is not None
             assert res['live_profile'].entry_id == 88888
             assert res['live_profile'].manager_name == 'Cole Palmer'
+
+    def test_mock_sync_does_not_mutate_authoritative_actual_squad(self):
+        """Regression test: syncing mock team IDs must never mutate real actual_squad.json ground truth."""
+        actual_path = os.path.join('data', '2026-27', 'actual_squad.json')
+        assert os.path.exists(actual_path), "Pre-condition: actual_squad.json must exist"
+
+        with open(actual_path, 'r', encoding='utf-8') as f:
+            initial_content = f.read()
+        initial_data = json.loads(initial_content)
+        primary_id = initial_data.get('entry_id')
+
+        mock_summary = {
+            'id': 77777,
+            'player_first_name': 'Erling',
+            'player_last_name': 'Robot',
+            'name': 'Haaland Goal Machine',
+            'summary_overall_rank': 120,
+            'summary_overall_points': 1520,
+            'last_deadline_bank': 20,
+            'last_deadline_value': 1050,
+            'current_event': 2,
+        }
+        mock_picks = [
+            {'element': i, 'position': i, 'multiplier': 2 if i == 9 else (0 if i > 11 else 1), 'is_captain': (i == 9), 'is_vice_captain': (i == 10), 'selling_price': 50, 'purchase_price': 50}
+            for i in range(1, 16)
+        ]
+        mock_picks_resp = {
+            'active_chip': None,
+            'entry_history': {'event': 2, 'bank': 20, 'value': 1050},
+            'picks': mock_picks,
+        }
+
+        with patch('model.live_sync.fetch_fpl_entry_summary', return_value=mock_summary), \
+             patch('model.live_sync.fetch_fpl_entry_picks', return_value=mock_picks_resp), \
+             patch('model.live_sync.fetch_fpl_entry_transfers', return_value=[]), \
+             patch('model.live_sync.fetch_fpl_league_standings', return_value={'standings': {'results': []}}):
+
+            profile = sync_manager_profile(
+                entry_id=77777,
+                gw=2,
+                season='2026-27',
+                data_root='data',
+                use_cache=False,
+            )
+            assert profile.entry_id == 77777
+
+        # Authoritative actual_squad.json must remain identical to initial state
+        with open(actual_path, 'r', encoding='utf-8') as f:
+            post_content = f.read()
+
+        post_data = json.loads(post_content)
+        assert post_data.get('entry_id') == primary_id
+        assert post_data.get('entry_id') != 77777
+        assert post_content == initial_content
+

@@ -93,17 +93,21 @@ def save_manager_squad_snapshot(
     profile: LiveSyncProfile,
     season: str = '2026-27',
     data_root: str = 'data',
+    force_global: bool = False,
 ) -> str:
     """Save an authoritative snapshot of the manager's 15-man squad.
 
     Saves to:
       1. data/<season>/manager_squad_{entry_id}.json (per-team snapshot)
-      2. data/<season>/current_squad.json (latest global squad snapshot)
+      2. data/<season>/manager_squad_{entry_id}_actual.json (per-team verified ground truth)
+      3. data/<season>/actual_squad.json (global ground truth, only if primary manager)
+      4. data/<season>/current_squad.json (global continuity layer, only if primary manager)
 
     Args:
         profile: LiveSyncProfile dataclass.
         season: Season string.
         data_root: Root data path.
+        force_global: If True, unconditionally update global actual/current squads.
 
     Returns:
         Path to the written per-team snapshot file.
@@ -133,12 +137,33 @@ def save_manager_squad_snapshot(
     }
 
     team_snapshot = os.path.join(season_dir, f'manager_squad_{profile.entry_id}.json')
-    current_snapshot = os.path.join(season_dir, 'current_squad.json')
-    actual_snapshot = os.path.join(season_dir, 'actual_squad.json')
     actual_team_snapshot = os.path.join(season_dir, f'manager_squad_{profile.entry_id}_actual.json')
+    actual_snapshot = os.path.join(season_dir, 'actual_squad.json')
+    current_snapshot = os.path.join(season_dir, 'current_squad.json')
+
+    # Determine whether to update global actual/current snapshots.
+    # By invariant (knowledge/datasets/manager-squad.md), global actual_squad.json represents
+    # the primary user squad and must never be clobbered by mock or non-matching entry IDs.
+    should_update_global = force_global
+    if not should_update_global:
+        if not os.path.exists(actual_snapshot):
+            should_update_global = True
+        else:
+            try:
+                with open(actual_snapshot, 'r', encoding='utf-8') as f:
+                    existing_data = json.load(f)
+                    existing_id = existing_data.get('entry_id')
+                    if existing_id is None or existing_id == profile.entry_id:
+                        should_update_global = True
+            except Exception:
+                should_update_global = True
+
+    targets = [team_snapshot, actual_team_snapshot]
+    if should_update_global:
+        targets.extend([actual_snapshot, current_snapshot])
 
     import tempfile
-    for target in (team_snapshot, current_snapshot, actual_snapshot, actual_team_snapshot):
+    for target in targets:
         dir_name = os.path.dirname(target)
         fd, tmp_path = tempfile.mkstemp(suffix='.json.tmp', dir=dir_name)
         try:

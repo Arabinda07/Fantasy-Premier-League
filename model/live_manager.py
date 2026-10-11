@@ -382,9 +382,11 @@ def manage_gameweek(
 
     # Immediate Action Logic
     wc_rec = chip_plan.recommendations.get('wildcard_1')
-    if wc_rec and getattr(wc_rec, 'is_active_now', False):
+    if multi_sol.status != "Optimal" or not curr_plan:
+        action_summary = f"SOLVER INFEASIBLE: Optimization returned status '{multi_sol.status}'. Verify squad formation constraints and club limits."
+    elif wc_rec and getattr(wc_rec, 'is_active_now', False):
         action_summary = f"ACTIVATE WILDCARD CHIP: {wc_rec.rationale}"
-    elif curr_plan and curr_plan.transfers_count == 0:
+    elif curr_plan.transfers_count == 0:
         if wc_rec and getattr(wc_rec, 'harvest_advisory', None):
             action_summary = f"HOLD WILDCARD & HARVEST BENCH: {wc_rec.harvest_advisory}"
         elif free_transfers == 0:
@@ -393,7 +395,7 @@ def manage_gameweek(
         else:
             acc_fts = min(5, free_transfers + 1)
             action_summary = f"ROLL TRANSFER (Save free transfer to accumulate {acc_fts} FTs next week)"
-    elif curr_plan and curr_plan.hits_taken == 0:
+    elif curr_plan.hits_taken == 0:
         trans_in_names = ", ".join([p.web_name for p in curr_plan.transfers_in])
         trans_out_names = ", ".join([p.web_name for p in curr_plan.transfers_out])
         harvest_note = f" [{wc_rec.harvest_advisory}]" if (wc_rec and getattr(wc_rec, 'harvest_advisory', None)) else ""
