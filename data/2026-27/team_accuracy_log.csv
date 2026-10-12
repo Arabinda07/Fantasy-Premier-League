@@ -46,16 +46,16 @@ gameweek,team,pred_xp,actual_pts,bias,actual_goals
 6,Brighton,40.49,63.0,-22.51,12
 6,Chelsea,35.78,48.0,-12.22,12
 6,Coventry City,34.2,0.0,34.2,1
-6,Crystal Palace,33.94,0.0,33.94,4
-6,Everton,36.16,0.0,36.16,5
+6,Crystal Palace,38.83,53.0,-14.17,6
+6,Everton,37.05,39.0,-1.95,8
 6,Fulham,43.31,23.0,20.31,3
-6,Hull City,37.34,0.0,37.34,4
+6,Hull City,37.34,24.0,13.34,5
 6,Ipswich Town,30.78,25.0,5.78,5
 6,Leeds,31.18,24.0,7.18,7
-6,Liverpool,32.54,0.0,32.54,7
-6,Man City,35.82,0.0,35.82,13
+6,Liverpool,32.54,11.0,21.54,7
+6,Man City,35.72,60.0,-24.28,15
 6,Man Utd,40.86,37.0,3.86,7
 6,Newcastle,36.98,0.0,36.98,7
-6,Nott'm Forest,31.32,0.0,31.32,3
+6,Nott'm Forest,34.31,23.0,11.31,4
 6,Spurs,36.3,25.0,11.3,2
 6,Sunderland,26.89,17.0,9.89,5
