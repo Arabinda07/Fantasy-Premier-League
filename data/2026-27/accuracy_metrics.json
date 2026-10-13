@@ -1,55 +1,55 @@
 {
   "evaluated_gw": 6,
-  "evaluated_at": "2026-10-12T13:47:47.285495+00:00",
+  "evaluated_at": "2026-10-13T11:25:37.384964+00:00",
   "season": "2026-27",
   "total_players": 667,
-  "active_players": 434,
-  "overall_mae": 1.3,
+  "active_players": 436,
+  "overall_mae": 1.28,
   "overall_rmse": 2.14,
-  "starters_mae": 1.93,
-  "starters_rmse": 2.65,
-  "rank_correlation": 0.442,
+  "starters_mae": 1.88,
+  "starters_rmse": 2.64,
+  "rank_correlation": 0.495,
   "brier_score_cs": 0.198,
   "positional": [
     {
       "pos": "GK",
       "count": 24,
-      "mae": 2.31,
-      "rmse": 2.79,
+      "mae": 2.18,
+      "rmse": 2.62,
       "meanPred": 3.45,
-      "meanAct": 2.04,
-      "bias": 1.41,
+      "meanAct": 2.17,
+      "bias": 1.28,
       "status": "OVER_PROJECTED"
     },
     {
       "pos": "DEF",
       "count": 129,
-      "mae": 2.16,
-      "rmse": 2.8,
+      "mae": 2.07,
+      "rmse": 2.72,
       "meanPred": 2.75,
-      "meanAct": 1.84,
-      "bias": 0.91,
+      "meanAct": 2.09,
+      "bias": 0.66,
       "status": "OVER_PROJECTED"
     },
     {
       "pos": "MID",
-      "count": 153,
-      "mae": 2.17,
-      "rmse": 2.9,
-      "meanPred": 2.86,
-      "meanAct": 2.52,
-      "bias": 0.34,
-      "status": "OVER_PROJECTED"
+      "count": 156,
+      "mae": 2.09,
+      "rmse": 2.85,
+      "meanPred": 2.82,
+      "meanAct": 2.68,
+      "bias": 0.14,
+      "status": "CALIBRATED"
     },
     {
       "pos": "FWD",
-      "count": 36,
-      "mae": 1.94,
-      "rmse": 2.56,
-      "meanPred": 2.79,
-      "meanAct": 2.25,
-      "bias": 0.54,
-      "status": "OVER_PROJECTED"
+      "count": 38,
+      "mae": 1.99,
+      "rmse": 2.99,
+      "meanPred": 2.71,
+      "meanAct": 2.87,
+      "bias": -0.16,
+      "status": "CALIBRATED"
     }
   ],
   "outliers": [
@@ -60,6 +60,15 @@
       "pred": 2.3,
       "actual": 18,
       "diff": "+15.7",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Cherif",
+      "team": "Coventry City",
+      "pos": "ASSET",
+      "pred": 0.53,
+      "actual": 12,
+      "diff": "+11.5",
       "reason": "High conversion or unexpected haul"
     },
     {
@@ -87,15 +96,6 @@
       "pred": 3.73,
       "actual": 13,
       "diff": "+9.3",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "O'Shea",
-      "team": "Ipswich Town",
-      "pos": "ASSET",
-      "pred": 2.47,
-      "actual": 11,
-      "diff": "+8.5",
       "reason": "High conversion or unexpected haul"
     },
     {

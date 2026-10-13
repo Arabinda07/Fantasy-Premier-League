@@ -702,5 +702,21 @@
       "outlier_flags": []
     },
     "gameweek": 7
+  },
+  {
+    "passed": true,
+    "severity_score": 0.1,
+    "abort_probability": 0.02,
+    "anomaly_type": "clean",
+    "recommendation": "proceed",
+    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
+    "timestamp": "2026-10-13T11:27:49.063461+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Carvalho | [OUT] Szoboszlai [Squad holds £6.4M in trapped bench capital (Gibbs-White, Szoboszlai). Pruning via 2 FTs yields +6.5 pts into starters without burning Wildcard (Option Hurdle: 21.5 pts).] | [!] Nightly Price Risk: B.Fernandes (-227,027), Szoboszlai (-186,924) (Execute before 01:15 GMT to protect value)",
+      "outlier_flags": []
+    },
+    "gameweek": 7
   }
 ]
