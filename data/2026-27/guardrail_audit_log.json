@@ -6,22 +6,6 @@
     "anomaly_type": "data_corruption",
     "recommendation": "flag_for_review",
     "message": "Guardrail Halt: data_corruption (Severity: 2.95, Abort Prob: 77%)",
-    "timestamp": "2026-09-19T02:06:29.134832+00:00",
-    "details": {
-      "starting_xp": 0.0,
-      "captain": null,
-      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £1.9M in trapped bench capital (De Cuyper, Barry). Pruning via 2 FTs yields +2.1 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts).",
-      "outlier_flags": []
-    },
-    "gameweek": 2
-  },
-  {
-    "passed": false,
-    "severity_score": 2.95,
-    "abort_probability": 0.77,
-    "anomaly_type": "data_corruption",
-    "recommendation": "flag_for_review",
-    "message": "Guardrail Halt: data_corruption (Severity: 2.95, Abort Prob: 77%)",
     "timestamp": "2026-09-19T02:06:48.410053+00:00",
     "details": {
       "starting_xp": 0.0,
@@ -795,6 +779,22 @@
       "starting_xp": 0.0,
       "captain": null,
       "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Carvalho | [OUT] Szoboszlai [Squad holds £6.4M in trapped bench capital (Gibbs-White, Szoboszlai). Pruning via 2 FTs yields +6.5 pts into starters without burning Wildcard (Option Hurdle: 21.5 pts).] | [!] Nightly Price Risk: B.Fernandes (-488,095), Gibbs-White (-205,109), Wissa (-243,340), Szoboszlai (-567,092) (Execute before 01:15 GMT to protect value)",
+      "outlier_flags": []
+    },
+    "gameweek": 7
+  },
+  {
+    "passed": true,
+    "severity_score": 0.1,
+    "abort_probability": 0.02,
+    "anomaly_type": "clean",
+    "recommendation": "proceed",
+    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
+    "timestamp": "2026-10-17T09:52:25.284636+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Carvalho | [OUT] Szoboszlai [Squad holds £6.3M in trapped bench capital (Gibbs-White, Szoboszlai). Pruning via 2 FTs yields +6.5 pts into starters without burning Wildcard (Option Hurdle: 21.5 pts).] | [!] Nightly Price Risk: Gabriel (-134,515), B.Fernandes (-670,406), Gibbs-White (-374,132), Wissa (-371,660), Szoboszlai (-896,852) (Execute before 01:15 GMT to protect value)",
       "outlier_flags": []
     },
     "gameweek": 7
