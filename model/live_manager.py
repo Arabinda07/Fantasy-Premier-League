@@ -61,7 +61,8 @@ def apply_live_injury_dampening(
 
     p_raw = pd.read_csv(players_raw_path)
     status_map = dict(zip(p_raw['code'], p_raw['status']))
-    chance_map = dict(zip(p_raw['code'], p_raw['chance_of_playing_this_round']))
+    chance_this_map = dict(zip(p_raw['code'], p_raw['chance_of_playing_this_round']))
+    chance_next_map = dict(zip(p_raw['code'], p_raw['chance_of_playing_next_round'])) if 'chance_of_playing_next_round' in p_raw.columns else {}
     news_map = dict(zip(p_raw['code'], p_raw['news']))
 
     df = pred_df.copy()
@@ -69,7 +70,9 @@ def apply_live_injury_dampening(
     for idx, row in df.iterrows():
         p_code = int(row.get('player_code', 0))
         status = str(status_map.get(p_code, 'a')).lower()
-        chance = chance_map.get(p_code)
+        chance = chance_this_map.get(p_code)
+        if pd.isnull(chance):
+            chance = chance_next_map.get(p_code)
 
         mult = 1.0
         if status in ('i', 's', 'u'):  # Injured, Suspended, Unavailable
