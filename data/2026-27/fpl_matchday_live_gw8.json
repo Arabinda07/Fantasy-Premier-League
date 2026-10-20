@@ -19,41 +19,41 @@
     "squad_codes": [
       154561,
       226597,
-      466075,
+      122798,
       465730,
-      169528,
-      446008,
-      466052,
-      244851,
-      222531,
-      216646,
-      177815,
-      80201,
       201658,
+      446008,
+      244851,
+      141746,
+      177815,
       586309,
-      122798
+      216646,
+      80201,
+      466075,
+      222531,
+      169528
     ],
     "starter_codes": [
       154561,
-      466075,
       226597,
+      122798,
       465730,
-      169528,
+      201658,
       446008,
-      466052,
       244851,
-      222531,
-      216646,
-      177815
+      141746,
+      177815,
+      586309,
+      216646
     ],
     "bench_codes": [
       80201,
-      201658,
-      586309,
-      122798
+      466075,
+      222531,
+      169528
     ],
-    "captain_code": 446008,
-    "vice_captain_code": 466075,
+    "captain_code": 141746,
+    "vice_captain_code": 154561,
     "selling_prices": {},
     "purchase_prices": {},
     "rivals": [
@@ -69,9 +69,9 @@
         "captain_name": "Haaland",
         "captain_code": 223094,
         "shared_players": [
-          "Calafiori",
           "Palmer",
-          "Barry"
+          "Barry",
+          "Calafiori"
         ],
         "differentials": [
           "Kinsky",
@@ -90,16 +90,16 @@
         "user_differentials": [
           "Raya",
           "Gabriel",
+          "Robertson",
           "De Cuyper",
-          "Robinson",
-          "Mbeumo",
-          "Cherki",
-          "Gibbs-White",
-          "Wissa",
-          "Calvert-Lewin",
-          "Leno",
           "Tavernier",
-          "Robertson"
+          "Mbeumo",
+          "B.Fernandes",
+          "Calvert-Lewin",
+          "Wissa",
+          "Leno",
+          "Gibbs-White",
+          "Robinson"
         ],
         "user_differential_cards": [
           {
@@ -117,60 +117,18 @@
             "xp": 5.0
           },
           {
+            "name": "Robertson",
+            "pos": "DEF",
+            "team": "TOT",
+            "cost": 4.4,
+            "xp": 3.8
+          },
+          {
             "name": "De Cuyper",
             "pos": "DEF",
             "team": "BHA",
             "cost": 5.3,
             "xp": 4.2
-          },
-          {
-            "name": "Robinson",
-            "pos": "DEF",
-            "team": "FUL",
-            "cost": 4.4,
-            "xp": 4.3
-          },
-          {
-            "name": "Mbeumo",
-            "pos": "MID",
-            "team": "MUN",
-            "cost": 7.8,
-            "xp": 4.9
-          },
-          {
-            "name": "Cherki",
-            "pos": "MID",
-            "team": "MCI",
-            "cost": 8.0,
-            "xp": 3.8
-          },
-          {
-            "name": "Gibbs-White",
-            "pos": "MID",
-            "team": "NFO",
-            "cost": 7.9,
-            "xp": 5.7
-          },
-          {
-            "name": "Wissa",
-            "pos": "FWD",
-            "team": "NEW",
-            "cost": 6.1,
-            "xp": 4.4
-          },
-          {
-            "name": "Calvert-Lewin",
-            "pos": "FWD",
-            "team": "LEE",
-            "cost": 6.0,
-            "xp": 4.5
-          },
-          {
-            "name": "Leno",
-            "pos": "GK",
-            "team": "FUL",
-            "cost": 4.5,
-            "xp": 4.6
           },
           {
             "name": "Tavernier",
@@ -180,11 +138,53 @@
             "xp": 4.1
           },
           {
-            "name": "Robertson",
+            "name": "Mbeumo",
+            "pos": "MID",
+            "team": "MUN",
+            "cost": 7.8,
+            "xp": 4.9
+          },
+          {
+            "name": "B.Fernandes",
+            "pos": "MID",
+            "team": "MUN",
+            "cost": 11.8,
+            "xp": 3.7
+          },
+          {
+            "name": "Calvert-Lewin",
+            "pos": "FWD",
+            "team": "LEE",
+            "cost": 6.0,
+            "xp": 4.5
+          },
+          {
+            "name": "Wissa",
+            "pos": "FWD",
+            "team": "NEW",
+            "cost": 6.1,
+            "xp": 4.4
+          },
+          {
+            "name": "Leno",
+            "pos": "GK",
+            "team": "FUL",
+            "cost": 4.5,
+            "xp": 4.6
+          },
+          {
+            "name": "Gibbs-White",
+            "pos": "MID",
+            "team": "NFO",
+            "cost": 7.9,
+            "xp": 5.7
+          },
+          {
+            "name": "Robinson",
             "pos": "DEF",
-            "team": "TOT",
+            "team": "FUL",
             "cost": 4.4,
-            "xp": 3.8
+            "xp": 4.3
           }
         ],
         "rival_differential_cards": [
@@ -273,9 +273,9 @@
             "xp": 0.1
           }
         ],
-        "your_upside": 54.4,
+        "your_upside": 54.3,
         "rival_upside": 38.0,
-        "net_delta": 16.4,
+        "net_delta": 16.3,
         "threat_level": "HIGH",
         "overlap_count": 3,
         "overlap_pct": 20.0
@@ -312,18 +312,18 @@
         ],
         "user_differentials": [
           "Gabriel",
+          "Robertson",
           "De Cuyper",
-          "Robinson",
-          "Mbeumo",
-          "Cherki",
-          "Palmer",
-          "Gibbs-White",
-          "Wissa",
-          "Calvert-Lewin",
-          "Leno",
           "Tavernier",
+          "Mbeumo",
+          "Palmer",
+          "B.Fernandes",
+          "Calvert-Lewin",
           "Barry",
-          "Robertson"
+          "Wissa",
+          "Leno",
+          "Gibbs-White",
+          "Robinson"
         ],
         "user_differential_cards": [
           {
@@ -334,67 +334,18 @@
             "xp": 5.0
           },
           {
+            "name": "Robertson",
+            "pos": "DEF",
+            "team": "TOT",
+            "cost": 4.4,
+            "xp": 3.8
+          },
+          {
             "name": "De Cuyper",
             "pos": "DEF",
             "team": "BHA",
             "cost": 5.3,
             "xp": 4.2
-          },
-          {
-            "name": "Robinson",
-            "pos": "DEF",
-            "team": "FUL",
-            "cost": 4.4,
-            "xp": 4.3
-          },
-          {
-            "name": "Mbeumo",
-            "pos": "MID",
-            "team": "MUN",
-            "cost": 7.8,
-            "xp": 4.9
-          },
-          {
-            "name": "Cherki",
-            "pos": "MID",
-            "team": "MCI",
-            "cost": 8.0,
-            "xp": 3.8
-          },
-          {
-            "name": "Palmer",
-            "pos": "MID",
-            "team": "CHE",
-            "cost": 9.7,
-            "xp": 3.5
-          },
-          {
-            "name": "Gibbs-White",
-            "pos": "MID",
-            "team": "NFO",
-            "cost": 7.9,
-            "xp": 5.7
-          },
-          {
-            "name": "Wissa",
-            "pos": "FWD",
-            "team": "NEW",
-            "cost": 6.1,
-            "xp": 4.4
-          },
-          {
-            "name": "Calvert-Lewin",
-            "pos": "FWD",
-            "team": "LEE",
-            "cost": 6.0,
-            "xp": 4.5
-          },
-          {
-            "name": "Leno",
-            "pos": "GK",
-            "team": "FUL",
-            "cost": 4.5,
-            "xp": 4.6
           },
           {
             "name": "Tavernier",
@@ -404,6 +355,34 @@
             "xp": 4.1
           },
           {
+            "name": "Mbeumo",
+            "pos": "MID",
+            "team": "MUN",
+            "cost": 7.8,
+            "xp": 4.9
+          },
+          {
+            "name": "Palmer",
+            "pos": "MID",
+            "team": "CHE",
+            "cost": 9.7,
+            "xp": 3.5
+          },
+          {
+            "name": "B.Fernandes",
+            "pos": "MID",
+            "team": "MUN",
+            "cost": 11.8,
+            "xp": 3.7
+          },
+          {
+            "name": "Calvert-Lewin",
+            "pos": "FWD",
+            "team": "LEE",
+            "cost": 6.0,
+            "xp": 4.5
+          },
+          {
             "name": "Barry",
             "pos": "FWD",
             "team": "EVE",
@@ -411,11 +390,32 @@
             "xp": 3.1
           },
           {
-            "name": "Robertson",
+            "name": "Wissa",
+            "pos": "FWD",
+            "team": "NEW",
+            "cost": 6.1,
+            "xp": 4.4
+          },
+          {
+            "name": "Leno",
+            "pos": "GK",
+            "team": "FUL",
+            "cost": 4.5,
+            "xp": 4.6
+          },
+          {
+            "name": "Gibbs-White",
+            "pos": "MID",
+            "team": "NFO",
+            "cost": 7.9,
+            "xp": 5.7
+          },
+          {
+            "name": "Robinson",
             "pos": "DEF",
-            "team": "TOT",
+            "team": "FUL",
             "cost": 4.4,
-            "xp": 3.8
+            "xp": 4.3
           }
         ],
         "rival_differential_cards": [
@@ -511,9 +511,9 @@
             "xp": 0.1
           }
         ],
-        "your_upside": 55.9,
+        "your_upside": 55.8,
         "rival_upside": 38.1,
-        "net_delta": 17.8,
+        "net_delta": 17.7,
         "threat_level": "HIGH",
         "overlap_count": 2,
         "overlap_pct": 13.3
@@ -530,10 +530,10 @@
         "captain_name": "Haaland",
         "captain_code": 223094,
         "shared_players": [
-          "Calafiori",
           "De Cuyper",
           "Palmer",
-          "Calvert-Lewin"
+          "Calvert-Lewin",
+          "Calafiori"
         ],
         "differentials": [
           "Kinsky",
@@ -551,15 +551,15 @@
         "user_differentials": [
           "Raya",
           "Gabriel",
-          "Robinson",
+          "Robertson",
+          "Tavernier",
           "Mbeumo",
-          "Cherki",
-          "Gibbs-White",
+          "B.Fernandes",
+          "Barry",
           "Wissa",
           "Leno",
-          "Tavernier",
-          "Barry",
-          "Robertson"
+          "Gibbs-White",
+          "Robinson"
         ],
         "user_differential_cards": [
           {
@@ -577,11 +577,18 @@
             "xp": 5.0
           },
           {
-            "name": "Robinson",
+            "name": "Robertson",
             "pos": "DEF",
-            "team": "FUL",
+            "team": "TOT",
             "cost": 4.4,
-            "xp": 4.3
+            "xp": 3.8
+          },
+          {
+            "name": "Tavernier",
+            "pos": "MID",
+            "team": "BOU",
+            "cost": 6.2,
+            "xp": 4.1
           },
           {
             "name": "Mbeumo",
@@ -591,18 +598,18 @@
             "xp": 4.9
           },
           {
-            "name": "Cherki",
+            "name": "B.Fernandes",
             "pos": "MID",
-            "team": "MCI",
-            "cost": 8.0,
-            "xp": 3.8
+            "team": "MUN",
+            "cost": 11.8,
+            "xp": 3.7
           },
           {
-            "name": "Gibbs-White",
-            "pos": "MID",
-            "team": "NFO",
-            "cost": 7.9,
-            "xp": 5.7
+            "name": "Barry",
+            "pos": "FWD",
+            "team": "EVE",
+            "cost": 5.7,
+            "xp": 3.1
           },
           {
             "name": "Wissa",
@@ -619,25 +626,18 @@
             "xp": 4.6
           },
           {
-            "name": "Tavernier",
+            "name": "Gibbs-White",
             "pos": "MID",
-            "team": "BOU",
-            "cost": 6.2,
-            "xp": 4.1
+            "team": "NFO",
+            "cost": 7.9,
+            "xp": 5.7
           },
           {
-            "name": "Barry",
-            "pos": "FWD",
-            "team": "EVE",
-            "cost": 5.7,
-            "xp": 3.1
-          },
-          {
-            "name": "Robertson",
+            "name": "Robinson",
             "pos": "DEF",
-            "team": "TOT",
+            "team": "FUL",
             "cost": 4.4,
-            "xp": 3.8
+            "xp": 4.3
           }
         ],
         "rival_differential_cards": [
@@ -719,9 +719,9 @@
             "xp": 0.1
           }
         ],
-        "your_upside": 48.8,
+        "your_upside": 48.7,
         "rival_upside": 34.4,
-        "net_delta": 14.4,
+        "net_delta": 14.3,
         "threat_level": "HIGH",
         "overlap_count": 4,
         "overlap_pct": 26.7
@@ -739,11 +739,11 @@
         "captain_code": 223094,
         "shared_players": [
           "Raya",
-          "Calafiori",
           "De Cuyper",
+          "Tavernier",
           "Palmer",
           "Wissa",
-          "Tavernier"
+          "Calafiori"
         ],
         "differentials": [
           "Gvardiol",
@@ -758,14 +758,14 @@
         ],
         "user_differentials": [
           "Gabriel",
-          "Robinson",
+          "Robertson",
           "Mbeumo",
-          "Cherki",
-          "Gibbs-White",
+          "B.Fernandes",
           "Calvert-Lewin",
-          "Leno",
           "Barry",
-          "Robertson"
+          "Leno",
+          "Gibbs-White",
+          "Robinson"
         ],
         "user_differential_cards": [
           {
@@ -776,11 +776,11 @@
             "xp": 5.0
           },
           {
-            "name": "Robinson",
+            "name": "Robertson",
             "pos": "DEF",
-            "team": "FUL",
+            "team": "TOT",
             "cost": 4.4,
-            "xp": 4.3
+            "xp": 3.8
           },
           {
             "name": "Mbeumo",
@@ -790,18 +790,11 @@
             "xp": 4.9
           },
           {
-            "name": "Cherki",
+            "name": "B.Fernandes",
             "pos": "MID",
-            "team": "MCI",
-            "cost": 8.0,
-            "xp": 3.8
-          },
-          {
-            "name": "Gibbs-White",
-            "pos": "MID",
-            "team": "NFO",
-            "cost": 7.9,
-            "xp": 5.7
+            "team": "MUN",
+            "cost": 11.8,
+            "xp": 3.7
           },
           {
             "name": "Calvert-Lewin",
@@ -811,13 +804,6 @@
             "xp": 4.5
           },
           {
-            "name": "Leno",
-            "pos": "GK",
-            "team": "FUL",
-            "cost": 4.5,
-            "xp": 4.6
-          },
-          {
             "name": "Barry",
             "pos": "FWD",
             "team": "EVE",
@@ -825,11 +811,25 @@
             "xp": 3.1
           },
           {
-            "name": "Robertson",
+            "name": "Leno",
+            "pos": "GK",
+            "team": "FUL",
+            "cost": 4.5,
+            "xp": 4.6
+          },
+          {
+            "name": "Gibbs-White",
+            "pos": "MID",
+            "team": "NFO",
+            "cost": 7.9,
+            "xp": 5.7
+          },
+          {
+            "name": "Robinson",
             "pos": "DEF",
-            "team": "TOT",
+            "team": "FUL",
             "cost": 4.4,
-            "xp": 3.8
+            "xp": 4.3
           }
         ],
         "rival_differential_cards": [
@@ -897,9 +897,9 @@
             "xp": 0.1
           }
         ],
-        "your_upside": 39.7,
+        "your_upside": 39.6,
         "rival_upside": 29.1,
-        "net_delta": 10.6,
+        "net_delta": 10.5,
         "threat_level": "HIGH",
         "overlap_count": 6,
         "overlap_pct": 40.0
@@ -917,13 +917,13 @@
         "captain_code": 223094,
         "shared_players": [
           "Raya",
-          "Calafiori",
           "De Cuyper",
-          "Calvert-Lewin"
+          "B.Fernandes",
+          "Calvert-Lewin",
+          "Calafiori"
         ],
         "differentials": [
           "White",
-          "B.Fernandes",
           "Belloumi",
           "Barnes",
           "Gro\u00df",
@@ -936,16 +936,15 @@
         ],
         "user_differentials": [
           "Gabriel",
-          "Robinson",
+          "Robertson",
+          "Tavernier",
           "Mbeumo",
-          "Cherki",
           "Palmer",
-          "Gibbs-White",
+          "Barry",
           "Wissa",
           "Leno",
-          "Tavernier",
-          "Barry",
-          "Robertson"
+          "Gibbs-White",
+          "Robinson"
         ],
         "user_differential_cards": [
           {
@@ -956,11 +955,18 @@
             "xp": 5.0
           },
           {
-            "name": "Robinson",
+            "name": "Robertson",
             "pos": "DEF",
-            "team": "FUL",
+            "team": "TOT",
             "cost": 4.4,
-            "xp": 4.3
+            "xp": 3.8
+          },
+          {
+            "name": "Tavernier",
+            "pos": "MID",
+            "team": "BOU",
+            "cost": 6.2,
+            "xp": 4.1
           },
           {
             "name": "Mbeumo",
@@ -970,13 +976,6 @@
             "xp": 4.9
           },
           {
-            "name": "Cherki",
-            "pos": "MID",
-            "team": "MCI",
-            "cost": 8.0,
-            "xp": 3.8
-          },
-          {
             "name": "Palmer",
             "pos": "MID",
             "team": "CHE",
@@ -984,11 +983,11 @@
             "xp": 3.5
           },
           {
-            "name": "Gibbs-White",
-            "pos": "MID",
-            "team": "NFO",
-            "cost": 7.9,
-            "xp": 5.7
+            "name": "Barry",
+            "pos": "FWD",
+            "team": "EVE",
+            "cost": 5.7,
+            "xp": 3.1
           },
           {
             "name": "Wissa",
@@ -1005,25 +1004,18 @@
             "xp": 4.6
           },
           {
-            "name": "Tavernier",
+            "name": "Gibbs-White",
             "pos": "MID",
-            "team": "BOU",
-            "cost": 6.2,
-            "xp": 4.1
+            "team": "NFO",
+            "cost": 7.9,
+            "xp": 5.7
           },
           {
-            "name": "Barry",
-            "pos": "FWD",
-            "team": "EVE",
-            "cost": 5.7,
-            "xp": 3.1
-          },
-          {
-            "name": "Robertson",
+            "name": "Robinson",
             "pos": "DEF",
-            "team": "TOT",
+            "team": "FUL",
             "cost": 4.4,
-            "xp": 3.8
+            "xp": 4.3
           }
         ],
         "rival_differential_cards": [
@@ -1033,13 +1025,6 @@
             "team": "ARS",
             "cost": 5.4,
             "xp": 4.6
-          },
-          {
-            "name": "B.Fernandes",
-            "pos": "MID",
-            "team": "MUN",
-            "cost": 11.8,
-            "xp": 3.7
           },
           {
             "name": "Belloumi",
@@ -1105,12 +1090,12 @@
             "xp": 0.0
           }
         ],
-        "your_upside": 47.2,
-        "rival_upside": 34.4,
-        "net_delta": 12.8,
+        "your_upside": 43.4,
+        "rival_upside": 30.7,
+        "net_delta": 12.7,
         "threat_level": "HIGH",
-        "overlap_count": 4,
-        "overlap_pct": 26.7
+        "overlap_count": 5,
+        "overlap_pct": 33.3
       },
       {
         "entry_id": 3400909,
@@ -1125,16 +1110,16 @@
         "captain_code": 475168,
         "shared_players": [
           "Raya",
-          "Calafiori",
           "De Cuyper",
           "Mbeumo",
-          "Cherki",
           "Palmer",
-          "Barry"
+          "Barry",
+          "Calafiori"
         ],
         "differentials": [
           "Tarkowski",
           "Gvardiol",
+          "Cherki",
           "Jo\u00e3o Pedro",
           "Kostoulas",
           "Trafford",
@@ -1144,13 +1129,14 @@
         ],
         "user_differentials": [
           "Gabriel",
-          "Robinson",
-          "Gibbs-White",
-          "Wissa",
-          "Calvert-Lewin",
-          "Leno",
+          "Robertson",
           "Tavernier",
-          "Robertson"
+          "B.Fernandes",
+          "Calvert-Lewin",
+          "Wissa",
+          "Leno",
+          "Gibbs-White",
+          "Robinson"
         ],
         "user_differential_cards": [
           {
@@ -1161,39 +1147,11 @@
             "xp": 5.0
           },
           {
-            "name": "Robinson",
+            "name": "Robertson",
             "pos": "DEF",
-            "team": "FUL",
+            "team": "TOT",
             "cost": 4.4,
-            "xp": 4.3
-          },
-          {
-            "name": "Gibbs-White",
-            "pos": "MID",
-            "team": "NFO",
-            "cost": 7.9,
-            "xp": 5.7
-          },
-          {
-            "name": "Wissa",
-            "pos": "FWD",
-            "team": "NEW",
-            "cost": 6.1,
-            "xp": 4.4
-          },
-          {
-            "name": "Calvert-Lewin",
-            "pos": "FWD",
-            "team": "LEE",
-            "cost": 6.0,
-            "xp": 4.5
-          },
-          {
-            "name": "Leno",
-            "pos": "GK",
-            "team": "FUL",
-            "cost": 4.5,
-            "xp": 4.6
+            "xp": 3.8
           },
           {
             "name": "Tavernier",
@@ -1203,11 +1161,46 @@
             "xp": 4.1
           },
           {
-            "name": "Robertson",
+            "name": "B.Fernandes",
+            "pos": "MID",
+            "team": "MUN",
+            "cost": 11.8,
+            "xp": 3.7
+          },
+          {
+            "name": "Calvert-Lewin",
+            "pos": "FWD",
+            "team": "LEE",
+            "cost": 6.0,
+            "xp": 4.5
+          },
+          {
+            "name": "Wissa",
+            "pos": "FWD",
+            "team": "NEW",
+            "cost": 6.1,
+            "xp": 4.4
+          },
+          {
+            "name": "Leno",
+            "pos": "GK",
+            "team": "FUL",
+            "cost": 4.5,
+            "xp": 4.6
+          },
+          {
+            "name": "Gibbs-White",
+            "pos": "MID",
+            "team": "NFO",
+            "cost": 7.9,
+            "xp": 5.7
+          },
+          {
+            "name": "Robinson",
             "pos": "DEF",
-            "team": "TOT",
+            "team": "FUL",
             "cost": 4.4,
-            "xp": 3.8
+            "xp": 4.3
           }
         ],
         "rival_differential_cards": [
@@ -1224,6 +1217,13 @@
             "team": "MCI",
             "cost": 5.8,
             "xp": 3.0
+          },
+          {
+            "name": "Cherki",
+            "pos": "MID",
+            "team": "MCI",
+            "cost": 8.0,
+            "xp": 3.8
           },
           {
             "name": "Jo\u00e3o Pedro",
@@ -1268,12 +1268,12 @@
             "xp": 3.3
           }
         ],
-        "your_upside": 36.4,
-        "rival_upside": 23.7,
-        "net_delta": 12.7,
+        "your_upside": 40.1,
+        "rival_upside": 27.5,
+        "net_delta": 12.6,
         "threat_level": "HIGH",
-        "overlap_count": 7,
-        "overlap_pct": 46.7
+        "overlap_count": 6,
+        "overlap_pct": 40.0
       }
     ],
     "league_id": 1305495,
@@ -1283,9 +1283,10 @@
     "points_on_bench": 19,
     "gw": 8
   },
-  "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Carvalho | [OUT] Gibbs-White [Squad holds \u00a34.9M in trapped bench capital (Gibbs-White, Barry). Pruning via 2 FTs yields +5.3 pts into starters without burning Wildcard (Option Hurdle: 20.3 pts).] | [!] Nightly Price Risk: Wissa (-149,913) (Execute before 01:15 GMT to protect value)",
+  "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Carvalho | [OUT] Gibbs-White [Squad holds \u00a34.9M in trapped bench capital (Gibbs-White, Barry). Pruning via 2 FTs yields +5.3 pts into starters without burning Wildcard (Option Hurdle: 20.3 pts).] | [!] Nightly Price Risk: B.Fernandes (-170,512), Wissa (-151,300) (Execute before 01:15 GMT to protect value)",
   "falling_price_risks": [
-    "Wissa (-149,913)"
+    "B.Fernandes (-170,512)",
+    "Wissa (-151,300)"
   ],
   "chip_recommendations": {
     "3xc": {
@@ -1319,7 +1320,7 @@
       "chip": "wildcard_1",
       "target_gw": 9,
       "expected_value_delta": 35.0,
-      "rationale": "Gameweek 9: Early-season fixture swing structural pivot (target Arsenal, Man City, Liverpool fixture runs). Current 3-GW distress gap is +24.9 pts (0 starters distressed).",
+      "rationale": "Gameweek 9: Early-season fixture swing structural pivot (target Arsenal, Man City, Liverpool fixture runs). Current 3-GW distress gap is +24.0 pts (0 starters distressed).",
       "is_active_now": false,
       "distress_score": 0.027,
       "urgent_reason": null
@@ -1334,10 +1335,10 @@
       "urgent_reason": null
     }
   },
-  "starting_xp": 54.29,
-  "total_xp": 67.99,
-  "captain": "Mbeumo",
-  "vice_captain": "Calafiori",
+  "starting_xp": 51.2,
+  "total_xp": 67.94,
+  "captain": "B.Fernandes",
+  "vice_captain": "Raya",
   "starters": [
     {
       "player_code": 154561,
@@ -1348,7 +1349,7 @@
       "expected_points": 5.05,
       "is_starter": true,
       "is_captain": false,
-      "is_vice_captain": false,
+      "is_vice_captain": true,
       "bench_order": null,
       "floor_p10": 1.8,
       "median_p50": 4.8,
@@ -1368,53 +1369,6 @@
       "now_cost": 6.1,
       "purchase_price": 6.1,
       "selling_price": 6.1,
-      "retained_profit": 0.0,
-      "price_trend": "RISING_ALERT",
-      "manager_name": "Mikel Arteta",
-      "manager_candor": {
-        "score": 3,
-        "label": "Coded & Mind Games",
-        "tag": "HIGH_OBFUSCATION"
-      },
-      "fixture_details": {
-        "home_team": "Arsenal",
-        "away_team": "Everton",
-        "home_cs_prob": 0.317,
-        "away_cs_prob": 0.122,
-        "most_likely_score": "2-1",
-        "opp_defensive_line": 1.0,
-        "opp_transition_vulnerability": 1.0
-      }
-    },
-    {
-      "player_code": 466075,
-      "web_name": "Calafiori",
-      "team": "Arsenal",
-      "position": "DEF",
-      "cost": 6.0,
-      "expected_points": 5.18,
-      "is_starter": true,
-      "is_captain": false,
-      "is_vice_captain": true,
-      "bench_order": null,
-      "floor_p10": 1.8,
-      "median_p50": 4.9,
-      "ceiling_p90": 8.7,
-      "haul_prob": 0.02,
-      "p_start": 1.0,
-      "p_mins_60": 0.95,
-      "p_sub": 0.0,
-      "hook_hazard": 0.05,
-      "cameo_risk": 0.0,
-      "rest_days": 7,
-      "sp_pk_order": null,
-      "sp_ck_order": null,
-      "sp_fk_order": null,
-      "capt_conf": 1.0,
-      "c11_included_in_xp": false,
-      "now_cost": 6.0,
-      "purchase_price": 6.0,
-      "selling_price": 6.0,
       "retained_profit": 0.0,
       "price_trend": "RISING_ALERT",
       "manager_name": "Mikel Arteta",
@@ -1481,6 +1435,53 @@
       }
     },
     {
+      "player_code": 122798,
+      "web_name": "Robertson",
+      "team": "Spurs",
+      "position": "DEF",
+      "cost": 4.4,
+      "expected_points": 1.33,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": null,
+      "floor_p10": 1.0,
+      "median_p50": 1.3,
+      "ceiling_p90": 2.2,
+      "haul_prob": 0.02,
+      "p_start": 1.0,
+      "p_mins_60": 0.97,
+      "p_sub": 0.0,
+      "hook_hazard": 0.03,
+      "cameo_risk": 0.0,
+      "rest_days": 7,
+      "sp_pk_order": null,
+      "sp_ck_order": 6,
+      "sp_fk_order": null,
+      "capt_conf": 1.0,
+      "c11_included_in_xp": false,
+      "now_cost": 4.4,
+      "purchase_price": 4.4,
+      "selling_price": 4.4,
+      "retained_profit": 0.0,
+      "price_trend": "FALLING_ALERT",
+      "manager_name": "Ange Postecoglou",
+      "manager_candor": {
+        "score": 0,
+        "label": "Direct & Transparent",
+        "tag": "TRANSPARENT"
+      },
+      "fixture_details": {
+        "home_team": "Chelsea",
+        "away_team": "Spurs",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.235,
+        "most_likely_score": "1-1",
+        "opp_defensive_line": 1.0,
+        "opp_transition_vulnerability": 1.0
+      }
+    },
+    {
       "player_code": 465730,
       "web_name": "De Cuyper",
       "team": "Brighton",
@@ -1528,45 +1529,45 @@
       }
     },
     {
-      "player_code": 169528,
-      "web_name": "Robinson",
-      "team": "Fulham",
-      "position": "DEF",
-      "cost": 4.4,
-      "expected_points": 3.4,
+      "player_code": 201658,
+      "web_name": "Tavernier",
+      "team": "Bournemouth",
+      "position": "MID",
+      "cost": 6.2,
+      "expected_points": 4.43,
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
       "bench_order": null,
-      "floor_p10": 1.2,
-      "median_p50": 3.2,
-      "ceiling_p90": 5.7,
+      "floor_p10": 1.6,
+      "median_p50": 4.2,
+      "ceiling_p90": 8.6,
       "haul_prob": 0.02,
       "p_start": 1.0,
-      "p_mins_60": 0.97,
+      "p_mins_60": 0.9,
       "p_sub": 0.0,
-      "hook_hazard": 0.03,
+      "hook_hazard": 0.1,
       "cameo_risk": 0.0,
       "rest_days": 7,
-      "sp_pk_order": 2,
-      "sp_ck_order": null,
-      "sp_fk_order": null,
+      "sp_pk_order": 3,
+      "sp_ck_order": 1,
+      "sp_fk_order": 1,
       "capt_conf": 1.0,
       "c11_included_in_xp": false,
-      "now_cost": 4.4,
-      "purchase_price": 4.4,
-      "selling_price": 4.4,
+      "now_cost": 6.2,
+      "purchase_price": 6.2,
+      "selling_price": 6.2,
       "retained_profit": 0.0,
       "price_trend": "STABLE",
-      "manager_name": "Marco Silva",
+      "manager_name": "Andoni Iraola",
       "manager_candor": {
-        "score": 1,
-        "label": "Generally Reliable",
-        "tag": "RELIABLE"
+        "score": 0,
+        "label": "Direct & Transparent",
+        "tag": "TRANSPARENT"
       },
       "fixture_details": {
-        "home_team": "Coventry City",
-        "away_team": "Fulham",
+        "home_team": "Man Utd",
+        "away_team": "Bournemouth",
         "home_cs_prob": 0.317,
         "away_cs_prob": 0.235,
         "most_likely_score": "1-1",
@@ -1582,7 +1583,7 @@
       "cost": 7.8,
       "expected_points": 5.11,
       "is_starter": true,
-      "is_captain": true,
+      "is_captain": false,
       "is_vice_captain": false,
       "bench_order": null,
       "floor_p10": 1.8,
@@ -1615,53 +1616,6 @@
         "home_team": "Man Utd",
         "away_team": "Bournemouth",
         "home_cs_prob": 0.317,
-        "away_cs_prob": 0.235,
-        "most_likely_score": "1-1",
-        "opp_defensive_line": 1.0,
-        "opp_transition_vulnerability": 1.0
-      }
-    },
-    {
-      "player_code": 466052,
-      "web_name": "Cherki",
-      "team": "Man City",
-      "position": "MID",
-      "cost": 8.0,
-      "expected_points": 4.16,
-      "is_starter": true,
-      "is_captain": false,
-      "is_vice_captain": false,
-      "bench_order": null,
-      "floor_p10": 1.5,
-      "median_p50": 4.0,
-      "ceiling_p90": 8.1,
-      "haul_prob": 0.02,
-      "p_start": 1.0,
-      "p_mins_60": 0.82,
-      "p_sub": 0.0,
-      "hook_hazard": 0.18,
-      "cameo_risk": 0.0,
-      "rest_days": 7,
-      "sp_pk_order": null,
-      "sp_ck_order": 1,
-      "sp_fk_order": 1,
-      "capt_conf": 1.0,
-      "c11_included_in_xp": false,
-      "now_cost": 8.0,
-      "purchase_price": 8.0,
-      "selling_price": 8.0,
-      "retained_profit": 0.0,
-      "price_trend": "STABLE",
-      "manager_name": "Pep Guardiola",
-      "manager_candor": {
-        "score": 3,
-        "label": "Coded & Mind Games",
-        "tag": "HIGH_OBFUSCATION"
-      },
-      "fixture_details": {
-        "home_team": "Aston Villa",
-        "away_team": "Man City",
-        "home_cs_prob": 0.157,
         "away_cs_prob": 0.235,
         "most_likely_score": "1-1",
         "opp_defensive_line": 1.0,
@@ -1716,20 +1670,20 @@
       }
     },
     {
-      "player_code": 222531,
-      "web_name": "Gibbs-White",
-      "team": "Nott'm Forest",
+      "player_code": 141746,
+      "web_name": "B.Fernandes",
+      "team": "Man Utd",
       "position": "MID",
-      "cost": 7.9,
-      "expected_points": 3.53,
+      "cost": 11.8,
+      "expected_points": 4.61,
       "is_starter": true,
-      "is_captain": false,
+      "is_captain": true,
       "is_vice_captain": false,
       "bench_order": null,
-      "floor_p10": 1.2,
-      "median_p50": 3.4,
-      "ceiling_p90": 6.9,
-      "haul_prob": 0.02,
+      "floor_p10": 1.6,
+      "median_p50": 4.4,
+      "ceiling_p90": 9.0,
+      "haul_prob": 0.022,
       "p_start": 1.0,
       "p_mins_60": 0.96,
       "p_sub": 0.0,
@@ -1737,71 +1691,24 @@
       "cameo_risk": 0.0,
       "rest_days": 7,
       "sp_pk_order": 1,
-      "sp_ck_order": null,
+      "sp_ck_order": 1,
       "sp_fk_order": 1,
       "capt_conf": 1.0,
       "c11_included_in_xp": false,
-      "now_cost": 7.9,
-      "purchase_price": 7.9,
-      "selling_price": 7.9,
+      "now_cost": 11.8,
+      "purchase_price": 11.8,
+      "selling_price": 11.8,
       "retained_profit": 0.0,
       "price_trend": "STABLE",
-      "manager_name": "Nuno Esp\u00edrito Santo",
+      "manager_name": "Erik ten Hag",
       "manager_candor": {
         "score": 1,
         "label": "Generally Reliable",
         "tag": "RELIABLE"
       },
       "fixture_details": {
-        "home_team": "Ipswich Town",
-        "away_team": "Nott'm Forest",
-        "home_cs_prob": 0.317,
-        "away_cs_prob": 0.235,
-        "most_likely_score": "1-1",
-        "opp_defensive_line": 1.0115,
-        "opp_transition_vulnerability": 1.1524
-      }
-    },
-    {
-      "player_code": 216646,
-      "web_name": "Wissa",
-      "team": "Newcastle",
-      "position": "FWD",
-      "cost": 6.1,
-      "expected_points": 4.48,
-      "is_starter": true,
-      "is_captain": false,
-      "is_vice_captain": false,
-      "bench_order": null,
-      "floor_p10": 1.6,
-      "median_p50": 4.3,
-      "ceiling_p90": 8.7,
-      "haul_prob": 0.02,
-      "p_start": 1.0,
-      "p_mins_60": 0.94,
-      "p_sub": 0.0,
-      "hook_hazard": 0.06,
-      "cameo_risk": 0.0,
-      "rest_days": 7,
-      "sp_pk_order": 2,
-      "sp_ck_order": null,
-      "sp_fk_order": null,
-      "capt_conf": 1.0,
-      "c11_included_in_xp": false,
-      "now_cost": 6.1,
-      "purchase_price": 6.1,
-      "selling_price": 6.1,
-      "retained_profit": 0.0,
-      "price_trend": "STABLE",
-      "manager_name": "Eddie Howe",
-      "manager_candor": {
-        "score": 1,
-        "label": "Generally Reliable",
-        "tag": "RELIABLE"
-      },
-      "fixture_details": {
-        "home_team": "Crystal Palace",
-        "away_team": "Newcastle",
+        "home_team": "Man Utd",
+        "away_team": "Bournemouth",
         "home_cs_prob": 0.317,
         "away_cs_prob": 0.235,
         "most_likely_score": "1-1",
@@ -1849,6 +1756,100 @@
       "fixture_details": {
         "home_team": "Sunderland",
         "away_team": "Leeds",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.235,
+        "most_likely_score": "1-1",
+        "opp_defensive_line": 1.0,
+        "opp_transition_vulnerability": 1.0
+      }
+    },
+    {
+      "player_code": 586309,
+      "web_name": "Barry",
+      "team": "Everton",
+      "position": "FWD",
+      "cost": 5.7,
+      "expected_points": 3.31,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": null,
+      "floor_p10": 1.2,
+      "median_p50": 3.1,
+      "ceiling_p90": 6.5,
+      "haul_prob": 0.02,
+      "p_start": 1.0,
+      "p_mins_60": 0.93,
+      "p_sub": 0.0,
+      "hook_hazard": 0.07,
+      "cameo_risk": 0.0,
+      "rest_days": 7,
+      "sp_pk_order": 1,
+      "sp_ck_order": null,
+      "sp_fk_order": null,
+      "capt_conf": 1.0,
+      "c11_included_in_xp": false,
+      "now_cost": 5.7,
+      "purchase_price": 5.7,
+      "selling_price": 5.7,
+      "retained_profit": 0.0,
+      "price_trend": "STABLE",
+      "manager_name": "Sean Dyche",
+      "manager_candor": {
+        "score": 0,
+        "label": "Direct & Transparent",
+        "tag": "TRANSPARENT"
+      },
+      "fixture_details": {
+        "home_team": "Arsenal",
+        "away_team": "Everton",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.122,
+        "most_likely_score": "2-1",
+        "opp_defensive_line": 1.0,
+        "opp_transition_vulnerability": 1.0
+      }
+    },
+    {
+      "player_code": 216646,
+      "web_name": "Wissa",
+      "team": "Newcastle",
+      "position": "FWD",
+      "cost": 6.1,
+      "expected_points": 4.48,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": null,
+      "floor_p10": 1.6,
+      "median_p50": 4.3,
+      "ceiling_p90": 8.7,
+      "haul_prob": 0.02,
+      "p_start": 1.0,
+      "p_mins_60": 0.94,
+      "p_sub": 0.0,
+      "hook_hazard": 0.06,
+      "cameo_risk": 0.0,
+      "rest_days": 7,
+      "sp_pk_order": 2,
+      "sp_ck_order": null,
+      "sp_fk_order": null,
+      "capt_conf": 1.0,
+      "c11_included_in_xp": false,
+      "now_cost": 6.1,
+      "purchase_price": 6.1,
+      "selling_price": 6.1,
+      "retained_profit": 0.0,
+      "price_trend": "STABLE",
+      "manager_name": "Eddie Howe",
+      "manager_candor": {
+        "score": 1,
+        "label": "Generally Reliable",
+        "tag": "RELIABLE"
+      },
+      "fixture_details": {
+        "home_team": "Crystal Palace",
+        "away_team": "Newcastle",
         "home_cs_prob": 0.317,
         "away_cs_prob": 0.235,
         "most_likely_score": "1-1",
@@ -1909,91 +1910,41 @@
       "auto_sub_label": "LOW"
     },
     {
-      "player_code": 201658,
-      "web_name": "Tavernier",
-      "team": "Bournemouth",
-      "position": "MID",
-      "cost": 6.2,
-      "expected_points": 4.43,
+      "player_code": 466075,
+      "web_name": "Calafiori",
+      "team": "Arsenal",
+      "position": "DEF",
+      "cost": 6.0,
+      "expected_points": 5.18,
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
       "bench_order": 2,
-      "floor_p10": 1.6,
-      "median_p50": 4.2,
-      "ceiling_p90": 8.6,
+      "floor_p10": 1.8,
+      "median_p50": 4.9,
+      "ceiling_p90": 8.7,
       "haul_prob": 0.02,
       "p_start": 1.0,
-      "p_mins_60": 0.9,
+      "p_mins_60": 0.95,
       "p_sub": 0.0,
-      "hook_hazard": 0.1,
+      "hook_hazard": 0.05,
       "cameo_risk": 0.0,
       "rest_days": 7,
-      "sp_pk_order": 3,
-      "sp_ck_order": 1,
-      "sp_fk_order": 1,
-      "capt_conf": 1.0,
-      "c11_included_in_xp": false,
-      "now_cost": 6.2,
-      "purchase_price": 6.2,
-      "selling_price": 6.2,
-      "retained_profit": 0.0,
-      "price_trend": "STABLE",
-      "manager_name": "Andoni Iraola",
-      "manager_candor": {
-        "score": 0,
-        "label": "Direct & Transparent",
-        "tag": "TRANSPARENT"
-      },
-      "fixture_details": {
-        "home_team": "Man Utd",
-        "away_team": "Bournemouth",
-        "home_cs_prob": 0.317,
-        "away_cs_prob": 0.235,
-        "most_likely_score": "1-1",
-        "opp_defensive_line": 1.0,
-        "opp_transition_vulnerability": 1.0
-      },
-      "bench_slot_weight": 0.684,
-      "bench_slot_key": "sub_1",
-      "auto_sub_label": "HIGH"
-    },
-    {
-      "player_code": 586309,
-      "web_name": "Barry",
-      "team": "Everton",
-      "position": "FWD",
-      "cost": 5.7,
-      "expected_points": 3.31,
-      "is_starter": false,
-      "is_captain": false,
-      "is_vice_captain": false,
-      "bench_order": 3,
-      "floor_p10": 1.2,
-      "median_p50": 3.1,
-      "ceiling_p90": 6.5,
-      "haul_prob": 0.02,
-      "p_start": 1.0,
-      "p_mins_60": 0.93,
-      "p_sub": 0.0,
-      "hook_hazard": 0.07,
-      "cameo_risk": 0.0,
-      "rest_days": 7,
-      "sp_pk_order": 1,
+      "sp_pk_order": null,
       "sp_ck_order": null,
       "sp_fk_order": null,
       "capt_conf": 1.0,
       "c11_included_in_xp": false,
-      "now_cost": 5.7,
-      "purchase_price": 5.7,
-      "selling_price": 5.7,
+      "now_cost": 6.0,
+      "purchase_price": 6.0,
+      "selling_price": 6.0,
       "retained_profit": 0.0,
-      "price_trend": "STABLE",
-      "manager_name": "Sean Dyche",
+      "price_trend": "RISING_ALERT",
+      "manager_name": "Mikel Arteta",
       "manager_candor": {
-        "score": 0,
-        "label": "Direct & Transparent",
-        "tag": "TRANSPARENT"
+        "score": 3,
+        "label": "Coded & Mind Games",
+        "tag": "HIGH_OBFUSCATION"
       },
       "fixture_details": {
         "home_team": "Arsenal",
@@ -2004,24 +1955,74 @@
         "opp_defensive_line": 1.0,
         "opp_transition_vulnerability": 1.0
       },
+      "bench_slot_weight": 0.684,
+      "bench_slot_key": "sub_1",
+      "auto_sub_label": "HIGH"
+    },
+    {
+      "player_code": 222531,
+      "web_name": "Gibbs-White",
+      "team": "Nott'm Forest",
+      "position": "MID",
+      "cost": 7.9,
+      "expected_points": 3.53,
+      "is_starter": false,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": 3,
+      "floor_p10": 1.2,
+      "median_p50": 3.4,
+      "ceiling_p90": 6.9,
+      "haul_prob": 0.02,
+      "p_start": 1.0,
+      "p_mins_60": 0.96,
+      "p_sub": 0.0,
+      "hook_hazard": 0.04,
+      "cameo_risk": 0.0,
+      "rest_days": 7,
+      "sp_pk_order": 1,
+      "sp_ck_order": null,
+      "sp_fk_order": 1,
+      "capt_conf": 1.0,
+      "c11_included_in_xp": false,
+      "now_cost": 7.9,
+      "purchase_price": 7.9,
+      "selling_price": 7.9,
+      "retained_profit": 0.0,
+      "price_trend": "STABLE",
+      "manager_name": "Nuno Esp\u00edrito Santo",
+      "manager_candor": {
+        "score": 1,
+        "label": "Generally Reliable",
+        "tag": "RELIABLE"
+      },
+      "fixture_details": {
+        "home_team": "Ipswich Town",
+        "away_team": "Nott'm Forest",
+        "home_cs_prob": 0.317,
+        "away_cs_prob": 0.235,
+        "most_likely_score": "1-1",
+        "opp_defensive_line": 1.0115,
+        "opp_transition_vulnerability": 1.1524
+      },
       "bench_slot_weight": 0.299,
       "bench_slot_key": "sub_2",
       "auto_sub_label": "MEDIUM"
     },
     {
-      "player_code": 122798,
-      "web_name": "Robertson",
-      "team": "Spurs",
+      "player_code": 169528,
+      "web_name": "Robinson",
+      "team": "Fulham",
       "position": "DEF",
       "cost": 4.4,
-      "expected_points": 1.33,
+      "expected_points": 3.4,
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
       "bench_order": 4,
-      "floor_p10": 1.0,
-      "median_p50": 1.3,
-      "ceiling_p90": 2.2,
+      "floor_p10": 1.2,
+      "median_p50": 3.2,
+      "ceiling_p90": 5.7,
       "haul_prob": 0.02,
       "p_start": 1.0,
       "p_mins_60": 0.97,
@@ -2029,8 +2030,8 @@
       "hook_hazard": 0.03,
       "cameo_risk": 0.0,
       "rest_days": 7,
-      "sp_pk_order": null,
-      "sp_ck_order": 6,
+      "sp_pk_order": 2,
+      "sp_ck_order": null,
       "sp_fk_order": null,
       "capt_conf": 1.0,
       "c11_included_in_xp": false,
@@ -2038,16 +2039,16 @@
       "purchase_price": 4.4,
       "selling_price": 4.4,
       "retained_profit": 0.0,
-      "price_trend": "FALLING_ALERT",
-      "manager_name": "Ange Postecoglou",
+      "price_trend": "STABLE",
+      "manager_name": "Marco Silva",
       "manager_candor": {
-        "score": 0,
-        "label": "Direct & Transparent",
-        "tag": "TRANSPARENT"
+        "score": 1,
+        "label": "Generally Reliable",
+        "tag": "RELIABLE"
       },
       "fixture_details": {
-        "home_team": "Chelsea",
-        "away_team": "Spurs",
+        "home_team": "Coventry City",
+        "away_team": "Fulham",
         "home_cs_prob": 0.317,
         "away_cs_prob": 0.235,
         "most_likely_score": "1-1",
@@ -2069,18 +2070,6 @@
       "expected_points": 5.05,
       "is_starter": true,
       "is_captain": false,
-      "is_vice_captain": false,
-      "bench_order": null
-    },
-    {
-      "player_code": 466075,
-      "web_name": "Calafiori",
-      "team": "Arsenal",
-      "position": "DEF",
-      "cost": 60.0,
-      "expected_points": 5.18,
-      "is_starter": true,
-      "is_captain": false,
       "is_vice_captain": true,
       "bench_order": null
     },
@@ -2091,6 +2080,18 @@
       "position": "DEF",
       "cost": 79.0,
       "expected_points": 4.99,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": null
+    },
+    {
+      "player_code": 122798,
+      "web_name": "Robertson",
+      "team": "Spurs",
+      "position": "DEF",
+      "cost": 44.0,
+      "expected_points": 1.33,
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
@@ -2109,12 +2110,12 @@
       "bench_order": null
     },
     {
-      "player_code": 169528,
-      "web_name": "Robinson",
-      "team": "Fulham",
-      "position": "DEF",
-      "cost": 44.0,
-      "expected_points": 3.4,
+      "player_code": 201658,
+      "web_name": "Tavernier",
+      "team": "Bournemouth",
+      "position": "MID",
+      "cost": 62.0,
+      "expected_points": 4.43,
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
@@ -2127,18 +2128,6 @@
       "position": "MID",
       "cost": 78.0,
       "expected_points": 5.11,
-      "is_starter": true,
-      "is_captain": true,
-      "is_vice_captain": false,
-      "bench_order": null
-    },
-    {
-      "player_code": 466052,
-      "web_name": "Cherki",
-      "team": "Man City",
-      "position": "MID",
-      "cost": 80.0,
-      "expected_points": 4.16,
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
@@ -2157,12 +2146,36 @@
       "bench_order": null
     },
     {
-      "player_code": 222531,
-      "web_name": "Gibbs-White",
-      "team": "Nott'm Forest",
+      "player_code": 141746,
+      "web_name": "B.Fernandes",
+      "team": "Man Utd",
       "position": "MID",
-      "cost": 79.0,
-      "expected_points": 3.53,
+      "cost": 118.0,
+      "expected_points": 4.61,
+      "is_starter": true,
+      "is_captain": true,
+      "is_vice_captain": false,
+      "bench_order": null
+    },
+    {
+      "player_code": 177815,
+      "web_name": "Calvert-Lewin",
+      "team": "Leeds",
+      "position": "FWD",
+      "cost": 60.0,
+      "expected_points": 4.83,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": null
+    },
+    {
+      "player_code": 586309,
+      "web_name": "Barry",
+      "team": "Everton",
+      "position": "FWD",
+      "cost": 57.0,
+      "expected_points": 3.31,
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
@@ -2175,18 +2188,6 @@
       "position": "FWD",
       "cost": 61.0,
       "expected_points": 4.48,
-      "is_starter": true,
-      "is_captain": false,
-      "is_vice_captain": false,
-      "bench_order": null
-    },
-    {
-      "player_code": 177815,
-      "web_name": "Calvert-Lewin",
-      "team": "Leeds",
-      "position": "FWD",
-      "cost": 60.0,
-      "expected_points": 4.83,
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": false,
@@ -2207,36 +2208,36 @@
       "bench_order": 1
     },
     {
-      "player_code": 201658,
-      "web_name": "Tavernier",
-      "team": "Bournemouth",
-      "position": "MID",
-      "cost": 62.0,
-      "expected_points": 4.43,
+      "player_code": 466075,
+      "web_name": "Calafiori",
+      "team": "Arsenal",
+      "position": "DEF",
+      "cost": 60.0,
+      "expected_points": 5.18,
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
       "bench_order": 2
     },
     {
-      "player_code": 586309,
-      "web_name": "Barry",
-      "team": "Everton",
-      "position": "FWD",
-      "cost": 57.0,
-      "expected_points": 3.31,
+      "player_code": 222531,
+      "web_name": "Gibbs-White",
+      "team": "Nott'm Forest",
+      "position": "MID",
+      "cost": 79.0,
+      "expected_points": 3.53,
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
       "bench_order": 3
     },
     {
-      "player_code": 122798,
-      "web_name": "Robertson",
-      "team": "Spurs",
+      "player_code": 169528,
+      "web_name": "Robinson",
+      "team": "Fulham",
       "position": "DEF",
       "cost": 44.0,
-      "expected_points": 1.33,
+      "expected_points": 3.4,
       "is_starter": false,
       "is_captain": false,
       "is_vice_captain": false,
@@ -2244,6 +2245,18 @@
     }
   ],
   "recommended_starters": [
+    {
+      "player_code": 141746,
+      "web_name": "B.Fernandes",
+      "team": "Man Utd",
+      "position": "MID",
+      "cost": 11.8,
+      "expected_points": 4.60715,
+      "is_starter": true,
+      "is_captain": false,
+      "is_vice_captain": false,
+      "bench_order": null
+    },
     {
       "player_code": 465730,
       "web_name": "De Cuyper",
@@ -2302,18 +2315,6 @@
       "is_starter": true,
       "is_captain": false,
       "is_vice_captain": true,
-      "bench_order": null
-    },
-    {
-      "player_code": 466052,
-      "web_name": "Cherki",
-      "team": "Man City",
-      "position": "MID",
-      "cost": 8.0,
-      "expected_points": 4.1623,
-      "is_starter": true,
-      "is_captain": false,
-      "is_vice_captain": false,
       "bench_order": null
     },
     {
@@ -2427,8 +2428,8 @@
       "bench_order": 4
     }
   ],
-  "recommended_starting_xp": 54.1356,
-  "recommended_total_xp": 59.3177,
+  "recommended_starting_xp": 54.5805,
+  "recommended_total_xp": 59.7626,
   "multi_horizon_roadmap": [
     {
       "gw": 8,
@@ -2439,7 +2440,7 @@
         "Gibbs-White"
       ],
       "hits_taken": 0,
-      "net_xp": 59.3177,
+      "net_xp": 59.7626,
       "bank": 7.8
     },
     {
@@ -2451,7 +2452,7 @@
         "Wissa"
       ],
       "hits_taken": 0,
-      "net_xp": 59.0885,
+      "net_xp": 59.5334,
       "bank": 7.8
     },
     {
@@ -2459,7 +2460,7 @@
       "transfers_in": [],
       "transfers_out": [],
       "hits_taken": 0,
-      "net_xp": 63.7433,
+      "net_xp": 63.8215,
       "bank": 7.8
     }
   ],
@@ -2856,8 +2857,8 @@
       "label": "Pure xP Maximizer",
       "subtitle": "Unbiased mathematical expectation (baseline LP solver)",
       "formation": "3-5-2",
-      "starting_xp": 51.4,
-      "total_xp": 56.6,
+      "starting_xp": 51.8,
+      "total_xp": 57.0,
       "captain": "Calafiori",
       "vice_captain": "Raya",
       "starters": [
@@ -3019,8 +3020,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.09,
-          "eo": 0.1329,
+          "ownership_pct": 0.091,
+          "eo": 0.1344,
           "floor_p10": 1.6,
           "median_p50": 4.2,
           "ceiling_p90": 8.7,
@@ -3205,48 +3206,48 @@
           }
         },
         {
-          "player_code": 466052,
-          "web_name": "Cherki",
-          "team": "Man City",
+          "player_code": 141746,
+          "web_name": "B.Fernandes",
+          "team": "Man Utd",
           "position": "MID",
-          "cost": 8.0,
-          "expected_points": 4.1623,
+          "cost": 11.8,
+          "expected_points": 4.6071,
           "is_starter": 1,
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.376,
-          "eo": 0.5442,
-          "floor_p10": 1.5,
-          "median_p50": 4.0,
-          "ceiling_p90": 8.1,
-          "haul_prob": 0.02,
+          "ownership_pct": 0.294,
+          "eo": 0.4396,
+          "floor_p10": 1.6,
+          "median_p50": 4.4,
+          "ceiling_p90": 9.0,
+          "haul_prob": 0.022,
           "p_start": 1.0,
-          "p_mins_60": 0.82,
+          "p_mins_60": 0.96,
           "p_sub": 0.0,
-          "hook_hazard": 0.18,
+          "hook_hazard": 0.04,
           "cameo_risk": 0.0,
           "rest_days": 7,
-          "sp_pk_order": null,
+          "sp_pk_order": 1,
           "sp_ck_order": 1,
           "sp_fk_order": 1,
           "capt_conf": 1.0,
           "c11_included_in_xp": false,
-          "now_cost": 8.0,
-          "purchase_price": 8.0,
-          "selling_price": 8.0,
+          "now_cost": 11.8,
+          "purchase_price": 11.8,
+          "selling_price": 11.8,
           "retained_profit": 0.0,
           "price_trend": "STABLE",
-          "manager_name": "Pep Guardiola",
+          "manager_name": "Erik ten Hag",
           "manager_candor": {
-            "score": 3,
-            "label": "Coded & Mind Games",
-            "tag": "HIGH_OBFUSCATION"
+            "score": 1,
+            "label": "Generally Reliable",
+            "tag": "RELIABLE"
           },
           "fixture_details": {
-            "home_team": "Aston Villa",
-            "away_team": "Man City",
-            "home_cs_prob": 0.157,
+            "home_team": "Man Utd",
+            "away_team": "Bournemouth",
+            "home_cs_prob": 0.317,
             "away_cs_prob": 0.235,
             "most_likely_score": "1-1",
             "opp_defensive_line": 1.0,
@@ -3599,15 +3600,15 @@
           }
         }
       ],
-      "budget_used": 96.0
+      "budget_used": 99.8
     },
     "rank_protect": {
       "strategy_id": "rank_protect",
       "label": "Rank Shield",
       "subtitle": "Effective Ownership weighting to protect lead against template hauls",
       "formation": "3-5-2",
-      "starting_xp": 51.4,
-      "total_xp": 56.6,
+      "starting_xp": 51.8,
+      "total_xp": 57.0,
       "captain": "Calafiori",
       "vice_captain": "Raya",
       "starters": [
@@ -3769,8 +3770,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.09,
-          "eo": 0.1329,
+          "ownership_pct": 0.091,
+          "eo": 0.1344,
           "floor_p10": 1.6,
           "median_p50": 4.2,
           "ceiling_p90": 8.7,
@@ -3955,48 +3956,48 @@
           }
         },
         {
-          "player_code": 466052,
-          "web_name": "Cherki",
-          "team": "Man City",
+          "player_code": 141746,
+          "web_name": "B.Fernandes",
+          "team": "Man Utd",
           "position": "MID",
-          "cost": 8.0,
-          "expected_points": 4.1623,
+          "cost": 11.8,
+          "expected_points": 4.6071,
           "is_starter": 1,
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.376,
-          "eo": 0.5442,
-          "floor_p10": 1.5,
-          "median_p50": 4.0,
-          "ceiling_p90": 8.1,
-          "haul_prob": 0.02,
+          "ownership_pct": 0.294,
+          "eo": 0.4396,
+          "floor_p10": 1.6,
+          "median_p50": 4.4,
+          "ceiling_p90": 9.0,
+          "haul_prob": 0.022,
           "p_start": 1.0,
-          "p_mins_60": 0.82,
+          "p_mins_60": 0.96,
           "p_sub": 0.0,
-          "hook_hazard": 0.18,
+          "hook_hazard": 0.04,
           "cameo_risk": 0.0,
           "rest_days": 7,
-          "sp_pk_order": null,
+          "sp_pk_order": 1,
           "sp_ck_order": 1,
           "sp_fk_order": 1,
           "capt_conf": 1.0,
           "c11_included_in_xp": false,
-          "now_cost": 8.0,
-          "purchase_price": 8.0,
-          "selling_price": 8.0,
+          "now_cost": 11.8,
+          "purchase_price": 11.8,
+          "selling_price": 11.8,
           "retained_profit": 0.0,
           "price_trend": "STABLE",
-          "manager_name": "Pep Guardiola",
+          "manager_name": "Erik ten Hag",
           "manager_candor": {
-            "score": 3,
-            "label": "Coded & Mind Games",
-            "tag": "HIGH_OBFUSCATION"
+            "score": 1,
+            "label": "Generally Reliable",
+            "tag": "RELIABLE"
           },
           "fixture_details": {
-            "home_team": "Aston Villa",
-            "away_team": "Man City",
-            "home_cs_prob": 0.157,
+            "home_team": "Man Utd",
+            "away_team": "Bournemouth",
+            "home_cs_prob": 0.317,
             "away_cs_prob": 0.235,
             "most_likely_score": "1-1",
             "opp_defensive_line": 1.0,
@@ -4349,15 +4350,15 @@
           }
         }
       ],
-      "budget_used": 96.0
+      "budget_used": 99.8
     },
     "differential_chase": {
       "strategy_id": "differential_chase",
       "label": "Differential Chase",
       "subtitle": "Rewards low-EO assets (<20%) to accelerate rank climb",
       "formation": "3-5-2",
-      "starting_xp": 50.2,
-      "total_xp": 55.3,
+      "starting_xp": 50.6,
+      "total_xp": 55.7,
       "captain": "Mbeumo",
       "vice_captain": "Gabriel",
       "starters": [
@@ -4470,8 +4471,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.09,
-          "eo": 0.1329,
+          "ownership_pct": 0.091,
+          "eo": 0.1344,
           "floor_p10": 1.6,
           "median_p50": 4.2,
           "ceiling_p90": 8.7,
@@ -4705,48 +4706,48 @@
           }
         },
         {
-          "player_code": 466052,
-          "web_name": "Cherki",
-          "team": "Man City",
+          "player_code": 141746,
+          "web_name": "B.Fernandes",
+          "team": "Man Utd",
           "position": "MID",
-          "cost": 8.0,
-          "expected_points": 4.1623,
+          "cost": 11.8,
+          "expected_points": 4.6071,
           "is_starter": 1,
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.376,
-          "eo": 0.5442,
-          "floor_p10": 1.5,
-          "median_p50": 4.0,
-          "ceiling_p90": 8.1,
-          "haul_prob": 0.02,
+          "ownership_pct": 0.294,
+          "eo": 0.4396,
+          "floor_p10": 1.6,
+          "median_p50": 4.4,
+          "ceiling_p90": 9.0,
+          "haul_prob": 0.022,
           "p_start": 1.0,
-          "p_mins_60": 0.82,
+          "p_mins_60": 0.96,
           "p_sub": 0.0,
-          "hook_hazard": 0.18,
+          "hook_hazard": 0.04,
           "cameo_risk": 0.0,
           "rest_days": 7,
-          "sp_pk_order": null,
+          "sp_pk_order": 1,
           "sp_ck_order": 1,
           "sp_fk_order": 1,
           "capt_conf": 1.0,
           "c11_included_in_xp": false,
-          "now_cost": 8.0,
-          "purchase_price": 8.0,
-          "selling_price": 8.0,
+          "now_cost": 11.8,
+          "purchase_price": 11.8,
+          "selling_price": 11.8,
           "retained_profit": 0.0,
           "price_trend": "STABLE",
-          "manager_name": "Pep Guardiola",
+          "manager_name": "Erik ten Hag",
           "manager_candor": {
-            "score": 3,
-            "label": "Coded & Mind Games",
-            "tag": "HIGH_OBFUSCATION"
+            "score": 1,
+            "label": "Generally Reliable",
+            "tag": "RELIABLE"
           },
           "fixture_details": {
-            "home_team": "Aston Villa",
-            "away_team": "Man City",
-            "home_cs_prob": 0.157,
+            "home_team": "Man Utd",
+            "away_team": "Bournemouth",
+            "home_cs_prob": 0.317,
             "away_cs_prob": 0.235,
             "most_likely_score": "1-1",
             "opp_defensive_line": 1.0,
@@ -5099,7 +5100,7 @@
           }
         }
       ],
-      "budget_used": 96.0
+      "budget_used": 99.8
     }
   },
   "chip_simulations": {
@@ -5714,8 +5715,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": 2,
-          "ownership_pct": 0.09,
-          "eo": 0.1329,
+          "ownership_pct": 0.091,
+          "eo": 0.1344,
           "floor_p10": 1.6,
           "median_p50": 4.2,
           "ceiling_p90": 8.7,
@@ -6608,8 +6609,8 @@
       "label": "Bench Boost Active (+0 xP from Bench Assets \u00b7 15 Scoring)",
       "description": "All 15 players are active point scorers. Optimizes both Starting XI and all 4 bench slots.",
       "formation": "5-5-3",
-      "starting_xp": 64.5,
-      "total_xp": 69.7,
+      "starting_xp": 65.0,
+      "total_xp": 70.1,
       "captain": "Calafiori",
       "vice_captain": "Raya",
       "starters": [
@@ -6771,8 +6772,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.09,
-          "eo": 0.1329,
+          "ownership_pct": 0.091,
+          "eo": 0.1344,
           "floor_p10": 1.6,
           "median_p50": 4.2,
           "ceiling_p90": 8.7,
@@ -7104,48 +7105,48 @@
           }
         },
         {
-          "player_code": 466052,
-          "web_name": "Cherki",
-          "team": "Man City",
+          "player_code": 141746,
+          "web_name": "B.Fernandes",
+          "team": "Man Utd",
           "position": "MID",
-          "cost": 8.0,
-          "expected_points": 4.1623,
+          "cost": 11.8,
+          "expected_points": 4.6071,
           "is_starter": 1,
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.376,
-          "eo": 0.5442,
-          "floor_p10": 1.5,
-          "median_p50": 4.0,
-          "ceiling_p90": 8.1,
-          "haul_prob": 0.02,
+          "ownership_pct": 0.294,
+          "eo": 0.4396,
+          "floor_p10": 1.6,
+          "median_p50": 4.4,
+          "ceiling_p90": 9.0,
+          "haul_prob": 0.022,
           "p_start": 1.0,
-          "p_mins_60": 0.82,
+          "p_mins_60": 0.96,
           "p_sub": 0.0,
-          "hook_hazard": 0.18,
+          "hook_hazard": 0.04,
           "cameo_risk": 0.0,
           "rest_days": 7,
-          "sp_pk_order": null,
+          "sp_pk_order": 1,
           "sp_ck_order": 1,
           "sp_fk_order": 1,
           "capt_conf": 1.0,
           "c11_included_in_xp": false,
-          "now_cost": 8.0,
-          "purchase_price": 8.0,
-          "selling_price": 8.0,
+          "now_cost": 11.8,
+          "purchase_price": 11.8,
+          "selling_price": 11.8,
           "retained_profit": 0.0,
           "price_trend": "STABLE",
-          "manager_name": "Pep Guardiola",
+          "manager_name": "Erik ten Hag",
           "manager_candor": {
-            "score": 3,
-            "label": "Coded & Mind Games",
-            "tag": "HIGH_OBFUSCATION"
+            "score": 1,
+            "label": "Generally Reliable",
+            "tag": "RELIABLE"
           },
           "fixture_details": {
-            "home_team": "Aston Villa",
-            "away_team": "Man City",
-            "home_cs_prob": 0.157,
+            "home_team": "Man Utd",
+            "away_team": "Bournemouth",
+            "home_cs_prob": 0.317,
             "away_cs_prob": 0.235,
             "most_likely_score": "1-1",
             "opp_defensive_line": 1.0,
@@ -7350,15 +7351,15 @@
         }
       ],
       "bench": [],
-      "budget_used": 96.0
+      "budget_used": 99.8
     },
     "3xc": {
       "chip_name": "Triple Captain",
       "label": "Triple Captain Active (Calafiori 3x Multiplier Active)",
       "description": "Triples the point returns of your selected captain (+3x multiplier instead of standard 2x).",
       "formation": "3-5-2",
-      "starting_xp": 51.4,
-      "total_xp": 61.8,
+      "starting_xp": 51.8,
+      "total_xp": 62.2,
       "captain": "Calafiori",
       "vice_captain": "Raya",
       "starters": [
@@ -7520,8 +7521,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.09,
-          "eo": 0.1329,
+          "ownership_pct": 0.091,
+          "eo": 0.1344,
           "floor_p10": 1.6,
           "median_p50": 4.2,
           "ceiling_p90": 8.7,
@@ -7706,48 +7707,48 @@
           }
         },
         {
-          "player_code": 466052,
-          "web_name": "Cherki",
-          "team": "Man City",
+          "player_code": 141746,
+          "web_name": "B.Fernandes",
+          "team": "Man Utd",
           "position": "MID",
-          "cost": 8.0,
-          "expected_points": 4.1623,
+          "cost": 11.8,
+          "expected_points": 4.6071,
           "is_starter": 1,
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.376,
-          "eo": 0.5442,
-          "floor_p10": 1.5,
-          "median_p50": 4.0,
-          "ceiling_p90": 8.1,
-          "haul_prob": 0.02,
+          "ownership_pct": 0.294,
+          "eo": 0.4396,
+          "floor_p10": 1.6,
+          "median_p50": 4.4,
+          "ceiling_p90": 9.0,
+          "haul_prob": 0.022,
           "p_start": 1.0,
-          "p_mins_60": 0.82,
+          "p_mins_60": 0.96,
           "p_sub": 0.0,
-          "hook_hazard": 0.18,
+          "hook_hazard": 0.04,
           "cameo_risk": 0.0,
           "rest_days": 7,
-          "sp_pk_order": null,
+          "sp_pk_order": 1,
           "sp_ck_order": 1,
           "sp_fk_order": 1,
           "capt_conf": 1.0,
           "c11_included_in_xp": false,
-          "now_cost": 8.0,
-          "purchase_price": 8.0,
-          "selling_price": 8.0,
+          "now_cost": 11.8,
+          "purchase_price": 11.8,
+          "selling_price": 11.8,
           "retained_profit": 0.0,
           "price_trend": "STABLE",
-          "manager_name": "Pep Guardiola",
+          "manager_name": "Erik ten Hag",
           "manager_candor": {
-            "score": 3,
-            "label": "Coded & Mind Games",
-            "tag": "HIGH_OBFUSCATION"
+            "score": 1,
+            "label": "Generally Reliable",
+            "tag": "RELIABLE"
           },
           "fixture_details": {
-            "home_team": "Aston Villa",
-            "away_team": "Man City",
-            "home_cs_prob": 0.157,
+            "home_team": "Man Utd",
+            "away_team": "Bournemouth",
+            "home_cs_prob": 0.317,
             "away_cs_prob": 0.235,
             "most_likely_score": "1-1",
             "opp_defensive_line": 1.0,
@@ -8100,7 +8101,7 @@
           }
         }
       ],
-      "budget_used": 96.0
+      "budget_used": 99.8
     }
   },
   "multi_horizon_plan": [
@@ -8113,7 +8114,7 @@
         "Gibbs-White"
       ],
       "hits_taken": 0,
-      "net_xp": 59.3177,
+      "net_xp": 59.7626,
       "bank": 7.8
     },
     {
@@ -8125,7 +8126,7 @@
         "Wissa"
       ],
       "hits_taken": 0,
-      "net_xp": 59.0885,
+      "net_xp": 59.5334,
       "bank": 7.8
     },
     {
@@ -8133,7 +8134,7 @@
       "transfers_in": [],
       "transfers_out": [],
       "hits_taken": 0,
-      "net_xp": 63.7433,
+      "net_xp": 63.8215,
       "bank": 7.8
     }
   ]
