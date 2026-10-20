@@ -4,30 +4,7 @@
   "team_name": "Fuljhore Giants",
   "season": "2026-27",
   "last_updated_gw": 8,
-  "squad_status": "EXECUTED",
-  "overall_rank": 6519889,
-  "overall_points": 384,
-  "bank": 4.9,
-  "team_value": 100.8,
-  "free_transfers": 0,
-  "active_chip": null,
-  "squad_codes": [
-    154561,
-    226597,
-    466075,
-    465730,
-    169528,
-    446008,
-    466052,
-    244851,
-    222531,
-    216646,
-    177815,
-    80201,
-    201658,
-    586309,
-    122798
-  ],
+  "squad_status": "RECOMMENDED_READY_FOR_EXECUTION",
   "baseline_squad_codes": [
     154561,
     226597,
@@ -45,10 +22,10 @@
     586309,
     122798
   ],
-  "starter_codes": [
+  "squad_codes": [
     154561,
-    466075,
     226597,
+    466075,
     465730,
     169528,
     446008,
@@ -56,17 +33,73 @@
     244851,
     222531,
     216646,
-    177815
-  ],
-  "bench_codes": [
+    177815,
     80201,
     201658,
     586309,
     122798
   ],
-  "captain_code": 446008,
-  "vice_captain_code": 466075,
-  "selling_prices": {},
-  "purchase_prices": {},
-  "updated_at": "2026-10-20 02:34:47 UTC"
+  "proposed_squad_codes": [
+    80201,
+    586309,
+    465730,
+    201658,
+    154561,
+    244851,
+    244858,
+    466052,
+    466075,
+    226597,
+    169528,
+    446008,
+    216646,
+    177815,
+    122798
+  ],
+  "proposed_starter_codes": [
+    465730,
+    201658,
+    154561,
+    244851,
+    244858,
+    466052,
+    466075,
+    226597,
+    446008,
+    216646,
+    177815
+  ],
+  "proposed_bench_codes": [
+    80201,
+    169528,
+    586309,
+    122798
+  ],
+  "starter_codes": [
+    154561,
+    226597,
+    466075,
+    465730,
+    446008,
+    466052,
+    244851,
+    216646,
+    177815,
+    201658,
+    169528
+  ],
+  "bench_codes": [
+    169528,
+    222531,
+    80201,
+    586309,
+    122798
+  ],
+  "captain_code": 466075,
+  "vice_captain_code": 244858,
+  "bank": 4.9,
+  "free_transfers": 1,
+  "transfers_recommended": 1,
+  "hits_recommended": 0,
+  "updated_at": "2026-10-20 09:10:14 UTC"
 }

@@ -1,5 +1,5 @@
 {
-  "entry_id": null,
+  "entry_id": 9500404,
   "season": "2026-27",
   "gameweek": 8,
   "proposed_squad_codes": [
@@ -21,6 +21,7 @@
   ],
   "proposed_starter_codes": [
     465730,
+    201658,
     154561,
     244851,
     244858,
@@ -29,14 +30,13 @@
     226597,
     446008,
     216646,
-    177815,
-    122798
+    177815
   ],
   "proposed_bench_codes": [
     80201,
-    201658,
+    169528,
     586309,
-    169528
+    122798
   ],
   "transfers_in": [
     244858
@@ -45,9 +45,9 @@
     222531
   ],
   "transfers_count": 1,
-  "hits_taken": 1,
-  "starting_xp": 52.8144,
-  "captain_code": 446008,
+  "hits_taken": 0,
+  "starting_xp": 54.1356,
+  "captain_code": 466075,
   "vice_captain_code": 244858,
-  "updated_at": "2026-10-20 02:35:09 UTC"
+  "updated_at": "2026-10-20 09:10:14 UTC"
 }
