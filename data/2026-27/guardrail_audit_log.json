@@ -6,22 +6,6 @@
     "anomaly_type": "data_corruption",
     "recommendation": "flag_for_review",
     "message": "Guardrail Halt: data_corruption (Severity: 2.93, Abort Prob: 78%)",
-    "timestamp": "2026-09-19T02:24:12.106990+00:00",
-    "details": {
-      "starting_xp": 0.0,
-      "captain": null,
-      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £1.9M in trapped bench capital (De Cuyper, Barry). Pruning via 2 FTs yields +2.1 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts).",
-      "outlier_flags": []
-    },
-    "gameweek": 2
-  },
-  {
-    "passed": false,
-    "severity_score": 2.93,
-    "abort_probability": 0.78,
-    "anomaly_type": "data_corruption",
-    "recommendation": "flag_for_review",
-    "message": "Guardrail Halt: data_corruption (Severity: 2.93, Abort Prob: 78%)",
     "timestamp": "2026-09-19T02:24:22.189446+00:00",
     "details": {
       "starting_xp": 0.0,
@@ -795,6 +779,22 @@
       "starting_xp": 0.0,
       "captain": null,
       "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Carvalho | [OUT] Gibbs-White [Squad holds £4.9M in trapped bench capital (Gibbs-White, Barry). Pruning via 2 FTs yields +5.3 pts into starters without burning Wildcard (Option Hurdle: 20.3 pts).] | [!] Nightly Price Risk: B.Fernandes (-198,413), Wissa (-170,916), Gibbs-White (-97,951) (Execute before 01:15 GMT to protect value)",
+      "outlier_flags": []
+    },
+    "gameweek": 8
+  },
+  {
+    "passed": true,
+    "severity_score": 0.1,
+    "abort_probability": 0.02,
+    "anomaly_type": "clean",
+    "recommendation": "proceed",
+    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
+    "timestamp": "2026-10-22T10:48:50.261209+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Carvalho | [OUT] Gibbs-White [Squad holds £2.3M in trapped bench capital (De Cuyper, Barry). Pruning via 2 FTs yields +2.5 pts into starters without burning Wildcard (Option Hurdle: 20.3 pts).] | [!] Nightly Price Risk: B.Fernandes (-238,337), Wissa (-191,533), Gibbs-White (-96,228) (Execute before 01:15 GMT to protect value)",
       "outlier_flags": []
     },
     "gameweek": 8
