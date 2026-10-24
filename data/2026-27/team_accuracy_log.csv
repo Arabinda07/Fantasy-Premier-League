@@ -90,12 +90,12 @@ gameweek,team,pred_xp,actual_pts,bias,actual_goals
 8,Everton,29.14,0.0,29.14,7
 8,Fulham,41.2,0.0,41.2,4
 8,Hull City,29.87,0.0,29.87,5
-8,Ipswich Town,27.73,16.0,11.73,7
+8,Ipswich Town,27.14,25.0,2.14,8
 8,Leeds,36.94,0.0,36.94,8
 8,Liverpool,33.25,0.0,33.25,9
 8,Man City,31.97,0.0,31.97,17
 8,Man Utd,29.16,0.0,29.16,8
 8,Newcastle,33.37,0.0,33.37,6
-8,Nott'm Forest,39.88,21.0,18.88,5
+8,Nott'm Forest,39.88,35.0,4.88,5
 8,Spurs,31.42,0.0,31.42,3
 8,Sunderland,31.25,0.0,31.25,5

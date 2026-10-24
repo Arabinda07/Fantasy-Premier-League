@@ -6,22 +6,6 @@
     "anomaly_type": "data_corruption",
     "recommendation": "flag_for_review",
     "message": "Guardrail Halt: data_corruption (Severity: 2.92, Abort Prob: 78%)",
-    "timestamp": "2026-09-19T14:16:36.734075+00:00",
-    "details": {
-      "starting_xp": 0.0,
-      "captain": null,
-      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £3.2M in trapped bench capital (Barry, Wissa). Pruning via 2 FTs yields +3.5 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts). | [!] Price Alert: B.Fernandes (-151,170) approaching drop",
-      "outlier_flags": []
-    },
-    "gameweek": 2
-  },
-  {
-    "passed": false,
-    "severity_score": 2.92,
-    "abort_probability": 0.78,
-    "anomaly_type": "data_corruption",
-    "recommendation": "flag_for_review",
-    "message": "Guardrail Halt: data_corruption (Severity: 2.92, Abort Prob: 78%)",
     "timestamp": "2026-09-19T14:16:39.593908+00:00",
     "details": {
       "starting_xp": 0.0,
@@ -795,6 +779,22 @@
       "starting_xp": 0.0,
       "captain": null,
       "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Carvalho | [OUT] Cherki [Squad holds £4.0M in trapped bench capital (Barry, De Cuyper). Pruning via 2 FTs yields +4.3 pts into starters without burning Wildcard (Option Hurdle: 19.1 pts).]",
+      "outlier_flags": []
+    },
+    "gameweek": 9
+  },
+  {
+    "passed": true,
+    "severity_score": 0.1,
+    "abort_probability": 0.02,
+    "anomaly_type": "clean",
+    "recommendation": "proceed",
+    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
+    "timestamp": "2026-10-24T09:57:48.346221+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Carvalho | [OUT] Palmer [Squad holds £4.0M in trapped bench capital (Barry, De Cuyper). Pruning via 2 FTs yields +4.3 pts into starters without burning Wildcard (Option Hurdle: 19.1 pts).]",
       "outlier_flags": []
     },
     "gameweek": 9
