@@ -21,11 +21,11 @@
   ],
   "proposed_starter_codes": [
     586309,
+    465730,
     201658,
     154561,
     244858,
     466052,
-    466075,
     226597,
     222531,
     446008,
@@ -34,8 +34,8 @@
   ],
   "proposed_bench_codes": [
     80201,
-    465730,
     169528,
+    466075,
     177815
   ],
   "transfers_in": [
@@ -46,8 +46,8 @@
   ],
   "transfers_count": 1,
   "hits_taken": 0,
-  "starting_xp": 49.6793,
+  "starting_xp": 49.5853,
   "captain_code": 446008,
   "vice_captain_code": 244858,
-  "updated_at": "2026-10-24 09:57:39 UTC"
+  "updated_at": "2026-10-25 10:20:28 UTC"
 }
