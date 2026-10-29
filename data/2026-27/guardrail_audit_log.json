@@ -1,21 +1,5 @@
 [
   {
-    "passed": false,
-    "severity_score": 2.92,
-    "abort_probability": 0.78,
-    "anomaly_type": "data_corruption",
-    "recommendation": "flag_for_review",
-    "message": "Guardrail Halt: data_corruption (Severity: 2.92, Abort Prob: 78%)",
-    "timestamp": "2026-09-19T14:18:30.492846+00:00",
-    "details": {
-      "starting_xp": 0.0,
-      "captain": null,
-      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £3.2M in trapped bench capital (Barry, Wissa). Pruning via 2 FTs yields +3.5 pts into starters without burning Wildcard (Option Hurdle: 27.0 pts). | [!] Price Alert: B.Fernandes (-151,170) approaching drop",
-      "outlier_flags": []
-    },
-    "gameweek": 2
-  },
-  {
     "passed": true,
     "severity_score": 0.1,
     "abort_probability": 0.02,
@@ -795,6 +779,22 @@
       "starting_xp": 0.0,
       "captain": null,
       "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Carvalho | [OUT] Cherki [Squad holds £4.3M in trapped bench capital (De Cuyper, Calvert-Lewin). Pruning via 2 FTs yields +4.7 pts into starters without burning Wildcard (Option Hurdle: 19.1 pts).] | [!] Nightly Price Risk: Calafiori (-275,956), Calvert-Lewin (-147,274), Wissa (-127,440) (Execute before 01:15 GMT to protect value)",
+      "outlier_flags": []
+    },
+    "gameweek": 9
+  },
+  {
+    "passed": true,
+    "severity_score": 0.1,
+    "abort_probability": 0.02,
+    "anomaly_type": "clean",
+    "recommendation": "proceed",
+    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
+    "timestamp": "2026-10-29T11:55:41.473027+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Carvalho | [OUT] Cherki [Squad holds £4.3M in trapped bench capital (De Cuyper, Calvert-Lewin). Pruning via 2 FTs yields +4.7 pts into starters without burning Wildcard (Option Hurdle: 19.1 pts).] | [!] Nightly Price Risk: Calafiori (-328,803), Palmer (-122,189), Calvert-Lewin (-149,920), Wissa (-140,392) (Execute before 01:15 GMT to protect value)",
       "outlier_flags": []
     },
     "gameweek": 9
