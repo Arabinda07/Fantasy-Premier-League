@@ -1,21 +1,5 @@
 [
   {
-    "passed": false,
-    "severity_score": 2.93,
-    "abort_probability": 0.8,
-    "anomaly_type": "data_corruption",
-    "recommendation": "flag_for_review",
-    "message": "Guardrail Halt: data_corruption (Severity: 2.93, Abort Prob: 80%)",
-    "timestamp": "2026-09-21T03:40:08.537219+00:00",
-    "details": {
-      "starting_xp": 0.0,
-      "captain": null,
-      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Wissa | [OUT] João Pedro [Squad holds £5.2M in trapped bench capital (Calvert-Lewin, João Pedro). Pruning via 2 FTs yields +5.6 pts into starters without burning Wildcard (Option Hurdle: 22.7 pts).] | [!] Nightly Price Risk: João Pedro (-202,488) (Execute before 01:15 GMT to protect value)",
-      "outlier_flags": []
-    },
-    "gameweek": 6
-  },
-  {
     "passed": true,
     "severity_score": 0.1,
     "abort_probability": 0.02,
@@ -795,6 +779,22 @@
       "starting_xp": 0.0,
       "captain": null,
       "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Carvalho | [OUT] Cherki [Squad holds £4.2M in trapped bench capital (De Cuyper, Calvert-Lewin). Pruning via 2 FTs yields +4.6 pts into starters without burning Wildcard (Option Hurdle: 19.1 pts).] | [!] Nightly Price Risk: Calafiori (-428,197), Palmer (-129,474), Calvert-Lewin (-156,239), Wissa (-165,574) (Execute before 01:15 GMT to protect value)",
+      "outlier_flags": []
+    },
+    "gameweek": 9
+  },
+  {
+    "passed": true,
+    "severity_score": 0.1,
+    "abort_probability": 0.02,
+    "anomaly_type": "clean",
+    "recommendation": "proceed",
+    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
+    "timestamp": "2026-10-30T20:32:30.212422+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Van Hecke | [OUT] Calafiori [Squad holds £4.2M in trapped bench capital (De Cuyper, Calvert-Lewin). Pruning via 2 FTs yields +4.6 pts into starters without burning Wildcard (Option Hurdle: 19.1 pts).] | [!] Nightly Price Risk: Calafiori (-520,737), Palmer (-134,233), Cherki (-142,519), Calvert-Lewin (-161,332), Wissa (-191,952) (Execute before 01:15 GMT to protect value)",
       "outlier_flags": []
     },
     "gameweek": 9
