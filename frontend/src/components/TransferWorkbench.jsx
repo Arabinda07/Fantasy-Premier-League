@@ -223,7 +223,7 @@ export default function TransferWorkbench({
                         : `Costs +£${pair.costDelta.toFixed(1)}m`}
                     </span>
                     <span className={`rec-status-tag font-mono ${isCurrentActive ? 'active' : ''}`}>
-                      {isCurrentActive ? '[ACTIVE IN WORKBENCH]' : 'COMPARE ↗'}
+                      {isCurrentActive ? '[ACTIVE IN WORKBENCH]' : 'COMPARE →'}
                     </span>
                   </div>
                 </button>
@@ -467,7 +467,7 @@ export default function TransferWorkbench({
                   style={{ cursor: 'pointer' }}
                   title="Click to view scouting report & underlying stats"
                 >
-                  <th scope="row" style={{ position: 'sticky', left: 0, zIndex: 10, fontWeight: 800, textAlign: 'left', color: 'var(--text-primary)', background: 'var(--bg-surface-1)' }}>
+                  <th scope="row" style={{ position: 'sticky', left: 0, zIndex: 10, fontWeight: 700, textAlign: 'left', color: 'var(--text-primary)', background: 'var(--bg-surface-1)' }}>
                     {p.web_name}
                   </th>
                   <td>

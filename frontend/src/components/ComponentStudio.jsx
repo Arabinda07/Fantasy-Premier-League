@@ -518,7 +518,7 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
                           {(p.shrinkageWeight * 100).toFixed(0)}% Form
                         </span> · {((1 - p.shrinkageWeight) * 100).toFixed(0)}% Record
                       </td>
-                      <td className="font-mono" style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: '13px' }}>
+                      <td className="font-mono" style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '13px' }}>
                         {p.dynamicXp.toFixed(1)} xP
                       </td>
                     </tr>

@@ -1,6 +1,6 @@
-# FPL Intelligence Platform
+# FPL Dugout
 
-[![Live on Vercel](https://img.shields.io/badge/Live%20Cockpit-Vercel%20Production-000000.svg?style=for-the-badge&logo=vercel)](https://frontend-two-eta-z417h3t78v.vercel.app)
+[![Live on Vercel](https://img.shields.io/badge/Live%20Cockpit-Vercel%20Production-000000.svg?style=for-the-badge&logo=vercel)](https://fpl-squad-predictor.vercel.app)
 [![Build & Test Status](https://img.shields.io/badge/tests-148%2F148%20passing-brightgreen.svg?style=for-the-badge&logo=pytest)](file:///e:/Fantasy-Premier-League/model/)
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg?style=for-the-badge&logo=python)](file:///e:/Fantasy-Premier-League/)
 [![Season](https://img.shields.io/badge/FPL%20Season-2026--27%20Live-orange.svg?style=for-the-badge)](file:///e:/Fantasy-Premier-League/data/2026-27/)
@@ -9,7 +9,7 @@
 
 An open-source quantitative analytics engine, Mixed Integer Linear Programming (MILP) solver, and interactive matchday terminal for Fantasy Premier League.
 
-👉 **[Launch Live Web Terminal](https://frontend-two-eta-z417h3t78v.vercel.app)**
+👉 **[Launch Live Web Terminal](https://fpl-squad-predictor.vercel.app)**
 
 ---
 
@@ -298,7 +298,7 @@ If you use this project or dataset in research, modeling work, or sports analyti
 
 ```bibtex
 @misc{arabinda2026fplengine,
-  title = {{FPL Intelligence Platform: Quantitative Point Prediction & Squad Optimization}},
+  title = {{FPL Dugout: Quantitative Point Prediction & Squad Optimization}},
   author = {Arabinda07},
   year = {2026},
   howpublished = {\url{https://github.com/Arabinda07/Fantasy-Premier-League}}

@@ -133,12 +133,12 @@ export default function PlayerDNAInspector({ player, onClose }) {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span className="dna-player-pos font-mono">[{pos}]</span>
-              <h2 id="dna-modal-title" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+              <h2 id="dna-modal-title" style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
                 {player.web_name}
               </h2>
             </div>
             <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px', fontFamily: 'var(--font-mono)' }}>
-              {player.team} · £{Number(player.now_cost || player.cost || 0).toFixed(1)}m · Projected: <span style={{ color: 'var(--text-primary)', fontWeight: 800 }}>{xp.toFixed(1)} pts</span>
+              {player.team} · £{Number(player.now_cost || player.cost || 0).toFixed(1)}m · Projected: <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{xp.toFixed(1)} pts</span>
             </div>
           </div>
           <button
@@ -239,28 +239,28 @@ export default function PlayerDNAInspector({ player, onClose }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginBottom: '16px' }}>
           <div style={{ background: 'var(--bg-surface-2)', padding: '8px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
             <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>xG / 90</div>
-            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
+            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', marginTop: '2px' }}>
               {Number(player.long_form_expected_goals_90 || 0).toFixed(2)}
             </div>
           </div>
 
           <div style={{ background: 'var(--bg-surface-2)', padding: '8px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
             <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>xA / 90</div>
-            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
+            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', marginTop: '2px' }}>
               {Number(player.long_form_expected_assists_90 || 0).toFixed(2)}
             </div>
           </div>
 
           <div style={{ background: 'var(--bg-surface-2)', padding: '8px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
             <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Tackles / 90</div>
-            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
+            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', marginTop: '2px' }}>
               {Number(player.long_form_defensive_contribution_90 || 0).toFixed(1)}
             </div>
           </div>
 
           <div style={{ background: 'var(--bg-surface-2)', padding: '8px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
             <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Bonus / 90</div>
-            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 800, color: 'var(--accent-amber)', marginTop: '2px' }}>
+            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 700, color: 'var(--accent-amber)', marginTop: '2px' }}>
               {Number(player.long_form_bonus_90 || 0).toFixed(2)}
             </div>
           </div>
@@ -270,14 +270,14 @@ export default function PlayerDNAInspector({ player, onClose }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginBottom: '14px' }}>
           <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
             <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Predicted Lineup Starter</div>
-            <div className="font-mono" style={{ fontSize: '15px', fontWeight: 800, color: 'var(--accent-emerald)', marginTop: '2px' }}>
+            <div className="font-mono" style={{ fontSize: '15px', fontWeight: 700, color: 'var(--accent-emerald)', marginTop: '2px' }}>
               {pStart}%
             </div>
           </div>
 
           <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
             <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Starts & Plays 60+ Mins</div>
-            <div className="font-mono" style={{ fontSize: '15px', fontWeight: 800, color: 'var(--accent-emerald)', marginTop: '2px' }}>
+            <div className="font-mono" style={{ fontSize: '15px', fontWeight: 700, color: 'var(--accent-emerald)', marginTop: '2px' }}>
               {pMins60}%
             </div>
           </div>
@@ -286,7 +286,7 @@ export default function PlayerDNAInspector({ player, onClose }) {
           {player.hook_hazard != null && player.hook_hazard > 0 && (
             <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Early Sub Risk</div>
-              <div className="font-mono" style={{ fontSize: '15px', fontWeight: 800, color: player.hook_hazard > 0.15 ? 'var(--accent-amber)' : 'var(--text-secondary)', marginTop: '2px' }}>
+              <div className="font-mono" style={{ fontSize: '15px', fontWeight: 700, color: player.hook_hazard > 0.15 ? 'var(--accent-amber)' : 'var(--text-secondary)', marginTop: '2px' }}>
                 {Math.round(player.hook_hazard * 100)}%
               </div>
             </div>
@@ -296,7 +296,7 @@ export default function PlayerDNAInspector({ player, onClose }) {
           {player.capt_conf != null && (
             <div style={{ background: 'var(--bg-surface-2)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Captaincy Confidence</div>
-              <div className="font-mono" style={{ fontSize: '15px', fontWeight: 800, color: getCaptaincyConfidenceTier(player.capt_conf).color, marginTop: '2px' }}>
+              <div className="font-mono" style={{ fontSize: '15px', fontWeight: 700, color: getCaptaincyConfidenceTier(player.capt_conf).color, marginTop: '2px' }}>
                 {Math.round(player.capt_conf * 100)}%
               </div>
             </div>
@@ -307,21 +307,21 @@ export default function PlayerDNAInspector({ player, onClose }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '14px' }}>
           <div style={{ background: 'var(--bg-surface-2)', padding: '8px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
             <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Market Price</div>
-            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
+            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', marginTop: '2px' }}>
               £{Number(player.now_cost || player.cost || 0).toFixed(1)}m
             </div>
           </div>
 
           <div style={{ background: 'var(--bg-surface-2)', padding: '8px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
             <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Selling Price</div>
-            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 800, color: 'var(--accent-emerald)', marginTop: '2px' }}>
+            <div className="font-mono" style={{ fontSize: '14px', fontWeight: 700, color: 'var(--accent-emerald)', marginTop: '2px' }}>
               £{Number(player.selling_price || player.cost || 0).toFixed(1)}m
             </div>
           </div>
 
           <div style={{ background: 'var(--bg-surface-2)', padding: '8px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
             <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Price Momentum</div>
-            <div className="font-mono" style={{ fontSize: '12px', fontWeight: 800, color: player.price_trend?.includes('RISING') ? 'var(--accent-emerald)' : player.price_trend?.includes('FALLING') ? 'var(--accent-crimson)' : 'var(--text-secondary)', marginTop: '4px' }}>
+            <div className="font-mono" style={{ fontSize: '12px', fontWeight: 700, color: player.price_trend?.includes('RISING') ? 'var(--accent-emerald)' : player.price_trend?.includes('FALLING') ? 'var(--accent-crimson)' : 'var(--text-secondary)', marginTop: '4px' }}>
               {player.price_trend?.includes('RISING') ? '▲ RISING' : player.price_trend?.includes('FALLING') ? '▼ DROP ALERT' : 'STABLE'}
             </div>
           </div>

@@ -190,7 +190,7 @@ export default function LiveTeamSyncModal({
           {saved && (
             <div className="sync-success-banner" role="status">
               <CheckCircle size={16} weight="fill" className="success-icon" />
-              <span>Squad and mini-league synced successfully!</span>
+              <span>Squad and mini-league synced successfully.</span>
             </div>
           )}
 

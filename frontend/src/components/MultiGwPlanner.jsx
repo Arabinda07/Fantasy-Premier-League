@@ -358,7 +358,7 @@ export default function MultiGwPlanner({
                               setSelectedTransferPair({ inName: inPlayer, outName: outPlayer, timestamp: Date.now() });
                             }
                           }}
-                          title={`Load ${outPlayer} ➔ ${inPlayer} into comparison workbench`}
+                          title={`Load ${outPlayer} → ${inPlayer} into comparison workbench`}
                         >
                           <div className="move-line in font-mono">
                             <ArrowUpRight size={12} weight="bold" />

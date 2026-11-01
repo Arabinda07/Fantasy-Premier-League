@@ -915,7 +915,7 @@ function HistoricalPlayerDetailModal({ player, onClose }) {
           justifyContent: 'space-between'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span className="font-mono zinc" style={{ fontSize: '11px', letterSpacing: '0.04em' }}>
+            <span className="font-mono zinc" style={{ fontSize: '11px', letterSpacing: '0.05em' }}>
               [{player.season} RETROSPECTIVE]
             </span>
           </div>
