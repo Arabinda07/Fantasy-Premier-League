@@ -374,7 +374,7 @@ export default function RivalThreatMatrix({
                             setSelectedRivalId(r.entry_id);
                           }}
                         >
-                          {isSelected ? 'Active' : 'Compare'}
+                          {isSelected ? 'Active' : 'COMPARE'}
                         </button>
                       </td>
                     </tr>

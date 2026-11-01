@@ -447,7 +447,7 @@ export default function TransferWorkbench({
                 <th scope="col">xG / 90</th>
                 <th scope="col">xA / 90</th>
                 <th scope="col">Start %</th>
-                <th scope="col" style={{ textAlign: 'center' }}>Compare</th>
+                <th scope="col" style={{ textAlign: 'center' }}>COMPARE</th>
               </tr>
             </thead>
             <tbody>
@@ -488,7 +488,7 @@ export default function TransferWorkbench({
                       className={`compare-action-btn font-mono ${playerIn?.web_name === p.web_name ? 'active' : ''}`}
                       title="Compare this player against your squad"
                     >
-                      {playerIn?.web_name === p.web_name ? 'Comparing' : 'Compare'}
+                      {playerIn?.web_name === p.web_name ? 'COMPARING' : 'COMPARE'}
                     </button>
                   </td>
                 </tr>
