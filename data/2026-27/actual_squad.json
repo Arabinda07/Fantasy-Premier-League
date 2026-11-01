@@ -1,13 +1,13 @@
 {
   "entry_id": 9500404,
-  "manager_name": "Live Manager",
-  "team_name": "Team 9500404",
+  "manager_name": "Arabinda Saha",
+  "team_name": "Fuljhore Giants",
   "season": "2026-27",
-  "last_updated_gw": 9,
-  "overall_rank": 150000,
-  "overall_points": 65,
-  "bank": 4.9,
-  "team_value": 101.2,
+  "last_updated_gw": 10,
+  "overall_rank": 6393828,
+  "overall_points": 462,
+  "bank": 4.6,
+  "team_value": 101.3,
   "free_transfers": 3,
   "active_chip": null,
   "squad_codes": [
@@ -21,7 +21,7 @@
     244851,
     466052,
     177815,
-    216646,
+    444102,
     80201,
     201658,
     586309,
@@ -38,7 +38,7 @@
     244851,
     466052,
     177815,
-    216646
+    444102
   ],
   "bench_codes": [
     80201,
@@ -50,5 +50,5 @@
   "vice_captain_code": 154561,
   "selling_prices": {},
   "purchase_prices": {},
-  "updated_at": "2026-10-31 11:23:04 UTC"
+  "updated_at": "2026-11-01 12:14:51 UTC"
 }
