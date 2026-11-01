@@ -213,7 +213,7 @@ export default function MatchdayHandoverModal({
                   {/* Flow Bridge */}
                   <div className="unified-transfer-bridge font-mono">
                     <div className="delta-pill">
-                      <span>+{netGain} pts</span>
+                      <span>{Number(netGain) > 0 ? '+' : ''}{netGain} pts</span>
                     </div>
                     <CaretRight size={14} className="delta-arrow" />
                     <span className="delta-cost-note">
@@ -266,7 +266,7 @@ export default function MatchdayHandoverModal({
                   </div>
                   <div className="pick-card-name">{capt?.web_name || 'Gibbs-White'}</div>
                   <div className="pick-card-meta font-mono">
-                    {captXp} Projected Pts (2x)
+                    {captXp} Exp Pts (2x)
                   </div>
                 </div>
 
@@ -277,7 +277,7 @@ export default function MatchdayHandoverModal({
                   </div>
                   <div className="pick-card-name">{vc?.web_name || 'B.Fernandes'}</div>
                   <div className="pick-card-meta font-mono">
-                    {vcXp} Projected Pts (Backup)
+                    {vcXp} Exp Pts (Backup)
                   </div>
                 </div>
               </div>

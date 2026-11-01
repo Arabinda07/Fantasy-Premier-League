@@ -262,9 +262,17 @@ export default function TacticalPitch({
       const playerIn = toSide(foundIn, topPair.in, p => p.now_cost || p.cost);
       const playerOut = toSide(foundOut, topPair.out, p => p.selling_price || p.now_cost || p.cost);
 
+      // Truth gate: the gain must agree with the two players actually displayed (same xP
+      // basis). The parsed summary value can be computed on a different xP basis and
+      // contradict the shown Exp Pts, so trust it only within a rounding tolerance;
+      // otherwise use the delta computed from the displayed players — including a
+      // negative one, which a downgrade is allowed to be.
       let netGain = parseNetGain(effectiveActionSummary);
-      if (netGain == null && foundIn && foundOut) {
-        netGain = Math.max(0.1, Number((playerIn.expected_points - playerOut.expected_points).toFixed(2)));
+      if (foundIn && foundOut) {
+        const shownDelta = Number((playerIn.expected_points - playerOut.expected_points).toFixed(2));
+        if (netGain == null || Math.abs(netGain - shownDelta) > 0.5) {
+          netGain = shownDelta;
+        }
       }
 
       return {
@@ -286,7 +294,7 @@ export default function TacticalPitch({
   const directive = useMemo(() => {
     const str = summaryText(effectiveActionSummary);
     if (transferPairs.length > 0) {
-      const gain = parseNetGain(effectiveActionSummary);
+      const gain = resolvedTransferRecommendation?.netGain ?? parseNetGain(effectiveActionSummary);
       let priceAlert = null;
       const alertMatch = str.match(/(?:Price Risk|Price Alert):\s*([^()|]+)/i);
       if (alertMatch && alertMatch[1].trim()) {
@@ -296,7 +304,7 @@ export default function TacticalPitch({
       }
       return {
         pairs: transferPairs,
-        detail: [gain != null ? `+${gain.toFixed(1)} pts projected gain` : null, priceAlert].filter(Boolean).join(' · ')
+        detail: [gain != null ? `${gain > 0 ? '+' : ''}${gain.toFixed(1)} pts projected gain` : null, priceAlert].filter(Boolean).join(' · ')
       };
     }
     if (str.toLowerCase().includes('wildcard')) {
@@ -315,7 +323,7 @@ export default function TacticalPitch({
       .replace(/Option Hurdle:[^)]+\)/gi, '')
       .trim();
     return { action: cleanMsg || 'Review transfers in the Planner', detail: '' };
-  }, [effectiveActionSummary, transferPairs, liveData]);
+  }, [effectiveActionSummary, transferPairs, liveData, resolvedTransferRecommendation]);
 
   // Gameweek status
   const gameweek = liveData?.gameweek || 1;

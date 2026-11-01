@@ -69,7 +69,7 @@ export function generateTransferRationale({
         id: 'roll_flexibility',
         iconType: 'emerald',
         title: 'Tactical Flexibility',
-        text: `Carrying 2 banked free transfers into Gameweek ${gw + 1} unlocks easy structural pivots.`
+        text: `Carrying 2 banked free transfers into Gameweek ${gw + 1} keeps structural pivots open.`
       },
       {
         id: 'roll_protect',
@@ -99,6 +99,15 @@ export function generateTransferRationale({
   const numericCostDelta = Number(costDelta) || 0;
   const numericBank = Number(bank) || 0;
 
+  // Truth gate: a caller-passed gain computed on a different xP basis must not
+  // contradict the two players' own expected_points. Trust it only within a rounding
+  // tolerance; otherwise fall back to the delta of the two players shown.
+  const shownDelta = Number(
+    (Number(playerIn.expected_points || 0) - Number(playerOut.expected_points || 0)).toFixed(2)
+  );
+  const realGain = Math.abs(numericGain - shownDelta) <= 0.5 ? numericGain : shownDelta;
+  const isDowngrade = realGain < 0;
+
   // =========================================================================
   // Pillar 1: Fixture Differential & Schedule Context
   // =========================================================================
@@ -117,7 +126,7 @@ export function generateTransferRationale({
       fixtureText = `${pInName} faces an appealing fixture (${playerIn.fixture || 'Upcoming'}, FDR ${inFdr}), while ${pOutName} has a tougher matchup (${playerOut.fixture || 'Upcoming'}, FDR ${outFdr}).`;
     } else if (inFdr === outFdr) {
       fixtureTitle = 'Matchup Edge';
-      fixtureText = `${pInName} and ${pOutName} face comparable fixture difficulty (FDR ${inFdr}), but ${pInName}'s form and team attacking metrics offer a decisive edge.`;
+      fixtureText = `${pInName} and ${pOutName} face comparable fixture difficulty (FDR ${inFdr}), but ${pInName}'s form and team attacking metrics give them the edge.`;
     } else {
       // inFdr > outFdr: In has harder fixture, but is bought anyway due to superior quality/ceiling
       fixtureTitle = 'Fixture Challenge';
@@ -139,24 +148,34 @@ export function generateTransferRationale({
 
   const pInXp = Number(playerIn.expected_points || 0).toFixed(2);
   const pOutXp = Number(playerOut.expected_points || 0).toFixed(2);
-  const gainStr = numericGain > 0 ? `+${numericGain.toFixed(2)} pts` : `${numericGain.toFixed(2)} pts`;
+  const gainStr = realGain > 0 ? `+${realGain.toFixed(2)} pts` : `${realGain.toFixed(2)} pts`;
 
+  // On a downgrade the swap is a fixture/form bet, not a points gain: state the raw
+  // numbers and what is being traded, and never call it an "uplift".
   if (inDefensive && outDefensive) {
     roleTitle = 'Defensive Output';
-    roleText = `${pInName} projects for ${pInXp} pts vs ${pOutXp} pts for ${pOutName} (${gainStr} uplift), offering high clean sheet probability and solid baseline points.`;
+    roleText = isDowngrade
+      ? `${pInName} projects for ${pInXp} pts vs ${pOutXp} pts for ${pOutName} (${gainStr}), trading baseline points for the fixture swing and clean sheet upside.`
+      : `${pInName} projects for ${pInXp} pts vs ${pOutXp} pts for ${pOutName} (${gainStr} uplift), offering high clean sheet probability and solid baseline points.`;
   } else if (inDefensive && !outDefensive) {
     roleTitle = 'Defensive Foundation';
-    roleText = `${pInName} projects for ${pInXp} pts (${gainStr}), providing clean sheet stability to rebalance squad formation.`;
+    roleText = isDowngrade
+      ? `${pInName} projects for ${pInXp} pts (${gainStr}), trading raw attacking output for clean sheet stability at the back.`
+      : `${pInName} projects for ${pInXp} pts (${gainStr}), providing clean sheet stability to rebalance squad formation.`;
   } else if (!inDefensive && outDefensive) {
     roleTitle = 'Attacking Firepower';
-    roleText = `${pInName} projects for ${pInXp} pts vs ${pOutXp} pts (${gainStr} uplift), adding dynamic goal threat and open-play involvement.`;
+    roleText = isDowngrade
+      ? `${pInName} projects for ${pInXp} pts vs ${pOutXp} pts (${gainStr}), trading defensive baseline for goal threat and open-play involvement.`
+      : `${pInName} projects for ${pInXp} pts vs ${pOutXp} pts (${gainStr} uplift), adding dynamic goal threat and open-play involvement.`;
   } else {
     // Both attacking (MID / FWD)
     roleTitle = 'Projected Gain';
     const roleDescriptor = (playerIn.position === 'FWD')
       ? 'central box touches and finishing threat'
       : 'open-play chance creation and shot volume';
-    roleText = `${pInName} is projected for ${pInXp} pts compared to ${pOutXp} pts for ${pOutName} (${gainStr} uplift), driven by high ${roleDescriptor}.`;
+    roleText = isDowngrade
+      ? `${pInName} is projected for ${pInXp} pts compared to ${pOutXp} pts for ${pOutName} (${gainStr}), a fixture-and-form bet rather than a baseline upgrade.`
+      : `${pInName} is projected for ${pInXp} pts compared to ${pOutXp} pts for ${pOutName} (${gainStr} uplift), driven by high ${roleDescriptor}.`;
   }
 
   // =========================================================================
@@ -167,14 +186,18 @@ export function generateTransferRationale({
 
   if (numericCostDelta > 0) {
     valueTitle = 'Upgrade Investment';
-    valueText = `Costs £${numericCostDelta.toFixed(1)}m (leaves £${numericBank.toFixed(1)}m in bank) to upgrade starting XI quality without taking a hit.`;
+    valueText = isDowngrade
+      ? `Costs £${numericCostDelta.toFixed(1)}m (leaves £${numericBank.toFixed(1)}m in bank), funding the fixture-based move without taking a points hit.`
+      : `Costs £${numericCostDelta.toFixed(1)}m (leaves £${numericBank.toFixed(1)}m in bank) to upgrade starting XI quality without taking a hit.`;
   } else if (numericCostDelta < 0) {
     const saved = Math.abs(numericCostDelta).toFixed(1);
     valueTitle = 'Budget Freeing';
-    valueText = `Frees up £${saved}m extra bank funds while improving starting output, allowing future upgrades across your squad.`;
+    valueText = isDowngrade
+      ? `Frees up £${saved}m extra bank funds, building depth for future upgrades across your squad.`
+      : `Frees up £${saved}m extra bank funds while improving starting output, allowing future upgrades across your squad.`;
   } else {
     valueTitle = 'Budget Neutral';
-    valueText = `Budget-neutral transfer providing an immediate points boost with £${numericBank.toFixed(1)}m preserved in the bank.`;
+    valueText = `Budget-neutral transfer with £${numericBank.toFixed(1)}m preserved in the bank.`;
   }
 
   return [

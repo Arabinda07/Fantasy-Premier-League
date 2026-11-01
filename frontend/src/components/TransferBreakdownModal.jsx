@@ -164,7 +164,7 @@ export default function TransferBreakdownModal({
               <p className="modal-subtitle font-mono">
                 {isRoll
                   ? `Gameweek ${gw} \u00b7 Bank Free Transfer`
-                  : `Gameweek ${gw} \u00b7 +${netGain} Projected Points Gain`}
+                  : `Gameweek ${gw} \u00b7 ${Number(netGain) > 0 ? '+' : ''}${netGain} Projected Points Gain`}
               </p>
             </div>
           </div>
@@ -220,7 +220,7 @@ export default function TransferBreakdownModal({
               {/* 2. Flow Bridge (Center) */}
               <div className="unified-transfer-bridge font-mono">
                 <div className="delta-pill">
-                  <span>+{netGain} pts</span>
+                  <span>{Number(netGain) > 0 ? '+' : ''}{netGain} pts</span>
                 </div>
                 <CaretRight size={14} className="delta-arrow" />
                 <span className="delta-cost-note">
