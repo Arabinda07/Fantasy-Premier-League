@@ -149,7 +149,9 @@
 /* Surface scopes (.surface-scope-*) are tab namespaces only; Direction J has no per-tab accent. */
 
 /* Base Reset & Safe Areas */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -201,11 +203,16 @@ body {
   padding-right: env(safe-area-inset-right);
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   text-wrap: balance;
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
   font-size: max(16px, 1rem);
 }
 
@@ -219,11 +226,14 @@ textarea,
   overflow-y: auto;
 }
 
-button, a, [role="button"] {
+button,
+a,
+[role="button"] {
   touch-action: manipulation;
 }
 
-button, [role="button"] {
+button,
+[role="button"] {
   user-select: none;
   -webkit-user-select: none;
 }
@@ -322,12 +332,10 @@ a:focus-visible,
 .player-pitch-card:focus-visible,
 .bench-item:focus-visible,
 .nav-tab-btn:focus-visible,
-.market-asset-row:focus-visible,
 .segmented-chip-btn:focus-visible,
 .planner-rail-btn:focus-visible,
 .deck-filter-btn:focus-visible,
 .deck-size-btn:focus-visible,
-.hud-strategy-btn:focus-visible,
 .telemetry-notes-btn:focus-visible,
 .formula-trigger-btn:focus-visible,
 .calibration-toggle-btn:focus-visible,
@@ -362,8 +370,8 @@ a:focus-visible,
    eliminating vestibular triggers (flashing, rapid translation, spatial slides). */
 @media (prefers-reduced-motion: reduce) {
   *,
-  *::before,
-  *::after {
+*::before,
+*::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
@@ -377,23 +385,23 @@ a:focus-visible,
 
   /* Suppress spatial displacement/translation while preserving clear state feedback (opacity, color, border) */
   button,
-  .btn,
-  .nav-tab-btn,
-  .strategy-btn,
-  .chip-btn,
-  .swap-trigger-btn,
-  .filter-btn,
-  .gw-selector-btn,
-  .modal-close-btn,
-  .action-btn,
-  .quick-action-btn,
-  .planner-pill-btn,
-  [role="button"],
-  .player-pitch-card,
-  .drawer-panel,
-  .modal-backdrop,
-  .modal-window,
-  .multi-gw-column-card {
+.btn,
+.nav-tab-btn,
+.strategy-btn,
+.chip-btn,
+.swap-trigger-btn,
+.filter-btn,
+.gw-selector-btn,
+.modal-close-btn,
+.action-btn,
+.quick-action-btn,
+.planner-pill-btn,
+[role="button"],
+.player-pitch-card,
+.drawer-panel,
+.modal-backdrop,
+.modal-window,
+.multi-gw-column-card {
     transform: none !important;
     transition: opacity 0.1s ease,
                 background-color 0.1s ease,
@@ -433,19 +441,19 @@ button,
 
 @media (prefers-reduced-motion: no-preference) {
   button,
-  .btn,
-  .nav-tab-btn,
-  .strategy-btn,
-  .chip-btn,
-  .swap-trigger-btn,
-  .filter-btn,
-  .gw-selector-btn,
-  .modal-close-btn,
-  .action-btn,
-  .quick-action-btn,
-  .planner-pill-btn,
-  .player-pitch-card,
-  [role="button"] {
+.btn,
+.nav-tab-btn,
+.strategy-btn,
+.chip-btn,
+.swap-trigger-btn,
+.filter-btn,
+.gw-selector-btn,
+.modal-close-btn,
+.action-btn,
+.quick-action-btn,
+.planner-pill-btn,
+.player-pitch-card,
+[role="button"] {
     transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
                 background-color 150ms ease,
                 border-color 150ms ease,
@@ -527,7 +535,7 @@ button:active,
 
 @supports (animation-timeline: scroll()) {
   .nav-tabs-container,
-  .fixture-ticker-track {
+.fixture-ticker-track {
     --fade: 0px;
     overflow-x: auto;
     animation: ticker-overflow-fade linear;
@@ -543,7 +551,12 @@ button:active,
 }
 
 /* Typography Utilities & Optical Tracking */
-h1, h2, h3, h4, h5, h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
 .section-title,
 .modal-title,
 .drawer-title,
@@ -995,143 +1008,6 @@ p,
   color: var(--text-secondary);
   margin-top: 4px;
   line-height: 1.4;
-}
-
-.hud-tile {
-  background: var(--bg-surface-1);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 8px;
-  min-height: 80px;
-  transition: border-color 0.2s ease, background-color 0.15s ease;
-}
-@media (hover: hover) and (pointer: fine) {
-  .hud-tile:hover {
-    border-color: var(--border-medium);
-    background: var(--bg-surface-2);
-  }
-}
-
-.hud-tile-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.hud-tile-eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text-muted);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-/* Tile 1: Strategy Segmented Group */
-.hud-segmented-group {
-  display: flex;
-  gap: 4px;
-  background: var(--bg-surface-0);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xs);
-  padding: 2px;
-}
-
-.hud-segment-btn {
-  flex: 1;
-  background: transparent;
-  border: 1px solid transparent;
-  color: var(--text-muted);
-  font-size: 12px;
-  font-weight: 600;
-  padding: 6px 8px;
-  border-radius: var(--radius-xs);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  white-space: nowrap;
-  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
-            background-color 0.15s ease,
-            border-color 0.15s ease,
-            box-shadow 0.15s ease,
-            color 0.15s ease;
-}
-@media (hover: hover) and (pointer: fine) {
-  .hud-segment-btn:hover:not(.active) {
-    color: var(--text-primary);
-    background: var(--bg-surface-subtle);
-  }
-}
-
-.hud-segment-btn.active {
-  background: var(--bg-surface-subtle);
-  color: var(--text-primary);
-  border: 1px solid var(--border-medium);
-}
-
-.hud-segment-btn.active svg {
-  color: var(--text-primary);
-}
-
-/* Tile 2: Matchday Chip Simulator */
-.hud-chip-live-badge {
-  font-size: 10.5px;
-  font-weight: 700;
-  background: rgba(245, 158, 11, 0.15);
-  border: 1px solid var(--border-subtle);
-  color: var(--accent-amber);
-  padding: 2px 7px;
-  border-radius: var(--radius-xs);
-  letter-spacing: 0.05em;
-}
-
-.hud-chip-idle-badge {
-  font-size: 10.5px;
-  font-weight: 700;
-  color: var(--text-muted);
-  background: var(--bg-surface-subtle);
-  border: 1px solid var(--border-subtle);
-  padding: 2px 7px;
-  border-radius: var(--radius-xs);
-}
-
-/* Tile 3: Tactical Directive */
-.hud-tile-directive {
-  background: var(--bg-surface-1);
-  border: 1px solid var(--border-subtle);
-  cursor: pointer;
-  transition: background-color 0.15s ease,
-            border-color 0.15s ease,
-            box-shadow 0.15s ease;
-}
-@media (hover: hover) and (pointer: fine) {
-  .hud-tile-directive:hover {
-    border-color: var(--border-medium);
-    background: var(--bg-surface-2);
-    box-shadow: var(--shadow-sm);
-  }
-}
-
-.hud-directive-text {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.hud-highlight-text {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.hud-sub-text {
-  font-size: 11px;
-  color: var(--text-muted);
 }
 
 .segmented-chip-rail {
@@ -2159,7 +2035,7 @@ p,
   }
 
   .data-table th:last-child,
-  .data-table td:last-child {
+.data-table td:last-child {
     padding-right: 28px;
   }
 }
@@ -2647,91 +2523,6 @@ p,
   margin-bottom: 32px;
 }
 
-.market-asset-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.market-asset-row {
-  background: var(--bg-surface-2);
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-subtle);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  transition: background-color 0.15s ease,
-            border-color 0.15s ease,
-            box-shadow 0.15s ease;
-}
-@media (hover: hover) and (pointer: fine) {
-  .market-asset-row:hover {
-    border-color: var(--border-medium);
-    background: var(--bg-surface-subtle);
-  }
-}
-
-.market-asset-identity {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.market-asset-meta {
-  font-size: var(--text-base);
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  margin-top: 2px;
-}
-
-.market-asset-trend {
-  text-align: right;
-}
-
-.market-trend-badge {
-  font-size: var(--text-base);
-  font-weight: 700;
-  padding: var(--space-1) var(--space-4);
-  border-radius: var(--radius-xs);
-  display: inline-block;
-}
-
-.market-trend-badge.rising {
-  background: rgba(16, 185, 129, 0.2);
-  color: var(--accent-emerald);
-}
-
-.market-trend-badge.falling {
-  background: rgba(239, 68, 68, 0.2);
-  color: var(--accent-crimson);
-}
-
-.market-trend-ratio {
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-  margin-top: 3px;
-}
-
-.market-section-title {
-  font-size: var(--text-lg);
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-}
-
-.market-section-title.rising {
-  color: var(--accent-emerald);
-}
-
-.market-section-title.falling {
-  color: var(--accent-crimson);
-}
-
 .chip-guide-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
@@ -2824,7 +2615,9 @@ p,
     min-height: 44px;
     min-width: 44px;
   }
-  .pos-filter-btn, .nav-select, .studio-inspect-btn, .hud-segment-btn, .hud-chip-btn {
+  .pos-filter-btn,
+.nav-select,
+.studio-inspect-btn {
     min-height: 44px;
   }
   .modal-close-btn {
@@ -3021,7 +2814,7 @@ p,
 
   /* Pagination: minimal controls */
   .pagination-nav .page-btn:first-child,
-  .pagination-nav .page-btn:last-child {
+.pagination-nav .page-btn:last-child {
     display: none;
   }
 
@@ -4836,29 +4629,6 @@ p,
   }
 }
 
-.market-section-title {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  font-size: var(--text-lg);
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.market-section-title.rising {
-  color: var(--accent-emerald);
-}
-
-.market-section-title.falling {
-  color: var(--accent-crimson);
-}
-
-.market-asset-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
 .market-wire-panel {
   background: var(--bg-surface-1);
   border: 1px solid var(--border-subtle);
@@ -5728,12 +5498,12 @@ p,
   }
 
   .rivals-table th,
-  .rivals-table td {
+.rivals-table td {
     padding: var(--space-3) 8px;
   }
 
   .rivals-table tr.selected-row th,
-  .rivals-table tr.selected-row td {
+.rivals-table tr.selected-row td {
     background: rgba(16, 185, 129, 0.08);
   }
 
@@ -6194,30 +5964,6 @@ position: absolute;
   .tab-label-short {
     display: inline;
   }
-
-  .hud-tile {
-    padding: var(--space-4) 12px;
-    gap: var(--space-3);
-  }
-
-  .hud-segmented-group {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 4px;
-    width: 100%;
-  }
-
-  .hud-segment-btn {
-    padding: var(--space-3) var(--space-2);
-    font-size: var(--text-sm);
-    min-height: 38px;
-    gap: 3px;
-    justify-content: center;
-  }
-
-  .hud-score-val {
-    font-size: var(--text-2xl);
-  }
 }
 
 /* Compact Smartphones (<= 640px) */
@@ -6355,7 +6101,7 @@ position: absolute;
   }
 
   .pitch-row-count-5 .captain-badge,
-  .pitch-row-count-5 .vice-captain-badge {
+.pitch-row-count-5 .vice-captain-badge {
     padding: 0 2px;
     font-size: 7.5px;
   }
@@ -8004,7 +7750,7 @@ position: absolute;
 }
 @media (hover: hover) and (pointer: fine) {
   .modal-btn-ghost:hover,
-  .btn-secondary:hover {
+.btn-secondary:hover {
     background: var(--bg-surface-subtle);
     border-color: var(--border-medium);
     color: var(--text-primary);
@@ -8045,8 +7791,8 @@ position: absolute;
 }
 @media (hover: hover) and (pointer: fine) {
   .modal-btn-primary:hover:not(:disabled),
-  .handover-confirm-btn:hover:not(:disabled),
-  .breakdown-action-btn:hover:not(:disabled) {
+.handover-confirm-btn:hover:not(:disabled),
+.breakdown-action-btn:hover:not(:disabled) {
     background: var(--text-primary);
     color: var(--text-inverse) !important;
     transform: translateY(-1px);
@@ -8069,8 +7815,8 @@ position: absolute;
 @media (max-width: 640px) {
   /* Universal Modal Geometry Clamping */
   .handover-modal-content,
-  .transfer-breakdown-modal-content,
-  .drawer-content {
+.transfer-breakdown-modal-content,
+.drawer-content {
     width: calc(100vw - 16px) !important;
     max-width: calc(100vw - 16px) !important;
     max-height: 92vh !important;
@@ -8096,7 +7842,7 @@ position: absolute;
   }
 
   .handover-modal-body,
-  .breakdown-modal-body {
+.breakdown-modal-body {
     padding: 14px 14px 16px 14px !important;
     gap: 12px !important;
   }
@@ -8270,8 +8016,8 @@ position: absolute;
 
   /* Unified Modal Action Footer on Mobile */
   .modal-action-footer,
-  .handover-modal-actions,
-  .breakdown-modal-actions {
+.handover-modal-actions,
+.breakdown-modal-actions {
     display: grid;
     grid-template-columns: 1fr 1.6fr;
     gap: 8px;
@@ -8287,7 +8033,7 @@ position: absolute;
   }
 
   .modal-btn-primary,
-  .handover-confirm-btn {
+.handover-confirm-btn {
     width: 100%;
     min-height: 40px;
     font-size: 12px;
@@ -8360,7 +8106,7 @@ position: absolute;
   }
 
   .matrix-col-header,
-  .matrix-row-header {
+.matrix-row-header {
     font-size: 10.5px;
     padding: 4px 2px;
   }
@@ -8649,7 +8395,7 @@ button.wire-segment {
 }
 @media (hover: hover) and (pointer: fine) {
   .wire-segment:hover,
-  .wire-segments button:hover {
+.wire-segments button:hover {
     color: var(--text-secondary);
     background: rgba(255, 255, 255, 0.04);
   }
@@ -8776,7 +8522,7 @@ button.wire-segment {
 }
 @media (hover: hover) and (pointer: fine) {
   .wire-link:hover,
-  .wire-directive-more:hover {
+.wire-directive-more:hover {
     color: var(--text-primary);
     text-decoration: none !important;
   }
@@ -8788,7 +8534,7 @@ button.wire-segment {
 }
 @media (hover: hover) and (pointer: fine) {
   .wire-link:hover .wire-link-arrow,
-  .wire-directive-more:hover .wire-link-arrow {
+.wire-directive-more:hover .wire-link-arrow {
     transform: translateX(3px);
   }
 }
@@ -8918,7 +8664,7 @@ button.wire-token-main,
 }
 @media (hover: hover) and (pointer: fine) {
   .wire-token-fixture:hover,
-  .wire-token-armband:hover {
+.wire-token-armband:hover {
     color: var(--text-primary);
   }
 }
@@ -9229,8 +8975,8 @@ button.wire-token-main,
   }
 
   .wire-segment,
-  .wire-segments button,
-  button.wire-segment {
+.wire-segments button,
+button.wire-segment {
     padding: var(--space-1) var(--space-2);
     font-size: var(--text-sm);
   }
@@ -9257,9 +9003,16 @@ button.wire-token-main,
 
 /* Touch keyboard fix: iOS Safari zooms on focus when a form field is smaller than 16px — and never zooms back. Class-styled fields override the element-level max(16px, 1rem) floor, so re-assert 16px on coarse pointers. */
 @media (pointer: coarse) {
-  input, textarea, select,
-  .scout-search-input, .compare-player-select, .scout-sort-select,
-  .brand-gw-select, .page-size-select, .sync-input, .deck-search-input {
+  input,
+textarea,
+select,
+.scout-search-input,
+.compare-player-select,
+.scout-sort-select,
+.brand-gw-select,
+.page-size-select,
+.sync-input,
+.deck-search-input {
     font-size: 16px;
   }
 }
