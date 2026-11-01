@@ -297,7 +297,6 @@ button {
   font-size: var(--text-md);
   font-weight: 700;
   text-decoration: none;
-  transition: top 0.2s ease-out;
 }
 
 .skip-to-content:focus {
@@ -369,6 +368,12 @@ a:focus-visible,
     scroll-behavior: auto !important;
   }
 
+  /* Keep functional indicators alive gently — a frozen spinner reads as "app hung" */
+  .spin-animation {
+    animation-duration: 2s !important;
+    animation-iteration-count: infinite !important;
+  }
+
   /* Suppress spatial displacement/translation while preserving clear state feedback (opacity, color, border) */
   button,
   .btn,
@@ -386,13 +391,19 @@ a:focus-visible,
   .player-pitch-card,
   .drawer-panel,
   .modal-backdrop,
-  .modal-window {
+  .modal-window,
+  .multi-gw-column-card {
     transform: none !important;
     transition: opacity 0.1s ease,
                 background-color 0.1s ease,
                 border-color 0.1s ease,
                 color 0.1s ease,
                 box-shadow 0.1s ease !important;
+  }
+
+  /* Suppress the gauge slide without flattening its geometry (the transform is functional) */
+  .h2h-swing-fill {
+    transition: none !important;
   }
 }
 
@@ -738,7 +749,11 @@ p,
   font-weight: 700;
   cursor: pointer;
   outline: none;
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
 }
 
 .brand-gw-select:hover,
@@ -902,7 +917,11 @@ p,
   font-weight: 700;
   color: var(--text-primary);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
   box-shadow: none;
 }
 
@@ -1027,7 +1046,11 @@ p,
   justify-content: center;
   gap: 6px;
   white-space: nowrap;
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
 }
 
 .hud-segment-btn:hover:not(.active) {
@@ -1072,7 +1095,9 @@ p,
   background: var(--bg-surface-1);
   border: 1px solid var(--border-subtle);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease;
 }
 
 .hud-tile-directive:hover {
@@ -1121,7 +1146,11 @@ p,
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  transition: all 0.12s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.12s ease,
+            border-color 0.12s ease,
+            box-shadow 0.12s ease,
+            color 0.12s ease;
 }
 
 .segmented-chip-btn:hover {
@@ -1457,7 +1486,6 @@ p,
 
 @media (hover: hover) and (pointer: fine) {
   .captain-badge:hover {
-    transform: scale(1.05);
     box-shadow: var(--shadow-sm);
   }
 }
@@ -2029,7 +2057,11 @@ p,
   padding: 4px 10px;
   border-radius: var(--radius-xs);
   cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-instant);
+  transition: transform var(--duration-fast) var(--ease-instant),
+            background-color var(--duration-fast) var(--ease-instant),
+            border-color var(--duration-fast) var(--ease-instant),
+            box-shadow var(--duration-fast) var(--ease-instant),
+            color var(--duration-fast) var(--ease-instant);
 }
 
 .compare-action-btn:hover {
@@ -2159,6 +2191,7 @@ p,
   position: fixed;
   inset: 0;
   background: rgba(10, 10, 12, 0.82);
+  animation: modal-overlay-in 200ms ease-out;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2176,6 +2209,17 @@ p,
   overflow-y: auto;
   padding: clamp(16px, 3vw, 24px);
   box-shadow: var(--shadow-modal);
+  animation: modal-content-in 200ms var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+@keyframes modal-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-content-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .dna-modal-switcher {
@@ -2295,7 +2339,11 @@ p,
   font-weight: 700;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
   white-space: nowrap;
 }
 
@@ -2553,7 +2601,11 @@ p,
   font-weight: 700;
   border-radius: var(--radius-xs);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
 }
 
 .pos-filter-btn.active {
@@ -2588,7 +2640,9 @@ p,
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease;
 }
 
 .market-asset-row:hover {
@@ -3171,7 +3225,11 @@ p,
   height: 32px;
   border-radius: var(--radius-sm);
   text-decoration: none;
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
 }
 
 .footer-github-icon-link:hover {
@@ -3255,7 +3313,11 @@ p,
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
 }
 
 .page-btn:hover:not(:disabled) {
@@ -3287,7 +3349,12 @@ p,
   padding: 0 var(--space-3);
   border-radius: var(--radius-xs);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease,
+            font-weight 0.15s ease;
 }
 
 .page-num-btn:hover {
@@ -3470,7 +3537,11 @@ p,
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-sm, 6px);
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -3527,7 +3598,11 @@ p,
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
 }
 
 .sync-submit-btn:hover:not(:disabled) {
@@ -3766,7 +3841,11 @@ p,
   align-items: center;
   justify-content: center;
   gap: var(--space-4);
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
 }
 
 .btn-primary-action:hover:not(:disabled) {
@@ -3796,7 +3875,11 @@ p,
   align-items: center;
   justify-content: center;
   gap: var(--space-4);
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
 }
 
 .btn-secondary-action:hover:not(:disabled) {
@@ -3844,7 +3927,11 @@ p,
   color: var(--text-primary);
   font-size: var(--text-md);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
 }
 
 .live-manager-chip:hover {
@@ -4148,7 +4235,8 @@ p,
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
-  transition: all var(--duration-fast) ease;
+  transition: border-color var(--duration-fast) ease,
+            color var(--duration-fast) ease;
 }
 
 .scoreline-accordion-header:hover .badge-matrix-status {
@@ -4263,7 +4351,11 @@ p,
   border-radius: var(--radius-lg);
   padding: 12px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
@@ -4513,7 +4605,11 @@ p,
   padding: var(--space-2) 10px;
   border-radius: var(--radius-xs);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
 }
 
 .segmented-chip-btn:hover {
@@ -5400,7 +5496,11 @@ p,
   font-weight: 600;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
   white-space: nowrap;
 }
 
@@ -5509,7 +5609,11 @@ p,
   padding: 3px var(--space-4);
   border-radius: var(--radius-xs);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
 }
 
 .table-action-btn:hover {
@@ -5635,11 +5739,14 @@ p,
 }
 
 .h2h-swing-fill {
-  position: absolute;
+position: absolute;
   top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
+  transform-origin: left center;
   border-radius: var(--radius-xs);
-  transition: all 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 .h2h-swing-center-mark {
@@ -5680,7 +5787,11 @@ p,
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-xs);
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.12s ease,
+            border-color 0.12s ease,
+            box-shadow 0.12s ease,
+            color 0.12s ease;
   text-align: center;
   white-space: nowrap;
 }
@@ -5771,7 +5882,9 @@ p,
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xs);
   padding: var(--space-2) var(--space-4);
-  transition: all 0.12s ease;
+  transition: background-color 0.12s ease,
+            border-color 0.12s ease,
+            box-shadow 0.12s ease;
 }
 
 .h2h-compact-row:hover {
@@ -6313,7 +6426,11 @@ p,
   padding: 3px var(--space-4);
   border-radius: var(--radius-xs);
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.12s ease,
+            border-color 0.12s ease,
+            box-shadow 0.12s ease,
+            color 0.12s ease;
 }
 
 .deck-pos-btn:hover:not(.active) {
@@ -6337,7 +6454,9 @@ p,
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xs);
   padding: var(--space-2) var(--space-4);
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease;
   min-width: 180px;
 }
 
@@ -6416,7 +6535,11 @@ p,
   padding: 3px var(--space-3);
   border-radius: var(--radius-xs);
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.12s ease,
+            border-color 0.12s ease,
+            box-shadow 0.12s ease,
+            color 0.12s ease;
 }
 
 .deck-size-btn:hover:not(.active) {
@@ -6549,7 +6672,11 @@ p,
   font-weight: 700;
   cursor: pointer;
   flex-shrink: 0;
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
 }
 
 .timeline-nav-btn:hover:not(:disabled) {
@@ -6767,7 +6894,11 @@ p,
   padding: 8px 10px;
   cursor: pointer;
   text-align: left;
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
   width: 100%;
 }
 
@@ -6854,7 +6985,11 @@ p,
   border-radius: var(--radius-xs);
   padding: 8px 12px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
 }
 
 .vault-record-row:hover {
@@ -6944,7 +7079,11 @@ tr:hover .vault-table-sticky-col {
   font-size: var(--text-base);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            color 0.15s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -7729,7 +7868,11 @@ tr:hover .vault-table-sticky-col {
   border-radius: var(--radius-xs);
   background: rgba(245, 158, 11, 0.12);
   border: 1px solid var(--border-subtle);
-  transition: all 120ms ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 120ms ease,
+            border-color 120ms ease,
+            box-shadow 120ms ease,
+            color 120ms ease;
   flex-shrink: 0;
 }
 
@@ -7769,7 +7912,11 @@ tr:hover .vault-table-sticky-col {
   border: 1px solid var(--border-medium);
   cursor: pointer;
   text-decoration: none;
-  transition: all 150ms ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 150ms ease,
+            border-color 150ms ease,
+            box-shadow 150ms ease,
+            color 150ms ease;
   box-sizing: border-box;
 }
 
@@ -7805,7 +7952,11 @@ tr:hover .vault-table-sticky-col {
   border: 1px solid transparent;
   cursor: pointer;
   text-decoration: none;
-  transition: all 150ms ease;
+  transition: transform var(--duration-fast, 120ms) var(--ease-snappy, cubic-bezier(0.16, 1, 0.3, 1)),
+            background-color 150ms ease,
+            border-color 150ms ease,
+            box-shadow 150ms ease,
+            color 150ms ease;
   box-sizing: border-box;
 }
 
@@ -8448,7 +8599,11 @@ button.wire-segment {
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  transition: all var(--duration-fast) var(--ease-snappy);
+  transition: transform var(--duration-fast) var(--ease-snappy),
+            background-color var(--duration-fast) var(--ease-snappy),
+            border-color var(--duration-fast) var(--ease-snappy),
+            box-shadow var(--duration-fast) var(--ease-snappy),
+            color var(--duration-fast) var(--ease-snappy);
   white-space: nowrap;
 }
 

@@ -411,8 +411,8 @@ export default function RivalThreatMatrix({
                 <div
                   className="h2h-swing-fill"
                   style={{
-                    left: netDelta >= 0 ? '50%' : `${Math.max(5, 50 + netDelta * 2.0)}%`,
-                    width: `${Math.min(48, Math.abs(netDelta) * 2.0)}%`
+                    transform: `translateX(${netDelta >= 0 ? 50 : Math.max(5, 50 + netDelta * 2.0)}%) scaleX(${Math.min(48, Math.abs(netDelta) * 2.0) / 100})`,
+                    background: netDelta >= 0 ? 'var(--accent-emerald)' : 'var(--accent-crimson)'
                   }}
                 />
                 <div className="h2h-swing-center-mark" />
