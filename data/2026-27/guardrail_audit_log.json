@@ -6,22 +6,6 @@
     "anomaly_type": "clean",
     "recommendation": "proceed",
     "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
-    "timestamp": "2026-09-22T10:30:45.685515+00:00",
-    "details": {
-      "starting_xp": 0.0,
-      "captain": null,
-      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £1.9M in trapped bench capital (Calvert-Lewin). Pruning via 2 FTs yields +2.1 pts into starters without burning Wildcard (Option Hurdle: 22.7 pts). | [!] Price Alert: Szoboszlai (-137,922) approaching drop",
-      "outlier_flags": []
-    },
-    "gameweek": 6
-  },
-  {
-    "passed": true,
-    "severity_score": 0.1,
-    "abort_probability": 0.02,
-    "anomaly_type": "clean",
-    "recommendation": "proceed",
-    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
     "timestamp": "2026-09-23T10:25:38.203226+00:00",
     "details": {
       "starting_xp": 0.0,
@@ -795,6 +779,22 @@
       "starting_xp": 0.0,
       "captain": null,
       "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Pedro Porro | [OUT] Calafiori [Squad holds £4.4M in trapped bench capital (Barry, Calvert-Lewin). Pruning via 2 FTs yields +4.8 pts into starters without burning Wildcard (Option Hurdle: 17.8 pts).]",
+      "outlier_flags": []
+    },
+    "gameweek": 10
+  },
+  {
+    "passed": true,
+    "severity_score": 0.1,
+    "abort_probability": 0.02,
+    "anomaly_type": "clean",
+    "recommendation": "proceed",
+    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
+    "timestamp": "2026-11-02T14:05:10.539261+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] N.Jackson | [OUT] Calvert-Lewin [Squad holds £6.4M in trapped bench capital (Cherki, Barry). Pruning via 2 FTs yields +6.5 pts into starters without burning Wildcard (Option Hurdle: 17.8 pts).] | [!] Nightly Price Risk: Cherki (-147,593) (Execute before 01:15 GMT to protect value)",
       "outlier_flags": []
     },
     "gameweek": 10
