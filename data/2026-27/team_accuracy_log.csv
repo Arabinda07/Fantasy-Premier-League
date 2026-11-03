@@ -107,7 +107,7 @@ gameweek,team,pred_xp,actual_pts,bias,actual_goals
 9,Chelsea,23.07,54.0,-30.93,17
 9,Coventry City,36.71,25.0,11.71,4
 9,Crystal Palace,29.03,20.0,9.03,6
-9,Everton,33.94,0.0,33.94,7
+9,Everton,33.94,55.0,-21.06,8
 9,Fulham,37.94,28.0,9.94,5
 9,Hull City,40.61,28.0,12.61,7
 9,Ipswich Town,28.31,24.0,4.31,8
@@ -115,7 +115,7 @@ gameweek,team,pred_xp,actual_pts,bias,actual_goals
 9,Liverpool,33.35,19.0,14.35,8
 9,Man City,33.47,19.0,14.47,18
 9,Man Utd,32.29,9.0,23.29,8
-9,Newcastle,35.96,0.0,35.96,7
+9,Newcastle,35.96,15.0,20.96,7
 9,Nott'm Forest,34.48,14.0,20.48,5
 9,Spurs,41.99,60.0,-18.01,6
 9,Sunderland,29.17,21.0,8.17,6
