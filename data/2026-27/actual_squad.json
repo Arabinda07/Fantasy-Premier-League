@@ -3,12 +3,12 @@
   "manager_name": "Arabinda Saha",
   "team_name": "Fuljhore Giants",
   "season": "2026-27",
-  "last_updated_gw": 10,
-  "overall_rank": 6390342,
+  "last_updated_gw": 11,
+  "overall_rank": 6435710,
   "overall_points": 479,
   "bank": 4.6,
-  "team_value": 101.3,
-  "free_transfers": 3,
+  "team_value": 101.4,
+  "free_transfers": 4,
   "active_chip": null,
   "squad_codes": [
     154561,
@@ -50,5 +50,5 @@
   "vice_captain_code": 154561,
   "selling_prices": {},
   "purchase_prices": {},
-  "updated_at": "2026-11-06 13:24:00 UTC"
+  "updated_at": "2026-11-06 21:23:11 UTC"
 }
