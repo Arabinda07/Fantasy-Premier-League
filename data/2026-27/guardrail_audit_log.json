@@ -6,22 +6,6 @@
     "anomaly_type": "clean",
     "recommendation": "proceed",
     "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
-    "timestamp": "2026-09-26T10:28:04.392899+00:00",
-    "details": {
-      "starting_xp": 0.0,
-      "captain": null,
-      "action_summary": "HOLD WILDCARD & HARVEST BENCH: Squad holds £1.9M in trapped bench capital (Calvert-Lewin). Pruning via 2 FTs yields +2.1 pts into starters without burning Wildcard (Option Hurdle: 22.7 pts). | [!] Price Alert: B.Fernandes (-147,299), Szoboszlai (-165,343) approaching drop",
-      "outlier_flags": []
-    },
-    "gameweek": 6
-  },
-  {
-    "passed": true,
-    "severity_score": 0.1,
-    "abort_probability": 0.02,
-    "anomaly_type": "clean",
-    "recommendation": "proceed",
-    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
     "timestamp": "2026-09-27T10:59:33.471391+00:00",
     "details": {
       "starting_xp": 0.0,
@@ -795,6 +779,22 @@
       "starting_xp": 0.0,
       "captain": null,
       "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Van Hecke | [OUT] Calafiori [Squad holds £6.8M in trapped bench capital (Calafiori, Cherki). Pruning via 2 FTs yields +6.5 pts into starters without burning Wildcard (Option Hurdle: 17.8 pts).] | [!] Nightly Price Risk: Gibbs-White (-96,065), Cherki (-246,872) (Execute before 01:15 GMT to protect value)",
+      "outlier_flags": []
+    },
+    "gameweek": 10
+  },
+  {
+    "passed": true,
+    "severity_score": 0.1,
+    "abort_probability": 0.02,
+    "anomaly_type": "clean",
+    "recommendation": "proceed",
+    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
+    "timestamp": "2026-11-06T13:24:10.016614+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Van Hecke | [OUT] Calafiori [Squad holds £6.8M in trapped bench capital (Calafiori, Cherki). Pruning via 2 FTs yields +6.5 pts into starters without burning Wildcard (Option Hurdle: 17.8 pts).] | [!] Nightly Price Risk: Gibbs-White (-154,029), Mbeumo (-128,837), Cherki (-348,928), Calvert-Lewin (-181,176) (Execute before 01:15 GMT to protect value)",
       "outlier_flags": []
     },
     "gameweek": 10
