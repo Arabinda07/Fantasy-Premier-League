@@ -63,9 +63,9 @@
         "team_name": "Expected TouLouse",
         "overall_rank": 1,
         "rank": 1,
-        "overall_points": 655,
-        "total_points": 655,
-        "event_points": 16,
+        "overall_points": 679,
+        "total_points": 679,
+        "event_points": 40,
         "captain_name": "Haaland",
         "captain_code": 223094,
         "shared_players": [
@@ -189,7 +189,7 @@
             "name": "N.Jackson",
             "pos": "FWD",
             "team": "AVL",
-            "cost": 7.0,
+            "cost": 7.1,
             "xp": 4.6
           },
           {
@@ -236,756 +236,14 @@
         "overlap_pct": 40.0
       },
       {
-        "entry_id": 5825581,
-        "manager_name": "Darth Vader",
-        "team_name": "Sound of Tzolis",
-        "overall_rank": 2,
-        "rank": 2,
-        "overall_points": 616,
-        "total_points": 616,
-        "event_points": 0,
-        "captain_name": "Haaland",
-        "captain_code": 223094,
-        "shared_players": [
-          "Raya",
-          "De Cuyper",
-          "Calafiori",
-          "Palmer",
-          "Evanilson",
-          "Tavernier"
-        ],
-        "differentials": [
-          "Gvardiol",
-          "Truffert",
-          "Rice",
-          "N.Jackson",
-          "Haaland",
-          "Verbruggen",
-          "Ndiaye",
-          "M.Sangar\u00e9",
-          "Rodon"
-        ],
-        "user_differentials": [
-          "Gabriel",
-          "Robinson",
-          "Gibbs-White",
-          "Mbeumo",
-          "Cherki",
-          "Calvert-Lewin",
-          "Leno",
-          "Barry",
-          "Robertson"
-        ],
-        "user_differential_cards": [
-          {
-            "name": "Gabriel",
-            "pos": "DEF",
-            "team": "ARS",
-            "cost": 8.1,
-            "xp": 5.8
-          },
-          {
-            "name": "Robinson",
-            "pos": "DEF",
-            "team": "FUL",
-            "cost": 4.4,
-            "xp": 4.2
-          },
-          {
-            "name": "Gibbs-White",
-            "pos": "MID",
-            "team": "NFO",
-            "cost": 7.8,
-            "xp": 4.4
-          },
-          {
-            "name": "Mbeumo",
-            "pos": "MID",
-            "team": "MUN",
-            "cost": 7.9,
-            "xp": 4.4
-          },
-          {
-            "name": "Cherki",
-            "pos": "MID",
-            "team": "MCI",
-            "cost": 7.9,
-            "xp": 3.4
-          },
-          {
-            "name": "Calvert-Lewin",
-            "pos": "FWD",
-            "team": "LEE",
-            "cost": 6.0,
-            "xp": 2.9
-          },
-          {
-            "name": "Leno",
-            "pos": "GK",
-            "team": "FUL",
-            "cost": 4.5,
-            "xp": 4.5
-          },
-          {
-            "name": "Barry",
-            "pos": "FWD",
-            "team": "EVE",
-            "cost": 5.7,
-            "xp": 4.4
-          },
-          {
-            "name": "Robertson",
-            "pos": "DEF",
-            "team": "TOT",
-            "cost": 4.3,
-            "xp": 4.9
-          }
-        ],
-        "rival_differential_cards": [
-          {
-            "name": "Gvardiol",
-            "pos": "DEF",
-            "team": "MCI",
-            "cost": 5.7,
-            "xp": 3.2
-          },
-          {
-            "name": "Truffert",
-            "pos": "DEF",
-            "team": "BOU",
-            "cost": 5.4,
-            "xp": 4.0
-          },
-          {
-            "name": "Rice",
-            "pos": "MID",
-            "team": "ARS",
-            "cost": 7.5,
-            "xp": 3.7
-          },
-          {
-            "name": "N.Jackson",
-            "pos": "FWD",
-            "team": "AVL",
-            "cost": 7.0,
-            "xp": 4.6
-          },
-          {
-            "name": "Haaland",
-            "pos": "FWD",
-            "team": "MCI",
-            "cost": 15.8,
-            "xp": 4.4
-          },
-          {
-            "name": "Verbruggen",
-            "pos": "GK",
-            "team": "BHA",
-            "cost": 4.6,
-            "xp": 4.3
-          },
-          {
-            "name": "Ndiaye",
-            "pos": "MID",
-            "team": "MCI",
-            "cost": 5.8,
-            "xp": 3.3
-          },
-          {
-            "name": "M.Sangar\u00e9",
-            "pos": "MID",
-            "team": "BRE",
-            "cost": 5.4,
-            "xp": 2.7
-          },
-          {
-            "name": "Rodon",
-            "pos": "DEF",
-            "team": "LEE",
-            "cost": 4.2,
-            "xp": 2.4
-          }
-        ],
-        "your_upside": 38.9,
-        "rival_upside": 32.6,
-        "net_delta": 6.3,
-        "threat_level": "HIGH",
-        "overlap_count": 6,
-        "overlap_pct": 40.0
-      },
-      {
-        "entry_id": 2721839,
-        "manager_name": "Pratik Dutta",
-        "team_name": "Its not done yet",
-        "overall_rank": 3,
-        "rank": 3,
-        "overall_points": 602,
-        "total_points": 602,
-        "event_points": 0,
-        "captain_name": "Haaland",
-        "captain_code": 223094,
-        "shared_players": [
-          "Raya",
-          "Calafiori"
-        ],
-        "differentials": [
-          "O'Shea",
-          "Muharemovi\u0107",
-          "Tzolis",
-          "Barnes",
-          "Rogers",
-          "Gro\u00df",
-          "Thiago",
-          "Isak",
-          "Haaland",
-          "Verbruggen",
-          "Ndiaye",
-          "Ajer",
-          "Gu\u00e9hi"
-        ],
-        "user_differentials": [
-          "Gabriel",
-          "Robinson",
-          "De Cuyper",
-          "Gibbs-White",
-          "Mbeumo",
-          "Palmer",
-          "Cherki",
-          "Calvert-Lewin",
-          "Evanilson",
-          "Leno",
-          "Tavernier",
-          "Barry",
-          "Robertson"
-        ],
-        "user_differential_cards": [
-          {
-            "name": "Gabriel",
-            "pos": "DEF",
-            "team": "ARS",
-            "cost": 8.1,
-            "xp": 5.8
-          },
-          {
-            "name": "Robinson",
-            "pos": "DEF",
-            "team": "FUL",
-            "cost": 4.4,
-            "xp": 4.2
-          },
-          {
-            "name": "De Cuyper",
-            "pos": "DEF",
-            "team": "BHA",
-            "cost": 5.4,
-            "xp": 4.6
-          },
-          {
-            "name": "Gibbs-White",
-            "pos": "MID",
-            "team": "NFO",
-            "cost": 7.8,
-            "xp": 4.4
-          },
-          {
-            "name": "Mbeumo",
-            "pos": "MID",
-            "team": "MUN",
-            "cost": 7.9,
-            "xp": 4.4
-          },
-          {
-            "name": "Palmer",
-            "pos": "MID",
-            "team": "CHE",
-            "cost": 9.8,
-            "xp": 4.3
-          },
-          {
-            "name": "Cherki",
-            "pos": "MID",
-            "team": "MCI",
-            "cost": 7.9,
-            "xp": 3.4
-          },
-          {
-            "name": "Calvert-Lewin",
-            "pos": "FWD",
-            "team": "LEE",
-            "cost": 6.0,
-            "xp": 2.9
-          },
-          {
-            "name": "Evanilson",
-            "pos": "FWD",
-            "team": "BOU",
-            "cost": 6.5,
-            "xp": 5.6
-          },
-          {
-            "name": "Leno",
-            "pos": "GK",
-            "team": "FUL",
-            "cost": 4.5,
-            "xp": 4.5
-          },
-          {
-            "name": "Tavernier",
-            "pos": "MID",
-            "team": "BOU",
-            "cost": 6.6,
-            "xp": 5.2
-          },
-          {
-            "name": "Barry",
-            "pos": "FWD",
-            "team": "EVE",
-            "cost": 5.7,
-            "xp": 4.4
-          },
-          {
-            "name": "Robertson",
-            "pos": "DEF",
-            "team": "TOT",
-            "cost": 4.3,
-            "xp": 4.9
-          }
-        ],
-        "rival_differential_cards": [
-          {
-            "name": "O'Shea",
-            "pos": "DEF",
-            "team": "IPS",
-            "cost": 4.0,
-            "xp": 1.6
-          },
-          {
-            "name": "Muharemovi\u0107",
-            "pos": "DEF",
-            "team": "LEE",
-            "cost": 5.1,
-            "xp": 3.1
-          },
-          {
-            "name": "Tzolis",
-            "pos": "MID",
-            "team": "ARS",
-            "cost": 6.1,
-            "xp": 3.0
-          },
-          {
-            "name": "Barnes",
-            "pos": "MID",
-            "team": "NEW",
-            "cost": 6.1,
-            "xp": 2.8
-          },
-          {
-            "name": "Rogers",
-            "pos": "MID",
-            "team": "CHE",
-            "cost": 8.2,
-            "xp": 3.9
-          },
-          {
-            "name": "Gro\u00df",
-            "pos": "MID",
-            "team": "BHA",
-            "cost": 6.3,
-            "xp": 3.5
-          },
-          {
-            "name": "Thiago",
-            "pos": "FWD",
-            "team": "BRE",
-            "cost": 7.8,
-            "xp": 3.6
-          },
-          {
-            "name": "Isak",
-            "pos": "FWD",
-            "team": "LIV",
-            "cost": 9.2,
-            "xp": 4.7
-          },
-          {
-            "name": "Haaland",
-            "pos": "FWD",
-            "team": "MCI",
-            "cost": 15.8,
-            "xp": 4.4
-          },
-          {
-            "name": "Verbruggen",
-            "pos": "GK",
-            "team": "BHA",
-            "cost": 4.6,
-            "xp": 4.3
-          },
-          {
-            "name": "Ndiaye",
-            "pos": "MID",
-            "team": "MCI",
-            "cost": 5.8,
-            "xp": 3.3
-          },
-          {
-            "name": "Ajer",
-            "pos": "DEF",
-            "team": "BRE",
-            "cost": 4.5,
-            "xp": 2.4
-          },
-          {
-            "name": "Gu\u00e9hi",
-            "pos": "DEF",
-            "team": "MCI",
-            "cost": 6.0,
-            "xp": 2.5
-          }
-        ],
-        "your_upside": 58.6,
-        "rival_upside": 43.1,
-        "net_delta": 15.5,
-        "threat_level": "HIGH",
-        "overlap_count": 2,
-        "overlap_pct": 13.3
-      },
-      {
-        "entry_id": 974090,
-        "manager_name": "MONODIP ROY",
-        "team_name": "VENGA ARTETA",
-        "overall_rank": 4,
-        "rank": 4,
-        "overall_points": 599,
-        "total_points": 599,
-        "event_points": 0,
-        "captain_name": "Haaland",
-        "captain_code": 223094,
-        "shared_players": [
-          "Raya",
-          "De Cuyper",
-          "Calafiori",
-          "Mbeumo",
-          "Palmer",
-          "Calvert-Lewin",
-          "Evanilson"
-        ],
-        "differentials": [
-          "Konsa",
-          "Gro\u00df",
-          "Rogers",
-          "Haaland",
-          "Dubravka",
-          "Hall",
-          "van Ewijk",
-          "Olusesi"
-        ],
-        "user_differentials": [
-          "Gabriel",
-          "Robinson",
-          "Gibbs-White",
-          "Cherki",
-          "Leno",
-          "Tavernier",
-          "Barry",
-          "Robertson"
-        ],
-        "user_differential_cards": [
-          {
-            "name": "Gabriel",
-            "pos": "DEF",
-            "team": "ARS",
-            "cost": 8.1,
-            "xp": 5.8
-          },
-          {
-            "name": "Robinson",
-            "pos": "DEF",
-            "team": "FUL",
-            "cost": 4.4,
-            "xp": 4.2
-          },
-          {
-            "name": "Gibbs-White",
-            "pos": "MID",
-            "team": "NFO",
-            "cost": 7.8,
-            "xp": 4.4
-          },
-          {
-            "name": "Cherki",
-            "pos": "MID",
-            "team": "MCI",
-            "cost": 7.9,
-            "xp": 3.4
-          },
-          {
-            "name": "Leno",
-            "pos": "GK",
-            "team": "FUL",
-            "cost": 4.5,
-            "xp": 4.5
-          },
-          {
-            "name": "Tavernier",
-            "pos": "MID",
-            "team": "BOU",
-            "cost": 6.6,
-            "xp": 5.2
-          },
-          {
-            "name": "Barry",
-            "pos": "FWD",
-            "team": "EVE",
-            "cost": 5.7,
-            "xp": 4.4
-          },
-          {
-            "name": "Robertson",
-            "pos": "DEF",
-            "team": "TOT",
-            "cost": 4.3,
-            "xp": 4.9
-          }
-        ],
-        "rival_differential_cards": [
-          {
-            "name": "Konsa",
-            "pos": "DEF",
-            "team": "ARS",
-            "cost": 4.8,
-            "xp": 4.9
-          },
-          {
-            "name": "Gro\u00df",
-            "pos": "MID",
-            "team": "BHA",
-            "cost": 6.3,
-            "xp": 3.5
-          },
-          {
-            "name": "Rogers",
-            "pos": "MID",
-            "team": "CHE",
-            "cost": 8.2,
-            "xp": 3.9
-          },
-          {
-            "name": "Haaland",
-            "pos": "FWD",
-            "team": "MCI",
-            "cost": 15.8,
-            "xp": 4.4
-          },
-          {
-            "name": "Dubravka",
-            "pos": "GK",
-            "team": "TOT",
-            "cost": 4.0,
-            "xp": 0.1
-          },
-          {
-            "name": "Hall",
-            "pos": "DEF",
-            "team": "NEW",
-            "cost": 5.2,
-            "xp": 2.2
-          },
-          {
-            "name": "van Ewijk",
-            "pos": "DEF",
-            "team": "COV",
-            "cost": 3.9,
-            "xp": 2.9
-          },
-          {
-            "name": "Olusesi",
-            "pos": "MID",
-            "team": "TOT",
-            "cost": 4.4,
-            "xp": 0.1
-          }
-        ],
-        "your_upside": 36.8,
-        "rival_upside": 22.0,
-        "net_delta": 14.8,
-        "threat_level": "HIGH",
-        "overlap_count": 7,
-        "overlap_pct": 46.7
-      },
-      {
-        "entry_id": 8489455,
-        "manager_name": "agniv dey",
-        "team_name": "agniv's Team",
-        "overall_rank": 5,
-        "rank": 5,
-        "overall_points": 597,
-        "total_points": 597,
-        "event_points": 0,
-        "captain_name": "Isak",
-        "captain_code": 219168,
-        "shared_players": [
-          "Raya",
-          "Gabriel",
-          "De Cuyper",
-          "Mbeumo",
-          "Palmer",
-          "Cherki",
-          "Robertson"
-        ],
-        "differentials": [
-          "Gu\u00e9hi",
-          "Rogers",
-          "\u00d8degaard",
-          "Jo\u00e3o Pedro",
-          "Isak",
-          "Steele",
-          "Alderete",
-          "Kusi-Asare"
-        ],
-        "user_differentials": [
-          "Robinson",
-          "Calafiori",
-          "Gibbs-White",
-          "Calvert-Lewin",
-          "Evanilson",
-          "Leno",
-          "Tavernier",
-          "Barry"
-        ],
-        "user_differential_cards": [
-          {
-            "name": "Robinson",
-            "pos": "DEF",
-            "team": "FUL",
-            "cost": 4.4,
-            "xp": 4.2
-          },
-          {
-            "name": "Calafiori",
-            "pos": "DEF",
-            "team": "ARS",
-            "cost": 5.9,
-            "xp": 5.2
-          },
-          {
-            "name": "Gibbs-White",
-            "pos": "MID",
-            "team": "NFO",
-            "cost": 7.8,
-            "xp": 4.4
-          },
-          {
-            "name": "Calvert-Lewin",
-            "pos": "FWD",
-            "team": "LEE",
-            "cost": 6.0,
-            "xp": 2.9
-          },
-          {
-            "name": "Evanilson",
-            "pos": "FWD",
-            "team": "BOU",
-            "cost": 6.5,
-            "xp": 5.6
-          },
-          {
-            "name": "Leno",
-            "pos": "GK",
-            "team": "FUL",
-            "cost": 4.5,
-            "xp": 4.5
-          },
-          {
-            "name": "Tavernier",
-            "pos": "MID",
-            "team": "BOU",
-            "cost": 6.6,
-            "xp": 5.2
-          },
-          {
-            "name": "Barry",
-            "pos": "FWD",
-            "team": "EVE",
-            "cost": 5.7,
-            "xp": 4.4
-          }
-        ],
-        "rival_differential_cards": [
-          {
-            "name": "Gu\u00e9hi",
-            "pos": "DEF",
-            "team": "MCI",
-            "cost": 6.0,
-            "xp": 2.5
-          },
-          {
-            "name": "Rogers",
-            "pos": "MID",
-            "team": "CHE",
-            "cost": 8.2,
-            "xp": 3.9
-          },
-          {
-            "name": "\u00d8degaard",
-            "pos": "MID",
-            "team": "ARS",
-            "cost": 6.7,
-            "xp": 3.8
-          },
-          {
-            "name": "Jo\u00e3o Pedro",
-            "pos": "FWD",
-            "team": "CHE",
-            "cost": 7.7,
-            "xp": 0.1
-          },
-          {
-            "name": "Isak",
-            "pos": "FWD",
-            "team": "LIV",
-            "cost": 9.2,
-            "xp": 4.7
-          },
-          {
-            "name": "Steele",
-            "pos": "GK",
-            "team": "BHA",
-            "cost": 4.0,
-            "xp": 0.1
-          },
-          {
-            "name": "Alderete",
-            "pos": "DEF",
-            "team": "SUN",
-            "cost": 4.8,
-            "xp": 0.0
-          },
-          {
-            "name": "Kusi-Asare",
-            "pos": "FWD",
-            "team": "FUL",
-            "cost": 4.3,
-            "xp": 0.1
-          }
-        ],
-        "your_upside": 36.4,
-        "rival_upside": 15.2,
-        "net_delta": 21.2,
-        "threat_level": "HIGH",
-        "overlap_count": 7,
-        "overlap_pct": 46.7
-      },
-      {
         "entry_id": 5837703,
         "manager_name": "Ted Lasso",
         "team_name": "Super Mik",
-        "overall_rank": 6,
-        "rank": 6,
-        "overall_points": 596,
-        "total_points": 596,
-        "event_points": 0,
+        "overall_rank": 2,
+        "rank": 2,
+        "overall_points": 638,
+        "total_points": 638,
+        "event_points": 42,
         "captain_name": "Haaland",
         "captain_code": 223094,
         "shared_players": [
@@ -1109,7 +367,7 @@
             "name": "N.Jackson",
             "pos": "FWD",
             "team": "AVL",
-            "cost": 7.0,
+            "cost": 7.1,
             "xp": 4.6
           },
           {
@@ -1154,6 +412,748 @@
         "threat_level": "HIGH",
         "overlap_count": 6,
         "overlap_pct": 40.0
+      },
+      {
+        "entry_id": 5825581,
+        "manager_name": "Darth Vader",
+        "team_name": "Sound of Tzolis",
+        "overall_rank": 3,
+        "rank": 3,
+        "overall_points": 635,
+        "total_points": 635,
+        "event_points": 19,
+        "captain_name": "Haaland",
+        "captain_code": 223094,
+        "shared_players": [
+          "Raya",
+          "De Cuyper",
+          "Calafiori",
+          "Palmer",
+          "Evanilson",
+          "Tavernier"
+        ],
+        "differentials": [
+          "Gvardiol",
+          "Truffert",
+          "Rice",
+          "N.Jackson",
+          "Haaland",
+          "Verbruggen",
+          "Ndiaye",
+          "M.Sangar\u00e9",
+          "Rodon"
+        ],
+        "user_differentials": [
+          "Gabriel",
+          "Robinson",
+          "Gibbs-White",
+          "Mbeumo",
+          "Cherki",
+          "Calvert-Lewin",
+          "Leno",
+          "Barry",
+          "Robertson"
+        ],
+        "user_differential_cards": [
+          {
+            "name": "Gabriel",
+            "pos": "DEF",
+            "team": "ARS",
+            "cost": 8.1,
+            "xp": 5.8
+          },
+          {
+            "name": "Robinson",
+            "pos": "DEF",
+            "team": "FUL",
+            "cost": 4.4,
+            "xp": 4.2
+          },
+          {
+            "name": "Gibbs-White",
+            "pos": "MID",
+            "team": "NFO",
+            "cost": 7.8,
+            "xp": 4.4
+          },
+          {
+            "name": "Mbeumo",
+            "pos": "MID",
+            "team": "MUN",
+            "cost": 7.9,
+            "xp": 4.4
+          },
+          {
+            "name": "Cherki",
+            "pos": "MID",
+            "team": "MCI",
+            "cost": 7.9,
+            "xp": 3.4
+          },
+          {
+            "name": "Calvert-Lewin",
+            "pos": "FWD",
+            "team": "LEE",
+            "cost": 6.0,
+            "xp": 2.9
+          },
+          {
+            "name": "Leno",
+            "pos": "GK",
+            "team": "FUL",
+            "cost": 4.5,
+            "xp": 4.5
+          },
+          {
+            "name": "Barry",
+            "pos": "FWD",
+            "team": "EVE",
+            "cost": 5.7,
+            "xp": 4.4
+          },
+          {
+            "name": "Robertson",
+            "pos": "DEF",
+            "team": "TOT",
+            "cost": 4.3,
+            "xp": 4.9
+          }
+        ],
+        "rival_differential_cards": [
+          {
+            "name": "Gvardiol",
+            "pos": "DEF",
+            "team": "MCI",
+            "cost": 5.7,
+            "xp": 3.2
+          },
+          {
+            "name": "Truffert",
+            "pos": "DEF",
+            "team": "BOU",
+            "cost": 5.4,
+            "xp": 4.0
+          },
+          {
+            "name": "Rice",
+            "pos": "MID",
+            "team": "ARS",
+            "cost": 7.5,
+            "xp": 3.7
+          },
+          {
+            "name": "N.Jackson",
+            "pos": "FWD",
+            "team": "AVL",
+            "cost": 7.1,
+            "xp": 4.6
+          },
+          {
+            "name": "Haaland",
+            "pos": "FWD",
+            "team": "MCI",
+            "cost": 15.8,
+            "xp": 4.4
+          },
+          {
+            "name": "Verbruggen",
+            "pos": "GK",
+            "team": "BHA",
+            "cost": 4.6,
+            "xp": 4.3
+          },
+          {
+            "name": "Ndiaye",
+            "pos": "MID",
+            "team": "MCI",
+            "cost": 5.8,
+            "xp": 3.3
+          },
+          {
+            "name": "M.Sangar\u00e9",
+            "pos": "MID",
+            "team": "BRE",
+            "cost": 5.4,
+            "xp": 2.7
+          },
+          {
+            "name": "Rodon",
+            "pos": "DEF",
+            "team": "LEE",
+            "cost": 4.2,
+            "xp": 2.4
+          }
+        ],
+        "your_upside": 38.9,
+        "rival_upside": 32.6,
+        "net_delta": 6.3,
+        "threat_level": "HIGH",
+        "overlap_count": 6,
+        "overlap_pct": 40.0
+      },
+      {
+        "entry_id": 2721839,
+        "manager_name": "Pratik Dutta",
+        "team_name": "Its not done yet",
+        "overall_rank": 4,
+        "rank": 4,
+        "overall_points": 633,
+        "total_points": 633,
+        "event_points": 31,
+        "captain_name": "Haaland",
+        "captain_code": 223094,
+        "shared_players": [
+          "Raya",
+          "Calafiori"
+        ],
+        "differentials": [
+          "O'Shea",
+          "Muharemovi\u0107",
+          "Tzolis",
+          "Barnes",
+          "Rogers",
+          "Gro\u00df",
+          "Thiago",
+          "Isak",
+          "Haaland",
+          "Verbruggen",
+          "Ndiaye",
+          "Ajer",
+          "Gu\u00e9hi"
+        ],
+        "user_differentials": [
+          "Gabriel",
+          "Robinson",
+          "De Cuyper",
+          "Gibbs-White",
+          "Mbeumo",
+          "Palmer",
+          "Cherki",
+          "Calvert-Lewin",
+          "Evanilson",
+          "Leno",
+          "Tavernier",
+          "Barry",
+          "Robertson"
+        ],
+        "user_differential_cards": [
+          {
+            "name": "Gabriel",
+            "pos": "DEF",
+            "team": "ARS",
+            "cost": 8.1,
+            "xp": 5.8
+          },
+          {
+            "name": "Robinson",
+            "pos": "DEF",
+            "team": "FUL",
+            "cost": 4.4,
+            "xp": 4.2
+          },
+          {
+            "name": "De Cuyper",
+            "pos": "DEF",
+            "team": "BHA",
+            "cost": 5.4,
+            "xp": 4.6
+          },
+          {
+            "name": "Gibbs-White",
+            "pos": "MID",
+            "team": "NFO",
+            "cost": 7.8,
+            "xp": 4.4
+          },
+          {
+            "name": "Mbeumo",
+            "pos": "MID",
+            "team": "MUN",
+            "cost": 7.9,
+            "xp": 4.4
+          },
+          {
+            "name": "Palmer",
+            "pos": "MID",
+            "team": "CHE",
+            "cost": 9.8,
+            "xp": 4.3
+          },
+          {
+            "name": "Cherki",
+            "pos": "MID",
+            "team": "MCI",
+            "cost": 7.9,
+            "xp": 3.4
+          },
+          {
+            "name": "Calvert-Lewin",
+            "pos": "FWD",
+            "team": "LEE",
+            "cost": 6.0,
+            "xp": 2.9
+          },
+          {
+            "name": "Evanilson",
+            "pos": "FWD",
+            "team": "BOU",
+            "cost": 6.5,
+            "xp": 5.6
+          },
+          {
+            "name": "Leno",
+            "pos": "GK",
+            "team": "FUL",
+            "cost": 4.5,
+            "xp": 4.5
+          },
+          {
+            "name": "Tavernier",
+            "pos": "MID",
+            "team": "BOU",
+            "cost": 6.7,
+            "xp": 5.2
+          },
+          {
+            "name": "Barry",
+            "pos": "FWD",
+            "team": "EVE",
+            "cost": 5.7,
+            "xp": 4.4
+          },
+          {
+            "name": "Robertson",
+            "pos": "DEF",
+            "team": "TOT",
+            "cost": 4.3,
+            "xp": 4.9
+          }
+        ],
+        "rival_differential_cards": [
+          {
+            "name": "O'Shea",
+            "pos": "DEF",
+            "team": "IPS",
+            "cost": 4.0,
+            "xp": 1.6
+          },
+          {
+            "name": "Muharemovi\u0107",
+            "pos": "DEF",
+            "team": "LEE",
+            "cost": 5.1,
+            "xp": 3.1
+          },
+          {
+            "name": "Tzolis",
+            "pos": "MID",
+            "team": "ARS",
+            "cost": 6.1,
+            "xp": 3.0
+          },
+          {
+            "name": "Barnes",
+            "pos": "MID",
+            "team": "NEW",
+            "cost": 6.1,
+            "xp": 2.8
+          },
+          {
+            "name": "Rogers",
+            "pos": "MID",
+            "team": "CHE",
+            "cost": 8.2,
+            "xp": 3.9
+          },
+          {
+            "name": "Gro\u00df",
+            "pos": "MID",
+            "team": "BHA",
+            "cost": 6.3,
+            "xp": 3.5
+          },
+          {
+            "name": "Thiago",
+            "pos": "FWD",
+            "team": "BRE",
+            "cost": 7.8,
+            "xp": 3.6
+          },
+          {
+            "name": "Isak",
+            "pos": "FWD",
+            "team": "LIV",
+            "cost": 9.2,
+            "xp": 4.7
+          },
+          {
+            "name": "Haaland",
+            "pos": "FWD",
+            "team": "MCI",
+            "cost": 15.8,
+            "xp": 4.4
+          },
+          {
+            "name": "Verbruggen",
+            "pos": "GK",
+            "team": "BHA",
+            "cost": 4.6,
+            "xp": 4.3
+          },
+          {
+            "name": "Ndiaye",
+            "pos": "MID",
+            "team": "MCI",
+            "cost": 5.8,
+            "xp": 3.3
+          },
+          {
+            "name": "Ajer",
+            "pos": "DEF",
+            "team": "BRE",
+            "cost": 4.5,
+            "xp": 2.4
+          },
+          {
+            "name": "Gu\u00e9hi",
+            "pos": "DEF",
+            "team": "MCI",
+            "cost": 6.0,
+            "xp": 2.5
+          }
+        ],
+        "your_upside": 58.6,
+        "rival_upside": 43.1,
+        "net_delta": 15.5,
+        "threat_level": "HIGH",
+        "overlap_count": 2,
+        "overlap_pct": 13.3
+      },
+      {
+        "entry_id": 8489455,
+        "manager_name": "agniv dey",
+        "team_name": "agniv's Team",
+        "overall_rank": 5,
+        "rank": 5,
+        "overall_points": 631,
+        "total_points": 631,
+        "event_points": 34,
+        "captain_name": "Isak",
+        "captain_code": 219168,
+        "shared_players": [
+          "Raya",
+          "Gabriel",
+          "De Cuyper",
+          "Mbeumo",
+          "Palmer",
+          "Cherki",
+          "Robertson"
+        ],
+        "differentials": [
+          "Gu\u00e9hi",
+          "Rogers",
+          "\u00d8degaard",
+          "Jo\u00e3o Pedro",
+          "Isak",
+          "Steele",
+          "Alderete",
+          "Kusi-Asare"
+        ],
+        "user_differentials": [
+          "Robinson",
+          "Calafiori",
+          "Gibbs-White",
+          "Calvert-Lewin",
+          "Evanilson",
+          "Leno",
+          "Tavernier",
+          "Barry"
+        ],
+        "user_differential_cards": [
+          {
+            "name": "Robinson",
+            "pos": "DEF",
+            "team": "FUL",
+            "cost": 4.4,
+            "xp": 4.2
+          },
+          {
+            "name": "Calafiori",
+            "pos": "DEF",
+            "team": "ARS",
+            "cost": 5.9,
+            "xp": 5.2
+          },
+          {
+            "name": "Gibbs-White",
+            "pos": "MID",
+            "team": "NFO",
+            "cost": 7.8,
+            "xp": 4.4
+          },
+          {
+            "name": "Calvert-Lewin",
+            "pos": "FWD",
+            "team": "LEE",
+            "cost": 6.0,
+            "xp": 2.9
+          },
+          {
+            "name": "Evanilson",
+            "pos": "FWD",
+            "team": "BOU",
+            "cost": 6.5,
+            "xp": 5.6
+          },
+          {
+            "name": "Leno",
+            "pos": "GK",
+            "team": "FUL",
+            "cost": 4.5,
+            "xp": 4.5
+          },
+          {
+            "name": "Tavernier",
+            "pos": "MID",
+            "team": "BOU",
+            "cost": 6.7,
+            "xp": 5.2
+          },
+          {
+            "name": "Barry",
+            "pos": "FWD",
+            "team": "EVE",
+            "cost": 5.7,
+            "xp": 4.4
+          }
+        ],
+        "rival_differential_cards": [
+          {
+            "name": "Gu\u00e9hi",
+            "pos": "DEF",
+            "team": "MCI",
+            "cost": 6.0,
+            "xp": 2.5
+          },
+          {
+            "name": "Rogers",
+            "pos": "MID",
+            "team": "CHE",
+            "cost": 8.2,
+            "xp": 3.9
+          },
+          {
+            "name": "\u00d8degaard",
+            "pos": "MID",
+            "team": "ARS",
+            "cost": 6.7,
+            "xp": 3.8
+          },
+          {
+            "name": "Jo\u00e3o Pedro",
+            "pos": "FWD",
+            "team": "CHE",
+            "cost": 7.7,
+            "xp": 0.1
+          },
+          {
+            "name": "Isak",
+            "pos": "FWD",
+            "team": "LIV",
+            "cost": 9.2,
+            "xp": 4.7
+          },
+          {
+            "name": "Steele",
+            "pos": "GK",
+            "team": "BHA",
+            "cost": 4.0,
+            "xp": 0.1
+          },
+          {
+            "name": "Alderete",
+            "pos": "DEF",
+            "team": "SUN",
+            "cost": 4.8,
+            "xp": 0.0
+          },
+          {
+            "name": "Kusi-Asare",
+            "pos": "FWD",
+            "team": "FUL",
+            "cost": 4.3,
+            "xp": 0.1
+          }
+        ],
+        "your_upside": 36.4,
+        "rival_upside": 15.2,
+        "net_delta": 21.2,
+        "threat_level": "HIGH",
+        "overlap_count": 7,
+        "overlap_pct": 46.7
+      },
+      {
+        "entry_id": 974090,
+        "manager_name": "MONODIP ROY",
+        "team_name": "VENGA ARTETA",
+        "overall_rank": 6,
+        "rank": 6,
+        "overall_points": 625,
+        "total_points": 625,
+        "event_points": 26,
+        "captain_name": "Haaland",
+        "captain_code": 223094,
+        "shared_players": [
+          "Raya",
+          "De Cuyper",
+          "Calafiori",
+          "Mbeumo",
+          "Palmer",
+          "Calvert-Lewin",
+          "Evanilson"
+        ],
+        "differentials": [
+          "Konsa",
+          "Gro\u00df",
+          "Rogers",
+          "Haaland",
+          "Dubravka",
+          "Hall",
+          "van Ewijk",
+          "Olusesi"
+        ],
+        "user_differentials": [
+          "Gabriel",
+          "Robinson",
+          "Gibbs-White",
+          "Cherki",
+          "Leno",
+          "Tavernier",
+          "Barry",
+          "Robertson"
+        ],
+        "user_differential_cards": [
+          {
+            "name": "Gabriel",
+            "pos": "DEF",
+            "team": "ARS",
+            "cost": 8.1,
+            "xp": 5.8
+          },
+          {
+            "name": "Robinson",
+            "pos": "DEF",
+            "team": "FUL",
+            "cost": 4.4,
+            "xp": 4.2
+          },
+          {
+            "name": "Gibbs-White",
+            "pos": "MID",
+            "team": "NFO",
+            "cost": 7.8,
+            "xp": 4.4
+          },
+          {
+            "name": "Cherki",
+            "pos": "MID",
+            "team": "MCI",
+            "cost": 7.9,
+            "xp": 3.4
+          },
+          {
+            "name": "Leno",
+            "pos": "GK",
+            "team": "FUL",
+            "cost": 4.5,
+            "xp": 4.5
+          },
+          {
+            "name": "Tavernier",
+            "pos": "MID",
+            "team": "BOU",
+            "cost": 6.7,
+            "xp": 5.2
+          },
+          {
+            "name": "Barry",
+            "pos": "FWD",
+            "team": "EVE",
+            "cost": 5.7,
+            "xp": 4.4
+          },
+          {
+            "name": "Robertson",
+            "pos": "DEF",
+            "team": "TOT",
+            "cost": 4.3,
+            "xp": 4.9
+          }
+        ],
+        "rival_differential_cards": [
+          {
+            "name": "Konsa",
+            "pos": "DEF",
+            "team": "ARS",
+            "cost": 4.8,
+            "xp": 4.9
+          },
+          {
+            "name": "Gro\u00df",
+            "pos": "MID",
+            "team": "BHA",
+            "cost": 6.3,
+            "xp": 3.5
+          },
+          {
+            "name": "Rogers",
+            "pos": "MID",
+            "team": "CHE",
+            "cost": 8.2,
+            "xp": 3.9
+          },
+          {
+            "name": "Haaland",
+            "pos": "FWD",
+            "team": "MCI",
+            "cost": 15.8,
+            "xp": 4.4
+          },
+          {
+            "name": "Dubravka",
+            "pos": "GK",
+            "team": "TOT",
+            "cost": 4.0,
+            "xp": 0.1
+          },
+          {
+            "name": "Hall",
+            "pos": "DEF",
+            "team": "NEW",
+            "cost": 5.2,
+            "xp": 2.2
+          },
+          {
+            "name": "van Ewijk",
+            "pos": "DEF",
+            "team": "COV",
+            "cost": 3.9,
+            "xp": 2.9
+          },
+          {
+            "name": "Olusesi",
+            "pos": "MID",
+            "team": "TOT",
+            "cost": 4.4,
+            "xp": 0.1
+          }
+        ],
+        "your_upside": 36.8,
+        "rival_upside": 22.0,
+        "net_delta": 14.8,
+        "threat_level": "HIGH",
+        "overlap_count": 7,
+        "overlap_pct": 46.7
       }
     ],
     "league_id": 1305495,
@@ -2755,8 +2755,8 @@
           "is_captain": 0,
           "is_vice_captain": 1,
           "bench_order": null,
-          "ownership_pct": 0.472,
-          "eo": 0.8194,
+          "ownership_pct": 0.473,
+          "eo": 0.8212,
           "floor_p10": 1.9,
           "median_p50": 5.1,
           "ceiling_p90": 9.0,
@@ -2804,8 +2804,8 @@
           "is_captain": 1,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.255,
-          "eo": 0.459,
+          "ownership_pct": 0.256,
+          "eo": 0.4608,
           "floor_p10": 2.0,
           "median_p50": 5.5,
           "ceiling_p90": 9.8,
@@ -2902,8 +2902,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.306,
-          "eo": 0.5432,
+          "ownership_pct": 0.308,
+          "eo": 0.5467,
           "floor_p10": 2.0,
           "median_p50": 5.3,
           "ceiling_p90": 10.9,
@@ -2951,8 +2951,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.22,
-          "eo": 0.3893,
+          "ownership_pct": 0.222,
+          "eo": 0.3929,
           "floor_p10": 2.0,
           "median_p50": 5.3,
           "ceiling_p90": 10.9,
@@ -3000,8 +3000,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.466,
-          "eo": 0.766,
+          "ownership_pct": 0.469,
+          "eo": 0.7709,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 7.9,
@@ -3049,8 +3049,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.285,
-          "eo": 0.4753,
+          "ownership_pct": 0.286,
+          "eo": 0.4769,
           "floor_p10": 1.7,
           "median_p50": 4.6,
           "ceiling_p90": 9.4,
@@ -3098,8 +3098,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.092,
-          "eo": 0.1505,
+          "ownership_pct": 0.098,
+          "eo": 0.1603,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 9.0,
@@ -3147,8 +3147,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.198,
-          "eo": 0.325,
+          "ownership_pct": 0.197,
+          "eo": 0.3234,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 9.1,
@@ -3443,8 +3443,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": 4,
-          "ownership_pct": 0.184,
-          "eo": 0.2486,
+          "ownership_pct": 0.182,
+          "eo": 0.2459,
           "floor_p10": 1.0,
           "median_p50": 2.4,
           "ceiling_p90": 5.0,
@@ -3505,8 +3505,8 @@
           "is_captain": 0,
           "is_vice_captain": 1,
           "bench_order": null,
-          "ownership_pct": 0.472,
-          "eo": 0.8194,
+          "ownership_pct": 0.473,
+          "eo": 0.8212,
           "floor_p10": 1.9,
           "median_p50": 5.1,
           "ceiling_p90": 9.0,
@@ -3554,8 +3554,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.255,
-          "eo": 0.459,
+          "ownership_pct": 0.256,
+          "eo": 0.4608,
           "floor_p10": 2.0,
           "median_p50": 5.5,
           "ceiling_p90": 9.8,
@@ -3652,8 +3652,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.306,
-          "eo": 0.5432,
+          "ownership_pct": 0.308,
+          "eo": 0.5467,
           "floor_p10": 2.0,
           "median_p50": 5.3,
           "ceiling_p90": 10.9,
@@ -3701,8 +3701,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.22,
-          "eo": 0.3893,
+          "ownership_pct": 0.222,
+          "eo": 0.3929,
           "floor_p10": 2.0,
           "median_p50": 5.3,
           "ceiling_p90": 10.9,
@@ -3750,8 +3750,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.466,
-          "eo": 0.766,
+          "ownership_pct": 0.469,
+          "eo": 0.7709,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 7.9,
@@ -3799,8 +3799,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.285,
-          "eo": 0.4753,
+          "ownership_pct": 0.286,
+          "eo": 0.4769,
           "floor_p10": 1.7,
           "median_p50": 4.6,
           "ceiling_p90": 9.4,
@@ -3848,8 +3848,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.092,
-          "eo": 0.1505,
+          "ownership_pct": 0.098,
+          "eo": 0.1603,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 9.0,
@@ -3897,8 +3897,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.198,
-          "eo": 0.325,
+          "ownership_pct": 0.197,
+          "eo": 0.3234,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 9.1,
@@ -4193,8 +4193,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": 4,
-          "ownership_pct": 0.184,
-          "eo": 0.2486,
+          "ownership_pct": 0.182,
+          "eo": 0.2459,
           "floor_p10": 1.0,
           "median_p50": 2.4,
           "ceiling_p90": 5.0,
@@ -4255,8 +4255,8 @@
           "is_captain": 0,
           "is_vice_captain": 1,
           "bench_order": null,
-          "ownership_pct": 0.255,
-          "eo": 0.459,
+          "ownership_pct": 0.256,
+          "eo": 0.4608,
           "floor_p10": 2.0,
           "median_p50": 5.5,
           "ceiling_p90": 9.8,
@@ -4353,8 +4353,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.306,
-          "eo": 0.5432,
+          "ownership_pct": 0.308,
+          "eo": 0.5467,
           "floor_p10": 2.0,
           "median_p50": 5.3,
           "ceiling_p90": 10.9,
@@ -4402,8 +4402,8 @@
           "is_captain": 1,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.22,
-          "eo": 0.3893,
+          "ownership_pct": 0.222,
+          "eo": 0.3929,
           "floor_p10": 2.0,
           "median_p50": 5.3,
           "ceiling_p90": 10.9,
@@ -4451,8 +4451,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.285,
-          "eo": 0.4753,
+          "ownership_pct": 0.286,
+          "eo": 0.4769,
           "floor_p10": 1.7,
           "median_p50": 4.6,
           "ceiling_p90": 9.4,
@@ -4500,8 +4500,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.092,
-          "eo": 0.1505,
+          "ownership_pct": 0.098,
+          "eo": 0.1603,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 9.0,
@@ -4647,8 +4647,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.198,
-          "eo": 0.325,
+          "ownership_pct": 0.197,
+          "eo": 0.3234,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 9.1,
@@ -4796,8 +4796,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": 1,
-          "ownership_pct": 0.472,
-          "eo": 0.8194,
+          "ownership_pct": 0.473,
+          "eo": 0.8212,
           "floor_p10": 1.9,
           "median_p50": 5.1,
           "ceiling_p90": 9.0,
@@ -4845,8 +4845,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": 2,
-          "ownership_pct": 0.466,
-          "eo": 0.766,
+          "ownership_pct": 0.469,
+          "eo": 0.7709,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 7.9,
@@ -4943,8 +4943,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": 4,
-          "ownership_pct": 0.184,
-          "eo": 0.2486,
+          "ownership_pct": 0.182,
+          "eo": 0.2459,
           "floor_p10": 1.0,
           "median_p50": 2.4,
           "ceiling_p90": 5.0,
@@ -5007,8 +5007,8 @@
           "is_captain": 1,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.255,
-          "eo": 0.459,
+          "ownership_pct": 0.256,
+          "eo": 0.4608,
           "floor_p10": 2.0,
           "median_p50": 5.5,
           "ceiling_p90": 9.8,
@@ -5105,8 +5105,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.045,
-          "eo": 0.0786,
+          "ownership_pct": 0.044,
+          "eo": 0.0769,
           "floor_p10": 1.9,
           "median_p50": 5.1,
           "ceiling_p90": 9.1,
@@ -5154,8 +5154,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.306,
-          "eo": 0.5432,
+          "ownership_pct": 0.308,
+          "eo": 0.5467,
           "floor_p10": 2.0,
           "median_p50": 5.3,
           "ceiling_p90": 10.9,
@@ -5203,8 +5203,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.22,
-          "eo": 0.3893,
+          "ownership_pct": 0.222,
+          "eo": 0.3929,
           "floor_p10": 2.0,
           "median_p50": 5.3,
           "ceiling_p90": 10.9,
@@ -5252,8 +5252,8 @@
           "is_captain": 0,
           "is_vice_captain": 1,
           "bench_order": null,
-          "ownership_pct": 0.285,
-          "eo": 0.4753,
+          "ownership_pct": 0.286,
+          "eo": 0.4769,
           "floor_p10": 1.7,
           "median_p50": 4.6,
           "ceiling_p90": 9.4,
@@ -5399,8 +5399,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.132,
-          "eo": 0.2276,
+          "ownership_pct": 0.136,
+          "eo": 0.2345,
           "floor_p10": 1.8,
           "median_p50": 5.0,
           "ceiling_p90": 8.9,
@@ -5757,8 +5757,8 @@
           "is_captain": 0,
           "is_vice_captain": 1,
           "bench_order": null,
-          "ownership_pct": 0.472,
-          "eo": 0.8194,
+          "ownership_pct": 0.473,
+          "eo": 0.8212,
           "floor_p10": 1.9,
           "median_p50": 5.1,
           "ceiling_p90": 9.0,
@@ -5806,8 +5806,8 @@
           "is_captain": 1,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.255,
-          "eo": 0.459,
+          "ownership_pct": 0.256,
+          "eo": 0.4608,
           "floor_p10": 2.0,
           "median_p50": 5.5,
           "ceiling_p90": 9.8,
@@ -5855,8 +5855,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.045,
-          "eo": 0.0786,
+          "ownership_pct": 0.044,
+          "eo": 0.0769,
           "floor_p10": 1.9,
           "median_p50": 5.1,
           "ceiling_p90": 9.1,
@@ -5904,8 +5904,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.306,
-          "eo": 0.5432,
+          "ownership_pct": 0.308,
+          "eo": 0.5467,
           "floor_p10": 2.0,
           "median_p50": 5.3,
           "ceiling_p90": 10.9,
@@ -5953,8 +5953,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.22,
-          "eo": 0.3893,
+          "ownership_pct": 0.222,
+          "eo": 0.3929,
           "floor_p10": 2.0,
           "median_p50": 5.3,
           "ceiling_p90": 10.9,
@@ -6002,8 +6002,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.285,
-          "eo": 0.4753,
+          "ownership_pct": 0.286,
+          "eo": 0.4769,
           "floor_p10": 1.7,
           "median_p50": 4.6,
           "ceiling_p90": 9.4,
@@ -6198,8 +6198,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.132,
-          "eo": 0.2276,
+          "ownership_pct": 0.136,
+          "eo": 0.2345,
           "floor_p10": 1.8,
           "median_p50": 5.0,
           "ceiling_p90": 8.9,
@@ -6347,8 +6347,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": 2,
-          "ownership_pct": 0.466,
-          "eo": 0.766,
+          "ownership_pct": 0.469,
+          "eo": 0.7709,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 7.9,
@@ -6396,8 +6396,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": 3,
-          "ownership_pct": 0.092,
-          "eo": 0.1505,
+          "ownership_pct": 0.098,
+          "eo": 0.1603,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 9.0,
@@ -6507,8 +6507,8 @@
           "is_captain": 0,
           "is_vice_captain": 1,
           "bench_order": null,
-          "ownership_pct": 0.472,
-          "eo": 0.8194,
+          "ownership_pct": 0.473,
+          "eo": 0.8212,
           "floor_p10": 1.9,
           "median_p50": 5.1,
           "ceiling_p90": 9.0,
@@ -6556,8 +6556,8 @@
           "is_captain": 1,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.255,
-          "eo": 0.459,
+          "ownership_pct": 0.256,
+          "eo": 0.4608,
           "floor_p10": 2.0,
           "median_p50": 5.5,
           "ceiling_p90": 9.8,
@@ -6654,8 +6654,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.306,
-          "eo": 0.5432,
+          "ownership_pct": 0.308,
+          "eo": 0.5467,
           "floor_p10": 2.0,
           "median_p50": 5.3,
           "ceiling_p90": 10.9,
@@ -6703,8 +6703,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.22,
-          "eo": 0.3893,
+          "ownership_pct": 0.222,
+          "eo": 0.3929,
           "floor_p10": 2.0,
           "median_p50": 5.3,
           "ceiling_p90": 10.9,
@@ -6752,8 +6752,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.466,
-          "eo": 0.766,
+          "ownership_pct": 0.469,
+          "eo": 0.7709,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 7.9,
@@ -6801,8 +6801,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.285,
-          "eo": 0.4753,
+          "ownership_pct": 0.286,
+          "eo": 0.4769,
           "floor_p10": 1.7,
           "median_p50": 4.6,
           "ceiling_p90": 9.4,
@@ -6850,8 +6850,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.092,
-          "eo": 0.1505,
+          "ownership_pct": 0.098,
+          "eo": 0.1603,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 9.0,
@@ -6997,8 +6997,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.184,
-          "eo": 0.2486,
+          "ownership_pct": 0.182,
+          "eo": 0.2459,
           "floor_p10": 1.0,
           "median_p50": 2.4,
           "ceiling_p90": 5.0,
@@ -7095,8 +7095,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.198,
-          "eo": 0.325,
+          "ownership_pct": 0.197,
+          "eo": 0.3234,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 9.1,
@@ -7256,8 +7256,8 @@
           "is_captain": 0,
           "is_vice_captain": 1,
           "bench_order": null,
-          "ownership_pct": 0.472,
-          "eo": 0.8194,
+          "ownership_pct": 0.473,
+          "eo": 0.8212,
           "floor_p10": 1.9,
           "median_p50": 5.1,
           "ceiling_p90": 9.0,
@@ -7305,8 +7305,8 @@
           "is_captain": 1,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.255,
-          "eo": 0.459,
+          "ownership_pct": 0.256,
+          "eo": 0.4608,
           "floor_p10": 2.0,
           "median_p50": 5.5,
           "ceiling_p90": 9.8,
@@ -7403,8 +7403,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.306,
-          "eo": 0.5432,
+          "ownership_pct": 0.308,
+          "eo": 0.5467,
           "floor_p10": 2.0,
           "median_p50": 5.3,
           "ceiling_p90": 10.9,
@@ -7452,8 +7452,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.22,
-          "eo": 0.3893,
+          "ownership_pct": 0.222,
+          "eo": 0.3929,
           "floor_p10": 2.0,
           "median_p50": 5.3,
           "ceiling_p90": 10.9,
@@ -7501,8 +7501,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.466,
-          "eo": 0.766,
+          "ownership_pct": 0.469,
+          "eo": 0.7709,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 7.9,
@@ -7550,8 +7550,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.285,
-          "eo": 0.4753,
+          "ownership_pct": 0.286,
+          "eo": 0.4769,
           "floor_p10": 1.7,
           "median_p50": 4.6,
           "ceiling_p90": 9.4,
@@ -7599,8 +7599,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.092,
-          "eo": 0.1505,
+          "ownership_pct": 0.098,
+          "eo": 0.1603,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 9.0,
@@ -7648,8 +7648,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.198,
-          "eo": 0.325,
+          "ownership_pct": 0.197,
+          "eo": 0.3234,
           "floor_p10": 1.6,
           "median_p50": 4.4,
           "ceiling_p90": 9.1,
@@ -7944,8 +7944,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": 4,
-          "ownership_pct": 0.184,
-          "eo": 0.2486,
+          "ownership_pct": 0.182,
+          "eo": 0.2459,
           "floor_p10": 1.0,
           "median_p50": 2.4,
           "ceiling_p90": 5.0,
