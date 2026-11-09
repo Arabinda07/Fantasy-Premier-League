@@ -1,58 +1,67 @@
 {
   "evaluated_gw": 10,
-  "evaluated_at": "2026-11-08T12:23:08.402158+00:00",
+  "evaluated_at": "2026-11-09T14:37:21.351620+00:00",
   "season": "2026-27",
   "total_players": 670,
-  "active_players": 456,
-  "overall_mae": 1.37,
-  "overall_rmse": 2.07,
-  "starters_mae": 1.98,
-  "starters_rmse": 2.51,
-  "rank_correlation": 0.304,
+  "active_players": 459,
+  "overall_mae": 1.26,
+  "overall_rmse": 2.13,
+  "starters_mae": 1.81,
+  "starters_rmse": 2.57,
+  "rank_correlation": 0.508,
   "brier_score_cs": 0.198,
   "positional": [
     {
       "pos": "GK",
       "count": 25,
-      "mae": 2.51,
-      "rmse": 2.9,
+      "mae": 1.92,
+      "rmse": 2.49,
       "meanPred": 3.25,
-      "meanAct": 1.52,
-      "bias": 1.73,
+      "meanAct": 2.72,
+      "bias": 0.53,
       "status": "OVER_PROJECTED"
     },
     {
       "pos": "DEF",
-      "count": 141,
-      "mae": 2.17,
-      "rmse": 2.59,
-      "meanPred": 2.49,
-      "meanAct": 1.19,
-      "bias": 1.3,
+      "count": 142,
+      "mae": 1.91,
+      "rmse": 2.47,
+      "meanPred": 2.47,
+      "meanAct": 2.06,
+      "bias": 0.41,
       "status": "OVER_PROJECTED"
     },
     {
       "pos": "MID",
-      "count": 179,
-      "mae": 2.04,
-      "rmse": 2.49,
-      "meanPred": 2.38,
-      "meanAct": 1.01,
-      "bias": 1.37,
-      "status": "OVER_PROJECTED"
+      "count": 181,
+      "mae": 1.96,
+      "rmse": 2.81,
+      "meanPred": 2.37,
+      "meanAct": 2.38,
+      "bias": -0.0,
+      "status": "CALIBRATED"
     },
     {
       "pos": "FWD",
       "count": 41,
-      "mae": 2.34,
-      "rmse": 3.38,
+      "mae": 2.23,
+      "rmse": 3.36,
       "meanPred": 2.43,
-      "meanAct": 1.49,
-      "bias": 0.94,
-      "status": "OVER_PROJECTED"
+      "meanAct": 2.68,
+      "bias": -0.25,
+      "status": "CALIBRATED"
     }
   ],
   "outliers": [
+    {
+      "player": "Alysson",
+      "team": "Aston Villa",
+      "pos": "ASSET",
+      "pred": 1.92,
+      "actual": 16,
+      "diff": "+14.1",
+      "reason": "High conversion or unexpected haul"
+    },
     {
       "player": "Barry",
       "team": "Everton",
@@ -60,6 +69,15 @@
       "pred": 4.43,
       "actual": 16,
       "diff": "+11.6",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "Dorgu",
+      "team": "Man Utd",
+      "pos": "ASSET",
+      "pred": 0.0,
+      "actual": 11,
+      "diff": "+11.0",
       "reason": "High conversion or unexpected haul"
     },
     {
@@ -72,38 +90,20 @@
       "reason": "High conversion or unexpected haul"
     },
     {
-      "player": "J.Murphy",
-      "team": "Newcastle",
+      "player": "Wirtz",
+      "team": "Liverpool",
       "pos": "ASSET",
-      "pred": 2.33,
-      "actual": 10,
-      "diff": "+7.7",
+      "pred": 4.07,
+      "actual": 13,
+      "diff": "+8.9",
       "reason": "High conversion or unexpected haul"
     },
     {
-      "player": "Ødegaard",
-      "team": "Arsenal",
+      "player": "Thiago",
+      "team": "Brentford",
       "pos": "ASSET",
-      "pred": 3.75,
-      "actual": 11,
-      "diff": "+7.2",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Muharemović",
-      "team": "Leeds",
-      "pos": "ASSET",
-      "pred": 3.06,
-      "actual": 10,
-      "diff": "+6.9",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Evanilson",
-      "team": "Bournemouth",
-      "pos": "ASSET",
-      "pred": 5.57,
-      "actual": 0,
+      "pred": 3.56,
+      "actual": -2,
       "diff": "-5.6",
       "reason": "Tactical substitution or match blank"
     }
