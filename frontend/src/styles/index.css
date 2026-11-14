@@ -127,6 +127,7 @@
   --radius-container: var(--radius-lg);
   --duration-medium: var(--duration-normal);
   --ease-standard: var(--ease-snappy);
+  --astryx-dialog-padding: 0px;
 
   /* Typography */
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -175,14 +176,17 @@
 
 /* Surface scopes (.surface-scope-*) are tab namespaces only; Direction J has no per-tab accent. */
 
-/* Base Reset & Safe Areas */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  min-width: 0;
+/* Base Reset & Safe Areas (Layered in @layer reset so unlayered * does not
+   override @astryxdesign/core's @layer astryx-base Dialog/Popover margins) */
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
 }
 
 html {
@@ -2117,6 +2121,9 @@ dialog.astryx-dna-dialog,
 dialog.astryx-vault-dialog,
 dialog.astryx-fixture-dialog,
 dialog[class*="astryx-"] {
+  --astryx-dialog-padding: 0px;
+  margin: auto !important;
+  inset: 0;
   border: none !important;
   background: transparent !important;
   padding: 0 !important;
@@ -2140,6 +2147,11 @@ dialog[class*="astryx-"]::backdrop {
 
 /* Astryx Popover, Collapsible, SegmentedControl & TabList Direction J Bridge */
 .astryx-telemetry-popover {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
   background: var(--bg-surface-1) !important;
   border: 1px solid var(--border-subtle) !important;
   border-radius: var(--radius-md) !important;
