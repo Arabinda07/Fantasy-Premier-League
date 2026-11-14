@@ -1,4 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
+import { LayerProvider, Skeleton, useToast } from '@astryxdesign/core';
 import Header from './components/Header';
 import Breadcrumbs from './components/Breadcrumbs';
 import TacticalPitch from './components/TacticalPitch';
@@ -56,7 +57,8 @@ const HASH_TO_TAB = {
   timemachine: 'vault'
 };
 
-export default function App() {
+function AppContent() {
+  const toast = useToast();
   const [activeTab, setActiveTab] = useState(() => {
     try {
       const hashStr = window.location.hash.replace(/^#\/?/, '').split('?')[0];
@@ -129,6 +131,7 @@ export default function App() {
     } catch (e) {
       console.warn('Storage error:', e);
     }
+    toast({ body: `Lineup locked for GW${selectedGw}` });
   };
 
   const handleResetToSuggested = () => {
@@ -184,6 +187,7 @@ export default function App() {
     setSelectedSwapPlayer(null);
     setActiveTab('pitch');
     window.location.hash = 'lineup';
+    toast({ body: `Squad synced${syncedData.manager?.manager_name ? ` for ${syncedData.manager.manager_name}` : ''}` });
   };
 
   const handleExploreDemo = () => {
@@ -369,6 +373,7 @@ export default function App() {
         setSelectedSwapPlayer(null);
       } else {
         setSwapNotice(VALIDATION_MESSAGES.formation.invalid);
+        toast({ body: VALIDATION_MESSAGES.formation.invalid, type: 'warning' });
         setSelectedSwapPlayer(null);
       }
     } else if (!isP1Starter && isP2Starter) {
@@ -385,6 +390,7 @@ export default function App() {
         setSelectedSwapPlayer(null);
       } else {
         setSwapNotice(VALIDATION_MESSAGES.formation.invalid);
+        toast({ body: VALIDATION_MESSAGES.formation.invalid, type: 'warning' });
         setSelectedSwapPlayer(null);
       }
     } else {
@@ -466,8 +472,8 @@ export default function App() {
       {/* Main Analytical Viewports */}
       <main id="main-content" className="main-content" tabIndex={-1}>
         {isDataLoading && (!allPlayersData || allPlayersData.length === 0) ? (
-          <div style={{ padding: '32px', textAlign: 'center' }}>
-            <div className="skeleton" style={{ height: '300px', maxWidth: '1200px', margin: '0 auto' }}></div>
+          <div style={{ padding: '32px', maxWidth: '1200px', margin: '0 auto' }}>
+            <Skeleton height={300} radius={2} />
           </div>
         ) : (
           <>
@@ -622,7 +628,7 @@ export default function App() {
 
       {/* 11-Component Player DNA Modal with Lazy-Load Suspense */}
       {inspectedPlayer && (
-        <Suspense fallback={<div className="modal-overlay"><div className="modal-content skeleton" style={{ height: '400px' }}></div></div>}>
+        <Suspense fallback={<div className="modal-overlay"><div className="modal-content"><Skeleton height={400} radius={2} /></div></div>}>
           <PlayerDNAInspector
             player={inspectedPlayer}
             onClose={handleCloseInspect}
@@ -636,5 +642,13 @@ export default function App() {
         liveData={liveData}
       />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <LayerProvider toast={{ position: 'bottomEnd', maxVisible: 3 }}>
+      <AppContent />
+    </LayerProvider>
   );
 }

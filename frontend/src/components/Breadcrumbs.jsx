@@ -1,4 +1,5 @@
 import React from 'react';
+import { Breadcrumbs as AstryxBreadcrumbs, BreadcrumbItem } from '@astryxdesign/core';
 import { CaretRight, House } from '@phosphor-icons/react';
 
 export default function Breadcrumbs({ activeTab, onNavigateTab, subItem, onClearSubItem }) {
@@ -19,51 +20,39 @@ export default function Breadcrumbs({ activeTab, onNavigateTab, subItem, onClear
   const currentTabLabel = tabLabels[activeTab] || 'Matchday Starting XI';
 
   return (
-    <nav aria-label="Breadcrumb" className="breadcrumbs-bar">
-      <div className="breadcrumbs-container">
-        {/* L0: Home */}
-        <button
-          type="button"
+    <div className="breadcrumbs-bar">
+      <AstryxBreadcrumbs
+        className="breadcrumbs-container"
+        variant="supporting"
+        separator={<CaretRight size={12} className="breadcrumb-separator" />}
+      >
+        <BreadcrumbItem
           onClick={() => {
             onNavigateTab('pitch');
             if (onClearSubItem) onClearSubItem();
           }}
+          startIcon={<House size={14} weight="bold" />}
           className="breadcrumb-item breadcrumb-link"
-          title="Return to Matchday Starting XI"
         >
-          <House size={14} weight="bold" />
-          <span>Home</span>
-        </button>
+          Home
+        </BreadcrumbItem>
 
-        <CaretRight size={12} className="breadcrumb-separator" />
+        <BreadcrumbItem
+          onClick={() => {
+            if (onClearSubItem) onClearSubItem();
+          }}
+          isCurrent={!subItem}
+          className="breadcrumb-item breadcrumb-link"
+        >
+          {currentTabLabel}
+        </BreadcrumbItem>
 
-        {/* L1: Active Section */}
-        {subItem ? (
-          <button
-            type="button"
-            onClick={() => {
-              if (onClearSubItem) onClearSubItem();
-            }}
-            className="breadcrumb-item breadcrumb-link"
-          >
-            {currentTabLabel}
-          </button>
-        ) : (
-          <span className="breadcrumb-item active" aria-current="page">
-            {currentTabLabel}
-          </span>
-        )}
-
-        {/* L2: Detail Sub-Item (Player or Comparison) */}
         {subItem && (
-          <>
-            <CaretRight size={12} className="breadcrumb-separator" />
-            <span className="breadcrumb-item active" aria-current="page">
-              {subItem}
-            </span>
-          </>
+          <BreadcrumbItem isCurrent className="breadcrumb-item active">
+            {subItem}
+          </BreadcrumbItem>
         )}
-      </div>
-    </nav>
+      </AstryxBreadcrumbs>
+    </div>
   );
 }

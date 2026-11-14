@@ -1,5 +1,7 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo } from 'react';
+import { SegmentedControl, SegmentedControlItem } from '@astryxdesign/core';
 import { GridNine, Info, Sparkle } from '@phosphor-icons/react';
+import TelemetryPopover from './TelemetryPopover.jsx';
 
 export default function FixtureHeatmap({
   fixtures,
@@ -11,28 +13,6 @@ export default function FixtureHeatmap({
   onOpenMatchup
 }) {
   const [horizon, setHorizon] = useState('5');
-  const [showFormulaTooltip, setShowFormulaTooltip] = useState(false);
-  const formulaRef = useRef(null);
-
-  useEffect(() => {
-    if (!showFormulaTooltip) return;
-    const handleClickOutside = (e) => {
-      if (formulaRef.current && !formulaRef.current.contains(e.target)) {
-        setShowFormulaTooltip(false);
-      }
-    };
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        setShowFormulaTooltip(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [showFormulaTooltip]);
 
   const activeFixtures = fixtures || fixturesData || [];
   const activeTeams = teams || teamsData || [];
@@ -170,20 +150,23 @@ export default function FixtureHeatmap({
 
         <div className="ticker-window-controls" role="group" aria-label="Select fixture planning horizon">
           <span className="ticker-window-label font-mono">HORIZON:</span>
-          <div className="wire-segments" role="group" aria-label="Planning Horizon">
+          <SegmentedControl
+            value={horizon}
+            onChange={setHorizon}
+            label="Planning Horizon"
+            size="sm"
+            className="wire-segments astryx-wire-segments font-mono"
+          >
             {horizonOptions.map(h => (
-              <button
+              <SegmentedControlItem
                 key={h.id}
-                type="button"
-                onClick={() => setHorizon(h.id)}
+                value={h.id}
+                label={h.label}
                 aria-label={`Planning horizon: ${h.label}`}
-                aria-pressed={horizon === h.id}
                 className="wire-segment font-mono"
-              >
-                <span>{h.label}</span>
-              </button>
+              />
             ))}
-          </div>
+          </SegmentedControl>
         </div>
       </div>
 
@@ -223,28 +206,17 @@ export default function FixtureHeatmap({
           </div>
         </div>
 
-        <div className="legend-formula-group" ref={formulaRef}>
-          <button
-            type="button"
-            className={`formula-trigger-btn font-mono ${showFormulaTooltip ? 'active' : ''}`}
-            onClick={() => setShowFormulaTooltip(prev => !prev)}
-            title="Click to view Avg Difficulty formula"
-            aria-expanded={showFormulaTooltip}
-          >
-            <Info size={13} weight="bold" />
-            <span>Avg Difficulty Formula</span>
-          </button>
-          {showFormulaTooltip && (
-            <div className="formula-popover-card font-mono" role="tooltip">
-              <div className="formula-popover-title">
-                Avg Difficulty = (Σ FDR over next {effectiveWindow} GWs) / {effectiveWindow}
-              </div>
-              <div className="formula-popover-desc">
-                Sorted ascending: lower score indicates an easier fixture run.
-              </div>
-            </div>
-          )}
-        </div>
+        <TelemetryPopover
+          title={`Avg Difficulty = (Σ FDR over next ${effectiveWindow} GWs) / ${effectiveWindow}`}
+          triggerLabel="Avg Difficulty Formula"
+          triggerTitle="Click to view Avg Difficulty formula"
+          triggerIcon={Info}
+          triggerClassName="formula-trigger-btn font-mono"
+          groupClassName="legend-formula-group"
+          popoverClassName="formula-popover-card font-mono"
+        >
+          <p>Sorted ascending: lower score indicates an easier fixture run.</p>
+        </TelemetryPopover>
       </div>
 
       {/* Heatmap Matrix Table */}

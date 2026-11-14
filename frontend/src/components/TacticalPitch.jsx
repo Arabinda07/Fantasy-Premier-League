@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
+import { SegmentedControl, SegmentedControlItem } from '@astryxdesign/core';
 import PlayerCard from './PlayerCard';
 import MatchdayHandoverModal from './MatchdayHandoverModal';
 import TransferBreakdownModal from './TransferBreakdownModal';
@@ -113,6 +114,18 @@ export default function TacticalPitch({
 
   const [isHandoverOpen, setIsHandoverOpen] = useState(false);
   const [isBreakdownOpen, setIsBreakdownOpen] = useState(false);
+
+  // Accessible keyboard Escape to dismiss active swap player
+  useEffect(() => {
+    if (!activeSelectedPlayer || !setSelectedSwapPlayer) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setSelectedSwapPlayer(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeSelectedPlayer, setSelectedSwapPlayer]);
 
   const handlePlayerSelect = (p) => {
     if (activeChip !== 'none' || !isSimulating) {
@@ -432,27 +445,55 @@ export default function TacticalPitch({
           {canAct && (
             <div className="wire-control-item wire-control-item-strategy">
               <span className="wire-control-label">Goal</span>
-              <div className="wire-segments" role="group" aria-label="Tactical goal">
+              <SegmentedControl
+                value={strategy}
+                onChange={onSelectStrategy}
+                label="Tactical goal"
+                size="sm"
+                className="wire-segments astryx-wire-segments"
+              >
                 {STRATEGY_OPTIONS.map(opt => (
-                  <button
+                  <SegmentedControlItem
                     key={opt.id}
-                    type="button"
-                    className="wire-segment"
-                    aria-pressed={strategy === opt.id}
-                    onClick={() => onSelectStrategy(opt.id)}
+                    value={opt.id}
+                    label={opt.label}
                     title={opt.desc}
-                  >
-                    {opt.label}
-                  </button>
+                    className="wire-segment"
+                  />
                 ))}
-              </div>
+              </SegmentedControl>
             </div>
           )}
         </div>
       </header>
 
       {swapNotice && (
-        <p className="wire-notice" role="status">{swapNotice}</p>
+        <div className="wire-notice font-mono" role="status">
+          <span className="wire-notice-lead" aria-hidden="true">!</span>
+          <span>{swapNotice}</span>
+        </div>
+      )}
+
+      {isSimulating && activeSelectedPlayer && (
+        <div className="wire-swap-banner font-mono" role="status">
+          <div className="wire-swap-banner-lead">
+            <span className="wire-swap-pulse" aria-hidden="true" />
+            <span>
+              Swapping <strong>{activeSelectedPlayer.web_name}</strong> ({activeSelectedPlayer.position || 'MID'})
+            </span>
+          </div>
+          <div className="wire-swap-banner-actions">
+            <span className="zinc">Tap target player to complete swap</span>
+            <button
+              type="button"
+              className="wire-swap-cancel-btn font-mono"
+              onClick={() => setSelectedSwapPlayer && setSelectedSwapPlayer(null)}
+              title="Cancel selection [Escape]"
+            >
+              Cancel [ESC]
+            </button>
+          </div>
+        </div>
       )}
 
       <div className="wire-split">
@@ -471,7 +512,7 @@ export default function TacticalPitch({
               </p>
             </div>
           ) : (
-            <div className={`wire-pitch ${isBenchBoost ? 'is-full-squad' : ''}`}>
+            <div className={`wire-pitch ${isBenchBoost ? 'is-full-squad' : ''} ${isSimulating ? 'is-simulating' : ''}`}>
               {rows.map((row, idx) => (
                 <div key={idx} className={`wire-pitch-row pitch-row-count-${row.length}`}>
                   {row.map(p => (

@@ -101,6 +101,33 @@
   --duration-fast: 120ms;
   --duration-normal: 180ms;
 
+  /* Astryx Design System Bridge Tokens (Direction J Alignment) */
+  --color-overlay: rgba(10, 10, 12, 0.82);
+  --color-background-body: var(--bg-canvas);
+  --color-background-surface: var(--bg-surface-1);
+  --color-background-card: var(--bg-surface-2);
+  --color-background-popover: var(--bg-surface-1);
+  --color-background-muted: var(--bg-surface-0);
+  --color-background-inverted: var(--text-primary);
+  --color-overlay-hover: rgba(255, 255, 255, 0.05);
+  --color-overlay-pressed: rgba(255, 255, 255, 0.09);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-muted);
+  --color-text-disabled: rgba(135, 135, 143, 0.55);
+  --color-icon-primary: var(--text-primary);
+  --color-icon-secondary: var(--text-muted);
+  --color-accent: var(--text-primary);
+  --color-on-accent: var(--text-inverse);
+  --color-border: var(--border-subtle);
+  --color-border-emphasized: var(--border-medium);
+  --color-skeleton: var(--bg-surface-2);
+  --color-track: var(--bg-surface-0);
+  --font-family-sans: var(--font-sans);
+  --font-family-mono: var(--font-mono);
+  --radius-container: var(--radius-lg);
+  --duration-medium: var(--duration-normal);
+  --ease-standard: var(--ease-snappy);
+
   /* Typography */
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
@@ -2078,6 +2105,98 @@ p,
 .data-table th:first-child,
 .data-table td:first-child {
   box-shadow: var(--shadow-sticky);
+}
+
+/* Astryx Dialog Direction J Bridge */
+dialog.astryx-dialog,
+dialog.astryx-handover-dialog,
+dialog.astryx-sync-dialog,
+dialog.astryx-breakdown-dialog,
+dialog.astryx-onboarding-dialog,
+dialog.astryx-dna-dialog,
+dialog.astryx-vault-dialog,
+dialog.astryx-fixture-dialog,
+dialog[class*="astryx-"] {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+dialog.astryx-dialog::backdrop,
+dialog.astryx-handover-dialog::backdrop,
+dialog.astryx-sync-dialog::backdrop,
+dialog.astryx-breakdown-dialog::backdrop,
+dialog.astryx-onboarding-dialog::backdrop,
+dialog.astryx-dna-dialog::backdrop,
+dialog.astryx-vault-dialog::backdrop,
+dialog.astryx-fixture-dialog::backdrop,
+dialog[class*="astryx-"]::backdrop {
+  background: rgba(10, 10, 12, 0.82) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
+}
+
+/* Astryx Popover, Collapsible, SegmentedControl & TabList Direction J Bridge */
+.astryx-telemetry-popover {
+  background: var(--bg-surface-1) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-card) !important;
+  color: var(--text-primary);
+}
+
+.astryx-telemetry-popover-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.astryx-collapsible-bridge {
+  border-radius: 0;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface-0);
+}
+
+.astryx-collapsible-root {
+  width: 100%;
+}
+
+.nike-collapsible-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.astryx-wire-segments {
+  background: var(--bg-surface-0) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-md) !important;
+  padding: 2px !important;
+  gap: 2px !important;
+}
+
+.astryx-wire-segments .wire-segment {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+}
+
+.astryx-wire-segments .wire-segment[aria-checked="true"],
+.astryx-wire-segments .wire-segment[aria-selected="true"],
+.astryx-wire-segments .wire-segment[aria-pressed="true"] {
+  background: var(--bg-surface-3) !important;
+  color: var(--text-primary) !important;
+  font-weight: 800 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+.astryx-nav-tablist {
+  background: transparent !important;
+  border: none !important;
 }
 
 /* Modal Dialog */
@@ -8540,9 +8659,79 @@ button.wire-segment {
 }
 
 .wire-notice {
-  margin: 0 0 var(--space-8);
-  font-size: var(--text-lg);
+  margin: 0 0 var(--space-6);
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--text-md);
+  font-family: var(--font-mono);
   font-weight: 600;
+  background-color: var(--bg-surface-1);
+  border: 1px solid var(--border-medium);
+  border-left: 3px solid var(--text-primary);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  border-radius: var(--radius-sm);
+}
+
+.wire-notice-lead {
+  font-weight: 800;
+  color: var(--text-muted);
+}
+
+/* Swap Action In-Progress Banner */
+.wire-swap-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  padding: var(--space-3) var(--space-5);
+  margin-bottom: var(--space-6);
+  background-color: var(--bg-surface-1);
+  border: 1px solid var(--border-medium);
+  border-left: 3px solid var(--text-primary);
+  font-size: var(--text-md);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+}
+
+.wire-swap-banner-lead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.wire-swap-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--text-primary);
+  box-shadow: 0 0 0 2px var(--bg-surface-1), 0 0 0 4px var(--border-subtle);
+}
+
+.wire-swap-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.wire-swap-cancel-btn {
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  background: transparent;
+  cursor: pointer;
+  transition: color var(--motion-duration-fast), border-color var(--motion-duration-fast);
+}
+
+.wire-swap-cancel-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--border-medium);
 }
 
 /* Asymmetric split: tactical surface / situational context */
@@ -8591,7 +8780,9 @@ button.wire-segment {
 }
 
 .wire-token.is-target {
-  background-color: rgba(16, 185, 129, 0.06);
+  background-color: var(--bg-surface-subtle);
+  outline: 1px solid var(--border-strong);
+  outline-offset: -1px;
 }
 
 .wire-token-main,
@@ -8674,11 +8865,53 @@ button.wire-token-main,
   min-width: 24px;
   min-height: 24px;
   font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xs);
+  border: 1px solid transparent;
+  transition: opacity var(--motion-duration-fast), color var(--motion-duration-fast), background-color var(--motion-duration-fast);
 }
 
-.wire-token.is-captain .wire-token-armband,
-.wire-token.is-vice .wire-token-armband {
+.wire-token.is-captain .wire-token-armband {
   color: var(--text-primary);
+  font-weight: 800;
+  background-color: var(--bg-surface-subtle);
+  border-color: var(--border-medium);
+  opacity: 1;
+}
+
+.wire-token.is-vice .wire-token-armband {
+  color: var(--text-secondary);
+  font-weight: 700;
+  border-color: var(--border-subtle);
+  opacity: 1;
+}
+
+.wire-token:not(.is-captain):not(.is-vice) .wire-token-armband {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .wire-token:hover .wire-token-armband,
+  .wire-token-armband:focus-visible {
+    opacity: 0.45;
+    pointer-events: auto;
+  }
+  .wire-token-armband:hover {
+    opacity: 1 !important;
+    color: var(--text-primary);
+    background-color: var(--bg-surface-subtle);
+    border-color: var(--border-subtle);
+  }
+}
+
+@media (hover: none) {
+  .wire-pitch.is-simulating .wire-token:not(.is-captain):not(.is-vice) .wire-token-armband {
+    opacity: 0.35;
+    pointer-events: auto;
+  }
 }
 
 .wire-token-status {
@@ -8984,7 +9217,16 @@ button.wire-segment {
 
 @container (max-width: 460px) {
   .wire-pitch-row {
-    gap: var(--space-2);
+    gap: 2px;
+  }
+
+  .wire-token {
+    padding: var(--space-2) 1px;
+    max-width: none;
+  }
+
+  .wire-token-meta {
+    gap: 2px;
   }
 
   .wire-token-name {
@@ -8996,8 +9238,14 @@ button.wire-segment {
   }
 
   .wire-token-fixture {
-    font-size: var(--text-sm);
-    letter-spacing: 0.02em;
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+
+  .wire-token-armband {
+    min-width: 18px;
+    min-height: 18px;
+    font-size: 10px;
   }
 }
 

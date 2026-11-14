@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { SegmentedControl, SegmentedControlItem } from '@astryxdesign/core';
 import {
   MagnifyingGlass,
   Scales,
@@ -372,19 +373,22 @@ export default function TransferWorkbench({
               />
             </div>
 
-            <div role="group" aria-label="Filter by player position" className="wire-segments">
+            <SegmentedControl
+              value={selectedPos}
+              onChange={setSelectedPos}
+              label="Filter by player position"
+              size="sm"
+              className="wire-segments astryx-wire-segments font-mono"
+            >
               {['ALL', 'GK', 'DEF', 'MID', 'FWD'].map(pos => (
-                <button
+                <SegmentedControlItem
                   key={pos}
-                  type="button"
-                  onClick={() => setSelectedPos(pos)}
-                  aria-pressed={selectedPos === pos}
-                  className={`wire-segment font-mono ${selectedPos === pos ? 'active' : ''}`}
-                >
-                  {pos}
-                </button>
+                  value={pos}
+                  label={pos}
+                  className="wire-segment font-mono"
+                />
               ))}
-            </div>
+            </SegmentedControl>
 
             <select
               value={sortBy}

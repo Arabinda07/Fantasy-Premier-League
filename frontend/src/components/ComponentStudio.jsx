@@ -1,4 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { SegmentedControl, SegmentedControlItem } from '@astryxdesign/core';
+import TelemetryPopover from './TelemetryPopover.jsx';
 import { SCORING_COMPONENTS } from '../constants/copyTokens';
 import {
   Flask,
@@ -63,30 +65,6 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [isCalibrationOpen, setIsCalibrationOpen] = useState(false);
-  const [showNotes, setShowNotes] = useState(false);
-  const notesRef = useRef(null);
-
-  // Close notes popover on click outside or Escape
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (notesRef.current && !notesRef.current.contains(event.target)) {
-        setShowNotes(false);
-      }
-    }
-    function handleKeyDown(event) {
-      if (event.key === 'Escape') {
-        setShowNotes(false);
-      }
-    }
-    if (showNotes) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleKeyDown);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [showNotes]);
 
   // Handle position filter change
   const handlePosChange = (pos) => {
@@ -200,26 +178,26 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
       {/* Institutional Forecaster Control Deck (52px Header) */}
       <div className="forecaster-control-deck" role="region" aria-label="Points Forecaster Controls">
         <div className="forecaster-control-left">
-          <div className="wire-segments" role="tablist" aria-label="Forecaster Views">
-            <button
-              type="button"
+          <SegmentedControl
+            value={subView}
+            onChange={setSubView}
+            label="Forecaster Views"
+            size="sm"
+            className="wire-segments astryx-wire-segments font-mono"
+          >
+            <SegmentedControlItem
+              value="sandbox"
+              label="Formula Sandbox"
+              icon={<SlidersHorizontal size={13} weight="bold" />}
               className="wire-segment font-mono"
-              onClick={() => setSubView('sandbox')}
-              aria-pressed={subView === 'sandbox'}
-            >
-              <SlidersHorizontal size={13} weight="bold" />
-              <span>Formula Sandbox</span>
-            </button>
-            <button
-              type="button"
+            />
+            <SegmentedControlItem
+              value="scorecard"
+              label="Accuracy Scorecard"
+              icon={<ChartLine size={13} weight="bold" />}
               className="wire-segment font-mono"
-              onClick={() => setSubView('scorecard')}
-              aria-pressed={subView === 'scorecard'}
-            >
-              <ChartLine size={13} weight="bold" />
-              <span>Accuracy Scorecard</span>
-            </button>
-          </div>
+            />
+          </SegmentedControl>
 
           <div className="forecaster-telemetry-chips">
             <div className="wire-telemetry-chip font-mono" title="Spearman rank correlation across Premier League starters">
@@ -252,33 +230,17 @@ export default function ComponentStudio({ players, onInspectPlayer }) {
           )}
 
           {/* On-Demand Projection Methodology Notes */}
-          <div className="telemetry-notes-group" ref={notesRef}>
-            <button
-              type="button"
-              className={`telemetry-notes-btn font-mono ${showNotes ? 'active' : ''}`}
-              onClick={() => setShowNotes(prev => !prev)}
-              title="Click to view projection methodology notes"
-              aria-expanded={showNotes}
-            >
-              <Info size={13} weight="bold" />
-              <span>Notes</span>
-            </button>
-            {showNotes && (
-              <div className="telemetry-popover-card font-mono" role="tooltip">
-              <h3 className="telemetry-popover-title">
-                Scoring Formula Calibration
-              </h3>
-                <div className="telemetry-popover-body">
-                  <p><strong>10 Scoring Factors:</strong> Calculated from expected goals, assists, clean sheets, saves, bonus potential, and expected minutes without relying on luck or hauling streaks.</p>
-                  <p><strong>Form vs Baseline:</strong> Blends recent match form with long-term positional averages so small-sample flukes do not distort rankings.</p>
-                  <p><strong>Home Multiplier:</strong> Applies a balanced {homeAdvantage.toFixed(2)}x boost to attack and clean sheet odds for home fixtures.</p>
-                  <p style={{ marginTop: '8px', fontSize: '11px', color: 'var(--text-muted)' }}>
-                    Open the <strong>Calibration</strong> drawer to adjust recent form weighting ({priorMinutes}m sample) or stadium boost.
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
+          <TelemetryPopover
+            title="Scoring Formula Calibration"
+            triggerTitle="Click to view projection methodology notes"
+          >
+            <p><strong>10 Scoring Factors:</strong> Calculated from expected goals, assists, clean sheets, saves, bonus potential, and expected minutes without relying on luck or hauling streaks.</p>
+            <p><strong>Form vs Baseline:</strong> Blends recent match form with long-term positional averages so small-sample flukes do not distort rankings.</p>
+            <p><strong>Home Multiplier:</strong> Applies a balanced {homeAdvantage.toFixed(2)}x boost to attack and clean sheet odds for home fixtures.</p>
+            <p style={{ marginTop: '8px', fontSize: '11px', color: 'var(--text-muted)' }}>
+              Open the <strong>Calibration</strong> drawer to adjust recent form weighting ({priorMinutes}m sample) or stadium boost.
+            </p>
+          </TelemetryPopover>
         </div>
       </div>
 

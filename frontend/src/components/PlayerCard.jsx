@@ -112,7 +112,10 @@ export default function PlayerCard({
             aria-label={armbandLabel}
             aria-pressed={isCaptain || isTripleCaptain}
             title={armbandLabel}
-            onClick={() => onToggleCaptain(player)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleCaptain(player);
+            }}
           >
             {armband}
           </button>

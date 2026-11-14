@@ -1,5 +1,6 @@
 import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
+import '@astryxdesign/core/astryx.css'
 import './styles/index.css'
 import App from './App.jsx'
 

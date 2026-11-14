@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Dialog, SegmentedControl, SegmentedControlItem } from '@astryxdesign/core';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, ReferenceLine,
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend
@@ -12,17 +13,20 @@ import { getPenaltyTierForTeam, getCaptaincyConfidenceTier } from '../constants/
 
 export default function PlayerDNAInspector({ player, onClose }) {
   const [activeView, setActiveView] = useState('chart'); // 'chart' | 'radar'
+  const modalRef = useRef(null);
 
-  // Close on Escape key press
+  // Initial focus placement on open (focus trap and Escape handling managed by Astryx Dialog)
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        onClose();
+    if (!player) return;
+
+    const focusTimer = setTimeout(() => {
+      if (modalRef.current) {
+        modalRef.current.focus();
       }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+    }, 50);
+
+    return () => clearTimeout(focusTimer);
+  }, [player]);
 
   if (!player) return null;
 
@@ -126,8 +130,22 @@ export default function PlayerDNAInspector({ player, onClose }) {
   ];
 
   return (
-    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="dna-modal-title">
-      <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '680px' }}>
+    <Dialog
+      isOpen={Boolean(player)}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+      purpose="info"
+      width="min(680px, calc(100vw - 24px))"
+      className="astryx-dna-dialog"
+      aria-labelledby="dna-modal-title"
+    >
+      <div
+        ref={modalRef}
+        className="modal-content"
+        tabIndex={-1}
+        style={{ maxWidth: '680px', outline: 'none' }}
+      >
         {/* Modal Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '14px', marginBottom: '14px' }}>
           <div>
@@ -155,24 +173,24 @@ export default function PlayerDNAInspector({ player, onClose }) {
           <span className="dna-switcher-title font-mono">
             {activeView === 'chart' ? 'Expected Points Breakdown' : 'Player Strengths vs League Average'}
           </span>
-          <div className="wire-segments" role="tablist">
-            <button
-              type="button"
+          <SegmentedControl
+            value={activeView}
+            onChange={setActiveView}
+            label="Player DNA View"
+            size="sm"
+            className="wire-segments astryx-wire-segments font-mono"
+          >
+            <SegmentedControlItem
+              value="chart"
+              label="Points Breakdown"
               className="wire-segment font-mono"
-              aria-pressed={activeView === 'chart'}
-              onClick={() => setActiveView('chart')}
-            >
-              Points Breakdown
-            </button>
-            <button
-              type="button"
+            />
+            <SegmentedControlItem
+              value="radar"
+              label="Attribute Radar"
               className="wire-segment font-mono"
-              aria-pressed={activeView === 'radar'}
-              onClick={() => setActiveView('radar')}
-            >
-              Attribute Radar
-            </button>
-          </div>
+            />
+          </SegmentedControl>
         </div>
 
         {/* Chart / Radar View */}
@@ -378,6 +396,6 @@ export default function PlayerDNAInspector({ player, onClose }) {
           </div>
         </div>
       </div>
-    </div>
+    </Dialog>
   );
 }

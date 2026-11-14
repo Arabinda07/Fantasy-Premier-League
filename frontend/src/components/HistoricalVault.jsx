@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { Dialog, SegmentedControl, SegmentedControlItem, TabList, Tab } from '@astryxdesign/core';
 import {
   Trophy,
   Crown,
@@ -153,68 +154,48 @@ export default function HistoricalVault({ onInspectPlayer }) {
           </div>
 
           {/* Wire Segments Navigation Rail */}
-          <div
-            className="wire-segments font-mono"
+          <TabList
+            value={activeTab}
+            onChange={setActiveTab}
             role="tablist"
             aria-label="Historical Vault Views"
+            size="sm"
+            overflow="scroll"
+            className="wire-segments astryx-wire-segments font-mono"
           >
-            <button
-              type="button"
-              role="tab"
+            <Tab
+              value="pitch"
               id="vault-tab-pitch"
-              aria-selected={activeTab === 'pitch'}
-              aria-controls="vault-panel-pitch"
-              tabIndex={activeTab === 'pitch' ? 0 : -1}
-              className="wire-segment"
-              aria-pressed={activeTab === 'pitch'}
-              onClick={() => setActiveTab('pitch')}
-            >
-              <Trophy size={13} weight={activeTab === 'pitch' ? 'fill' : 'bold'} />
-              <span>Dream Team Pitch</span>
-            </button>
-            <button
-              type="button"
-              role="tab"
+              panelId="vault-panel-pitch"
+              label="Dream Team Pitch"
+              icon={<Trophy size={13} weight={activeTab === 'pitch' ? 'fill' : 'bold'} />}
+              className="wire-segment font-mono"
+            />
+            <Tab
+              value="records"
               id="vault-tab-records"
-              aria-selected={activeTab === 'records'}
-              aria-controls="vault-panel-records"
-              tabIndex={activeTab === 'records' ? 0 : -1}
-              className="wire-segment"
-              aria-pressed={activeTab === 'records'}
-              onClick={() => setActiveTab('records')}
-            >
-              <Medal size={13} weight={activeTab === 'records' ? 'fill' : 'bold'} />
-              <span>All-Time Records</span>
-            </button>
-            <button
-              type="button"
-              role="tab"
+              panelId="vault-panel-records"
+              label="All-Time Records"
+              icon={<Medal size={13} weight={activeTab === 'records' ? 'fill' : 'bold'} />}
+              className="wire-segment font-mono"
+            />
+            <Tab
+              value="comparison"
               id="vault-tab-comparison"
-              aria-selected={activeTab === 'comparison'}
-              aria-controls="vault-panel-comparison"
-              tabIndex={activeTab === 'comparison' ? 0 : -1}
-              className="wire-segment"
-              aria-pressed={activeTab === 'comparison'}
-              onClick={() => setActiveTab('comparison')}
-            >
-              <Calendar size={13} weight={activeTab === 'comparison' ? 'fill' : 'bold'} />
-              <span>10-Season Overview</span>
-            </button>
-            <button
-              type="button"
-              role="tab"
+              panelId="vault-panel-comparison"
+              label="10-Season Overview"
+              icon={<Calendar size={13} weight={activeTab === 'comparison' ? 'fill' : 'bold'} />}
+              className="wire-segment font-mono"
+            />
+            <Tab
+              value="lab"
               id="vault-tab-lab"
-              aria-selected={activeTab === 'lab'}
-              aria-controls="vault-panel-lab"
-              tabIndex={activeTab === 'lab' ? 0 : -1}
-              className="wire-segment"
-              aria-pressed={activeTab === 'lab'}
-              onClick={() => setActiveTab('lab')}
-            >
-              <Terminal size={13} weight={activeTab === 'lab' ? 'fill' : 'bold'} />
-              <span>SQL Lab</span>
-            </button>
-          </div>
+              panelId="vault-panel-lab"
+              label="SQL Lab"
+              icon={<Terminal size={13} weight={activeTab === 'lab' ? 'fill' : 'bold'} />}
+              className="wire-segment font-mono"
+            />
+          </TabList>
         </div>
       </div>
 
@@ -454,34 +435,31 @@ export default function HistoricalVault({ onInspectPlayer }) {
               </div>
 
               {/* Wire Segments Filter */}
-              <div className="wire-segments font-mono" role="group" aria-label="Records Filter">
-                <button
-                  type="button"
-                  onClick={() => setRecordsFilter('all')}
-                  className="wire-segment"
-                  aria-pressed={recordsFilter === 'all'}
-                >
-                  All Records
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRecordsFilter('points')}
-                  className="wire-segment"
-                  aria-pressed={recordsFilter === 'points'}
-                >
-                  <Crown size={13} weight="bold" />
-                  <span>Points</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRecordsFilter('goals')}
-                  className="wire-segment"
-                  aria-pressed={recordsFilter === 'goals'}
-                >
-                  <SoccerBall size={13} weight="bold" />
-                  <span>Goals</span>
-                </button>
-              </div>
+              <SegmentedControl
+                value={recordsFilter}
+                onChange={setRecordsFilter}
+                label="Records Filter"
+                size="sm"
+                className="wire-segments astryx-wire-segments font-mono"
+              >
+                <SegmentedControlItem
+                  value="all"
+                  label="All Records"
+                  className="wire-segment font-mono"
+                />
+                <SegmentedControlItem
+                  value="points"
+                  label="Points"
+                  icon={<Crown size={13} weight="bold" />}
+                  className="wire-segment font-mono"
+                />
+                <SegmentedControlItem
+                  value="goals"
+                  label="Goals"
+                  icon={<SoccerBall size={13} weight="bold" />}
+                  className="wire-segment font-mono"
+                />
+              </SegmentedControl>
             </div>
 
             <div
@@ -875,34 +853,28 @@ function HistoricalPlayerDetailModal({ player, onClose }) {
   const cost = Number(player.now_cost || 0).toFixed(1);
 
   return (
-    <div
-      className="modal-overlay"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="historical-player-title"
-      style={{
-        position: 'fixed',
-        inset: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.75)',
-        backdropFilter: 'blur(6px)',
-        zIndex: 9999,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '16px'
+    <Dialog
+      isOpen={Boolean(player)}
+      onOpenChange={(open) => {
+        if (!open) onClose();
       }}
+      purpose="info"
+      width="min(520px, calc(100vw - 24px))"
+      className="astryx-vault-dialog"
+      aria-labelledby="historical-player-title"
     >
       <div
         className="modal-container"
-        onClick={(e) => e.stopPropagation()}
+        tabIndex={-1}
         style={{
           backgroundColor: 'var(--bg-surface-1)',
-          border: '1px solid var(--border-medium)',
-          borderRadius: 'var(--radius-sm)',
+          border: '1px solid var(--border-subtle)',
+          borderRadius: 'var(--radius-lg)',
+          boxShadow: 'var(--shadow-modal)',
           maxWidth: '520px',
           width: '100%',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          outline: 'none'
         }}
       >
         {/* Header Strip */}
@@ -1041,6 +1013,6 @@ function HistoricalPlayerDetailModal({ player, onClose }) {
           </button>
         </div>
       </div>
-    </div>
+    </Dialog>
   );
 }

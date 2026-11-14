@@ -1,12 +1,13 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
+import { SegmentedControl, SegmentedControlItem } from '@astryxdesign/core';
+import TelemetryPopover from './TelemetryPopover.jsx';
 import { formatFplPrice } from '../constants/copyTokens';
 import {
   UsersThree,
   ShieldCheck,
   ShieldWarning,
   Crown,
-  Gauge,
-  Info
+  Gauge
 } from '@phosphor-icons/react';
 
 const DEFAULT_RIVALS = [
@@ -101,29 +102,6 @@ export default function RivalThreatMatrix({
 
   const [selectedRivalId, setSelectedRivalId] = useState(rivals[0]?.entry_id || 1198015);
   const [h2hView, setH2hView] = useState('split'); // 'split' | 'yours' | 'danger'
-  const [showNotes, setShowNotes] = useState(false);
-  const notesRef = useRef(null);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (notesRef.current && !notesRef.current.contains(event.target)) {
-        setShowNotes(false);
-      }
-    }
-    function handleKeyDown(event) {
-      if (event.key === 'Escape') {
-        setShowNotes(false);
-      }
-    }
-    if (showNotes) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleKeyDown);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [showNotes]);
 
   const selectedRival = rivals.find(r => r.entry_id === selectedRivalId) || rivals[0];
 
@@ -268,29 +246,13 @@ export default function RivalThreatMatrix({
           </div>
 
           {/* On-Demand Tactical Notes Popover */}
-          <div className="telemetry-notes-group" ref={notesRef}>
-            <button
-              type="button"
-              className={`telemetry-notes-btn font-mono ${showNotes ? 'active' : ''}`}
-              onClick={() => setShowNotes(prev => !prev)}
-              title="Click to view tactical telemetry notes"
-              aria-expanded={showNotes}
-            >
-              <Info size={13} weight="bold" />
-              <span>Notes</span>
-            </button>
-            {showNotes && (
-              <div className="telemetry-popover-card font-mono" role="tooltip">
-                <h3 className="telemetry-popover-title">
-                  Tactical Duel Telemetry &amp; Swing Analysis
-                </h3>
-                <div className="telemetry-popover-body">
-                  <p><strong>Differential Edge:</strong> Starting XI players unique to your squad vs this rival. Net delta reflects projected point swing.</p>
-                  <p><strong>Danger Pick:</strong> The highest-frequency player owned across mini-league competitors that is absent from your squad.</p>
-                </div>
-              </div>
-            )}
-          </div>
+          <TelemetryPopover
+            title="Tactical Duel Telemetry & Swing Analysis"
+            triggerTitle="Click to view tactical telemetry notes"
+          >
+            <p><strong>Differential Edge:</strong> Starting XI players unique to your squad vs this rival. Net delta reflects projected point swing.</p>
+            <p><strong>Danger Pick:</strong> The highest-frequency player owned across mini-league competitors that is absent from your squad.</p>
+          </TelemetryPopover>
         </div>
       </div>
 
@@ -425,32 +387,29 @@ export default function RivalThreatMatrix({
             </div>
 
             {/* View Mode Switcher */}
-            <div className="wire-segments" role="tablist" aria-label="Head-to-Head Views">
-              <button
-                type="button"
+            <SegmentedControl
+              value={h2hView}
+              onChange={setH2hView}
+              label="Head-to-Head Views"
+              size="sm"
+              className="wire-segments astryx-wire-segments font-mono"
+            >
+              <SegmentedControlItem
+                value="split"
+                label="Split View"
                 className="wire-segment font-mono"
-                aria-pressed={h2hView === 'split'}
-                onClick={() => setH2hView('split')}
-              >
-                <span>Split View</span>
-              </button>
-              <button
-                type="button"
+              />
+              <SegmentedControlItem
+                value="yours"
+                label={`Your Differentials (${userDiffCards.length})`}
                 className="wire-segment font-mono"
-                aria-pressed={h2hView === 'yours'}
-                onClick={() => setH2hView('yours')}
-              >
-                <span>Your Differentials ({userDiffCards.length})</span>
-              </button>
-              <button
-                type="button"
+              />
+              <SegmentedControlItem
+                value="danger"
+                label={`Danger Players (${rivalDiffCards.length})`}
                 className="wire-segment font-mono"
-                aria-pressed={h2hView === 'danger'}
-                onClick={() => setH2hView('danger')}
-              >
-                <span>Danger Players ({rivalDiffCards.length})</span>
-              </button>
-            </div>
+              />
+            </SegmentedControl>
 
             {/* Content Container (Split or Single Column) */}
             <div className={`h2h-diff-layout ${h2hView}`}>

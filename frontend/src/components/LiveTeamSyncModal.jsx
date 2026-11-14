@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Dialog } from '@astryxdesign/core';
 import {
   ArrowsClockwise,
   X,
@@ -27,43 +28,18 @@ export default function LiveTeamSyncModal({
   const [saved, setSaved] = useState(false);
   const modalRef = useRef(null);
 
-  // Keyboard accessibility: Escape key to dismiss & focus trap (A11y WCAG 2.1.2)
+  // Initial focus placement on open (focus trap and Escape handling managed by Astryx Dialog)
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        onClose();
-        return;
+    const focusTimer = setTimeout(() => {
+      if (modalRef.current) {
+        modalRef.current.focus();
       }
+    }, 50);
 
-      if (e.key === 'Tab' && modalRef.current) {
-        const focusable = modalRef.current.querySelectorAll(
-          'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
-        );
-        if (focusable.length === 0) return;
-
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-
-        if (e.shiftKey) {
-          if (document.activeElement === first) {
-            e.preventDefault();
-            last.focus();
-          }
-        } else {
-          if (document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
-          }
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+    return () => clearTimeout(focusTimer);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -145,14 +121,21 @@ export default function LiveTeamSyncModal({
   const manager = currentProfile;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <Dialog
+      isOpen={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+      purpose="info"
+      width="min(600px, calc(100vw - 24px))"
+      className="astryx-sync-dialog"
+      aria-labelledby="sync-modal-title"
+    >
       <div
         ref={modalRef}
         className="modal-content sync-modal-content"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="sync-modal-title"
+        tabIndex={-1}
+        style={{ outline: 'none' }}
       >
         <div className="modal-header">
           <div className="modal-title-group">
@@ -303,6 +286,6 @@ export default function LiveTeamSyncModal({
           </div>
         </form>
       </div>
-    </div>
+    </Dialog>
   );
 }

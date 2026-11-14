@@ -1,4 +1,5 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo } from 'react';
+import { TabList, Tab } from '@astryxdesign/core';
 import {
   SoccerBall,
   ArrowsLeftRight,
@@ -89,44 +90,7 @@ export default function Header({
       : ['vault', 'fixtures', 'market', 'math', 'pitch', 'transfers', 'rivals'];
 
     return order.map(id => tabMap[id]);
-  }, [isSynced, activeChip]);
-
-  const handleTabKeyDown = (e, currentIndex) => {
-    let nextIndex = null;
-    if (e.key === 'ArrowRight') {
-      e.preventDefault();
-      nextIndex = (currentIndex + 1) % tabs.length;
-    } else if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
-    } else if (e.key === 'Home') {
-      e.preventDefault();
-      nextIndex = 0;
-    } else if (e.key === 'End') {
-      e.preventDefault();
-      nextIndex = tabs.length - 1;
-    }
-
-    if (nextIndex !== null) {
-      const nextTab = tabs[nextIndex];
-      setActiveTab(nextTab.id);
-      setTimeout(() => {
-        document.getElementById(`tab-${nextTab.id}`)?.focus();
-      }, 0);
-    }
-  };
-
-  // Keep active tab centered in the scrollable navigation rail
-  useEffect(() => {
-    try {
-      const activeEl = document.getElementById(`tab-${activeTab}`);
-      if (activeEl) {
-        activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-      }
-    } catch {
-      // Ignore scroll errors in unsupported environments
-    }
-  }, [activeTab]);
+  }, [isSynced, activeChip, currentFt]);
 
   return (
     <header className="top-nav">
@@ -158,36 +122,41 @@ export default function Header({
           </span>
         </div>
 
-        {/* Tier 2: Center navigation tabs (Full-width scroll rail on mobile) */}
+        {/* Tier 2: Center navigation tabs (Astryx TabList with roving tabindex & horizontal scroll) */}
         <div className="nav-tabs-wrapper">
-          <nav className="nav-tabs segmented-nav-rail" role="tablist" aria-label="Main Navigation">
-            {tabs.map((tab, index) => {
+          <TabList
+            value={activeTab}
+            onChange={setActiveTab}
+            role="tablist"
+            aria-label="Main Navigation"
+            overflow="scroll"
+            size="sm"
+            className="nav-tabs segmented-nav-rail astryx-nav-tablist"
+          >
+            {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
               return (
-                <button
+                <Tab
                   key={tab.id}
                   id={`tab-${tab.id}`}
-                  role="tab"
-                  tabIndex={isActive ? 0 : -1}
-                  aria-selected={isActive}
-                  aria-controls={`panel-${tab.id}`}
+                  value={tab.id}
+                  panelId={`panel-${tab.id}`}
+                  label={tab.shortLabel}
+                  aria-label={tab.label}
+                  icon={<Icon size={15} weight={isActive ? 'fill' : 'bold'} />}
+                  endContent={
+                    tab.badge ? (
+                      <span className={`tab-wire-tag font-mono ${tab.badgeType || ''}`}>
+                        {tab.badge}
+                      </span>
+                    ) : null
+                  }
                   className={`nav-tab-btn ${isActive ? 'active' : ''}`}
-                  onClick={() => setActiveTab(tab.id)}
-                  onKeyDown={(e) => handleTabKeyDown(e, index)}
-                >
-                  <Icon size={15} weight={isActive ? "fill" : "bold"} />
-                  <span className="tab-label-full">{tab.label}</span>
-                  <span className="tab-label-short">{tab.shortLabel}</span>
-                  {tab.badge && (
-                    <span className={`tab-wire-tag font-mono ${tab.badgeType || ''}`}>
-                      {tab.badge}
-                    </span>
-                  )}
-                </button>
+                />
               );
             })}
-          </nav>
+          </TabList>
         </div>
 
         {/* Tier 1 / Right Action: Manager Badge & Sync Switcher */}

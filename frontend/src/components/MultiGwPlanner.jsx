@@ -1,4 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { SegmentedControl, SegmentedControlItem } from '@astryxdesign/core';
+import TelemetryPopover from './TelemetryPopover.jsx';
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer
 } from 'recharts';
@@ -9,8 +11,7 @@ import {
   ArrowDownRight,
   CheckCircle,
   ChartLine,
-  Scales,
-  Info
+  Scales
 } from '@phosphor-icons/react';
 import TransferWorkbench from './TransferWorkbench';
 
@@ -71,29 +72,6 @@ export default function MultiGwPlanner({
       setActiveGwIndex(0);
     }
   }, [activeRoadmap, activeGwIndex]);
-  const [showNotes, setShowNotes] = useState(false);
-  const notesRef = useRef(null);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (notesRef.current && !notesRef.current.contains(event.target)) {
-        setShowNotes(false);
-      }
-    }
-    function handleKeyDown(event) {
-      if (event.key === 'Escape') {
-        setShowNotes(false);
-      }
-    }
-    if (showNotes) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleKeyDown);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [showNotes]);
 
   // Compute multi-horizon totals & cumulative trajectory
   const trajectoryData = React.useMemo(() => {
@@ -125,35 +103,32 @@ export default function MultiGwPlanner({
             <span>GW{startGw}–GW{endGw} HORIZON</span>
           </div>
 
-          <div className="wire-segments" role="tablist" aria-label="Transfer Workspace Views">
-            <button
-              type="button"
-              className={`wire-segment font-mono ${viewMode === 'roadmap' ? 'active' : ''}`}
-              onClick={() => setViewMode('roadmap')}
-              aria-pressed={viewMode === 'roadmap'}
-            >
-              <CalendarCheck size={13} weight="bold" />
-              <span>5-Week Roadmap</span>
-            </button>
-            <button
-              type="button"
-              className={`wire-segment font-mono ${viewMode === 'workbench' ? 'active' : ''}`}
-              onClick={() => setViewMode('workbench')}
-              aria-pressed={viewMode === 'workbench'}
-            >
-              <Scales size={13} weight="bold" />
-              <span>Transfer Scout</span>
-            </button>
-            <button
-              type="button"
-              className={`wire-segment font-mono ${viewMode === 'both' ? 'active' : ''}`}
-              onClick={() => setViewMode('both')}
-              aria-pressed={viewMode === 'both'}
-            >
-              <ArrowsLeftRight size={13} weight="bold" />
-              <span>Unified Canvas</span>
-            </button>
-          </div>
+          <SegmentedControl
+            value={viewMode}
+            onChange={setViewMode}
+            label="Transfer Workspace Views"
+            size="sm"
+            className="wire-segments astryx-wire-segments font-mono"
+          >
+            <SegmentedControlItem
+              value="roadmap"
+              label="5-Week Roadmap"
+              icon={<CalendarCheck size={13} weight="bold" />}
+              className="wire-segment font-mono"
+            />
+            <SegmentedControlItem
+              value="workbench"
+              label="Transfer Scout"
+              icon={<Scales size={13} weight="bold" />}
+              className="wire-segment font-mono"
+            />
+            <SegmentedControlItem
+              value="both"
+              label="Unified Canvas"
+              icon={<ArrowsLeftRight size={13} weight="bold" />}
+              className="wire-segment font-mono"
+            />
+          </SegmentedControl>
         </div>
 
         <div className="planner-control-right">
@@ -186,30 +161,14 @@ export default function MultiGwPlanner({
           </div>
 
           {/* On-Demand Planner Notes Popover */}
-          <div className="telemetry-notes-group" ref={notesRef}>
-            <button
-              type="button"
-              className={`telemetry-notes-btn font-mono ${showNotes ? 'active' : ''}`}
-              onClick={() => setShowNotes(prev => !prev)}
-              title="Click to view transfer strategy notes"
-              aria-expanded={showNotes}
-            >
-              <Info size={13} weight="bold" />
-              <span>Notes</span>
-            </button>
-            {showNotes && (
-              <div className="telemetry-popover-card font-mono" role="tooltip">
-                <h3 className="telemetry-popover-title">
-                  Multi-Horizon Transfer Strategy &amp; Rules
-                </h3>
-                <div className="telemetry-popover-body">
-                  <p><strong>Free Transfers:</strong> Accumulate up to 5 FTs. Rolling a transfer allows double-moves without taking a -4 point penalty.</p>
-                  <p><strong>Point Hits:</strong> Each additional transfer beyond available FTs deducts 4 points from your gameweek score.</p>
-                  <p><strong>Trajectory Chart:</strong> Plots expected cumulative points based on planned buy/sell tactical moves and fixture difficulty ratings.</p>
-                </div>
-              </div>
-            )}
-          </div>
+          <TelemetryPopover
+            title="Multi-Horizon Transfer Strategy & Rules"
+            triggerTitle="Click to view transfer strategy notes"
+          >
+            <p><strong>Free Transfers:</strong> Accumulate up to 5 FTs. Rolling a transfer allows double-moves without taking a -4 point penalty.</p>
+            <p><strong>Point Hits:</strong> Each additional transfer beyond available FTs deducts 4 points from your gameweek score.</p>
+            <p><strong>Trajectory Chart:</strong> Plots expected cumulative points based on planned buy/sell tactical moves and fixture difficulty ratings.</p>
+          </TelemetryPopover>
         </div>
       </div>
 

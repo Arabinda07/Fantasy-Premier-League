@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { Dialog } from '@astryxdesign/core';
 import {
   X,
   SoccerBall,
@@ -62,6 +63,7 @@ export default function FixtureProbabilityDrawer({
 }) {
   const [hoveredCell, setHoveredCell] = useState(null);
   const [isMatrixExpanded, setIsMatrixExpanded] = useState(false);
+  const modalRef = useRef(null);
 
   const cleanStr = (s) => (s || '').toLowerCase().trim();
 
@@ -175,31 +177,37 @@ export default function FixtureProbabilityDrawer({
     return { matrix: grid, maxProb: highest || 0.15 };
   }, [lambda, mu]);
 
-  // Keyboard accessibility: Close drawer on Escape key (A11y WCAG 2.1.2)
+  // Initial focus placement on open (focus trap and Escape handling managed by Astryx Dialog)
   useEffect(() => {
     if (!isOpen) return;
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
 
-  // Conditional early return AFTER all hooks
+    const focusTimer = setTimeout(() => {
+      if (modalRef.current) {
+        modalRef.current.focus();
+      }
+    }, 50);
+
+    return () => clearTimeout(focusTimer);
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <Dialog
+      isOpen={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+      purpose="info"
+      width="min(680px, calc(100vw - 24px))"
+      className="astryx-fixture-dialog"
+      aria-labelledby="drawer-title"
+    >
       <div
+        ref={modalRef}
         className="modal-content drawer-content"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="drawer-title"
-        style={{ maxWidth: '680px' }}
+        tabIndex={-1}
+        style={{ maxWidth: '680px', outline: 'none' }}
       >
         {/* Drawer Header */}
         <div className="modal-header fixture-drawer-header">
@@ -435,6 +443,6 @@ export default function FixtureProbabilityDrawer({
         </div>
         </div>
       </div>
-    </div>
+    </Dialog>
   );
 }

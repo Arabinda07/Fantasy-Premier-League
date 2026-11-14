@@ -270,10 +270,10 @@ All frontend surfaces are constructed by composing the following standardized re
 ### 5.3 Player Token (`.wire-token` / `PlayerCard.jsx`)
 - Restrained grounding: subtle 4px radius with micro-padding (`padding: 6px 8px`) and ultra-subtle hover feedback (`background-color: rgba(255, 255, 255, 0.03)`), eliminating perceived emptiness on wide canvases without adding heavy cards or decorative pills.
 - **Main button (`.wire-token-main`)**: cream name at `--text-name` (captain 800) over mono points with a zinc unit. Click swaps or inspects; double-click inspects.
-- **Meta row (`.wire-token-meta`)**: sibling buttons, never nested. `.wire-token-fixture` (zinc `POS · vs OPP`, opens the match preview) and `.wire-token-armband` (`C` / `VC` / `3×`, always visible, 24px minimum target, cream when active, `aria-label` and `aria-pressed`).
+- **Meta row (`.wire-token-meta`)**: sibling buttons, never nested. `.wire-token-fixture` (zinc `POS · vs OPP`, opens the match preview) and `.wire-token-armband` (`C` / `VC` / `3×`, 24px minimum target, cream when active with `aria-label` and `aria-pressed`; non-captains reveal on hover/focus or during simulation to eliminate redundant pitch clutter).
 - **Status word (`.wire-token-status`)**: at most one zinc uppercase word, in priority order `BLANK` > `DGW` > `CAMEO` > `RISK`.
-- **Swap target (`.is-target`)**: underlined name and subtle emerald tint (`rgba(16, 185, 129, 0.06)`).
-- Rows are `.wire-pitch-row` flex lines inside `.wire-pitch` (a size container); under 460px names drop to 12px.
+- **Swap target (`.is-target`)**: elevated surface (`var(--bg-surface-subtle)`), crisp outline (`var(--border-strong)`), bold underlined cream name, accompanied by the actionable `.wire-swap-banner` with `Escape` key dismissal.
+- **Pitch Container Scaling**: Rows are `.wire-pitch-row` flex lines inside `.wire-pitch` (a size container); under 460px container width, token padding compacts to 1px with 9px fixture tags and 18px armbands so 5-man midfield formations fit cleanly without wrapping.
 
 ### 5.4 Bench Line (`.wire-bench` > `.wire-bench-line`)
 - An `<ol>` of full-width buttons: grid of slot (`GK`, `1`–`3`), name, zinc `POS · sub odds` (`AUTO_SUB_LABELS` badge), mono points.
@@ -303,6 +303,21 @@ All frontend surfaces are constructed by composing the following standardized re
 - Archival player profile deep viewer.
 
 ### 5.10 Drawers & Modals (Direction J Polish)
+- **Astryx Design System Bridge (`@astryxdesign/core/Dialog`)**:
+  - Encapsulates modal dialog lifecycle, native HTML5 `<dialog>` semantics (`showModal()`), focus region containment (`useFocusRegionContainment`), automatic `Escape` dismissal, body scroll-lock (`useScrollLock`), and screen-reader announcements (`ModalAnnounceProvider`).
+  - Unified across all frontend modal surfaces:
+    - [`MatchdayHandoverModal.jsx`](frontend/src/components/MatchdayHandoverModal.jsx) (`.astryx-handover-dialog`)
+    - [`LiveTeamSyncModal.jsx`](frontend/src/components/LiveTeamSyncModal.jsx) (`.astryx-sync-dialog`)
+    - [`TransferBreakdownModal.jsx`](frontend/src/components/TransferBreakdownModal.jsx) (`.astryx-breakdown-dialog`)
+    - [`OnboardingModal.jsx`](frontend/src/components/OnboardingModal.jsx) (`.astryx-onboarding-dialog`)
+    - [`PlayerDNAInspector.jsx`](frontend/src/components/PlayerDNAInspector.jsx) (`.astryx-dna-dialog`)
+    - [`HistoricalVault.jsx`](frontend/src/components/HistoricalVault.jsx) (`HistoricalPlayerDetailModal`, `.astryx-vault-dialog`)
+    - [`FixtureProbabilityDrawer.jsx`](frontend/src/components/FixtureProbabilityDrawer.jsx) (`.astryx-fixture-dialog`)
+  - Direction J Token Bridge: Styled via `:root` tokens (`--bg-surface-1`, `--border-subtle`, `--radius-lg`, `--shadow-modal`, `--color-overlay`), preserving the 2-color letterform hierarchy with zero decorative border clutter. Default browser `<dialog>` styling and borders are stripped via `dialog[class*="astryx-"]` in `frontend/src/styles/index.css`.
+- **Standard Telemetry Popover Architecture (`TelemetryPopover.jsx`)**:
+  - Replaces bespoke `showNotes` state and duplicated outside-click / `Escape` key event listeners across all tabs ([`ComponentStudio.jsx`](frontend/src/components/ComponentStudio.jsx), [`MultiGwPlanner.jsx`](frontend/src/components/MultiGwPlanner.jsx), [`RivalThreatMatrix.jsx`](frontend/src/components/RivalThreatMatrix.jsx)).
+  - Implements accessible `role="tooltip"`, `aria-expanded`, dynamic unique `useId()` binding, and clean outside-click and `Escape` keyboard dismissal.
+  - Styled with `.telemetry-notes-group`, `.telemetry-notes-btn`, and `.telemetry-popover-card`, honoring Direction J tokens (`var(--bg-surface-1)`, `var(--border-subtle)`, tabular monospace typography).
 - **Universal Modal Architecture (`.modal-overlay`, `.modal-content`)**:
   - Ground & Scrim: Solid neutral scrim (`rgba(10, 10, 12, 0.82)`) with zero `backdrop-filter: blur()`. Modal shell sits on `var(--bg-surface-1)` (`#1C1C20`) with 1px hairline border (`var(--border-subtle)`), 8px radius (`var(--radius-lg)`), and tokenized institutional elevation (`var(--shadow-modal)`).
   - Modal Action Footer (`.modal-action-footer`): Flat `var(--bg-surface-1)` bar with hairline top border. Primary action uses high-contrast cream button (`var(--text-primary)` text on `var(--text-inverse)` background, weight 700) with zero neon halos. Ghost actions use `.modal-btn-ghost` with `var(--border-medium)`.
@@ -430,6 +445,15 @@ All frontend surfaces are constructed by composing the following standardized re
 - **Solid Institutional Key (`.wire-action.is-primary`)**: The primary decision commitment CTA (`LOCK LINEUP`) is rendered as a high-contrast solid cream key (`--text-primary` on `--text-inverse`) with subtle elevation and hover lift (`translateY(-1px)`). Replaces legacy underlines with authoritative visual weight.
 - **Ghost Action Key (`.wire-action`)**: Simulation toggles (`TRY SWAPS`, `RESET TO SUGGESTED`) feature a 1px subtle hairline border, filling into an elevated dark surface (`--bg-surface-3` with `--border-active`) when test simulation mode is engaged.
 - **Kinetic Navigational Links (`.wire-link`, `.wire-directive-more`, `.wire-link-arrow`)**: Contextual text actions (`See the reasoning →`, `Open the Planner →`) discard static underlines entirely, adopting a responsive kinetic arrow shift (`transform: translateX(3px)`) on hover.
+
+### 5.24 Astryx Design System Integration (`@astryxdesign/core`)
+All interactive primitives below are backed by `@astryxdesign/core` (`^0.7.12`) and bridged to Direction J tokens in `frontend/src/styles/index.css` (`:root` bridge variables + `.astryx-*` classes) and `data-theme="dark"` on `<html>`:
+- **Layer & Toast Coordination (`LayerProvider`, `useToast`)**: `App.jsx` wraps the viewport in `<LayerProvider toast={{ position: 'bottomEnd', maxVisible: 3 }}>` so overlays, popovers, dialogs, and transient confirmations (lineup lock, squad sync, invalid formation) share a single top-layer stack.
+- **Dialogs (`Dialog`)**: All 7 modals/drawers (`LiveTeamSyncModal`, `OnboardingModal`, `MatchdayHandoverModal`, `TransferBreakdownModal`, `PlayerDNAInspector`, `FixtureProbabilityDrawer`, `HistoricalVault` detail modal) use `Dialog` with `dialog[class*="astryx-"]` Direction J overrides.
+- **Popovers (`Popover`)**: `TelemetryPopover.jsx` (and `FixtureHeatmap.jsx`'s formula explainer) use `<Popover presentation="adaptive">` for viewport-aware desktop placement and automatic `BottomSheet` presentation on compact touch screens.
+- **Progressive Disclosure (`Collapsible`)**: `CollapsibleSection.jsx` wraps `<Collapsible>` while preserving sharp Direction J geometry (`.astryx-collapsible-bridge`).
+- **Navigation & Segmented Rails (`TabList`, `Tab`, `SegmentedControl`, `SegmentedControlItem`, `Breadcrumbs`, `BreadcrumbItem`)**: `Header.jsx` and `HistoricalVault.jsx` use `TabList`/`Tab`; `Breadcrumbs.jsx` uses `Breadcrumbs`/`BreadcrumbItem`; all `.wire-segments` controls (`TacticalPitch`, `MultiGwPlanner`, `ComponentStudio`, `FixtureHeatmap`, `RivalThreatMatrix`, `PlayerDNAInspector`, `HistoricalVault`, `TransferWorkbench`) use `SegmentedControl`/`SegmentedControlItem` bridged via `.astryx-wire-segments`.
+- **Loading States (`Skeleton`)**: `App.jsx` initial data load and lazy `PlayerDNAInspector` `Suspense` fallback use `<Skeleton>` bound to `--color-skeleton: var(--bg-surface-2)`.
 
 ---
 

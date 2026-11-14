@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useMemo } from 'react';
+import { Dialog } from '@astryxdesign/core';
 import {
   ShieldCheck,
   X,
@@ -27,7 +28,7 @@ export default function MatchdayHandoverModal({
 }) {
   const modalRef = useRef(null);
 
-  // Keyboard accessibility: Focus placement, Escape key to dismiss & focus trap (WCAG 2.1.2 & 2.4.3)
+  // Initial focus placement on open (focus trap and Escape handling managed by Astryx Dialog)
   useEffect(() => {
     if (!isOpen) return;
 
@@ -37,42 +38,8 @@ export default function MatchdayHandoverModal({
       }
     }, 50);
 
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        onClose();
-        return;
-      }
-
-      if (e.key === 'Tab' && modalRef.current) {
-        const focusable = modalRef.current.querySelectorAll(
-          'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
-        );
-        if (focusable.length === 0) return;
-
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-
-        if (e.shiftKey) {
-          if (document.activeElement === first) {
-            e.preventDefault();
-            last.focus();
-          }
-        } else {
-          if (document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
-          }
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      clearTimeout(focusTimer);
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen, onClose]);
+    return () => clearTimeout(focusTimer);
+  }, [isOpen]);
 
   const gw = liveData?.gameweek || 6;
   const isRoll = Boolean(recommendedTransfer?.isRollFt);
@@ -127,17 +94,20 @@ export default function MatchdayHandoverModal({
 
   const officialTeamUrl = `https://fantasy.premierleague.com/entry/${managerId}/team`;
 
-  if (!isOpen) return null;
-
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <Dialog
+      isOpen={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+      purpose="info"
+      width="min(580px, calc(100vw - 24px))"
+      className="astryx-handover-dialog"
+      aria-labelledby="handover-modal-title"
+    >
       <div
         ref={modalRef}
         className="modal-content handover-modal-content"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="handover-modal-title"
         tabIndex={-1}
         style={{ outline: 'none' }}
       >
@@ -342,6 +312,6 @@ export default function MatchdayHandoverModal({
           </button>
         </div>
       </div>
-    </div>
+    </Dialog>
   );
 }
