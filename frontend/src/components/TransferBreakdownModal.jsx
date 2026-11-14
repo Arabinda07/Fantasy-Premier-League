@@ -103,6 +103,8 @@ export default function TransferBreakdownModal({
     return <ShieldCheck size={14} weight="bold" />;
   };
 
+  const officialTransfersUrl = 'https://fantasy.premierleague.com/transfers';
+
   return (
     <Dialog
       isOpen={isOpen}
