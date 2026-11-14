@@ -16,7 +16,7 @@ import {
 } from '@phosphor-icons/react';
 import vaultData from '../data/historical_vault.json';
 
-export default function HistoricalVault({ onInspectPlayer }) {
+export default function HistoricalVault() {
   const seasonsList = vaultData.seasons || [];
   const [selectedSeason, setSelectedSeason] = useState(seasonsList[0]?.season || '2025-26');
   const [activeTab, setActiveTab] = useState('pitch'); // 'pitch' | 'records' | 'comparison' | 'lab'
@@ -93,17 +93,6 @@ export default function HistoricalVault({ onInspectPlayer }) {
     }
   }, [selectedSeason]);
 
-  // Keyboard navigation for Escape key on player modal
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && inspectedHistoricalPlayer) {
-        setInspectedHistoricalPlayer(null);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [inspectedHistoricalPlayer]);
-
   // Sorted list for 10-season table
   const sortedSeasons = useMemo(() => {
     const list = [...seasonsList];
@@ -134,13 +123,10 @@ export default function HistoricalVault({ onInspectPlayer }) {
 
   const handlePlayerClick = (player) => {
     setInspectedHistoricalPlayer(player);
-    if (onInspectPlayer) {
-      onInspectPlayer(player);
-    }
   };
 
   return (
-    <div className="historical-vault-view surface-scope-vault wire" style={{ padding: '0 0 40px 0' }}>
+    <div className="historical-vault-view view-fluid wire">
       {/* 1. Header Banner & View Mode Switcher with Direction J Wire Segments */}
       <div className="vault-hero-bar">
         <div className="vault-hero-inner">
@@ -199,9 +185,8 @@ export default function HistoricalVault({ onInspectPlayer }) {
         </div>
       </div>
 
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 clamp(12px, 2vw, 20px)' }}>
-        {/* 2 & 3. Season Timeline Scrubber & 48px Telemetry Deck (Pitch View) */}
-        {activeTab === 'pitch' && (
+      {/* 2 & 3. Season Timeline Scrubber & 48px Telemetry Deck (Pitch View) */}
+      {activeTab === 'pitch' && (
           <>
             {/* Borderless Season Timeline Scrubber */}
             <div className="vault-timeline-scrubber font-mono" role="region" aria-label="Season Timeline">
@@ -793,7 +778,6 @@ export default function HistoricalVault({ onInspectPlayer }) {
             </div>
           </div>
         )}
-      </div>
 
       {/* 8. Dedicated Historical Player Detail Modal */}
       {inspectedHistoricalPlayer && (

@@ -450,8 +450,6 @@ function AppContent() {
         availableGameweeks={availableGameweeks}
         onSelectGw={handleSelectGw}
         onOpenSyncModal={() => setIsSyncModalOpen(true)}
-        strategy={activeStrategy}
-        onSelectStrategy={handleStrategyChange}
         activeChip={activeChip}
         freeTransfers={freeTransfers}
       />
@@ -462,7 +460,6 @@ function AppContent() {
         activeChip={activeChip}
         inspectedPlayer={inspectedPlayer}
         activeFixture={activeDrawerFixture}
-        selectedGw={selectedGw}
         onNavigateTab={handleTabChange}
         onClearChip={() => handleChipChange('none')}
         onClearPlayer={handleCloseInspect}
@@ -518,7 +515,6 @@ function AppContent() {
                     roadmap={liveData?.multi_horizon_roadmap || liveData?.multi_horizon_plan || liveData?.transfer_roadmap || []}
                     squadPlayers={[...(starters || []), ...(bench || [])]}
                     allPlayers={allPlayersData}
-                    allPlayersData={allPlayersData}
                     fixturesData={fixturesData}
                     liveData={liveData}
                     onInspectPlayer={handleInspectPlayer}
@@ -537,10 +533,8 @@ function AppContent() {
                   <RivalThreatMatrix
                     managerProfile={liveData?.manager_profile || liveData?.manager}
                     starters={starters.length ? starters : (liveData?.starters || [])}
-                    _bench={bench.length ? bench : (liveData?.bench || [])}
                     bench={bench.length ? bench : (liveData?.bench || [])}
                     allPlayers={allPlayersData}
-                    allPlayersData={allPlayersData}
                     liveData={liveData}
                     onInspectPlayer={handleInspectPlayer}
                   />
@@ -568,7 +562,6 @@ function AppContent() {
                 <div className="surface-scope-market" role="tabpanel" id="panel-market" aria-labelledby="tab-market">
                   <MarketVelocityTicker
                     allPlayers={allPlayersData}
-                    allPlayersData={allPlayersData}
                     onInspectPlayer={handleInspectPlayer}
                     liveData={liveData}
                   />
@@ -592,9 +585,7 @@ function AppContent() {
             {activeTab === 'vault' && (
               <ErrorBoundary componentName="Historical Vault">
                 <div className="surface-scope-vault" role="tabpanel" id="panel-vault" aria-labelledby="tab-vault">
-                  <HistoricalVault
-                    onInspectPlayer={handleInspectPlayer}
-                  />
+                  <HistoricalVault />
                 </div>
               </ErrorBoundary>
             )}
@@ -639,7 +630,6 @@ function AppContent() {
       {/* Institutional Footer Navigation */}
       <Footer
         onNavigateTab={handleTabChange}
-        liveData={liveData}
       />
     </div>
   );

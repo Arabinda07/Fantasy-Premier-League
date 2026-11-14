@@ -20,8 +20,6 @@ export default function Header({
   availableGameweeks,
   onSelectGw,
   onOpenSyncModal,
-  strategy = 'pure_xp',
-  onSelectStrategy,
   activeChip = 'none',
   freeTransfers
 }) {

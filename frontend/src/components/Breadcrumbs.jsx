@@ -2,7 +2,18 @@ import React from 'react';
 import { Breadcrumbs as AstryxBreadcrumbs, BreadcrumbItem } from '@astryxdesign/core';
 import { CaretRight, House } from '@phosphor-icons/react';
 
-export default function Breadcrumbs({ activeTab, onNavigateTab, subItem, onClearSubItem }) {
+export default function Breadcrumbs({
+  activeTab,
+  activeChip = 'none',
+  inspectedPlayer = null,
+  activeFixture = null,
+  onNavigateTab,
+  onClearChip,
+  onClearPlayer,
+  onClearFixture,
+  subItem,
+  onClearSubItem
+}) {
   const tabLabels = {
     pitch: 'My Lineup',
     transfers: 'Transfer Planner',
@@ -13,7 +24,24 @@ export default function Breadcrumbs({ activeTab, onNavigateTab, subItem, onClear
     vault: 'Historical Vault'
   };
 
-  if (!subItem) {
+  const resolvedSubItem = subItem || (
+    inspectedPlayer
+      ? inspectedPlayer.web_name || inspectedPlayer.name
+      : activeFixture
+        ? `${activeFixture.home_team || 'Home'} vs ${activeFixture.away_team || 'Away'}`
+        : activeChip && activeChip !== 'none'
+          ? `Chip: ${activeChip.toUpperCase()}`
+          : null
+  );
+
+  const handleClear = () => {
+    if (onClearSubItem) onClearSubItem();
+    if (inspectedPlayer && onClearPlayer) onClearPlayer();
+    else if (activeFixture && onClearFixture) onClearFixture();
+    else if (activeChip && activeChip !== 'none' && onClearChip) onClearChip();
+  };
+
+  if (!resolvedSubItem) {
     return null;
   }
 
@@ -29,7 +57,7 @@ export default function Breadcrumbs({ activeTab, onNavigateTab, subItem, onClear
         <BreadcrumbItem
           onClick={() => {
             onNavigateTab('pitch');
-            if (onClearSubItem) onClearSubItem();
+            handleClear();
           }}
           startIcon={<House size={14} weight="bold" />}
           className="breadcrumb-item breadcrumb-link"
@@ -38,18 +66,16 @@ export default function Breadcrumbs({ activeTab, onNavigateTab, subItem, onClear
         </BreadcrumbItem>
 
         <BreadcrumbItem
-          onClick={() => {
-            if (onClearSubItem) onClearSubItem();
-          }}
-          isCurrent={!subItem}
+          onClick={handleClear}
+          isCurrent={!resolvedSubItem}
           className="breadcrumb-item breadcrumb-link"
         >
           {currentTabLabel}
         </BreadcrumbItem>
 
-        {subItem && (
+        {resolvedSubItem && (
           <BreadcrumbItem isCurrent className="breadcrumb-item active">
-            {subItem}
+            {resolvedSubItem}
           </BreadcrumbItem>
         )}
       </AstryxBreadcrumbs>
