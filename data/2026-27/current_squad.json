@@ -40,27 +40,27 @@
     122798
   ],
   "proposed_squad_codes": [
-    469142,
     80201,
     586309,
     465730,
     201658,
+    517052,
     154561,
     244851,
     466052,
     466075,
     226597,
     222531,
+    169528,
     446008,
-    177815,
     444102,
     122798
   ],
   "proposed_starter_codes": [
-    469142,
     586309,
     465730,
     201658,
+    517052,
     154561,
     244851,
     466052,
@@ -71,9 +71,9 @@
   ],
   "proposed_bench_codes": [
     80201,
-    222531,
     446008,
-    177815
+    222531,
+    169528
   ],
   "starter_codes": [
     154561,
@@ -95,11 +95,11 @@
     177815,
     80201
   ],
-  "captain_code": 469142,
-  "vice_captain_code": 122798,
+  "captain_code": 517052,
+  "vice_captain_code": 465730,
   "bank": 4.6,
   "free_transfers": 1,
   "transfers_recommended": 1,
   "hits_recommended": 0,
-  "updated_at": "2026-11-16 14:12:48 UTC"
+  "updated_at": "2026-11-17 12:48:59 UTC"
 }
