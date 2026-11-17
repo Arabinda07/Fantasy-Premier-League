@@ -1133,9 +1133,9 @@
     "points_on_bench": 24,
     "gw": 11
   },
-  "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] N.Jackson | [OUT] Calvert-Lewin [Squad holds \u00a35.2M in trapped bench capital (Gibbs-White, Calvert-Lewin). Pruning via 2 FTs yields +5.6 pts into starters without burning Wildcard (Option Hurdle: 16.5 pts).] | [!] Nightly Price Risk: Calvert-Lewin (-119,220) (Execute before 01:15 GMT to protect value)",
+  "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] N.Jackson | [OUT] Calvert-Lewin [Squad holds \u00a35.2M in trapped bench capital (Gibbs-White, Calvert-Lewin). Pruning via 2 FTs yields +5.6 pts into starters without burning Wildcard (Option Hurdle: 16.5 pts).] | [!] Nightly Price Risk: Calvert-Lewin (-120,026) (Execute before 01:15 GMT to protect value)",
   "falling_price_risks": [
-    "Calvert-Lewin (-119,220)"
+    "Calvert-Lewin (-120,026)"
   ],
   "chip_recommendations": {
     "3xc": {
@@ -5121,8 +5121,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.316,
-          "eo": 0.5448,
+          "ownership_pct": 0.317,
+          "eo": 0.5466,
           "floor_p10": 1.9,
           "median_p50": 5.2,
           "ceiling_p90": 10.6,
@@ -5871,8 +5871,8 @@
           "is_captain": 0,
           "is_vice_captain": 0,
           "bench_order": null,
-          "ownership_pct": 0.316,
-          "eo": 0.5448,
+          "ownership_pct": 0.317,
+          "eo": 0.5466,
           "floor_p10": 1.9,
           "median_p50": 5.2,
           "ceiling_p90": 10.6,
