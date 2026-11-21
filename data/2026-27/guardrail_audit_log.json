@@ -6,22 +6,6 @@
     "anomaly_type": "clean",
     "recommendation": "proceed",
     "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
-    "timestamp": "2026-10-11T11:45:46.084254+00:00",
-    "details": {
-      "starting_xp": 0.0,
-      "captain": null,
-      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Carvalho | [OUT] Szoboszlai [Squad holds £9.2M in trapped bench capital (Palmer, Gibbs-White). Pruning via 2 FTs yields +6.5 pts into starters without burning Wildcard (Option Hurdle: 21.5 pts).]",
-      "outlier_flags": []
-    },
-    "gameweek": 7
-  },
-  {
-    "passed": true,
-    "severity_score": 0.1,
-    "abort_probability": 0.02,
-    "anomaly_type": "clean",
-    "recommendation": "proceed",
-    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
     "timestamp": "2026-10-12T13:48:06.511647+00:00",
     "details": {
       "starting_xp": 0.0,
@@ -798,5 +782,21 @@
       "outlier_flags": []
     },
     "gameweek": 11
+  },
+  {
+    "passed": true,
+    "severity_score": 0.1,
+    "abort_probability": 0.02,
+    "anomaly_type": "clean",
+    "recommendation": "proceed",
+    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
+    "timestamp": "2026-11-21T13:52:04.173556+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] McGinn | [OUT] Cherki [Squad holds £12.7M in trapped bench capital (Evanilson, Calvert-Lewin). Pruning via 2 FTs yields +6.5 pts into starters without burning Wildcard (Option Hurdle: 15.2 pts).]",
+      "outlier_flags": []
+    },
+    "gameweek": 12
   }
 ]
