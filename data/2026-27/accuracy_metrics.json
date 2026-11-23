@@ -1,58 +1,67 @@
 {
   "evaluated_gw": 11,
-  "evaluated_at": "2026-11-22T13:44:26.770740+00:00",
+  "evaluated_at": "2026-11-23T16:44:53.121507+00:00",
   "season": "2026-27",
   "total_players": 672,
-  "active_players": 460,
-  "overall_mae": 1.36,
-  "overall_rmse": 2.15,
-  "starters_mae": 1.96,
-  "starters_rmse": 2.6,
-  "rank_correlation": 0.333,
+  "active_players": 461,
+  "overall_mae": 1.33,
+  "overall_rmse": 2.21,
+  "starters_mae": 1.91,
+  "starters_rmse": 2.66,
+  "rank_correlation": 0.438,
   "brier_score_cs": 0.198,
   "positional": [
     {
       "pos": "GK",
       "count": 25,
-      "mae": 2.68,
-      "rmse": 3.1,
+      "mae": 2.64,
+      "rmse": 3.15,
       "meanPred": 3.34,
-      "meanAct": 1.92,
-      "bias": 1.42,
+      "meanAct": 2.76,
+      "bias": 0.58,
       "status": "OVER_PROJECTED"
     },
     {
       "pos": "DEF",
-      "count": 145,
-      "mae": 2.15,
-      "rmse": 2.67,
-      "meanPred": 2.41,
-      "meanAct": 1.46,
-      "bias": 0.95,
+      "count": 146,
+      "mae": 2.14,
+      "rmse": 2.64,
+      "meanPred": 2.39,
+      "meanAct": 1.8,
+      "bias": 0.59,
       "status": "OVER_PROJECTED"
     },
     {
       "pos": "MID",
       "count": 185,
-      "mae": 2.0,
-      "rmse": 2.68,
+      "mae": 1.9,
+      "rmse": 2.78,
       "meanPred": 2.34,
-      "meanAct": 1.55,
-      "bias": 0.79,
-      "status": "OVER_PROJECTED"
+      "meanAct": 2.12,
+      "bias": 0.22,
+      "status": "CALIBRATED"
     },
     {
       "pos": "FWD",
       "count": 42,
-      "mae": 2.05,
-      "rmse": 2.81,
+      "mae": 2.09,
+      "rmse": 3.07,
       "meanPred": 2.25,
-      "meanAct": 2.02,
-      "bias": 0.22,
-      "status": "CALIBRATED"
+      "meanAct": 2.55,
+      "bias": -0.3,
+      "status": "UNDER_PROJECTED"
     }
   ],
   "outliers": [
+    {
+      "player": "Ngumoha",
+      "team": "Liverpool",
+      "pos": "ASSET",
+      "pred": 1.22,
+      "actual": 13,
+      "diff": "+11.8",
+      "reason": "High conversion or unexpected haul"
+    },
     {
       "player": "Okafor",
       "team": "Leeds",
@@ -63,39 +72,30 @@
       "reason": "High conversion or unexpected haul"
     },
     {
+      "player": "Williams-Barnett",
+      "team": "Spurs",
+      "pos": "ASSET",
+      "pred": 2.24,
+      "actual": 13,
+      "diff": "+10.8",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
+      "player": "McBurnie",
+      "team": "Hull City",
+      "pos": "ASSET",
+      "pred": 2.87,
+      "actual": 13,
+      "diff": "+10.1",
+      "reason": "High conversion or unexpected haul"
+    },
+    {
       "player": "Hill",
       "team": "Bournemouth",
       "pos": "ASSET",
       "pred": 3.94,
       "actual": 14,
       "diff": "+10.1",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Williams-Barnett",
-      "team": "Spurs",
-      "pos": "ASSET",
-      "pred": 2.24,
-      "actual": 12,
-      "diff": "+9.8",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Yeremy",
-      "team": "Crystal Palace",
-      "pos": "ASSET",
-      "pred": 2.86,
-      "actual": 12,
-      "diff": "+9.1",
-      "reason": "High conversion or unexpected haul"
-    },
-    {
-      "player": "Roefs",
-      "team": "Sunderland",
-      "pos": "ASSET",
-      "pred": 2.9,
-      "actual": 11,
-      "diff": "+8.1",
       "reason": "High conversion or unexpected haul"
     },
     {
