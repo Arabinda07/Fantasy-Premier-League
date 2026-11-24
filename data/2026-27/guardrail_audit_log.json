@@ -6,22 +6,6 @@
     "anomaly_type": "clean",
     "recommendation": "proceed",
     "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
-    "timestamp": "2026-10-14T10:48:27.989960+00:00",
-    "details": {
-      "starting_xp": 0.0,
-      "captain": null,
-      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Carvalho | [OUT] Szoboszlai [Squad holds £6.4M in trapped bench capital (Gibbs-White, Szoboszlai). Pruning via 2 FTs yields +6.5 pts into starters without burning Wildcard (Option Hurdle: 21.5 pts).] | [!] Nightly Price Risk: B.Fernandes (-270,179), Gibbs-White (-99,845), Wissa (-103,998), Szoboszlai (-236,540) (Execute before 01:15 GMT to protect value)",
-      "outlier_flags": []
-    },
-    "gameweek": 7
-  },
-  {
-    "passed": true,
-    "severity_score": 0.1,
-    "abort_probability": 0.02,
-    "anomaly_type": "clean",
-    "recommendation": "proceed",
-    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
     "timestamp": "2026-10-15T10:31:17.155339+00:00",
     "details": {
       "starting_xp": 0.0,
@@ -795,6 +779,22 @@
       "starting_xp": 0.0,
       "captain": null,
       "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] McGinn | [OUT] Cherki [Squad holds £7.0M in trapped bench capital (Calafiori, Cherki). Pruning via 2 FTs yields +6.5 pts into starters without burning Wildcard (Option Hurdle: 15.2 pts).] | [!] Nightly Price Risk: Raya (-190,233), Cherki (-190,555) (Execute before 01:15 GMT to protect value)",
+      "outlier_flags": []
+    },
+    "gameweek": 12
+  },
+  {
+    "passed": true,
+    "severity_score": 0.1,
+    "abort_probability": 0.02,
+    "anomaly_type": "clean",
+    "recommendation": "proceed",
+    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
+    "timestamp": "2026-11-24T16:40:19.833752+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] McGinn | [OUT] Cherki [Squad holds £7.0M in trapped bench capital (Calafiori, Cherki). Pruning via 2 FTs yields +6.5 pts into starters without burning Wildcard (Option Hurdle: 15.2 pts).] | [!] Nightly Price Risk: Raya (-196,293), Cherki (-194,468) (Execute before 01:15 GMT to protect value)",
       "outlier_flags": []
     },
     "gameweek": 12
