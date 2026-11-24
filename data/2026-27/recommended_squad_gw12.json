@@ -28,15 +28,15 @@
     244851,
     226597,
     222531,
-    446008,
+    177815,
     444102,
     122806
   ],
   "proposed_bench_codes": [
     154561,
-    466075,
     122798,
-    177815
+    446008,
+    466075
   ],
   "transfers_in": [
     122806
@@ -46,8 +46,8 @@
   ],
   "transfers_count": 1,
   "hits_taken": 0,
-  "starting_xp": 49.5214,
+  "starting_xp": 50.2362,
   "captain_code": 122806,
   "vice_captain_code": 465730,
-  "updated_at": "2026-11-23 16:45:00 UTC"
+  "updated_at": "2026-11-24 14:34:16 UTC"
 }
