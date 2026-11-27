@@ -6,22 +6,6 @@
     "anomaly_type": "clean",
     "recommendation": "proceed",
     "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
-    "timestamp": "2026-10-17T09:52:25.284636+00:00",
-    "details": {
-      "starting_xp": 0.0,
-      "captain": null,
-      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Carvalho | [OUT] Szoboszlai [Squad holds £6.3M in trapped bench capital (Gibbs-White, Szoboszlai). Pruning via 2 FTs yields +6.5 pts into starters without burning Wildcard (Option Hurdle: 21.5 pts).] | [!] Nightly Price Risk: Gabriel (-134,515), B.Fernandes (-670,406), Gibbs-White (-374,132), Wissa (-371,660), Szoboszlai (-896,852) (Execute before 01:15 GMT to protect value)",
-      "outlier_flags": []
-    },
-    "gameweek": 7
-  },
-  {
-    "passed": true,
-    "severity_score": 0.1,
-    "abort_probability": 0.02,
-    "anomaly_type": "clean",
-    "recommendation": "proceed",
-    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
     "timestamp": "2026-10-18T10:03:36.537372+00:00",
     "details": {
       "starting_xp": 0.0,
@@ -798,5 +782,21 @@
       "outlier_flags": []
     },
     "gameweek": 12
+  },
+  {
+    "passed": true,
+    "severity_score": 0.1,
+    "abort_probability": 0.02,
+    "anomaly_type": "clean",
+    "recommendation": "proceed",
+    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
+    "timestamp": "2026-11-27T23:57:13.001126+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] McGinn | [OUT] Mbeumo [Squad holds £6.6M in trapped bench capital (Mbeumo, De Cuyper). Pruning via 2 FTs yields +6.5 pts into starters without burning Wildcard (Option Hurdle: 13.7 pts).]",
+      "outlier_flags": []
+    },
+    "gameweek": 13
   }
 ]
