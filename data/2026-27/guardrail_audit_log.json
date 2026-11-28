@@ -6,22 +6,6 @@
     "anomaly_type": "clean",
     "recommendation": "proceed",
     "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
-    "timestamp": "2026-10-18T10:03:36.537372+00:00",
-    "details": {
-      "starting_xp": 0.0,
-      "captain": null,
-      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] Carvalho | [OUT] Gibbs-White [Squad holds £6.7M in trapped bench capital (Tavernier, Barry). Pruning via 2 FTs yields +6.5 pts into starters without burning Wildcard (Option Hurdle: 20.3 pts).]",
-      "outlier_flags": []
-    },
-    "gameweek": 8
-  },
-  {
-    "passed": true,
-    "severity_score": 0.1,
-    "abort_probability": 0.02,
-    "anomaly_type": "clean",
-    "recommendation": "proceed",
-    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
     "timestamp": "2026-10-19T11:28:43.241019+00:00",
     "details": {
       "starting_xp": 0.0,
@@ -791,6 +775,22 @@
     "recommendation": "proceed",
     "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
     "timestamp": "2026-11-27T23:57:13.001126+00:00",
+    "details": {
+      "starting_xp": 0.0,
+      "captain": null,
+      "action_summary": "EXECUTE 1 FREE TRANSFER(S): [IN] McGinn | [OUT] Mbeumo [Squad holds £6.6M in trapped bench capital (Mbeumo, De Cuyper). Pruning via 2 FTs yields +6.5 pts into starters without burning Wildcard (Option Hurdle: 13.7 pts).]",
+      "outlier_flags": []
+    },
+    "gameweek": 13
+  },
+  {
+    "passed": true,
+    "severity_score": 0.1,
+    "abort_probability": 0.02,
+    "anomaly_type": "clean",
+    "recommendation": "proceed",
+    "message": "Guardrail Passed: Squad verified healthy (Severity: 0.10, Abort Prob: 2%)",
+    "timestamp": "2026-11-28T14:42:25.290041+00:00",
     "details": {
       "starting_xp": 0.0,
       "captain": null,
